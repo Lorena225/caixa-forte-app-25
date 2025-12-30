@@ -270,10 +270,10 @@ export default function ContasPagar() {
                 {[currentYear - 1, currentYear, currentYear + 1].map((y) => (<SelectItem key={y} value={y.toString()}>{y}</SelectItem>))}
               </SelectContent>
             </Select>
-            <Select value={filters.status} onValueChange={(v) => setFilters({ ...filters, status: v })}>
+            <Select value={filters.status || "__all__"} onValueChange={(v) => setFilters({ ...filters, status: v === "__all__" ? "" : v })}>
               <SelectTrigger className="w-32"><SelectValue placeholder="Status" /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Todos</SelectItem>
+                <SelectItem value="__all__">Todos</SelectItem>
                 <SelectItem value="lancado">Pendente</SelectItem>
                 <SelectItem value="pago">Pago</SelectItem>
               </SelectContent>
@@ -387,20 +387,20 @@ export default function ContasPagar() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Fornecedor (opcional)</Label>
-                  <Select value={formData.counterparty_id} onValueChange={(v) => setFormData({ ...formData, counterparty_id: v })}>
+                  <Select value={formData.counterparty_id || "__none__"} onValueChange={(v) => setFormData({ ...formData, counterparty_id: v === "__none__" ? "" : v })}>
                     <SelectTrigger><SelectValue placeholder="Selecione..." /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Nenhum</SelectItem>
+                      <SelectItem value="__none__">Nenhum</SelectItem>
                       {counterparties.filter(c => c.type !== 'cliente').map((c) => (<SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>))}
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-2">
                   <Label>Centro de Custo (opcional)</Label>
-                  <Select value={formData.cost_center_id} onValueChange={(v) => setFormData({ ...formData, cost_center_id: v })}>
+                  <Select value={formData.cost_center_id || "__none__"} onValueChange={(v) => setFormData({ ...formData, cost_center_id: v === "__none__" ? "" : v })}>
                     <SelectTrigger><SelectValue placeholder="Selecione..." /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Nenhum</SelectItem>
+                      <SelectItem value="__none__">Nenhum</SelectItem>
                       {costCenters.map((cc) => (<SelectItem key={cc.id} value={cc.id}>{cc.code} - {cc.name}</SelectItem>))}
                     </SelectContent>
                   </Select>
