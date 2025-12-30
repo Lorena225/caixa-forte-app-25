@@ -256,14 +256,14 @@ export default function PlanoContas() {
               <div className="space-y-2">
                 <Label>Conta Pai (opcional)</Label>
                 <Select
-                  value={formData.parent_id}
-                  onValueChange={(v) => setFormData({ ...formData, parent_id: v })}
+                  value={formData.parent_id || "__none__"}
+                  onValueChange={(v) => setFormData({ ...formData, parent_id: v === "__none__" ? "" : v })}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Selecione..." />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Nenhuma</SelectItem>
+                    <SelectItem value="__none__">Nenhuma</SelectItem>
                     {accounts
                       .filter((a) => a.id !== editingAccount?.id)
                       .map((a) => (

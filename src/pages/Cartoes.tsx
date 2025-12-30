@@ -299,10 +299,10 @@ export default function Cartoes() {
 
               <div className="space-y-2">
                 <Label>Fornecedor (opcional)</Label>
-                <Select value={formData.counterparty_id} onValueChange={(v) => setFormData({ ...formData, counterparty_id: v })}>
+                <Select value={formData.counterparty_id || "__none__"} onValueChange={(v) => setFormData({ ...formData, counterparty_id: v === "__none__" ? "" : v })}>
                   <SelectTrigger><SelectValue placeholder="Selecione..." /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Nenhum</SelectItem>
+                    <SelectItem value="__none__">Nenhum</SelectItem>
                     {counterparties.filter(c => c.type !== 'cliente').map((c) => (
                       <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
                     ))}
