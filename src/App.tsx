@@ -17,6 +17,7 @@ import FluxoCaixa from "./pages/FluxoCaixa";
 import DRE from "./pages/DRE";
 import Metas from "./pages/Metas";
 import Cartoes from "./pages/Cartoes";
+import Lancamentos from "./pages/Lancamentos";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/lancamentos" element={<Lancamentos />} />
             <Route path="/contas-receber" element={<ContasReceber />} />
             <Route path="/contas-pagar" element={<ContasPagar />} />
             <Route path="/fluxo-caixa" element={<FluxoCaixa />} />

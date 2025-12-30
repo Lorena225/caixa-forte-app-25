@@ -15,6 +15,7 @@ import {
   Settings,
   LogOut,
   ChevronDown,
+  BookOpen,
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -26,6 +27,7 @@ import { Button } from '@/components/ui/button';
 
 const menuItems = [
   { icon: LayoutDashboard, label: 'Dashboard', href: '/' },
+  { icon: BookOpen, label: 'Lançamentos', href: '/lancamentos' },
   { icon: ArrowDownCircle, label: 'Contas a Receber', href: '/contas-receber' },
   { icon: ArrowUpCircle, label: 'Contas a Pagar', href: '/contas-pagar' },
   { icon: Wallet, label: 'Fluxo de Caixa', href: '/fluxo-caixa' },
