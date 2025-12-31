@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { PageHeader } from '@/components/common/PageHeader';
@@ -55,7 +55,7 @@ export default function Configurar() {
   const [isRuleDialogOpen, setIsRuleDialogOpen] = useState(false);
 
   // Initialize form when integration loads
-  useState(() => {
+  useEffect(() => {
     if (integration) {
       setName(integration.name);
       const settings = integration.settings_json as Record<string, unknown> || {};
@@ -64,7 +64,7 @@ export default function Configurar() {
       setReconcileThreshold(typeof settings.reconcileThreshold === 'number' ? settings.reconcileThreshold : 90);
       setDateTolerance(typeof settings.dateTolerance === 'number' ? settings.dateTolerance : 3);
     }
-  });
+  }, [integration]);
 
   const handleSave = async () => {
     if (!integrationId) return;
