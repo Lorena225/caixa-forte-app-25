@@ -222,11 +222,12 @@ export default function ImportWizard() {
           generateRowHash(row.data, hashFields);
 
         // Check if key exists
+        const entityType = entity as "accounts" | "budgets" | "cost_centers" | "counterparties" | "transactions" | "transactions_ap" | "transactions_ar" | "wallets";
         const { data: existingKey } = await supabase
           .from('external_keys')
           .select('record_id')
           .eq('company_id', currentCompany.id)
-          .eq('entity', entity)
+          .eq('entity', entityType)
           .eq('external_key', externalKey)
           .single();
 
@@ -251,7 +252,7 @@ export default function ImportWizard() {
             // Save external key
             await supabase.from('external_keys').insert({
               company_id: currentCompany.id,
-              entity: entity as ImportEntityType,
+              entity: entityType,
               external_key: externalKey,
               record_id: recordId,
               source: 'excel',
@@ -268,10 +269,10 @@ export default function ImportWizard() {
           batch_id: batch.id,
           company_id: currentCompany.id,
           row_number: i + 1,
-          raw_json: parsedData?.rows[i] || {},
-          normalized_json: row.data as never,
+          raw_json: (parsedData?.rows[i] || {}) as unknown as Record<string, never>,
+          normalized_json: row.data as unknown as Record<string, never>,
           status: row.isValid ? 'imported' as const : 'error' as const,
-          errors_json: row.errors.map(e => e.message) as never,
+          errors_json: row.errors.map(e => e.message) as unknown as Record<string, never>,
         }]);
       }
 
@@ -282,10 +283,10 @@ export default function ImportWizard() {
           batch_id: batch.id,
           company_id: currentCompany.id,
           row_number: validRows.length + i + 1,
-          raw_json: parsedData?.rows[validRows.length + i] || {},
-          normalized_json: row.data as never,
+          raw_json: (parsedData?.rows[validRows.length + i] || {}) as unknown as Record<string, never>,
+          normalized_json: row.data as unknown as Record<string, never>,
           status: 'error' as const,
-          errors_json: row.errors.map(e => e.message) as never,
+          errors_json: row.errors.map(e => e.message) as unknown as Record<string, never>,
         }]);
       }
 
@@ -808,12 +809,12 @@ async function createRecord(
   companyId: string
 ): Promise<string | null> {
   try {
-    const tableName = getTableName(entity);
+    const tableName = getTableName(entity) as "accounts" | "budgets" | "cost_centers" | "counterparties" | "transactions" | "wallets";
     const insertData = await prepareInsertData(entity, data, companyId);
 
     const { data: result, error } = await supabase
       .from(tableName)
-      .insert(insertData)
+      .insert(insertData as never)
       .select('id')
       .single();
 
@@ -836,13 +837,13 @@ async function updateRecord(
   companyId: string
 ): Promise<boolean> {
   try {
-    const tableName = getTableName(entity);
+    const tableName = getTableName(entity) as "accounts" | "budgets" | "cost_centers" | "counterparties" | "transactions" | "wallets";
     const updateData = await prepareInsertData(entity, data, companyId);
     delete (updateData as Record<string, unknown>).id;
 
     const { error } = await supabase
       .from(tableName)
-      .update(updateData)
+      .update(updateData as never)
       .eq('id', recordId);
 
     if (error) {
