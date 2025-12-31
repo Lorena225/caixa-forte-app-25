@@ -15,6 +15,7 @@ import {
   Settings,
   LogOut,
   ChevronDown,
+  Link2,
   BookOpen,
 } from 'lucide-react';
 import {

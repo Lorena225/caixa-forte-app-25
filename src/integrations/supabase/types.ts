@@ -169,6 +169,94 @@ export type Database = {
           },
         ]
       }
+      categorization_rules: {
+        Row: {
+          account_id: string | null
+          company_id: string
+          conditions_json: Json
+          cost_center_id: string | null
+          counterparty_id: string | null
+          created_at: string | null
+          id: string
+          integration_id: string | null
+          is_active: boolean | null
+          name: string
+          priority: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          account_id?: string | null
+          company_id: string
+          conditions_json?: Json
+          cost_center_id?: string | null
+          counterparty_id?: string | null
+          created_at?: string | null
+          id?: string
+          integration_id?: string | null
+          is_active?: boolean | null
+          name: string
+          priority?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          account_id?: string | null
+          company_id?: string
+          conditions_json?: Json
+          cost_center_id?: string | null
+          counterparty_id?: string | null
+          created_at?: string | null
+          id?: string
+          integration_id?: string | null
+          is_active?: boolean | null
+          name?: string
+          priority?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "categorization_rules_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "categorization_rules_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "v_rc_flow_by_account"
+            referencedColumns: ["account_id"]
+          },
+          {
+            foreignKeyName: "categorization_rules_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "categorization_rules_cost_center_id_fkey"
+            columns: ["cost_center_id"]
+            isOneToOne: false
+            referencedRelation: "cost_centers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "categorization_rules_counterparty_id_fkey"
+            columns: ["counterparty_id"]
+            isOneToOne: false
+            referencedRelation: "counterparties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "categorization_rules_integration_id_fkey"
+            columns: ["integration_id"]
+            isOneToOne: false
+            referencedRelation: "integrations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       companies: {
         Row: {
           cnpj: string | null
@@ -325,6 +413,190 @@ export type Database = {
           },
         ]
       }
+      idempotency_keys: {
+        Row: {
+          company_id: string
+          first_seen_at: string | null
+          id: string
+          key: string
+          scope: string
+        }
+        Insert: {
+          company_id: string
+          first_seen_at?: string | null
+          id?: string
+          key: string
+          scope: string
+        }
+        Update: {
+          company_id?: string
+          first_seen_at?: string | null
+          id?: string
+          key?: string
+          scope?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "idempotency_keys_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      import_batches: {
+        Row: {
+          company_id: string
+          created_at: string | null
+          error_details: string | null
+          finished_at: string | null
+          id: string
+          integration_id: string
+          source_filename: string | null
+          source_type: Database["public"]["Enums"]["import_source_type"]
+          started_at: string | null
+          status: Database["public"]["Enums"]["import_batch_status"]
+          summary_json: Json | null
+          updated_at: string | null
+        }
+        Insert: {
+          company_id: string
+          created_at?: string | null
+          error_details?: string | null
+          finished_at?: string | null
+          id?: string
+          integration_id: string
+          source_filename?: string | null
+          source_type?: Database["public"]["Enums"]["import_source_type"]
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["import_batch_status"]
+          summary_json?: Json | null
+          updated_at?: string | null
+        }
+        Update: {
+          company_id?: string
+          created_at?: string | null
+          error_details?: string | null
+          finished_at?: string | null
+          id?: string
+          integration_id?: string
+          source_filename?: string | null
+          source_type?: Database["public"]["Enums"]["import_source_type"]
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["import_batch_status"]
+          summary_json?: Json | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "import_batches_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "import_batches_integration_id_fkey"
+            columns: ["integration_id"]
+            isOneToOne: false
+            referencedRelation: "integrations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      imported_transactions: {
+        Row: {
+          amount: number
+          batch_id: string
+          company_id: string
+          counterparty_raw: string | null
+          created_at: string | null
+          description_raw: string | null
+          direction: string
+          duplicate_of_id: string | null
+          external_account_id: string | null
+          external_hash: string
+          external_id: string | null
+          fit_id: string | null
+          id: string
+          integration_id: string
+          posted_at: string
+          processed: boolean | null
+          raw_json: Json | null
+          updated_at: string | null
+        }
+        Insert: {
+          amount: number
+          batch_id: string
+          company_id: string
+          counterparty_raw?: string | null
+          created_at?: string | null
+          description_raw?: string | null
+          direction: string
+          duplicate_of_id?: string | null
+          external_account_id?: string | null
+          external_hash: string
+          external_id?: string | null
+          fit_id?: string | null
+          id?: string
+          integration_id: string
+          posted_at: string
+          processed?: boolean | null
+          raw_json?: Json | null
+          updated_at?: string | null
+        }
+        Update: {
+          amount?: number
+          batch_id?: string
+          company_id?: string
+          counterparty_raw?: string | null
+          created_at?: string | null
+          description_raw?: string | null
+          direction?: string
+          duplicate_of_id?: string | null
+          external_account_id?: string | null
+          external_hash?: string
+          external_id?: string | null
+          fit_id?: string | null
+          id?: string
+          integration_id?: string
+          posted_at?: string
+          processed?: boolean | null
+          raw_json?: Json | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "imported_transactions_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "import_batches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "imported_transactions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "imported_transactions_duplicate_of_id_fkey"
+            columns: ["duplicate_of_id"]
+            isOneToOne: false
+            referencedRelation: "imported_transactions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "imported_transactions_integration_id_fkey"
+            columns: ["integration_id"]
+            isOneToOne: false
+            referencedRelation: "integrations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       installment_plans: {
         Row: {
           account_id: string
@@ -409,6 +681,126 @@ export type Database = {
           },
         ]
       }
+      integration_accounts: {
+        Row: {
+          company_id: string
+          created_at: string | null
+          currency: string | null
+          external_account_id: string
+          external_account_name: string | null
+          id: string
+          integration_id: string
+          is_active: boolean | null
+          updated_at: string | null
+          wallet_id: string | null
+        }
+        Insert: {
+          company_id: string
+          created_at?: string | null
+          currency?: string | null
+          external_account_id: string
+          external_account_name?: string | null
+          id?: string
+          integration_id: string
+          is_active?: boolean | null
+          updated_at?: string | null
+          wallet_id?: string | null
+        }
+        Update: {
+          company_id?: string
+          created_at?: string | null
+          currency?: string | null
+          external_account_id?: string
+          external_account_name?: string | null
+          id?: string
+          integration_id?: string
+          is_active?: boolean | null
+          updated_at?: string | null
+          wallet_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "integration_accounts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "integration_accounts_integration_id_fkey"
+            columns: ["integration_id"]
+            isOneToOne: false
+            referencedRelation: "integrations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "integration_accounts_wallet_id_fkey"
+            columns: ["wallet_id"]
+            isOneToOne: false
+            referencedRelation: "wallets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      integrations: {
+        Row: {
+          auth_type: Database["public"]["Enums"]["integration_auth_type"]
+          company_id: string
+          created_at: string | null
+          credentials_encrypted: string | null
+          id: string
+          is_active: boolean | null
+          last_sync_at: string | null
+          last_sync_status: string | null
+          name: string
+          provider: Database["public"]["Enums"]["integration_provider"]
+          settings_json: Json | null
+          status: Database["public"]["Enums"]["integration_status"]
+          sync_interval_minutes: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          auth_type?: Database["public"]["Enums"]["integration_auth_type"]
+          company_id: string
+          created_at?: string | null
+          credentials_encrypted?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_sync_at?: string | null
+          last_sync_status?: string | null
+          name: string
+          provider: Database["public"]["Enums"]["integration_provider"]
+          settings_json?: Json | null
+          status?: Database["public"]["Enums"]["integration_status"]
+          sync_interval_minutes?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          auth_type?: Database["public"]["Enums"]["integration_auth_type"]
+          company_id?: string
+          created_at?: string | null
+          credentials_encrypted?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_sync_at?: string | null
+          last_sync_status?: string | null
+          name?: string
+          provider?: Database["public"]["Enums"]["integration_provider"]
+          settings_json?: Json | null
+          status?: Database["public"]["Enums"]["integration_status"]
+          sync_interval_minutes?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "integrations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       payment_methods: {
         Row: {
           company_id: string
@@ -467,6 +859,90 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      reconciliation_matches: {
+        Row: {
+          action_taken: Database["public"]["Enums"]["reconciliation_action"]
+          approved_at: string | null
+          approved_by_user_id: string | null
+          company_id: string
+          confidence: number
+          created_at: string | null
+          id: string
+          imported_transaction_id: string
+          match_type: Database["public"]["Enums"]["match_type"]
+          notes: string | null
+          rules_applied_json: Json | null
+          transaction_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          action_taken?: Database["public"]["Enums"]["reconciliation_action"]
+          approved_at?: string | null
+          approved_by_user_id?: string | null
+          company_id: string
+          confidence?: number
+          created_at?: string | null
+          id?: string
+          imported_transaction_id: string
+          match_type: Database["public"]["Enums"]["match_type"]
+          notes?: string | null
+          rules_applied_json?: Json | null
+          transaction_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          action_taken?: Database["public"]["Enums"]["reconciliation_action"]
+          approved_at?: string | null
+          approved_by_user_id?: string | null
+          company_id?: string
+          confidence?: number
+          created_at?: string | null
+          id?: string
+          imported_transaction_id?: string
+          match_type?: Database["public"]["Enums"]["match_type"]
+          notes?: string | null
+          rules_applied_json?: Json | null
+          transaction_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reconciliation_matches_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reconciliation_matches_imported_transaction_id_fkey"
+            columns: ["imported_transaction_id"]
+            isOneToOne: false
+            referencedRelation: "imported_transactions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reconciliation_matches_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reconciliation_matches_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "v_ap_open"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reconciliation_matches_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "v_ar_open"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       transactions: {
         Row: {
@@ -652,6 +1128,60 @@ export type Database = {
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      webhook_events: {
+        Row: {
+          company_id: string
+          created_at: string | null
+          error_message: string | null
+          id: string
+          integration_id: string
+          payload_json: Json | null
+          processed_at: string | null
+          provider_event_id: string | null
+          received_at: string | null
+          status: string | null
+        }
+        Insert: {
+          company_id: string
+          created_at?: string | null
+          error_message?: string | null
+          id?: string
+          integration_id: string
+          payload_json?: Json | null
+          processed_at?: string | null
+          provider_event_id?: string | null
+          received_at?: string | null
+          status?: string | null
+        }
+        Update: {
+          company_id?: string
+          created_at?: string | null
+          error_message?: string | null
+          id?: string
+          integration_id?: string
+          payload_json?: Json | null
+          processed_at?: string | null
+          provider_event_id?: string | null
+          received_at?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "webhook_events_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "webhook_events_integration_id_fkey"
+            columns: ["integration_id"]
+            isOneToOne: false
+            referencedRelation: "integrations"
             referencedColumns: ["id"]
           },
         ]
@@ -953,6 +1483,24 @@ export type Database = {
         | "custo"
         | "despesa"
       counterparty_type: "cliente" | "fornecedor" | "ambos"
+      import_batch_status: "processing" | "success" | "partial" | "error"
+      import_source_type: "manual_upload" | "scheduled_sync" | "webhook"
+      integration_auth_type: "file" | "oauth" | "api_key" | "webhook"
+      integration_provider:
+        | "ofx"
+        | "csv"
+        | "stripe"
+        | "mercadopago"
+        | "asaas"
+        | "pagarme"
+        | "omie"
+        | "tiny"
+        | "bling"
+        | "openfinance"
+        | "other"
+      integration_status: "disconnected" | "connected" | "error" | "disabled"
+      match_type: "exact" | "fuzzy" | "manual"
+      reconciliation_action: "mark_paid" | "create" | "ignore" | "pending"
       transaction_direction: "entrada" | "saida"
       transaction_status: "rascunho" | "lancado" | "pago" | "cancelado"
       user_role: "admin" | "gestor" | "visualizador"
@@ -1093,6 +1641,25 @@ export const Constants = {
         "despesa",
       ],
       counterparty_type: ["cliente", "fornecedor", "ambos"],
+      import_batch_status: ["processing", "success", "partial", "error"],
+      import_source_type: ["manual_upload", "scheduled_sync", "webhook"],
+      integration_auth_type: ["file", "oauth", "api_key", "webhook"],
+      integration_provider: [
+        "ofx",
+        "csv",
+        "stripe",
+        "mercadopago",
+        "asaas",
+        "pagarme",
+        "omie",
+        "tiny",
+        "bling",
+        "openfinance",
+        "other",
+      ],
+      integration_status: ["disconnected", "connected", "error", "disabled"],
+      match_type: ["exact", "fuzzy", "manual"],
+      reconciliation_action: ["mark_paid", "create", "ignore", "pending"],
       transaction_direction: ["entrada", "saida"],
       transaction_status: ["rascunho", "lancado", "pago", "cancelado"],
       user_role: ["admin", "gestor", "visualizador"],
