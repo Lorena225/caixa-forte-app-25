@@ -64,6 +64,23 @@ export default function ImportarExtrato() {
     duplicates: number;
   } | null>(null);
 
+  // Sample OFX data for testing
+  const loadSampleData = useCallback(() => {
+    const sampleTransactions: ParsedTransaction[] = [
+      { date: new Date('2024-12-15'), amount: 1500, description: 'TED RECEBIDA - CLIENTE A', direction: 'in', fitId: 'FIT001', hash: 'sample1' },
+      { date: new Date('2024-12-10'), amount: 2500, description: 'PAG ALUGUEL DEZEMBRO', direction: 'out', fitId: 'FIT002', hash: 'sample2' },
+      { date: new Date('2024-12-18'), amount: 800, description: 'PIX RECEBIDO - CLIENTE B', direction: 'in', fitId: 'FIT003', hash: 'sample3' },
+      { date: new Date('2024-12-20'), amount: 350, description: 'DEB AUT ENERGIA ELETRICA', direction: 'out', fitId: 'FIT004', hash: 'sample4' },
+      { date: new Date('2024-12-22'), amount: 150, description: 'UBER *UBER TRIP', direction: 'out', fitId: 'FIT005', hash: 'sample5' },
+      { date: new Date('2024-12-23'), amount: 89.90, description: 'NETFLIX.COM', direction: 'out', fitId: 'FIT006', hash: 'sample6' },
+      { date: new Date('2024-12-24'), amount: 2200, description: 'TED RECEBIDA - VENDA SERVICO', direction: 'in', fitId: 'FIT007', hash: 'sample7' },
+      { date: new Date('2024-12-26'), amount: 45.50, description: 'TARIFA BANCARIA', direction: 'out', fitId: 'FIT008', hash: 'sample8' },
+    ];
+    setParsedData(sampleTransactions);
+    setFile({ name: 'extrato_exemplo.ofx' } as File);
+    toast.success(`${sampleTransactions.length} transações de exemplo carregadas`);
+  }, []);
+
   const handleFileChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
     if (!selectedFile) return;
@@ -288,7 +305,7 @@ export default function ImportarExtrato() {
             <CardTitle className="text-base">Upload de Arquivo</CardTitle>
             <CardDescription>Selecione um arquivo OFX ou CSV do seu banco</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-4">
             <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
               <div className="flex flex-col items-center justify-center pt-5 pb-6">
                 <Upload className="h-8 w-8 text-muted-foreground mb-2" />
@@ -305,6 +322,12 @@ export default function ImportarExtrato() {
                 disabled={isProcessing}
               />
             </label>
+            <div className="text-center">
+              <Button variant="outline" size="sm" onClick={loadSampleData} disabled={isProcessing}>
+                <FileText className="mr-2 h-4 w-4" />
+                Carregar Extrato de Exemplo
+              </Button>
+            </div>
           </CardContent>
         </Card>
 
