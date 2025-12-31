@@ -17,6 +17,7 @@ import {
   ChevronDown,
   Link2,
   BookOpen,
+  FileSpreadsheet,
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -36,6 +37,7 @@ const menuItems = [
   { icon: Target, label: 'Metas', href: '/metas' },
   { icon: CreditCard, label: 'Cartões', href: '/cartoes' },
   { icon: Link2, label: 'Integrações', href: '/integracoes' },
+  { icon: FileSpreadsheet, label: 'Importar/Exportar', href: '/importar-exportar' },
 ];
 
 const cadastros = [

@@ -23,6 +23,10 @@ import IntegracoesImportar from "./pages/integracoes/Importar";
 import IntegracoesConciliacao from "./pages/integracoes/Conciliacao";
 import IntegracoesConfigurar from "./pages/integracoes/Configurar";
 import IntegracoesLogs from "./pages/integracoes/Logs";
+import ImportExportIndex from "./pages/importar-exportar/Index";
+import ImportWizard from "./pages/importar-exportar/ImportWizard";
+import ImportHistory from "./pages/importar-exportar/ImportHistory";
+import ExportData from "./pages/importar-exportar/ExportData";
 
 const queryClient = new QueryClient();
 
@@ -48,6 +52,11 @@ const App = () => (
             <Route path="/integracoes/:integrationId/configurar" element={<IntegracoesConfigurar />} />
             <Route path="/integracoes/conciliacao" element={<IntegracoesConciliacao />} />
             <Route path="/integracoes/logs" element={<IntegracoesLogs />} />
+            <Route path="/importar-exportar" element={<ImportExportIndex />} />
+            <Route path="/importar-exportar/importar/:entity" element={<ImportWizard />} />
+            <Route path="/importar-exportar/historico" element={<ImportHistory />} />
+            <Route path="/importar-exportar/exportar/:type" element={<ExportData />} />
+            <Route path="/importar-exportar/exportar/report/:report" element={<ExportData />} />
             <Route path="/cadastros/plano-contas" element={<PlanoContas />} />
             <Route path="/cadastros/centros-custo" element={<CentrosCusto />} />
             <Route path="/cadastros/clientes-fornecedores" element={<ClientesFornecedores />} />

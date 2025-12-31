@@ -71,9 +71,9 @@ export default function ImportExportIndex() {
       // Map the data to our ImportTemplate type
       const mappedTemplates: ImportTemplate[] = (data || []).map(t => ({
         ...t,
-        columns_json: t.columns_json as ImportTemplate['columns_json'],
-        sample_data_json: t.sample_data_json as ImportTemplate['sample_data_json'],
-        instructions_json: t.instructions_json as ImportTemplate['instructions_json'],
+        columns_json: t.columns_json as unknown as ImportTemplate['columns_json'],
+        sample_data_json: t.sample_data_json as unknown as ImportTemplate['sample_data_json'],
+        instructions_json: t.instructions_json as unknown as ImportTemplate['instructions_json'],
       }));
       
       setTemplates(mappedTemplates);
