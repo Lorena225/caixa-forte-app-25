@@ -71,52 +71,51 @@ export default function IntegracoesIndex() {
       <PageHeader
         title="Integrações"
         description="Conecte bancos, gateways e ERPs para importação automática"
-        action={
-          <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-            <DialogTrigger asChild>
-              <Button><Plus className="mr-2 h-4 w-4" />Nova Integração</Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Nova Integração</DialogTitle>
-              </DialogHeader>
-              <div className="space-y-4 py-4">
-                <div className="space-y-2">
-                  <Label>Nome</Label>
-                  <Input
-                    placeholder="Ex: Banco Itaú, Mercado Pago Loja 1"
-                    value={newName}
-                    onChange={(e) => setNewName(e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Tipo</Label>
-                  <Select value={newProvider} onValueChange={(v) => setNewProvider(v as IntegrationProvider)}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="ofx">Arquivo OFX (Extrato bancário)</SelectItem>
-                      <SelectItem value="csv">Arquivo CSV</SelectItem>
-                      <SelectItem value="mercadopago">Mercado Pago (em breve)</SelectItem>
-                      <SelectItem value="stripe">Stripe (em breve)</SelectItem>
-                      <SelectItem value="asaas">Asaas (em breve)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <Button onClick={handleCreate} className="w-full" disabled={!newName || createIntegration.isPending}>
-                  Criar Integração
-                </Button>
+      >
+        <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+          <DialogTrigger asChild>
+            <Button><Plus className="mr-2 h-4 w-4" />Nova Integração</Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Nova Integração</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label>Nome</Label>
+                <Input
+                  placeholder="Ex: Banco Itaú, Mercado Pago Loja 1"
+                  value={newName}
+                  onChange={(e) => setNewName(e.target.value)}
+                />
               </div>
-            </DialogContent>
-          </Dialog>
-        }
-      />
+              <div className="space-y-2">
+                <Label>Tipo</Label>
+                <Select value={newProvider} onValueChange={(v) => setNewProvider(v as IntegrationProvider)}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="ofx">Arquivo OFX (Extrato bancário)</SelectItem>
+                    <SelectItem value="csv">Arquivo CSV</SelectItem>
+                    <SelectItem value="mercadopago">Mercado Pago (em breve)</SelectItem>
+                    <SelectItem value="stripe">Stripe (em breve)</SelectItem>
+                    <SelectItem value="asaas">Asaas (em breve)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <Button onClick={handleCreate} className="w-full" disabled={!newName || createIntegration.isPending}>
+                Criar Integração
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </PageHeader>
 
       {isLoading ? (
         <div className="text-center py-8 text-muted-foreground">Carregando...</div>
       ) : integrations?.length === 0 ? (
-        <Card>
+        <Card className="mt-6">
           <CardContent className="py-12 text-center">
             <FileSpreadsheet className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
             <h3 className="text-lg font-medium mb-2">Nenhuma integração configurada</h3>
@@ -129,7 +128,7 @@ export default function IntegracoesIndex() {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mt-6">
           {integrations?.map((integration) => (
             <Card key={integration.id}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

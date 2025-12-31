@@ -18,6 +18,11 @@ import DRE from "./pages/DRE";
 import Metas from "./pages/Metas";
 import Cartoes from "./pages/Cartoes";
 import Lancamentos from "./pages/Lancamentos";
+import IntegracoesIndex from "./pages/integracoes/Index";
+import IntegracoesImportar from "./pages/integracoes/Importar";
+import IntegracoesConciliacao from "./pages/integracoes/Conciliacao";
+import IntegracoesConfigurar from "./pages/integracoes/Configurar";
+import IntegracoesLogs from "./pages/integracoes/Logs";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +43,11 @@ const App = () => (
             <Route path="/dre" element={<DRE />} />
             <Route path="/metas" element={<Metas />} />
             <Route path="/cartoes" element={<Cartoes />} />
+            <Route path="/integracoes" element={<IntegracoesIndex />} />
+            <Route path="/integracoes/:integrationId/importar" element={<IntegracoesImportar />} />
+            <Route path="/integracoes/:integrationId/configurar" element={<IntegracoesConfigurar />} />
+            <Route path="/integracoes/conciliacao" element={<IntegracoesConciliacao />} />
+            <Route path="/integracoes/logs" element={<IntegracoesLogs />} />
             <Route path="/cadastros/plano-contas" element={<PlanoContas />} />
             <Route path="/cadastros/centros-custo" element={<CentrosCusto />} />
             <Route path="/cadastros/clientes-fornecedores" element={<ClientesFornecedores />} />
