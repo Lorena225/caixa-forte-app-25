@@ -413,6 +413,44 @@ export type Database = {
           },
         ]
       }
+      external_keys: {
+        Row: {
+          company_id: string
+          entity: Database["public"]["Enums"]["import_entity_type"]
+          external_key: string
+          first_seen_at: string | null
+          id: string
+          record_id: string
+          source: string
+        }
+        Insert: {
+          company_id: string
+          entity: Database["public"]["Enums"]["import_entity_type"]
+          external_key: string
+          first_seen_at?: string | null
+          id?: string
+          record_id: string
+          source?: string
+        }
+        Update: {
+          company_id?: string
+          entity?: Database["public"]["Enums"]["import_entity_type"]
+          external_key?: string
+          first_seen_at?: string | null
+          id?: string
+          record_id?: string
+          source?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "external_keys_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       idempotency_keys: {
         Row: {
           company_id: string
@@ -449,43 +487,55 @@ export type Database = {
         Row: {
           company_id: string
           created_at: string | null
+          entity: Database["public"]["Enums"]["import_entity_type"] | null
           error_details: string | null
           finished_at: string | null
           id: string
           integration_id: string
+          mapping_id: string | null
+          processed_rows: number | null
           source_filename: string | null
           source_type: Database["public"]["Enums"]["import_source_type"]
           started_at: string | null
           status: Database["public"]["Enums"]["import_batch_status"]
           summary_json: Json | null
+          total_rows: number | null
           updated_at: string | null
         }
         Insert: {
           company_id: string
           created_at?: string | null
+          entity?: Database["public"]["Enums"]["import_entity_type"] | null
           error_details?: string | null
           finished_at?: string | null
           id?: string
           integration_id: string
+          mapping_id?: string | null
+          processed_rows?: number | null
           source_filename?: string | null
           source_type?: Database["public"]["Enums"]["import_source_type"]
           started_at?: string | null
           status?: Database["public"]["Enums"]["import_batch_status"]
           summary_json?: Json | null
+          total_rows?: number | null
           updated_at?: string | null
         }
         Update: {
           company_id?: string
           created_at?: string | null
+          entity?: Database["public"]["Enums"]["import_entity_type"] | null
           error_details?: string | null
           finished_at?: string | null
           id?: string
           integration_id?: string
+          mapping_id?: string | null
+          processed_rows?: number | null
           source_filename?: string | null
           source_type?: Database["public"]["Enums"]["import_source_type"]
           started_at?: string | null
           status?: Database["public"]["Enums"]["import_batch_status"]
           summary_json?: Json | null
+          total_rows?: number | null
           updated_at?: string | null
         }
         Relationships: [
@@ -503,7 +553,163 @@ export type Database = {
             referencedRelation: "integrations"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "import_batches_mapping_id_fkey"
+            columns: ["mapping_id"]
+            isOneToOne: false
+            referencedRelation: "import_mappings"
+            referencedColumns: ["id"]
+          },
         ]
+      }
+      import_mappings: {
+        Row: {
+          company_id: string
+          created_at: string | null
+          created_by: string | null
+          defaults_json: Json | null
+          entity: Database["public"]["Enums"]["import_entity_type"]
+          id: string
+          is_default: boolean | null
+          mapping_json: Json
+          name: string
+          rules_json: Json | null
+          updated_at: string | null
+        }
+        Insert: {
+          company_id: string
+          created_at?: string | null
+          created_by?: string | null
+          defaults_json?: Json | null
+          entity: Database["public"]["Enums"]["import_entity_type"]
+          id?: string
+          is_default?: boolean | null
+          mapping_json?: Json
+          name: string
+          rules_json?: Json | null
+          updated_at?: string | null
+        }
+        Update: {
+          company_id?: string
+          created_at?: string | null
+          created_by?: string | null
+          defaults_json?: Json | null
+          entity?: Database["public"]["Enums"]["import_entity_type"]
+          id?: string
+          is_default?: boolean | null
+          mapping_json?: Json
+          name?: string
+          rules_json?: Json | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "import_mappings_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      import_rows: {
+        Row: {
+          batch_id: string
+          company_id: string
+          created_at: string | null
+          errors_json: Json | null
+          id: string
+          normalized_json: Json | null
+          raw_json: Json
+          record_id: string | null
+          row_number: number
+          status: Database["public"]["Enums"]["import_row_status"]
+          updated_at: string | null
+        }
+        Insert: {
+          batch_id: string
+          company_id: string
+          created_at?: string | null
+          errors_json?: Json | null
+          id?: string
+          normalized_json?: Json | null
+          raw_json: Json
+          record_id?: string | null
+          row_number: number
+          status?: Database["public"]["Enums"]["import_row_status"]
+          updated_at?: string | null
+        }
+        Update: {
+          batch_id?: string
+          company_id?: string
+          created_at?: string | null
+          errors_json?: Json | null
+          id?: string
+          normalized_json?: Json | null
+          raw_json?: Json
+          record_id?: string | null
+          row_number?: number
+          status?: Database["public"]["Enums"]["import_row_status"]
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "import_rows_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "import_batches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "import_rows_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      import_templates: {
+        Row: {
+          columns_json: Json
+          created_at: string | null
+          description: string | null
+          entity: Database["public"]["Enums"]["import_entity_type"]
+          id: string
+          instructions_json: Json | null
+          is_active: boolean | null
+          name: string
+          sample_data_json: Json | null
+          updated_at: string | null
+          version: number
+        }
+        Insert: {
+          columns_json?: Json
+          created_at?: string | null
+          description?: string | null
+          entity: Database["public"]["Enums"]["import_entity_type"]
+          id?: string
+          instructions_json?: Json | null
+          is_active?: boolean | null
+          name: string
+          sample_data_json?: Json | null
+          updated_at?: string | null
+          version?: number
+        }
+        Update: {
+          columns_json?: Json
+          created_at?: string | null
+          description?: string | null
+          entity?: Database["public"]["Enums"]["import_entity_type"]
+          id?: string
+          instructions_json?: Json | null
+          is_active?: boolean | null
+          name?: string
+          sample_data_json?: Json | null
+          updated_at?: string | null
+          version?: number
+        }
+        Relationships: []
       }
       imported_transactions: {
         Row: {
@@ -1484,6 +1690,23 @@ export type Database = {
         | "despesa"
       counterparty_type: "cliente" | "fornecedor" | "ambos"
       import_batch_status: "processing" | "success" | "partial" | "error"
+      import_entity_type:
+        | "accounts"
+        | "counterparties"
+        | "wallets"
+        | "cost_centers"
+        | "transactions_ar"
+        | "transactions_ap"
+        | "transactions"
+        | "budgets"
+      import_row_status:
+        | "pending"
+        | "valid"
+        | "error"
+        | "imported"
+        | "updated"
+        | "duplicate"
+        | "skipped"
       import_source_type: "manual_upload" | "scheduled_sync" | "webhook"
       integration_auth_type: "file" | "oauth" | "api_key" | "webhook"
       integration_provider:
@@ -1642,6 +1865,25 @@ export const Constants = {
       ],
       counterparty_type: ["cliente", "fornecedor", "ambos"],
       import_batch_status: ["processing", "success", "partial", "error"],
+      import_entity_type: [
+        "accounts",
+        "counterparties",
+        "wallets",
+        "cost_centers",
+        "transactions_ar",
+        "transactions_ap",
+        "transactions",
+        "budgets",
+      ],
+      import_row_status: [
+        "pending",
+        "valid",
+        "error",
+        "imported",
+        "updated",
+        "duplicate",
+        "skipped",
+      ],
       import_source_type: ["manual_upload", "scheduled_sync", "webhook"],
       integration_auth_type: ["file", "oauth", "api_key", "webhook"],
       integration_provider: [
