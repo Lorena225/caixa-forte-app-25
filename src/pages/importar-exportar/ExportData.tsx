@@ -1,9 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
@@ -11,6 +10,7 @@ import {
   Download,
   Loader2,
   FileSpreadsheet,
+  CheckCircle2,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
@@ -21,6 +21,9 @@ import {
   formatCurrencyForExport, 
   formatDateForExport,
   formatPercentForExport,
+  formatBooleanForExport,
+  formatStatusForExport,
+  formatDirectionForExport,
 } from '@/lib/excel/exporter';
 import type { ExportColumn } from '@/lib/excel/exporter';
 
@@ -47,15 +50,20 @@ const REPORT_LABELS: Record<ReportType, string> = {
 };
 
 export default function ExportData() {
-  const { type } = useParams<{ type: string }>();
+  const { type, report } = useParams<{ type: string; report?: string }>();
   const navigate = useNavigate();
   const { currentCompany } = useAuth();
   const [loading, setLoading] = useState(false);
   const [year, setYear] = useState(new Date().getFullYear().toString());
+  const [exportComplete, setExportComplete] = useState(false);
 
-  const isReport = type?.startsWith('report/');
+  const isReport = !!report || type?.includes('report');
   const entityType = type as ExportType;
-  const reportType = isReport ? type?.replace('report/', '') as ReportType : null;
+  const reportType = report as ReportType || (type?.replace('report/', '') as ReportType);
+
+  const title = isReport 
+    ? REPORT_LABELS[reportType] || 'Relatório'
+    : ENTITY_LABELS[entityType] || 'Dados';
 
   const handleExport = async () => {
     if (!currentCompany) {
@@ -64,13 +72,15 @@ export default function ExportData() {
     }
 
     setLoading(true);
+    setExportComplete(false);
 
     try {
       if (isReport && reportType) {
-        await exportReport(reportType, currentCompany.id, parseInt(year));
+        await exportReport(reportType, currentCompany.id, parseInt(year), currentCompany.name);
       } else {
-        await exportEntityData(entityType, currentCompany.id);
+        await exportEntityData(entityType, currentCompany.id, currentCompany.name);
       }
+      setExportComplete(true);
       toast.success('Exportação concluída!');
     } catch (error) {
       console.error('Error exporting:', error);
@@ -90,10 +100,10 @@ export default function ExportData() {
           </Button>
           <div>
             <h1 className="text-2xl font-bold tracking-tight">
-              Exportar {isReport ? REPORT_LABELS[reportType!] : ENTITY_LABELS[entityType]}
+              Exportar {title}
             </h1>
             <p className="text-muted-foreground">
-              Exporte os dados para Excel
+              Exporte os dados para Excel com formatação profissional
             </p>
           </div>
         </div>
@@ -108,7 +118,7 @@ export default function ExportData() {
               Configure os filtros e clique em Exportar
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-6">
             {isReport && (
               <div className="space-y-2">
                 <Label>Ano</Label>
@@ -130,19 +140,52 @@ export default function ExportData() {
               </div>
             )}
 
-            <Button onClick={handleExport} disabled={loading} className="w-full md:w-auto">
-              {loading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Exportando...
-                </>
-              ) : (
-                <>
-                  <Download className="mr-2 h-4 w-4" />
-                  Exportar para Excel
-                </>
+            <div className="flex items-center gap-4">
+              <Button onClick={handleExport} disabled={loading} size="lg">
+                {loading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Exportando...
+                  </>
+                ) : (
+                  <>
+                    <Download className="mr-2 h-4 w-4" />
+                    Exportar para Excel
+                  </>
+                )}
+              </Button>
+
+              {exportComplete && (
+                <div className="flex items-center gap-2 text-green-600">
+                  <CheckCircle2 className="h-5 w-5" />
+                  <span>Arquivo baixado com sucesso!</span>
+                </div>
               )}
-            </Button>
+            </div>
+
+            <div className="rounded-lg bg-muted p-4">
+              <h4 className="font-medium mb-2">O que será exportado:</h4>
+              <ul className="list-disc pl-5 space-y-1 text-sm text-muted-foreground">
+                {isReport ? (
+                  <>
+                    <li>Relatório completo do ano {year}</li>
+                    <li>Formatação profissional com cabeçalho e rodapé</li>
+                    <li>Valores monetários formatados em R$</li>
+                    <li>Data e hora da exportação</li>
+                    {reportType === 'dre' && <li>Resumo anual e detalhamento mensal em abas separadas</li>}
+                    {reportType === 'cashflow' && <li>Fluxo mensal com entradas e saídas</li>}
+                    {reportType === 'budgets' && <li>Comparativo com variação percentual</li>}
+                  </>
+                ) : (
+                  <>
+                    <li>Todos os registros ativos de {title}</li>
+                    <li>Formatação profissional com cabeçalho</li>
+                    <li>Colunas ajustadas automaticamente</li>
+                    <li>Pronto para impressão ou análise</li>
+                  </>
+                )}
+              </ul>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -150,10 +193,11 @@ export default function ExportData() {
   );
 }
 
-async function exportEntityData(entityType: ExportType, companyId: string) {
+async function exportEntityData(entityType: ExportType, companyId: string, companyName: string) {
   let data: Record<string, unknown>[] = [];
   let columns: ExportColumn[] = [];
   let filename = '';
+  let title = '';
 
   switch (entityType) {
     case 'transactions_ar': {
@@ -167,13 +211,17 @@ async function exportEntityData(entityType: ExportType, companyId: string) {
       columns = [
         { header: 'Descrição', key: 'description', width: 30 },
         { header: 'Cliente', key: 'counterparty_name', width: 25 },
-        { header: 'Vencimento', key: 'due_date', format: formatDateForExport },
-        { header: 'Valor', key: 'total_amount', format: formatCurrencyForExport },
-        { header: 'Status', key: 'status', width: 12 },
+        { header: 'Vencimento', key: 'due_date', format: formatDateForExport, width: 12 },
+        { header: 'Valor Original', key: 'original_amount', format: formatCurrencyForExport, width: 16 },
+        { header: 'Valor Total', key: 'total_amount', format: formatCurrencyForExport, width: 16 },
+        { header: 'Status', key: 'status', format: formatStatusForExport, width: 12 },
         { header: 'Carteira', key: 'wallet_name', width: 20 },
         { header: 'Conta', key: 'account_name', width: 25 },
+        { header: 'Atrasado', key: 'is_overdue', format: formatBooleanForExport, width: 10 },
+        { header: 'Dias Atraso', key: 'days_late', width: 12 },
       ];
       filename = 'contas_receber';
+      title = 'Relatório de Contas a Receber';
       break;
     }
 
@@ -188,13 +236,17 @@ async function exportEntityData(entityType: ExportType, companyId: string) {
       columns = [
         { header: 'Descrição', key: 'description', width: 30 },
         { header: 'Fornecedor', key: 'counterparty_name', width: 25 },
-        { header: 'Vencimento', key: 'due_date', format: formatDateForExport },
-        { header: 'Valor', key: 'total_amount', format: formatCurrencyForExport },
-        { header: 'Status', key: 'status', width: 12 },
+        { header: 'Vencimento', key: 'due_date', format: formatDateForExport, width: 12 },
+        { header: 'Valor Original', key: 'original_amount', format: formatCurrencyForExport, width: 16 },
+        { header: 'Valor Total', key: 'total_amount', format: formatCurrencyForExport, width: 16 },
+        { header: 'Status', key: 'status', format: formatStatusForExport, width: 12 },
         { header: 'Carteira', key: 'wallet_name', width: 20 },
         { header: 'Conta', key: 'account_name', width: 25 },
+        { header: 'Atrasado', key: 'is_overdue', format: formatBooleanForExport, width: 10 },
+        { header: 'Dias Atraso', key: 'days_late', width: 12 },
       ];
       filename = 'contas_pagar';
+      title = 'Relatório de Contas a Pagar';
       break;
     }
 
@@ -209,27 +261,36 @@ async function exportEntityData(entityType: ExportType, companyId: string) {
           cost_centers(name)
         `)
         .eq('company_id', companyId)
-        .order('transaction_date', { ascending: false });
+        .order('transaction_date', { ascending: false })
+        .limit(5000);
 
       data = (result || []).map((t: Record<string, unknown>) => ({
         ...t,
         account_name: (t.accounts as Record<string, unknown>)?.name,
+        account_code: (t.accounts as Record<string, unknown>)?.code,
         wallet_name: (t.wallets as Record<string, unknown>)?.name,
         counterparty_name: (t.counterparties as Record<string, unknown>)?.name,
         cost_center_name: (t.cost_centers as Record<string, unknown>)?.name,
       }));
 
       columns = [
-        { header: 'Data', key: 'transaction_date', format: formatDateForExport },
+        { header: 'Data', key: 'transaction_date', format: formatDateForExport, width: 12 },
+        { header: 'Vencimento', key: 'due_date', format: formatDateForExport, width: 12 },
         { header: 'Descrição', key: 'description', width: 30 },
-        { header: 'Direção', key: 'direction', width: 10 },
-        { header: 'Valor', key: 'total_amount', format: formatCurrencyForExport },
-        { header: 'Status', key: 'status', width: 12 },
+        { header: 'Direção', key: 'direction', format: formatDirectionForExport, width: 10 },
+        { header: 'Valor Original', key: 'original_amount', format: formatCurrencyForExport, width: 16 },
+        { header: 'Juros', key: 'interest_amount', format: formatCurrencyForExport, width: 12 },
+        { header: 'Desconto %', key: 'discount_percent', format: formatPercentForExport, width: 12 },
+        { header: 'Valor Total', key: 'total_amount', format: formatCurrencyForExport, width: 16 },
+        { header: 'Status', key: 'status', format: formatStatusForExport, width: 12 },
         { header: 'Carteira', key: 'wallet_name', width: 20 },
+        { header: 'Cód. Conta', key: 'account_code', width: 12 },
         { header: 'Conta', key: 'account_name', width: 25 },
         { header: 'Cliente/Fornecedor', key: 'counterparty_name', width: 25 },
+        { header: 'Centro de Custo', key: 'cost_center_name', width: 20 },
       ];
       filename = 'lancamentos';
+      title = 'Relatório de Lançamentos';
       break;
     }
 
@@ -245,10 +306,12 @@ async function exportEntityData(entityType: ExportType, companyId: string) {
         { header: 'Código', key: 'code', width: 15 },
         { header: 'Nome', key: 'name', width: 40 },
         { header: 'Categoria', key: 'category_type', width: 20 },
-        { header: 'Gerencial', key: 'is_managerial', format: (v) => v ? 'Sim' : 'Não' },
-        { header: 'Ativo', key: 'is_active', format: (v) => v ? 'Sim' : 'Não' },
+        { header: 'Nível', key: 'level', width: 8 },
+        { header: 'Gerencial', key: 'is_managerial', format: formatBooleanForExport, width: 12 },
+        { header: 'Ativo', key: 'is_active', format: formatBooleanForExport, width: 10 },
       ];
       filename = 'plano_contas';
+      title = 'Plano de Contas';
       break;
     }
 
@@ -264,11 +327,13 @@ async function exportEntityData(entityType: ExportType, companyId: string) {
         { header: 'Nome', key: 'name', width: 30 },
         { header: 'Tipo', key: 'type', width: 15 },
         { header: 'CPF/CNPJ', key: 'document', width: 18 },
-        { header: 'Email', key: 'email', width: 25 },
+        { header: 'Email', key: 'email', width: 30 },
         { header: 'Telefone', key: 'phone', width: 15 },
-        { header: 'Ativo', key: 'is_active', format: (v) => v ? 'Sim' : 'Não' },
+        { header: 'Endereço', key: 'address', width: 40 },
+        { header: 'Ativo', key: 'is_active', format: formatBooleanForExport, width: 10 },
       ];
       filename = 'clientes_fornecedores';
+      title = 'Cadastro de Clientes e Fornecedores';
       break;
     }
 
@@ -283,10 +348,13 @@ async function exportEntityData(entityType: ExportType, companyId: string) {
       columns = [
         { header: 'Nome', key: 'name', width: 30 },
         { header: 'Tipo', key: 'type', width: 15 },
-        { header: 'Saldo Inicial', key: 'opening_balance', format: formatCurrencyForExport },
-        { header: 'Ativo', key: 'is_active', format: (v) => v ? 'Sim' : 'Não' },
+        { header: 'Saldo Inicial', key: 'opening_balance', format: formatCurrencyForExport, width: 16 },
+        { header: 'Dia Fechamento', key: 'closing_day', width: 16 },
+        { header: 'Dia Vencimento', key: 'due_day', width: 16 },
+        { header: 'Ativo', key: 'is_active', format: formatBooleanForExport, width: 10 },
       ];
       filename = 'carteiras';
+      title = 'Cadastro de Carteiras';
       break;
     }
 
@@ -301,9 +369,10 @@ async function exportEntityData(entityType: ExportType, companyId: string) {
       columns = [
         { header: 'Código', key: 'code', width: 15 },
         { header: 'Nome', key: 'name', width: 40 },
-        { header: 'Ativo', key: 'is_active', format: (v) => v ? 'Sim' : 'Não' },
+        { header: 'Ativo', key: 'is_active', format: formatBooleanForExport, width: 10 },
       ];
       filename = 'centros_custo';
+      title = 'Cadastro de Centros de Custo';
       break;
     }
 
@@ -315,78 +384,139 @@ async function exportEntityData(entityType: ExportType, companyId: string) {
         .order('year', { ascending: false })
         .order('month');
 
-      data = result || [];
+      const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+      
+      data = (result || []).map((b: Record<string, unknown>) => ({
+        ...b,
+        month_name: monthNames[(b.month as number) - 1],
+      }));
+      
       columns = [
         { header: 'Ano', key: 'year', width: 10 },
-        { header: 'Mês', key: 'month', width: 10 },
-        { header: 'Meta Receita', key: 'target_revenue', format: formatCurrencyForExport },
-        { header: 'Meta Despesa', key: 'target_expense', format: formatCurrencyForExport },
-        { header: 'Meta Lucro', key: 'target_profit', format: formatCurrencyForExport },
-        { header: 'Meta Margem %', key: 'target_margin', format: formatPercentForExport },
+        { header: 'Mês', key: 'month_name', width: 12 },
+        { header: 'Meta Receita', key: 'target_revenue', format: formatCurrencyForExport, width: 16 },
+        { header: 'Meta Despesa', key: 'target_expense', format: formatCurrencyForExport, width: 16 },
+        { header: 'Meta Lucro', key: 'target_profit', format: formatCurrencyForExport, width: 16 },
+        { header: 'Meta Margem %', key: 'target_margin', format: formatPercentForExport, width: 14 },
       ];
       filename = 'metas_orcamento';
+      title = 'Metas e Orçamento';
       break;
     }
   }
 
   exportToExcel({
-    filename,
+    filename: `${filename}_${new Date().toISOString().slice(0, 10)}`,
+    sheetName: 'Dados',
+    title: `${title} - ${companyName}`,
     columns,
     data,
   });
 }
 
-async function exportReport(reportType: ReportType, companyId: string, year: number) {
-  const monthNames = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+async function exportReport(reportType: ReportType, companyId: string, year: number, companyName: string) {
+  const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+  const monthNamesShort = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
 
   switch (reportType) {
     case 'cashflow': {
-      const { data: result } = await supabase
+      const { data: monthlyResult } = await supabase
         .from('v_cashflow_monthly')
         .select('*')
         .eq('company_id', companyId)
         .eq('year', year)
         .order('month');
 
-      const data = (result || []).map((r: Record<string, unknown>) => ({
+      const monthlyData = (monthlyResult || []).map((r: Record<string, unknown>) => ({
         ...r,
         month_name: monthNames[(r.month as number) - 1],
       }));
 
+      // Calculate accumulated balance
+      let accumulated = 0;
+      const dataWithAccumulated = monthlyData.map((row: Record<string, unknown>) => {
+        accumulated += (row.resultado as number) || 0;
+        return { ...row, accumulated };
+      });
+
       exportToExcel({
         filename: `fluxo_caixa_${year}`,
+        sheetName: 'Fluxo de Caixa',
+        title: `Fluxo de Caixa ${year} - ${companyName}`,
+        subtitle: 'Resumo Mensal de Entradas e Saídas',
         columns: [
           { header: 'Mês', key: 'month_name', width: 12 },
-          { header: 'Entradas Previstas', key: 'entradas_previstas', format: formatCurrencyForExport },
-          { header: 'Entradas Pagas', key: 'entradas_pagas', format: formatCurrencyForExport },
-          { header: 'Saídas Previstas', key: 'saidas_previstas', format: formatCurrencyForExport },
-          { header: 'Saídas Pagas', key: 'saidas_pagas', format: formatCurrencyForExport },
-          { header: 'Resultado', key: 'resultado', format: formatCurrencyForExport },
+          { header: 'Entradas Previstas', key: 'entradas_previstas', format: formatCurrencyForExport, width: 20 },
+          { header: 'Entradas Realizadas', key: 'entradas_pagas', format: formatCurrencyForExport, width: 20 },
+          { header: 'Saídas Previstas', key: 'saidas_previstas', format: formatCurrencyForExport, width: 20 },
+          { header: 'Saídas Realizadas', key: 'saidas_pagas', format: formatCurrencyForExport, width: 20 },
+          { header: 'Resultado Mês', key: 'resultado', format: formatCurrencyForExport, width: 16 },
+          { header: 'Acumulado', key: 'accumulated', format: formatCurrencyForExport, width: 16 },
         ],
-        data,
+        data: dataWithAccumulated,
       });
       break;
     }
 
     case 'dre': {
-      const { data: result } = await supabase
+      // Get monthly data
+      const { data: monthlyResult } = await supabase
         .from('v_dre_monthly')
         .select('*')
         .eq('company_id', companyId)
         .eq('year', year)
+        .order('category_type')
         .order('account_code');
 
-      exportToExcel({
-        filename: `dre_${year}`,
-        columns: [
-          { header: 'Código', key: 'account_code', width: 15 },
-          { header: 'Conta', key: 'account_name', width: 40 },
-          { header: 'Categoria', key: 'category_type', width: 20 },
-          { header: 'Mês', key: 'month', width: 8 },
-          { header: 'Total', key: 'total', format: formatCurrencyForExport },
-        ],
-        data: result || [],
+      const monthlyData = (monthlyResult || []).map((r: Record<string, unknown>) => ({
+        ...r,
+        month_name: monthNamesShort[(r.month as number) - 1],
+      }));
+
+      // Calculate annual totals per account
+      const annualTotals = new Map<string, Record<string, unknown>>();
+      monthlyData.forEach((row: Record<string, unknown>) => {
+        const key = row.account_code as string;
+        if (!annualTotals.has(key)) {
+          annualTotals.set(key, {
+            account_code: row.account_code,
+            account_name: row.account_name,
+            category_type: row.category_type,
+            total: 0,
+          });
+        }
+        const current = annualTotals.get(key)!;
+        current.total = (current.total as number) + ((row.total as number) || 0);
       });
+
+      const annualData = Array.from(annualTotals.values());
+
+      // Export with multiple sheets
+      exportMultipleSheets(`dre_${year}`, [
+        {
+          name: 'Resumo Anual',
+          title: `DRE Anual ${year} - ${companyName}`,
+          columns: [
+            { header: 'Código', key: 'account_code', width: 15 },
+            { header: 'Conta', key: 'account_name', width: 40 },
+            { header: 'Categoria', key: 'category_type', width: 20 },
+            { header: 'Total Anual', key: 'total', format: formatCurrencyForExport, width: 18 },
+          ],
+          data: annualData,
+        },
+        {
+          name: 'Detalhamento Mensal',
+          title: `DRE Mensal ${year}`,
+          columns: [
+            { header: 'Código', key: 'account_code', width: 15 },
+            { header: 'Conta', key: 'account_name', width: 40 },
+            { header: 'Categoria', key: 'category_type', width: 20 },
+            { header: 'Mês', key: 'month_name', width: 10 },
+            { header: 'Valor', key: 'total', format: formatCurrencyForExport, width: 18 },
+          ],
+          data: monthlyData,
+        },
+      ]);
       break;
     }
 
@@ -405,14 +535,17 @@ async function exportReport(reportType: ReportType, companyId: string, year: num
 
       exportToExcel({
         filename: `indicadores_rc_${year}`,
+        sheetName: 'Indicadores',
+        title: `Indicadores Financeiros ${year} - ${companyName}`,
+        subtitle: 'Receitas, Despesas e Lucratividade',
         columns: [
           { header: 'Mês', key: 'month_name', width: 12 },
-          { header: 'Receita Prevista', key: 'receita_prevista', format: formatCurrencyForExport },
-          { header: 'Receita Realizada', key: 'receita_realizada', format: formatCurrencyForExport },
-          { header: 'Despesa Prevista', key: 'despesa_prevista', format: formatCurrencyForExport },
-          { header: 'Despesa Realizada', key: 'despesa_realizada', format: formatCurrencyForExport },
-          { header: 'Lucro/Prejuízo', key: 'lucro_prejuizo', format: formatCurrencyForExport },
-          { header: 'Lucratividade %', key: 'lucratividade', format: formatPercentForExport },
+          { header: 'Receita Prevista', key: 'receita_prevista', format: formatCurrencyForExport, width: 18 },
+          { header: 'Receita Realizada', key: 'receita_realizada', format: formatCurrencyForExport, width: 18 },
+          { header: 'Despesa Prevista', key: 'despesa_prevista', format: formatCurrencyForExport, width: 18 },
+          { header: 'Despesa Realizada', key: 'despesa_realizada', format: formatCurrencyForExport, width: 18 },
+          { header: 'Lucro/Prejuízo', key: 'lucro_prejuizo', format: formatCurrencyForExport, width: 16 },
+          { header: 'Lucratividade %', key: 'lucratividade', format: formatPercentForExport, width: 14 },
         ],
         data,
       });
@@ -425,23 +558,29 @@ async function exportReport(reportType: ReportType, companyId: string, year: num
         .select('*')
         .eq('company_id', companyId)
         .eq('year', year)
-        .order('account_code');
+        .order('category_type')
+        .order('account_code')
+        .order('month');
 
       const data = (result || []).map((r: Record<string, unknown>) => ({
         ...r,
-        month_name: monthNames[(r.month as number) - 1],
+        month_name: monthNamesShort[(r.month as number) - 1],
+        direction_label: r.direction === 'entrada' ? 'Entrada' : 'Saída',
       }));
 
       exportToExcel({
         filename: `fluxo_por_conta_${year}`,
+        sheetName: 'Fluxo por Conta',
+        title: `Fluxo por Conta ${year} - ${companyName}`,
+        subtitle: 'Valores Previstos vs Realizados por Conta Contábil',
         columns: [
           { header: 'Código', key: 'account_code', width: 15 },
-          { header: 'Conta', key: 'account_name', width: 40 },
-          { header: 'Categoria', key: 'category_type', width: 20 },
-          { header: 'Direção', key: 'direction', width: 10 },
+          { header: 'Conta', key: 'account_name', width: 35 },
+          { header: 'Categoria', key: 'category_type', width: 18 },
+          { header: 'Direção', key: 'direction_label', width: 10 },
           { header: 'Mês', key: 'month_name', width: 8 },
-          { header: 'Valor Previsto', key: 'valor_previsto', format: formatCurrencyForExport },
-          { header: 'Valor Pago', key: 'valor_pago', format: formatCurrencyForExport },
+          { header: 'Valor Previsto', key: 'valor_previsto', format: formatCurrencyForExport, width: 16 },
+          { header: 'Valor Realizado', key: 'valor_pago', format: formatCurrencyForExport, width: 16 },
         ],
         data,
       });
@@ -463,30 +602,46 @@ async function exportReport(reportType: ReportType, companyId: string, year: num
         .eq('company_id', companyId)
         .eq('year', year);
 
-      // Merge data
+      // Merge data with variance calculations
       const data = (budgetsData || []).map((b: Record<string, unknown>) => {
         const actual = (indicatorsData || []).find((i: Record<string, unknown>) => i.month === b.month) as Record<string, unknown> | undefined;
+        const targetRevenue = (b.target_revenue as number) || 0;
+        const actualRevenue = (actual?.receita_realizada as number) || 0;
+        const targetExpense = (b.target_expense as number) || 0;
+        const actualExpense = (actual?.despesa_realizada as number) || 0;
+        const targetProfit = (b.target_profit as number) || 0;
+        const actualProfit = (actual?.lucro_prejuizo as number) || 0;
+
         return {
           month_name: monthNames[(b.month as number) - 1],
-          target_revenue: b.target_revenue,
-          actual_revenue: actual?.receita_realizada || 0,
-          target_expense: b.target_expense,
-          actual_expense: actual?.despesa_realizada || 0,
-          target_profit: b.target_profit,
-          actual_profit: actual?.lucro_prejuizo || 0,
+          target_revenue: targetRevenue,
+          actual_revenue: actualRevenue,
+          revenue_variance: actualRevenue - targetRevenue,
+          revenue_variance_pct: targetRevenue > 0 ? ((actualRevenue - targetRevenue) / targetRevenue * 100) : 0,
+          target_expense: targetExpense,
+          actual_expense: actualExpense,
+          expense_variance: actualExpense - targetExpense,
+          target_profit: targetProfit,
+          actual_profit: actualProfit,
+          profit_variance: actualProfit - targetProfit,
         };
       });
 
       exportToExcel({
         filename: `metas_vs_realizado_${year}`,
+        sheetName: 'Metas vs Realizado',
+        title: `Comparativo Metas x Realizado ${year} - ${companyName}`,
+        subtitle: 'Análise de Performance Financeira',
         columns: [
           { header: 'Mês', key: 'month_name', width: 12 },
-          { header: 'Meta Receita', key: 'target_revenue', format: formatCurrencyForExport },
-          { header: 'Receita Realizada', key: 'actual_revenue', format: formatCurrencyForExport },
-          { header: 'Meta Despesa', key: 'target_expense', format: formatCurrencyForExport },
-          { header: 'Despesa Realizada', key: 'actual_expense', format: formatCurrencyForExport },
-          { header: 'Meta Lucro', key: 'target_profit', format: formatCurrencyForExport },
-          { header: 'Lucro Realizado', key: 'actual_profit', format: formatCurrencyForExport },
+          { header: 'Meta Receita', key: 'target_revenue', format: formatCurrencyForExport, width: 16 },
+          { header: 'Receita Real', key: 'actual_revenue', format: formatCurrencyForExport, width: 16 },
+          { header: 'Var. R$', key: 'revenue_variance', format: formatCurrencyForExport, width: 14 },
+          { header: 'Var. %', key: 'revenue_variance_pct', format: formatPercentForExport, width: 10 },
+          { header: 'Meta Despesa', key: 'target_expense', format: formatCurrencyForExport, width: 16 },
+          { header: 'Despesa Real', key: 'actual_expense', format: formatCurrencyForExport, width: 16 },
+          { header: 'Meta Lucro', key: 'target_profit', format: formatCurrencyForExport, width: 14 },
+          { header: 'Lucro Real', key: 'actual_profit', format: formatCurrencyForExport, width: 14 },
         ],
         data,
       });
