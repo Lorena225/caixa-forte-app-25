@@ -35,6 +35,7 @@ const menuItems = [
   { icon: FileText, label: 'DRE', href: '/dre' },
   { icon: Target, label: 'Metas', href: '/metas' },
   { icon: CreditCard, label: 'Cartões', href: '/cartoes' },
+  { icon: Link2, label: 'Integrações', href: '/integracoes' },
 ];
 
 const cadastros = [
