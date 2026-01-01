@@ -18,6 +18,11 @@ import {
   Link2,
   BookOpen,
   FileSpreadsheet,
+  Bot,
+  MessageSquare,
+  Zap,
+  Clock,
+  Inbox,
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -44,6 +49,13 @@ const erpModules = [
   { icon: Building2, label: 'Tesouraria', href: '/tesouraria' },
   { icon: ArrowUpCircle, label: 'AP Enterprise', href: '/ap' },
   { icon: ArrowDownCircle, label: 'AR Enterprise', href: '/ar' },
+];
+
+const autopilot = [
+  { icon: Bot, label: 'IA Autopilot', href: '/autopilot/pendencias' },
+  { icon: MessageSquare, label: 'WhatsApp', href: '/autopilot/whatsapp' },
+  { icon: Zap, label: 'Regras', href: '/autopilot/regras' },
+  { icon: Inbox, label: 'Inbox', href: '/autopilot/inbox' },
 ];
 
 const integracoes = [
@@ -106,6 +118,27 @@ export function Sidebar() {
                 className={cn(
                   'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
                   location.pathname === item.href
+                    ? 'bg-sidebar-accent text-sidebar-accent-foreground'
+                    : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'
+                )}
+              >
+                <item.icon className="h-4 w-4" />
+                {item.label}
+              </Link>
+            ))}
+          </div>
+
+          <div className="pt-4">
+            <p className="px-3 pb-2 text-xs font-medium uppercase tracking-wider text-sidebar-foreground/50">
+              IA Autopilot
+            </p>
+            {autopilot.map((item) => (
+              <Link
+                key={item.href}
+                to={item.href}
+                className={cn(
+                  'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
+                  location.pathname.startsWith(item.href)
                     ? 'bg-sidebar-accent text-sidebar-accent-foreground'
                     : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'
                 )}

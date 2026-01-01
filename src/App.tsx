@@ -36,6 +36,11 @@ import FiscalIndex from "./pages/fiscal/Index";
 import TesourariaIndex from "./pages/tesouraria/Index";
 import APIndex from "./pages/ap/Index";
 import ARIndex from "./pages/ar/Index";
+// Autopilot
+import WhatsAppConfig from "./pages/autopilot/WhatsAppConfig";
+import AutomationRules from "./pages/autopilot/AutomationRules";
+import PendingCenter from "./pages/autopilot/PendingCenter";
+import Inbox from "./pages/autopilot/Inbox";
 
 const queryClient = new QueryClient();
 
@@ -64,6 +69,11 @@ const App = () => (
             <Route path="/tesouraria" element={<TesourariaIndex />} />
             <Route path="/ap" element={<APIndex />} />
             <Route path="/ar" element={<ARIndex />} />
+            {/* Autopilot */}
+            <Route path="/autopilot/whatsapp" element={<WhatsAppConfig />} />
+            <Route path="/autopilot/regras" element={<AutomationRules />} />
+            <Route path="/autopilot/pendencias" element={<PendingCenter />} />
+            <Route path="/autopilot/inbox" element={<Inbox />} />
             {/* Integrations */}
             <Route path="/integracoes" element={<IntegracoesIndex />} />
             <Route path="/integracoes/:integrationId/importar" element={<IntegracoesImportar />} />
