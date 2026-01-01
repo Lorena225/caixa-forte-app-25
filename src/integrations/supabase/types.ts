@@ -137,6 +137,13 @@ export type Database = {
             referencedRelation: "v_rc_flow_by_account"
             referencedColumns: ["account_id"]
           },
+          {
+            foreignKeyName: "accounts_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "v_trial_balance"
+            referencedColumns: ["account_id"]
+          },
         ]
       }
       allocation_rule_items: {
@@ -287,6 +294,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "approval_requests"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approval_actions_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "v_pending_approvals"
+            referencedColumns: ["request_id"]
           },
           {
             foreignKeyName: "approval_actions_step_id_fkey"
@@ -592,6 +606,13 @@ export type Database = {
             foreignKeyName: "bank_statements_wallet_id_fkey"
             columns: ["wallet_id"]
             isOneToOne: false
+            referencedRelation: "v_cash_position_daily"
+            referencedColumns: ["wallet_id"]
+          },
+          {
+            foreignKeyName: "bank_statements_wallet_id_fkey"
+            columns: ["wallet_id"]
+            isOneToOne: false
             referencedRelation: "wallets"
             referencedColumns: ["id"]
           },
@@ -764,6 +785,13 @@ export type Database = {
             foreignKeyName: "cash_positions_wallet_id_fkey"
             columns: ["wallet_id"]
             isOneToOne: false
+            referencedRelation: "v_cash_position_daily"
+            referencedColumns: ["wallet_id"]
+          },
+          {
+            foreignKeyName: "cash_positions_wallet_id_fkey"
+            columns: ["wallet_id"]
+            isOneToOne: false
             referencedRelation: "wallets"
             referencedColumns: ["id"]
           },
@@ -825,6 +853,13 @@ export type Database = {
             columns: ["account_id"]
             isOneToOne: false
             referencedRelation: "v_rc_flow_by_account"
+            referencedColumns: ["account_id"]
+          },
+          {
+            foreignKeyName: "categorization_rules_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "v_trial_balance"
             referencedColumns: ["account_id"]
           },
           {
@@ -922,6 +957,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cnab_files_wallet_id_fkey"
+            columns: ["wallet_id"]
+            isOneToOne: false
+            referencedRelation: "v_cash_position_daily"
+            referencedColumns: ["wallet_id"]
           },
           {
             foreignKeyName: "cnab_files_wallet_id_fkey"
@@ -1056,6 +1098,13 @@ export type Database = {
             columns: ["customer_invoice_id"]
             isOneToOne: false
             referencedRelation: "customer_invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collection_actions_customer_invoice_id_fkey"
+            columns: ["customer_invoice_id"]
+            isOneToOne: false
+            referencedRelation: "v_ar_aging_detail"
             referencedColumns: ["id"]
           },
           {
@@ -1395,6 +1444,13 @@ export type Database = {
             referencedColumns: ["account_id"]
           },
           {
+            foreignKeyName: "customer_invoice_lines_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "v_trial_balance"
+            referencedColumns: ["account_id"]
+          },
+          {
             foreignKeyName: "customer_invoice_lines_category_id_fkey"
             columns: ["category_id"]
             isOneToOne: false
@@ -1413,6 +1469,13 @@ export type Database = {
             columns: ["customer_invoice_id"]
             isOneToOne: false
             referencedRelation: "customer_invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "customer_invoice_lines_customer_invoice_id_fkey"
+            columns: ["customer_invoice_id"]
+            isOneToOne: false
+            referencedRelation: "v_ar_aging_detail"
             referencedColumns: ["id"]
           },
         ]
@@ -1451,6 +1514,13 @@ export type Database = {
             columns: ["customer_invoice_id"]
             isOneToOne: false
             referencedRelation: "customer_invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "customer_invoice_withholdings_customer_invoice_id_fkey"
+            columns: ["customer_invoice_id"]
+            isOneToOne: false
+            referencedRelation: "v_ar_aging_detail"
             referencedColumns: ["id"]
           },
         ]
@@ -1568,6 +1638,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "payment_methods"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "customer_invoices_wallet_id_fkey"
+            columns: ["wallet_id"]
+            isOneToOne: false
+            referencedRelation: "v_cash_position_daily"
+            referencedColumns: ["wallet_id"]
           },
           {
             foreignKeyName: "customer_invoices_wallet_id_fkey"
@@ -2354,6 +2431,13 @@ export type Database = {
             referencedColumns: ["account_id"]
           },
           {
+            foreignKeyName: "installment_plans_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "v_trial_balance"
+            referencedColumns: ["account_id"]
+          },
+          {
             foreignKeyName: "installment_plans_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
@@ -2366,6 +2450,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "counterparties"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "installment_plans_wallet_id_fkey"
+            columns: ["wallet_id"]
+            isOneToOne: false
+            referencedRelation: "v_cash_position_daily"
+            referencedColumns: ["wallet_id"]
           },
           {
             foreignKeyName: "installment_plans_wallet_id_fkey"
@@ -2427,6 +2518,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "integrations"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "integration_accounts_wallet_id_fkey"
+            columns: ["wallet_id"]
+            isOneToOne: false
+            referencedRelation: "v_cash_position_daily"
+            referencedColumns: ["wallet_id"]
           },
           {
             foreignKeyName: "integration_accounts_wallet_id_fkey"
@@ -2654,6 +2752,13 @@ export type Database = {
             referencedColumns: ["account_id"]
           },
           {
+            foreignKeyName: "journal_lines_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "v_trial_balance"
+            referencedColumns: ["account_id"]
+          },
+          {
             foreignKeyName: "journal_lines_cost_center_id_fkey"
             columns: ["cost_center_id"]
             isOneToOne: false
@@ -2751,6 +2856,13 @@ export type Database = {
             foreignKeyName: "payment_run_items_vendor_bill_id_fkey"
             columns: ["vendor_bill_id"]
             isOneToOne: false
+            referencedRelation: "v_ap_aging"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_run_items_vendor_bill_id_fkey"
+            columns: ["vendor_bill_id"]
+            isOneToOne: false
             referencedRelation: "vendor_bills"
             referencedColumns: ["id"]
           },
@@ -2822,6 +2934,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_runs_wallet_id_fkey"
+            columns: ["wallet_id"]
+            isOneToOne: false
+            referencedRelation: "v_cash_position_daily"
+            referencedColumns: ["wallet_id"]
           },
           {
             foreignKeyName: "payment_runs_wallet_id_fkey"
@@ -2924,8 +3043,22 @@ export type Database = {
             foreignKeyName: "payments_vendor_bill_id_fkey"
             columns: ["vendor_bill_id"]
             isOneToOne: false
+            referencedRelation: "v_ap_aging"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_vendor_bill_id_fkey"
+            columns: ["vendor_bill_id"]
+            isOneToOne: false
             referencedRelation: "vendor_bills"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_wallet_id_fkey"
+            columns: ["wallet_id"]
+            isOneToOne: false
+            referencedRelation: "v_cash_position_daily"
+            referencedColumns: ["wallet_id"]
           },
           {
             foreignKeyName: "payments_wallet_id_fkey"
@@ -3130,6 +3263,13 @@ export type Database = {
             referencedColumns: ["account_id"]
           },
           {
+            foreignKeyName: "posting_rules_credit_account_id_fkey"
+            columns: ["credit_account_id"]
+            isOneToOne: false
+            referencedRelation: "v_trial_balance"
+            referencedColumns: ["account_id"]
+          },
+          {
             foreignKeyName: "posting_rules_debit_account_id_fkey"
             columns: ["debit_account_id"]
             isOneToOne: false
@@ -3141,6 +3281,13 @@ export type Database = {
             columns: ["debit_account_id"]
             isOneToOne: false
             referencedRelation: "v_rc_flow_by_account"
+            referencedColumns: ["account_id"]
+          },
+          {
+            foreignKeyName: "posting_rules_debit_account_id_fkey"
+            columns: ["debit_account_id"]
+            isOneToOne: false
+            referencedRelation: "v_trial_balance"
             referencedColumns: ["account_id"]
           },
         ]
@@ -3237,6 +3384,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "receipts_customer_invoice_id_fkey"
+            columns: ["customer_invoice_id"]
+            isOneToOne: false
+            referencedRelation: "v_ar_aging_detail"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "receipts_payment_method_id_fkey"
             columns: ["payment_method_id"]
             isOneToOne: false
@@ -3263,6 +3417,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_ar_open"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "receipts_wallet_id_fkey"
+            columns: ["wallet_id"]
+            isOneToOne: false
+            referencedRelation: "v_cash_position_daily"
+            referencedColumns: ["wallet_id"]
           },
           {
             foreignKeyName: "receipts_wallet_id_fkey"
@@ -3879,6 +4040,13 @@ export type Database = {
             referencedColumns: ["account_id"]
           },
           {
+            foreignKeyName: "transactions_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "v_trial_balance"
+            referencedColumns: ["account_id"]
+          },
+          {
             foreignKeyName: "transactions_category_id_fkey"
             columns: ["category_id"]
             isOneToOne: false
@@ -3912,6 +4080,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "payment_methods"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_wallet_id_fkey"
+            columns: ["wallet_id"]
+            isOneToOne: false
+            referencedRelation: "v_cash_position_daily"
+            referencedColumns: ["wallet_id"]
           },
           {
             foreignKeyName: "transactions_wallet_id_fkey"
@@ -3978,6 +4153,13 @@ export type Database = {
             referencedColumns: ["account_id"]
           },
           {
+            foreignKeyName: "vendor_bill_lines_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "v_trial_balance"
+            referencedColumns: ["account_id"]
+          },
+          {
             foreignKeyName: "vendor_bill_lines_category_id_fkey"
             columns: ["category_id"]
             isOneToOne: false
@@ -3989,6 +4171,13 @@ export type Database = {
             columns: ["cost_center_id"]
             isOneToOne: false
             referencedRelation: "cost_centers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_bill_lines_vendor_bill_id_fkey"
+            columns: ["vendor_bill_id"]
+            isOneToOne: false
+            referencedRelation: "v_ap_aging"
             referencedColumns: ["id"]
           },
           {
@@ -4032,6 +4221,13 @@ export type Database = {
           vendor_bill_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "vendor_bill_withholdings_vendor_bill_id_fkey"
+            columns: ["vendor_bill_id"]
+            isOneToOne: false
+            referencedRelation: "v_ap_aging"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "vendor_bill_withholdings_vendor_bill_id_fkey"
             columns: ["vendor_bill_id"]
@@ -4157,6 +4353,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "payment_methods"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_bills_wallet_id_fkey"
+            columns: ["wallet_id"]
+            isOneToOne: false
+            referencedRelation: "v_cash_position_daily"
+            referencedColumns: ["wallet_id"]
           },
           {
             foreignKeyName: "vendor_bills_wallet_id_fkey"
@@ -4317,6 +4520,28 @@ export type Database = {
       }
     }
     Views: {
+      v_ap_aging: {
+        Row: {
+          aging_bucket: string | null
+          company_id: string | null
+          counterparty_name: string | null
+          days_overdue: number | null
+          document_number: string | null
+          due_date: string | null
+          id: string | null
+          net_amount: number | null
+          status: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_bills_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       v_ap_open: {
         Row: {
           account_code: string | null
@@ -4375,6 +4600,13 @@ export type Database = {
             referencedColumns: ["account_id"]
           },
           {
+            foreignKeyName: "transactions_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "v_trial_balance"
+            referencedColumns: ["account_id"]
+          },
+          {
             foreignKeyName: "transactions_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
@@ -4406,7 +4638,36 @@ export type Database = {
             foreignKeyName: "transactions_wallet_id_fkey"
             columns: ["wallet_id"]
             isOneToOne: false
+            referencedRelation: "v_cash_position_daily"
+            referencedColumns: ["wallet_id"]
+          },
+          {
+            foreignKeyName: "transactions_wallet_id_fkey"
+            columns: ["wallet_id"]
+            isOneToOne: false
             referencedRelation: "wallets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_ar_aging_detail: {
+        Row: {
+          aging_bucket: string | null
+          company_id: string | null
+          counterparty_name: string | null
+          days_overdue: number | null
+          document_number: string | null
+          due_date: string | null
+          id: string | null
+          net_amount: number | null
+          status: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "customer_invoices_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
             referencedColumns: ["id"]
           },
         ]
@@ -4469,6 +4730,13 @@ export type Database = {
             referencedColumns: ["account_id"]
           },
           {
+            foreignKeyName: "transactions_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "v_trial_balance"
+            referencedColumns: ["account_id"]
+          },
+          {
             foreignKeyName: "transactions_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
@@ -4500,7 +4768,69 @@ export type Database = {
             foreignKeyName: "transactions_wallet_id_fkey"
             columns: ["wallet_id"]
             isOneToOne: false
+            referencedRelation: "v_cash_position_daily"
+            referencedColumns: ["wallet_id"]
+          },
+          {
+            foreignKeyName: "transactions_wallet_id_fkey"
+            columns: ["wallet_id"]
+            isOneToOne: false
             referencedRelation: "wallets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_bank_reconciliation_status: {
+        Row: {
+          company_id: string | null
+          pending_amount: number | null
+          reconciled_lines: number | null
+          reconciled_percent: number | null
+          statement_date: string | null
+          total_lines: number | null
+          wallet_id: string | null
+          wallet_name: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bank_statements_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bank_statements_wallet_id_fkey"
+            columns: ["wallet_id"]
+            isOneToOne: false
+            referencedRelation: "v_cash_position_daily"
+            referencedColumns: ["wallet_id"]
+          },
+          {
+            foreignKeyName: "bank_statements_wallet_id_fkey"
+            columns: ["wallet_id"]
+            isOneToOne: false
+            referencedRelation: "wallets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_cash_position_daily: {
+        Row: {
+          company_id: string | null
+          current_balance: number | null
+          opening_balance: number | null
+          total_inflows: number | null
+          total_outflows: number | null
+          wallet_id: string | null
+          wallet_name: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wallets_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
             referencedColumns: ["id"]
           },
         ]
@@ -4546,6 +4876,97 @@ export type Database = {
           },
         ]
       }
+      v_ledger: {
+        Row: {
+          account_code: string | null
+          account_id: string | null
+          account_name: string | null
+          company_id: string | null
+          counterparty_name: string | null
+          credit_amount: number | null
+          debit_amount: number | null
+          document_number: string | null
+          entry_date: string | null
+          entry_description: string | null
+          entry_number: string | null
+          line_description: string | null
+          source_type: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "journal_entries_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "journal_lines_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "journal_lines_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "v_rc_flow_by_account"
+            referencedColumns: ["account_id"]
+          },
+          {
+            foreignKeyName: "journal_lines_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "v_trial_balance"
+            referencedColumns: ["account_id"]
+          },
+        ]
+      }
+      v_pending_approvals: {
+        Row: {
+          amount: number | null
+          company_id: string | null
+          current_step: number | null
+          document_reference: string | null
+          entity_id: string | null
+          entity_type: string | null
+          request_id: string | null
+          requested_at: string | null
+          status: string | null
+        }
+        Insert: {
+          amount?: never
+          company_id?: string | null
+          current_step?: number | null
+          document_reference?: never
+          entity_id?: string | null
+          entity_type?: string | null
+          request_id?: string | null
+          requested_at?: string | null
+          status?: string | null
+        }
+        Update: {
+          amount?: never
+          company_id?: string | null
+          current_step?: number | null
+          document_reference?: never
+          entity_id?: string | null
+          entity_type?: string | null
+          request_id?: string | null
+          requested_at?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "approval_requests_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       v_rc_flow_by_account: {
         Row: {
           account_code: string | null
@@ -4584,6 +5005,46 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "transactions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_trial_balance: {
+        Row: {
+          account_code: string | null
+          account_id: string | null
+          account_name: string | null
+          balance: number | null
+          category_type: Database["public"]["Enums"]["account_category"] | null
+          company_id: string | null
+          total_credit: number | null
+          total_debit: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "accounts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_withholding_summary: {
+        Row: {
+          company_id: string | null
+          month: number | null
+          tax_type: string | null
+          total_base: number | null
+          total_withheld: number | null
+          year: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tax_calculations_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
