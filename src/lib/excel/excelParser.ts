@@ -8,6 +8,9 @@ import {
   parseDecimal,
   normalizeText,
   normalizeEnum,
+  normalizeCode,
+  normalizeDocumentNumber,
+  normalizeDocumentType,
   formatDateToISO,
 } from './normalizers';
 import type { ValidationError, NormalizedRow } from './types';

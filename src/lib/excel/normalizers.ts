@@ -149,7 +149,62 @@ export function normalizeDocument(value: unknown): string | null {
 }
 
 /**
+ * Normalize account/category code
+ * Remove extra spaces, standardize dots
+ */
+export function normalizeCode(value: unknown): string | null {
+  if (value === null || value === undefined || value === '') return null;
+  
+  let str = String(value).trim().toUpperCase();
+  // Remove double spaces
+  str = str.replace(/\s+/g, ' ');
+  // Standardize separators (allow dots, dashes, spaces)
+  return str || null;
+}
+
+/**
+ * Normalize document number (NF/Fatura/Recibo)
+ * Accepts: "NF123", "NF 123", "NFe-123" -> returns clean format
+ */
+export function normalizeDocumentNumber(value: unknown): string | null {
+  if (value === null || value === undefined || value === '') return null;
+  
+  let str = String(value).trim();
+  // Remove double spaces
+  str = str.replace(/\s+/g, ' ');
+  return str || null;
+}
+
+/**
+ * Normalize document type
+ */
+export function normalizeDocumentType(value: unknown): string | null {
+  if (value === null || value === undefined || value === '') return null;
+  
+  const str = String(value).trim().toLowerCase();
+  
+  const typeMap: Record<string, string> = {
+    'nf': 'nf',
+    'nota fiscal': 'nf',
+    'nfe': 'nfe',
+    'nota fiscal eletronica': 'nfe',
+    'nota fiscal eletrônica': 'nfe',
+    'fatura': 'fatura',
+    'fat': 'fatura',
+    'recibo': 'recibo',
+    'rec': 'recibo',
+    'boleto': 'boleto',
+    'bol': 'boleto',
+    'outro': 'outro',
+    'outros': 'outro',
+  };
+  
+  return typeMap[str] || 'outro';
+}
+
+/**
  * Generate deterministic hash for a row (for idempotency)
+ * Optionally includes document_number if present
  */
 export function generateRowHash(data: Record<string, unknown>, fields: string[]): string {
   const values = fields.map(f => String(data[f] ?? '')).join('|');
@@ -163,4 +218,18 @@ export function generateRowHash(data: Record<string, unknown>, fields: string[])
   }
   
   return `hash_${Math.abs(hash).toString(36)}`;
+}
+
+/**
+ * Generate idempotency hash including document info when available
+ */
+export function generateTransactionHash(data: Record<string, unknown>): string {
+  const baseFields = ['direction', 'counterparty_name', 'total_amount'];
+  
+  // Include document_number if present for stronger idempotency
+  if (data.document_number) {
+    return generateRowHash(data, [...baseFields, 'document_number']);
+  }
+  
+  return generateRowHash(data, baseFields);
 }
