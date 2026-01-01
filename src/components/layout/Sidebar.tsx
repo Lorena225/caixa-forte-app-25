@@ -36,6 +36,17 @@ const menuItems = [
   { icon: FileText, label: 'DRE', href: '/dre' },
   { icon: Target, label: 'Metas', href: '/metas' },
   { icon: CreditCard, label: 'Cartões', href: '/cartoes' },
+];
+
+const erpModules = [
+  { icon: BookOpen, label: 'Contabilidade', href: '/contabilidade' },
+  { icon: FileText, label: 'Fiscal', href: '/fiscal' },
+  { icon: Building2, label: 'Tesouraria', href: '/tesouraria' },
+  { icon: ArrowUpCircle, label: 'AP Enterprise', href: '/ap' },
+  { icon: ArrowDownCircle, label: 'AR Enterprise', href: '/ar' },
+];
+
+const integracoes = [
   { icon: Link2, label: 'Integrações', href: '/integracoes' },
   { icon: FileSpreadsheet, label: 'Importar/Exportar', href: '/importar-exportar' },
 ];
@@ -45,6 +56,7 @@ const cadastros = [
   { icon: Building2, label: 'Centros de Custo', href: '/cadastros/centros-custo' },
   { icon: Users, label: 'Clientes/Fornecedores', href: '/cadastros/clientes-fornecedores' },
   { icon: Wallet, label: 'Contas/Cartões', href: '/cadastros/carteiras' },
+  { icon: Settings, label: 'Dimensões', href: '/cadastros/dimensoes' },
 ];
 
 export function Sidebar() {

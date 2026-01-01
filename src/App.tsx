@@ -11,6 +11,7 @@ import PlanoContas from "./pages/cadastros/PlanoContas";
 import CentrosCusto from "./pages/cadastros/CentrosCusto";
 import ClientesFornecedores from "./pages/cadastros/ClientesFornecedores";
 import Carteiras from "./pages/cadastros/Carteiras";
+import Dimensoes from "./pages/cadastros/Dimensoes";
 import ContasReceber from "./pages/ContasReceber";
 import ContasPagar from "./pages/ContasPagar";
 import FluxoCaixa from "./pages/FluxoCaixa";
@@ -27,6 +28,14 @@ import ImportExportIndex from "./pages/importar-exportar/Index";
 import ImportWizard from "./pages/importar-exportar/ImportWizard";
 import ImportHistory from "./pages/importar-exportar/ImportHistory";
 import ExportData from "./pages/importar-exportar/ExportData";
+// ERP Modules
+import ContabilidadeIndex from "./pages/contabilidade/Index";
+import ContabilidadeLancamentos from "./pages/contabilidade/Lancamentos";
+import ContabilidadeBalancete from "./pages/contabilidade/Balancete";
+import FiscalIndex from "./pages/fiscal/Index";
+import TesourariaIndex from "./pages/tesouraria/Index";
+import APIndex from "./pages/ap/Index";
+import ARIndex from "./pages/ar/Index";
 
 const queryClient = new QueryClient();
 
@@ -47,6 +56,15 @@ const App = () => (
             <Route path="/dre" element={<DRE />} />
             <Route path="/metas" element={<Metas />} />
             <Route path="/cartoes" element={<Cartoes />} />
+            {/* ERP Modules */}
+            <Route path="/contabilidade" element={<ContabilidadeIndex />} />
+            <Route path="/contabilidade/lancamentos" element={<ContabilidadeLancamentos />} />
+            <Route path="/contabilidade/balancete" element={<ContabilidadeBalancete />} />
+            <Route path="/fiscal" element={<FiscalIndex />} />
+            <Route path="/tesouraria" element={<TesourariaIndex />} />
+            <Route path="/ap" element={<APIndex />} />
+            <Route path="/ar" element={<ARIndex />} />
+            {/* Integrations */}
             <Route path="/integracoes" element={<IntegracoesIndex />} />
             <Route path="/integracoes/:integrationId/importar" element={<IntegracoesImportar />} />
             <Route path="/integracoes/:integrationId/configurar" element={<IntegracoesConfigurar />} />
@@ -61,6 +79,7 @@ const App = () => (
             <Route path="/cadastros/centros-custo" element={<CentrosCusto />} />
             <Route path="/cadastros/clientes-fornecedores" element={<ClientesFornecedores />} />
             <Route path="/cadastros/carteiras" element={<Carteiras />} />
+            <Route path="/cadastros/dimensoes" element={<Dimensoes />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
