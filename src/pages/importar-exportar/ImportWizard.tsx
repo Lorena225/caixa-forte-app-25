@@ -181,12 +181,42 @@ export default function ImportWizard() {
     setIsProcessing(true);
 
     try {
-      // 1. Create import batch
+      // 1. Get or create manual upload integration
+      let integrationId: string;
+      const { data: existingIntegration } = await supabase
+        .from('integrations')
+        .select('id')
+        .eq('company_id', currentCompany.id)
+        .eq('provider', 'csv')
+        .eq('name', 'Upload Manual')
+        .single();
+
+      if (existingIntegration) {
+        integrationId = existingIntegration.id;
+      } else {
+        const { data: newIntegration, error: integrationError } = await supabase
+          .from('integrations')
+          .insert({
+            company_id: currentCompany.id,
+            name: 'Upload Manual',
+            provider: 'csv',
+            auth_type: 'file',
+            status: 'connected',
+            is_active: true,
+          })
+          .select('id')
+          .single();
+
+        if (integrationError) throw integrationError;
+        integrationId = newIntegration.id;
+      }
+
+      // 2. Create import batch
       const { data: batch, error: batchError } = await supabase
         .from('import_batches')
         .insert({
           company_id: currentCompany.id,
-          integration_id: currentCompany.id, // Using company_id as placeholder
+          integration_id: integrationId,
           entity: entity as ImportEntityType as never,
           source_type: 'manual_upload',
           source_filename: file?.name,
