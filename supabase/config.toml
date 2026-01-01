@@ -20,3 +20,9 @@ verify_jwt = true
 
 [functions.create-user]
 verify_jwt = false
+
+[functions.ai-parse-statement-file]
+verify_jwt = true
+
+[functions.reconcile-engine]
+verify_jwt = true
