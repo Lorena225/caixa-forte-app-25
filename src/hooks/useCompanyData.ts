@@ -139,10 +139,11 @@ export function useTransactions(filters?: {
         .from('transactions')
         .select(`
           *,
-          accounts:account_id(id, code, name),
+          accounts:account_id(id, code, name, category_id),
           wallets:wallet_id(id, name, type),
           cost_centers:cost_center_id(id, code, name),
-          counterparties:counterparty_id(id, name, type)
+          counterparties:counterparty_id(id, name, type),
+          category:category_id(id, code, name, category_type)
         `)
         .eq('company_id', currentCompany.id)
         .neq('status', 'cancelado' as const)
