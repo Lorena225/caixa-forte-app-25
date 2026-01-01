@@ -267,6 +267,36 @@ export function formatDirectionForExport(value: unknown): string {
 }
 
 /**
+ * Format document type for export
+ */
+export function formatDocumentTypeForExport(value: unknown): string {
+  const typeMap: Record<string, string> = {
+    'nf': 'NF',
+    'nfe': 'NFe',
+    'fatura': 'Fatura',
+    'recibo': 'Recibo',
+    'boleto': 'Boleto',
+    'outro': 'Outro',
+  };
+  return typeMap[value as string] || (value as string) || '';
+}
+
+/**
+ * Format category type for export
+ */
+export function formatCategoryTypeForExport(value: unknown): string {
+  const typeMap: Record<string, string> = {
+    'ativo': 'Ativo',
+    'passivo': 'Passivo',
+    'patrimonio_liquido': 'Patrimônio Líquido',
+    'receita': 'Receita',
+    'custo': 'Custo',
+    'despesa': 'Despesa',
+  };
+  return typeMap[value as string] || (value as string) || '';
+}
+
+/**
  * Generate error report Excel
  */
 export function exportErrorReport(
