@@ -1,1 +1,22 @@
 project_id = "hwiyewggonhyppwaikss"
+
+[functions.whatsapp-webhook]
+verify_jwt = false
+
+[functions.ai-parse-message]
+verify_jwt = true
+
+[functions.ai-execute-actions]
+verify_jwt = true
+
+[functions.ai-rollback-action]
+verify_jwt = true
+
+[functions.whatsapp-send-message]
+verify_jwt = true
+
+[functions.process-jobs]
+verify_jwt = true
+
+[functions.create-user]
+verify_jwt = false
