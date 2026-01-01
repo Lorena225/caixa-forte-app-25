@@ -146,6 +146,348 @@ export type Database = {
           },
         ]
       }
+      action_rollbacks: {
+        Row: {
+          action_result_id: string
+          company_id: string
+          created_at: string | null
+          executed_at: string | null
+          id: string
+          requested_by_phone: string | null
+          requested_by_user_id: string | null
+          rollback_error: string | null
+          rollback_payload_json: Json
+          rollback_status: string | null
+        }
+        Insert: {
+          action_result_id: string
+          company_id: string
+          created_at?: string | null
+          executed_at?: string | null
+          id?: string
+          requested_by_phone?: string | null
+          requested_by_user_id?: string | null
+          rollback_error?: string | null
+          rollback_payload_json: Json
+          rollback_status?: string | null
+        }
+        Update: {
+          action_result_id?: string
+          company_id?: string
+          created_at?: string | null
+          executed_at?: string | null
+          id?: string
+          requested_by_phone?: string | null
+          requested_by_user_id?: string | null
+          rollback_error?: string | null
+          rollback_payload_json?: Json
+          rollback_status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "action_rollbacks_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_action_results: {
+        Row: {
+          affected_tables_json: Json | null
+          can_rollback: boolean | null
+          company_id: string
+          confirmation_id: string | null
+          created_at: string | null
+          created_ids_json: Json | null
+          decision_id: string
+          error_json: Json | null
+          executed_actions_json: Json
+          executed_at: string | null
+          id: string
+          rolled_back_at: string | null
+          status: string | null
+        }
+        Insert: {
+          affected_tables_json?: Json | null
+          can_rollback?: boolean | null
+          company_id: string
+          confirmation_id?: string | null
+          created_at?: string | null
+          created_ids_json?: Json | null
+          decision_id: string
+          error_json?: Json | null
+          executed_actions_json?: Json
+          executed_at?: string | null
+          id?: string
+          rolled_back_at?: string | null
+          status?: string | null
+        }
+        Update: {
+          affected_tables_json?: Json | null
+          can_rollback?: boolean | null
+          company_id?: string
+          confirmation_id?: string | null
+          created_at?: string | null
+          created_ids_json?: Json | null
+          decision_id?: string
+          error_json?: Json | null
+          executed_actions_json?: Json
+          executed_at?: string | null
+          id?: string
+          rolled_back_at?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_action_results_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_confirmations: {
+        Row: {
+          approved_at: string | null
+          approved_by_phone: string | null
+          approved_by_user_id: string | null
+          company_id: string
+          confirmation_type: string | null
+          created_at: string | null
+          decision_id: string
+          id: string
+          notes: string | null
+          pin_verified: boolean | null
+          selected_option: number | null
+          state: string | null
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by_phone?: string | null
+          approved_by_user_id?: string | null
+          company_id: string
+          confirmation_type?: string | null
+          created_at?: string | null
+          decision_id: string
+          id?: string
+          notes?: string | null
+          pin_verified?: boolean | null
+          selected_option?: number | null
+          state?: string | null
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by_phone?: string | null
+          approved_by_user_id?: string | null
+          company_id?: string
+          confirmation_type?: string | null
+          created_at?: string | null
+          decision_id?: string
+          id?: string
+          notes?: string | null
+          pin_verified?: boolean | null
+          selected_option?: number | null
+          state?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_confirmations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_decisions: {
+        Row: {
+          ai_request_id: string | null
+          ambiguous_matches_json: Json | null
+          company_id: string
+          confidence: number | null
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          inbox_id: string | null
+          intent: string
+          missing_fields_json: Json | null
+          needs_confirmation: boolean | null
+          proposed_actions_json: Json
+          risk_level: string | null
+          risk_reasons_json: Json | null
+          status: string | null
+        }
+        Insert: {
+          ai_request_id?: string | null
+          ambiguous_matches_json?: Json | null
+          company_id: string
+          confidence?: number | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          inbox_id?: string | null
+          intent: string
+          missing_fields_json?: Json | null
+          needs_confirmation?: boolean | null
+          proposed_actions_json?: Json
+          risk_level?: string | null
+          risk_reasons_json?: Json | null
+          status?: string | null
+        }
+        Update: {
+          ai_request_id?: string | null
+          ambiguous_matches_json?: Json | null
+          company_id?: string
+          confidence?: number | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          inbox_id?: string | null
+          intent?: string
+          missing_fields_json?: Json | null
+          needs_confirmation?: boolean | null
+          proposed_actions_json?: Json
+          risk_level?: string | null
+          risk_reasons_json?: Json | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_decisions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_feedback: {
+        Row: {
+          action_result_id: string | null
+          company_id: string
+          correction_json: Json | null
+          created_at: string | null
+          decision_id: string | null
+          feedback_type: string
+          field_corrected: string | null
+          generated_rule_id: string | null
+          id: string
+          notes: string | null
+          original_json: Json | null
+          phone: string | null
+          rule_approved: boolean | null
+          user_id: string | null
+        }
+        Insert: {
+          action_result_id?: string | null
+          company_id: string
+          correction_json?: Json | null
+          created_at?: string | null
+          decision_id?: string | null
+          feedback_type: string
+          field_corrected?: string | null
+          generated_rule_id?: string | null
+          id?: string
+          notes?: string | null
+          original_json?: Json | null
+          phone?: string | null
+          rule_approved?: boolean | null
+          user_id?: string | null
+        }
+        Update: {
+          action_result_id?: string | null
+          company_id?: string
+          correction_json?: Json | null
+          created_at?: string | null
+          decision_id?: string | null
+          feedback_type?: string
+          field_corrected?: string | null
+          generated_rule_id?: string | null
+          id?: string
+          notes?: string | null
+          original_json?: Json | null
+          phone?: string | null
+          rule_approved?: boolean | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_feedback_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_requests: {
+        Row: {
+          company_id: string
+          cost_estimate: number | null
+          created_at: string | null
+          error_message: string | null
+          file_id: string | null
+          id: string
+          inbox_id: string | null
+          input_json: Json
+          job_id: string | null
+          latency_ms: number | null
+          model: string
+          output_json: Json | null
+          raw_response: Json | null
+          status: string | null
+          tokens_input: number | null
+          tokens_output: number | null
+        }
+        Insert: {
+          company_id: string
+          cost_estimate?: number | null
+          created_at?: string | null
+          error_message?: string | null
+          file_id?: string | null
+          id?: string
+          inbox_id?: string | null
+          input_json: Json
+          job_id?: string | null
+          latency_ms?: number | null
+          model?: string
+          output_json?: Json | null
+          raw_response?: Json | null
+          status?: string | null
+          tokens_input?: number | null
+          tokens_output?: number | null
+        }
+        Update: {
+          company_id?: string
+          cost_estimate?: number | null
+          created_at?: string | null
+          error_message?: string | null
+          file_id?: string | null
+          id?: string
+          inbox_id?: string | null
+          input_json?: Json
+          job_id?: string | null
+          latency_ms?: number | null
+          model?: string
+          output_json?: Json | null
+          raw_response?: Json | null
+          status?: string | null
+          tokens_input?: number | null
+          tokens_output?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_requests_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       allocation_rule_items: {
         Row: {
           created_at: string | null
@@ -491,6 +833,157 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "audit_logs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      automation_rules: {
+        Row: {
+          action_json: Json
+          company_id: string
+          conditions_json: Json | null
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          hit_count: number | null
+          id: string
+          is_active: boolean | null
+          last_hit_at: string | null
+          name: string
+          pattern: string
+          pattern_type: string
+          priority: number | null
+          rule_type: string
+          source: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          action_json?: Json
+          company_id: string
+          conditions_json?: Json | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          hit_count?: number | null
+          id?: string
+          is_active?: boolean | null
+          last_hit_at?: string | null
+          name: string
+          pattern: string
+          pattern_type?: string
+          priority?: number | null
+          rule_type: string
+          source?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          action_json?: Json
+          company_id?: string
+          conditions_json?: Json | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          hit_count?: number | null
+          id?: string
+          is_active?: boolean | null
+          last_hit_at?: string | null
+          name?: string
+          pattern?: string
+          pattern_type?: string
+          priority?: number | null
+          rule_type?: string
+          source?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "automation_rules_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bank_statement_imports: {
+        Row: {
+          closing_balance: number | null
+          company_id: string
+          created_at: string | null
+          error_message: string | null
+          file_format: string | null
+          file_id: string | null
+          id: string
+          line_count: number | null
+          matched_count: number | null
+          opening_balance: number | null
+          original_filename: string | null
+          pending_count: number | null
+          period_end: string | null
+          period_start: string | null
+          processed_at: string | null
+          source: string | null
+          status: string | null
+          summary_json: Json | null
+          total_credits: number | null
+          total_debits: number | null
+          updated_at: string | null
+          wallet_id: string | null
+        }
+        Insert: {
+          closing_balance?: number | null
+          company_id: string
+          created_at?: string | null
+          error_message?: string | null
+          file_format?: string | null
+          file_id?: string | null
+          id?: string
+          line_count?: number | null
+          matched_count?: number | null
+          opening_balance?: number | null
+          original_filename?: string | null
+          pending_count?: number | null
+          period_end?: string | null
+          period_start?: string | null
+          processed_at?: string | null
+          source?: string | null
+          status?: string | null
+          summary_json?: Json | null
+          total_credits?: number | null
+          total_debits?: number | null
+          updated_at?: string | null
+          wallet_id?: string | null
+        }
+        Update: {
+          closing_balance?: number | null
+          company_id?: string
+          created_at?: string | null
+          error_message?: string | null
+          file_format?: string | null
+          file_id?: string | null
+          id?: string
+          line_count?: number | null
+          matched_count?: number | null
+          opening_balance?: number | null
+          original_filename?: string | null
+          pending_count?: number | null
+          period_end?: string | null
+          period_start?: string | null
+          processed_at?: string | null
+          source?: string | null
+          status?: string | null
+          summary_json?: Json | null
+          total_credits?: number | null
+          total_debits?: number | null
+          updated_at?: string | null
+          wallet_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bank_statement_imports_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
@@ -2594,6 +3087,65 @@ export type Database = {
           },
         ]
       }
+      jobs_queue: {
+        Row: {
+          attempts: number | null
+          company_id: string
+          created_at: string | null
+          error_json: Json | null
+          finished_at: string | null
+          id: string
+          job_type: string
+          max_attempts: number | null
+          payload_json: Json
+          priority: number | null
+          result_json: Json | null
+          scheduled_at: string | null
+          started_at: string | null
+          status: string | null
+        }
+        Insert: {
+          attempts?: number | null
+          company_id: string
+          created_at?: string | null
+          error_json?: Json | null
+          finished_at?: string | null
+          id?: string
+          job_type: string
+          max_attempts?: number | null
+          payload_json?: Json
+          priority?: number | null
+          result_json?: Json | null
+          scheduled_at?: string | null
+          started_at?: string | null
+          status?: string | null
+        }
+        Update: {
+          attempts?: number | null
+          company_id?: string
+          created_at?: string | null
+          error_json?: Json | null
+          finished_at?: string | null
+          id?: string
+          job_type?: string
+          max_attempts?: number | null
+          payload_json?: Json
+          priority?: number | null
+          result_json?: Json | null
+          scheduled_at?: string | null
+          started_at?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "jobs_queue_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       journal_entries: {
         Row: {
           branch_id: string | null
@@ -3434,6 +3986,65 @@ export type Database = {
           },
         ]
       }
+      received_files: {
+        Row: {
+          company_id: string
+          created_at: string | null
+          error_message: string | null
+          file_type: string | null
+          id: string
+          inbox_id: string | null
+          meta_json: Json | null
+          mime_type: string | null
+          original_filename: string | null
+          parsed_at: string | null
+          parsed_status: string | null
+          sha256: string | null
+          size_bytes: number | null
+          storage_path: string | null
+        }
+        Insert: {
+          company_id: string
+          created_at?: string | null
+          error_message?: string | null
+          file_type?: string | null
+          id?: string
+          inbox_id?: string | null
+          meta_json?: Json | null
+          mime_type?: string | null
+          original_filename?: string | null
+          parsed_at?: string | null
+          parsed_status?: string | null
+          sha256?: string | null
+          size_bytes?: number | null
+          storage_path?: string | null
+        }
+        Update: {
+          company_id?: string
+          created_at?: string | null
+          error_message?: string | null
+          file_type?: string | null
+          id?: string
+          inbox_id?: string | null
+          meta_json?: Json | null
+          mime_type?: string | null
+          original_filename?: string | null
+          parsed_at?: string | null
+          parsed_status?: string | null
+          sha256?: string | null
+          size_bytes?: number | null
+          storage_path?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "received_files_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reconciliation_matches: {
         Row: {
           action_taken: Database["public"]["Enums"]["reconciliation_action"]
@@ -3514,6 +4125,59 @@ export type Database = {
             columns: ["transaction_id"]
             isOneToOne: false
             referencedRelation: "v_ar_open"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reconciliation_suggestions: {
+        Row: {
+          candidate_id: string
+          candidate_type: string
+          company_id: string
+          created_at: string | null
+          differences_json: Json | null
+          id: string
+          import_id: string | null
+          is_selected: boolean | null
+          match_reasons_json: Json | null
+          rule_id: string | null
+          score: number | null
+          statement_line_id: string
+        }
+        Insert: {
+          candidate_id: string
+          candidate_type: string
+          company_id: string
+          created_at?: string | null
+          differences_json?: Json | null
+          id?: string
+          import_id?: string | null
+          is_selected?: boolean | null
+          match_reasons_json?: Json | null
+          rule_id?: string | null
+          score?: number | null
+          statement_line_id: string
+        }
+        Update: {
+          candidate_id?: string
+          candidate_type?: string
+          company_id?: string
+          created_at?: string | null
+          differences_json?: Json | null
+          id?: string
+          import_id?: string | null
+          is_selected?: boolean | null
+          match_reasons_json?: Json | null
+          rule_id?: string | null
+          score?: number | null
+          statement_line_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reconciliation_suggestions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
             referencedColumns: ["id"]
           },
         ]
@@ -4467,6 +5131,174 @@ export type Database = {
             columns: ["integration_id"]
             isOneToOne: false
             referencedRelation: "integrations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      whatsapp_connections: {
+        Row: {
+          company_id: string
+          created_at: string | null
+          credentials_encrypted: string | null
+          id: string
+          phone_number: string | null
+          provider: string
+          settings_json: Json | null
+          status: string
+          updated_at: string | null
+          webhook_secret: string | null
+        }
+        Insert: {
+          company_id: string
+          created_at?: string | null
+          credentials_encrypted?: string | null
+          id?: string
+          phone_number?: string | null
+          provider: string
+          settings_json?: Json | null
+          status?: string
+          updated_at?: string | null
+          webhook_secret?: string | null
+        }
+        Update: {
+          company_id?: string
+          created_at?: string | null
+          credentials_encrypted?: string | null
+          id?: string
+          phone_number?: string | null
+          provider?: string
+          settings_json?: Json | null
+          status?: string
+          updated_at?: string | null
+          webhook_secret?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "whatsapp_connections_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      whatsapp_contacts: {
+        Row: {
+          company_id: string
+          created_at: string | null
+          daily_limits_json: Json | null
+          display_name: string | null
+          id: string
+          is_allowed: boolean | null
+          is_blocked: boolean | null
+          last_activity_at: string | null
+          phone_e164: string
+          pin_hash: string | null
+          role: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          company_id: string
+          created_at?: string | null
+          daily_limits_json?: Json | null
+          display_name?: string | null
+          id?: string
+          is_allowed?: boolean | null
+          is_blocked?: boolean | null
+          last_activity_at?: string | null
+          phone_e164: string
+          pin_hash?: string | null
+          role?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          company_id?: string
+          created_at?: string | null
+          daily_limits_json?: Json | null
+          display_name?: string | null
+          id?: string
+          is_allowed?: boolean | null
+          is_blocked?: boolean | null
+          last_activity_at?: string | null
+          phone_e164?: string
+          pin_hash?: string | null
+          role?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "whatsapp_contacts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      whatsapp_inbox: {
+        Row: {
+          company_id: string
+          connection_id: string | null
+          contact_id: string | null
+          created_at: string | null
+          direction: string | null
+          id: string
+          media_mime_type: string | null
+          media_url: string | null
+          msg_type: string
+          phone: string
+          processed_at: string | null
+          provider_msg_id: string | null
+          raw_json: Json | null
+          received_at: string | null
+          status: string | null
+          text_body: string | null
+        }
+        Insert: {
+          company_id: string
+          connection_id?: string | null
+          contact_id?: string | null
+          created_at?: string | null
+          direction?: string | null
+          id?: string
+          media_mime_type?: string | null
+          media_url?: string | null
+          msg_type: string
+          phone: string
+          processed_at?: string | null
+          provider_msg_id?: string | null
+          raw_json?: Json | null
+          received_at?: string | null
+          status?: string | null
+          text_body?: string | null
+        }
+        Update: {
+          company_id?: string
+          connection_id?: string | null
+          contact_id?: string | null
+          created_at?: string | null
+          direction?: string | null
+          id?: string
+          media_mime_type?: string | null
+          media_url?: string | null
+          msg_type?: string
+          phone?: string
+          processed_at?: string | null
+          provider_msg_id?: string | null
+          raw_json?: Json | null
+          received_at?: string | null
+          status?: string | null
+          text_body?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "whatsapp_inbox_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
             referencedColumns: ["id"]
           },
         ]
