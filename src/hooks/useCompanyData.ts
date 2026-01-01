@@ -3,6 +3,27 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 
+// Hook para Account Categories (Categorias/Grupos)
+export function useAccountCategories() {
+  const { currentCompany } = useAuth();
+  
+  return useQuery({
+    queryKey: ['account_categories', currentCompany?.id],
+    queryFn: async () => {
+      if (!currentCompany?.id) return [];
+      const { data, error } = await supabase
+        .from('account_categories')
+        .select('*')
+        .eq('company_id', currentCompany.id)
+        .eq('is_active', true)
+        .order('code');
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!currentCompany?.id,
+  });
+}
+
 export function useAccounts() {
   const { currentCompany } = useAuth();
   
@@ -12,7 +33,10 @@ export function useAccounts() {
       if (!currentCompany?.id) return [];
       const { data, error } = await supabase
         .from('accounts')
-        .select('*')
+        .select(`
+          *,
+          category:category_id(id, code, name, category_type)
+        `)
         .eq('company_id', currentCompany.id)
         .order('code');
       if (error) throw error;

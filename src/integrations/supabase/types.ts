@@ -14,8 +14,60 @@ export type Database = {
   }
   public: {
     Tables: {
+      account_categories: {
+        Row: {
+          category_type: Database["public"]["Enums"]["account_category"]
+          code: string
+          company_id: string
+          created_at: string
+          id: string
+          is_active: boolean
+          name: string
+          parent_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          category_type: Database["public"]["Enums"]["account_category"]
+          code: string
+          company_id: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name: string
+          parent_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          category_type?: Database["public"]["Enums"]["account_category"]
+          code?: string
+          company_id?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          parent_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "account_categories_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "account_categories_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "account_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       accounts: {
         Row: {
+          category_id: string | null
           category_type: Database["public"]["Enums"]["account_category"]
           code: string
           company_id: string
@@ -29,6 +81,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          category_id?: string | null
           category_type: Database["public"]["Enums"]["account_category"]
           code: string
           company_id: string
@@ -42,6 +95,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          category_id?: string | null
           category_type?: Database["public"]["Enums"]["account_category"]
           code?: string
           company_id?: string
@@ -55,6 +109,13 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "accounts_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "account_categories"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "accounts_company_id_fkey"
             columns: ["company_id"]
@@ -1153,6 +1214,7 @@ export type Database = {
       transactions: {
         Row: {
           account_id: string
+          category_id: string | null
           company_id: string
           cost_center_id: string | null
           counterparty_id: string | null
@@ -1161,6 +1223,9 @@ export type Database = {
           direction: Database["public"]["Enums"]["transaction_direction"]
           discount_amount: number | null
           discount_percent: number | null
+          document_number: string | null
+          document_series: string | null
+          document_type: Database["public"]["Enums"]["document_type"] | null
           due_date: string
           id: string
           installment_number: number | null
@@ -1180,6 +1245,7 @@ export type Database = {
         }
         Insert: {
           account_id: string
+          category_id?: string | null
           company_id: string
           cost_center_id?: string | null
           counterparty_id?: string | null
@@ -1188,6 +1254,9 @@ export type Database = {
           direction: Database["public"]["Enums"]["transaction_direction"]
           discount_amount?: number | null
           discount_percent?: number | null
+          document_number?: string | null
+          document_series?: string | null
+          document_type?: Database["public"]["Enums"]["document_type"] | null
           due_date: string
           id?: string
           installment_number?: number | null
@@ -1207,6 +1276,7 @@ export type Database = {
         }
         Update: {
           account_id?: string
+          category_id?: string | null
           company_id?: string
           cost_center_id?: string | null
           counterparty_id?: string | null
@@ -1215,6 +1285,9 @@ export type Database = {
           direction?: Database["public"]["Enums"]["transaction_direction"]
           discount_amount?: number | null
           discount_percent?: number | null
+          document_number?: string | null
+          document_series?: string | null
+          document_type?: Database["public"]["Enums"]["document_type"] | null
           due_date?: string
           id?: string
           installment_number?: number | null
@@ -1253,6 +1326,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_rc_flow_by_account"
             referencedColumns: ["account_id"]
+          },
+          {
+            foreignKeyName: "transactions_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "account_categories"
+            referencedColumns: ["id"]
           },
           {
             foreignKeyName: "transactions_company_id_fkey"
@@ -1689,6 +1769,7 @@ export type Database = {
         | "custo"
         | "despesa"
       counterparty_type: "cliente" | "fornecedor" | "ambos"
+      document_type: "nf" | "nfe" | "fatura" | "recibo" | "boleto" | "outro"
       import_batch_status: "processing" | "success" | "partial" | "error"
       import_entity_type:
         | "accounts"
@@ -1699,6 +1780,7 @@ export type Database = {
         | "transactions_ap"
         | "transactions"
         | "budgets"
+        | "account_categories"
       import_row_status:
         | "pending"
         | "valid"
@@ -1864,6 +1946,7 @@ export const Constants = {
         "despesa",
       ],
       counterparty_type: ["cliente", "fornecedor", "ambos"],
+      document_type: ["nf", "nfe", "fatura", "recibo", "boleto", "outro"],
       import_batch_status: ["processing", "success", "partial", "error"],
       import_entity_type: [
         "accounts",
@@ -1874,6 +1957,7 @@ export const Constants = {
         "transactions_ap",
         "transactions",
         "budgets",
+        "account_categories",
       ],
       import_row_status: [
         "pending",
