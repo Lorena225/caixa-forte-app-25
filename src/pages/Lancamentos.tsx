@@ -406,7 +406,7 @@ export default function Lancamentos() {
                             </div>
                           </TableCell>
                           <TableCell className="text-muted-foreground text-sm">
-                            {categories.find((c: any) => c.id === t.category_id)?.name || '-'}
+                            {(t as any).category?.name || categories.find((c: any) => c.id === t.category_id)?.name || '-'}
                           </TableCell>
                           <TableCell>{t.accounts?.name}</TableCell>
                           <TableCell>{t.wallets?.name}</TableCell>
