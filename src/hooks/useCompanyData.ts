@@ -277,3 +277,303 @@ export function useRcIndicators(year?: number) {
     enabled: !!currentCompany?.id,
   });
 }
+
+// Hook para Dashboard KPIs
+export function useDashboardKPIs() {
+  const { currentCompany } = useAuth();
+  const currentMonth = new Date().getMonth() + 1;
+  const currentYear = new Date().getFullYear();
+  
+  return useQuery({
+    queryKey: ['dashboard_kpis', currentCompany?.id, currentMonth, currentYear],
+    queryFn: async () => {
+      if (!currentCompany?.id) return null;
+      
+      // Get current month transactions
+      const startDate = `${currentYear}-${String(currentMonth).padStart(2, '0')}-01`;
+      const endDate = new Date(currentYear, currentMonth, 0).toISOString().split('T')[0];
+      const prevMonth = currentMonth === 1 ? 12 : currentMonth - 1;
+      const prevYear = currentMonth === 1 ? currentYear - 1 : currentYear;
+      const prevStartDate = `${prevYear}-${String(prevMonth).padStart(2, '0')}-01`;
+      const prevEndDate = new Date(prevYear, prevMonth, 0).toISOString().split('T')[0];
+      
+      // Current month
+      const { data: currentTransactions } = await supabase
+        .from('transactions')
+        .select('direction, total_amount, status')
+        .eq('company_id', currentCompany.id)
+        .neq('status', 'cancelado')
+        .gte('due_date', startDate)
+        .lte('due_date', endDate);
+      
+      // Previous month
+      const { data: prevTransactions } = await supabase
+        .from('transactions')
+        .select('direction, total_amount, status')
+        .eq('company_id', currentCompany.id)
+        .neq('status', 'cancelado')
+        .gte('due_date', prevStartDate)
+        .lte('due_date', prevEndDate);
+      
+      // Wallets balance
+      const { data: wallets } = await supabase
+        .from('wallets')
+        .select('opening_balance')
+        .eq('company_id', currentCompany.id)
+        .eq('is_active', true);
+      
+      // Open receivables (AR)
+      const { data: openAR } = await supabase
+        .from('transactions')
+        .select('total_amount')
+        .eq('company_id', currentCompany.id)
+        .eq('direction', 'entrada')
+        .neq('status', 'pago')
+        .neq('status', 'cancelado');
+      
+      // Open payables (AP)
+      const { data: openAP } = await supabase
+        .from('transactions')
+        .select('total_amount')
+        .eq('company_id', currentCompany.id)
+        .eq('direction', 'saida')
+        .neq('status', 'pago')
+        .neq('status', 'cancelado');
+      
+      // Overdue count
+      const today = new Date().toISOString().split('T')[0];
+      const { data: overdue } = await supabase
+        .from('transactions')
+        .select('id')
+        .eq('company_id', currentCompany.id)
+        .neq('status', 'pago')
+        .neq('status', 'cancelado')
+        .lt('due_date', today);
+      
+      // Calculate KPIs
+      const currentReceipts = (currentTransactions || [])
+        .filter(t => t.direction === 'entrada')
+        .reduce((sum, t) => sum + Number(t.total_amount), 0);
+      
+      const currentExpenses = (currentTransactions || [])
+        .filter(t => t.direction === 'saida')
+        .reduce((sum, t) => sum + Number(t.total_amount), 0);
+      
+      const prevReceipts = (prevTransactions || [])
+        .filter(t => t.direction === 'entrada')
+        .reduce((sum, t) => sum + Number(t.total_amount), 0);
+      
+      const prevExpenses = (prevTransactions || [])
+        .filter(t => t.direction === 'saida')
+        .reduce((sum, t) => sum + Number(t.total_amount), 0);
+      
+      const paidTransactions = (currentTransactions || []).filter(t => t.status === 'pago');
+      const paidReceipts = paidTransactions
+        .filter(t => t.direction === 'entrada')
+        .reduce((sum, t) => sum + Number(t.total_amount), 0);
+      const paidExpenses = paidTransactions
+        .filter(t => t.direction === 'saida')
+        .reduce((sum, t) => sum + Number(t.total_amount), 0);
+      
+      const walletBalance = (wallets || []).reduce((sum, w) => sum + Number(w.opening_balance || 0), 0) 
+        + paidReceipts - paidExpenses;
+      
+      const arTotal = (openAR || []).reduce((sum, t) => sum + Number(t.total_amount), 0);
+      const apTotal = (openAP || []).reduce((sum, t) => sum + Number(t.total_amount), 0);
+      const overdueCount = (overdue || []).length;
+      
+      const receiptChange = prevReceipts > 0 
+        ? ((currentReceipts - prevReceipts) / prevReceipts * 100).toFixed(1) 
+        : '0';
+      const expenseChange = prevExpenses > 0 
+        ? ((currentExpenses - prevExpenses) / prevExpenses * 100).toFixed(1) 
+        : '0';
+      
+      return {
+        receipts: currentReceipts,
+        expenses: currentExpenses,
+        balance: walletBalance,
+        profit: currentReceipts - currentExpenses,
+        receiptChange,
+        expenseChange,
+        arTotal,
+        apTotal,
+        overdueCount,
+      };
+    },
+    enabled: !!currentCompany?.id,
+  });
+}
+
+// Hook para Dimensions
+export function useDimensions() {
+  const { currentCompany } = useAuth();
+  
+  return useQuery({
+    queryKey: ['dimensions', currentCompany?.id],
+    queryFn: async () => {
+      if (!currentCompany?.id) return [];
+      const { data, error } = await supabase
+        .from('dimensions')
+        .select('*')
+        .eq('company_id', currentCompany.id)
+        .order('code');
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!currentCompany?.id,
+  });
+}
+
+// Hook para Dimension Values
+export function useDimensionValues(dimensionId?: string) {
+  const { currentCompany } = useAuth();
+  
+  return useQuery({
+    queryKey: ['dimension_values', currentCompany?.id, dimensionId],
+    queryFn: async () => {
+      if (!currentCompany?.id) return [];
+      let query = supabase
+        .from('dimension_values')
+        .select('*, dimension:dimension_id(id, name, code)')
+        .eq('company_id', currentCompany.id)
+        .order('code');
+      
+      if (dimensionId) {
+        query = query.eq('dimension_id', dimensionId);
+      }
+      
+      const { data, error } = await query;
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!currentCompany?.id,
+  });
+}
+
+// Hook para Trial Balance (Balancete)
+export function useTrialBalance() {
+  const { currentCompany } = useAuth();
+  
+  return useQuery({
+    queryKey: ['trial_balance', currentCompany?.id],
+    queryFn: async () => {
+      if (!currentCompany?.id) return [];
+      const { data, error } = await supabase
+        .from('v_trial_balance')
+        .select('*')
+        .eq('company_id', currentCompany.id);
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!currentCompany?.id,
+  });
+}
+
+// Hook para Journal Entries
+export function useJournalEntries(filters?: { month?: number; year?: number }) {
+  const { currentCompany } = useAuth();
+  
+  return useQuery({
+    queryKey: ['journal_entries', currentCompany?.id, filters],
+    queryFn: async () => {
+      if (!currentCompany?.id) return [];
+      
+      let query = supabase
+        .from('journal_entries')
+        .select(`
+          *,
+          lines:journal_entry_lines(
+            *,
+            account:account_id(id, code, name)
+          )
+        `)
+        .eq('company_id', currentCompany.id)
+        .order('entry_date', { ascending: false });
+      
+      if (filters?.year && filters?.month) {
+        const startDate = `${filters.year}-${String(filters.month).padStart(2, '0')}-01`;
+        const endDate = new Date(filters.year, filters.month, 0).toISOString().split('T')[0];
+        query = query.gte('entry_date', startDate).lte('entry_date', endDate);
+      }
+      
+      const { data, error } = await query;
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!currentCompany?.id,
+  });
+}
+
+// Hook para AP Aging
+export function useAPAging() {
+  const { currentCompany } = useAuth();
+  
+  return useQuery({
+    queryKey: ['ap_aging', currentCompany?.id],
+    queryFn: async () => {
+      if (!currentCompany?.id) return [];
+      const { data, error } = await supabase
+        .from('transactions')
+        .select(`
+          *,
+          counterparty:counterparty_id(id, name),
+          account:account_id(id, code, name)
+        `)
+        .eq('company_id', currentCompany.id)
+        .eq('direction', 'saida')
+        .neq('status', 'pago')
+        .neq('status', 'cancelado')
+        .order('due_date');
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!currentCompany?.id,
+  });
+}
+
+// Hook para AR Aging
+export function useARAging() {
+  const { currentCompany } = useAuth();
+  
+  return useQuery({
+    queryKey: ['ar_aging', currentCompany?.id],
+    queryFn: async () => {
+      if (!currentCompany?.id) return [];
+      const { data, error } = await supabase
+        .from('transactions')
+        .select(`
+          *,
+          counterparty:counterparty_id(id, name),
+          account:account_id(id, code, name)
+        `)
+        .eq('company_id', currentCompany.id)
+        .eq('direction', 'entrada')
+        .neq('status', 'pago')
+        .neq('status', 'cancelado')
+        .order('due_date');
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!currentCompany?.id,
+  });
+}
+
+// Hook para Cash Position
+export function useCashPosition() {
+  const { currentCompany } = useAuth();
+  
+  return useQuery({
+    queryKey: ['cash_position', currentCompany?.id],
+    queryFn: async () => {
+      if (!currentCompany?.id) return [];
+      const { data, error } = await supabase
+        .from('v_cash_position_daily')
+        .select('*')
+        .eq('company_id', currentCompany.id);
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!currentCompany?.id,
+  });
+}
