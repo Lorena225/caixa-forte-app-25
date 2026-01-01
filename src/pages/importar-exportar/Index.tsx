@@ -19,6 +19,7 @@ import {
   Info,
   FileText,
   History,
+  Layers,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -27,6 +28,7 @@ import { downloadTemplate } from '@/lib/excel/templateGenerator';
 import type { ImportTemplate, ImportEntityType, ENTITY_LABELS } from '@/lib/excel/types';
 
 const ENTITY_ICONS_MAP: Record<ImportEntityType, React.ComponentType<{ className?: string }>> = {
+  account_categories: Layers,
   accounts: FolderTree,
   counterparties: Users,
   wallets: Wallet,
@@ -38,6 +40,7 @@ const ENTITY_ICONS_MAP: Record<ImportEntityType, React.ComponentType<{ className
 };
 
 const ENTITY_LABELS_MAP: Record<ImportEntityType, string> = {
+  account_categories: 'Categorias de Conta',
   accounts: 'Plano de Contas',
   counterparties: 'Clientes/Fornecedores',
   wallets: 'Carteiras',

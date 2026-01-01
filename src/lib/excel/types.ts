@@ -1,6 +1,7 @@
 // Types for Excel Import/Export module
 
 export type ImportEntityType = 
+  | 'account_categories'
   | 'accounts'
   | 'counterparties'
   | 'wallets'
@@ -87,6 +88,7 @@ export interface NormalizedRow {
 }
 
 export const ENTITY_LABELS: Record<ImportEntityType, string> = {
+  account_categories: 'Categorias de Conta',
   accounts: 'Plano de Contas',
   counterparties: 'Clientes/Fornecedores',
   wallets: 'Carteiras',
@@ -98,6 +100,7 @@ export const ENTITY_LABELS: Record<ImportEntityType, string> = {
 };
 
 export const ENTITY_ICONS: Record<ImportEntityType, string> = {
+  account_categories: 'Layers',
   accounts: 'FolderTree',
   counterparties: 'Users',
   wallets: 'Wallet',

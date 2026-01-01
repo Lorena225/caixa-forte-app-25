@@ -33,6 +33,7 @@ import type { ImportTemplate, NormalizedRow, ImportEntityType } from '@/lib/exce
 type WizardStep = 'upload' | 'preview' | 'validation' | 'rules' | 'confirm' | 'result';
 
 const ENTITY_LABELS: Record<ImportEntityType, string> = {
+  account_categories: 'Categorias de Conta',
   accounts: 'Plano de Contas',
   counterparties: 'Clientes/Fornecedores',
   wallets: 'Carteiras',
@@ -821,6 +822,7 @@ export default function ImportWizard() {
 // Helper functions for entity-specific operations
 function getHashFieldsForEntity(entity: ImportEntityType): string[] {
   const hashFields: Record<ImportEntityType, string[]> = {
+    account_categories: ['code', 'name'],
     accounts: ['code', 'name'],
     counterparties: ['name', 'document'],
     wallets: ['name', 'type'],
@@ -890,6 +892,7 @@ async function updateRecord(
 
 function getTableName(entity: ImportEntityType): string {
   const tables: Record<ImportEntityType, string> = {
+    account_categories: 'account_categories',
     accounts: 'accounts',
     counterparties: 'counterparties',
     wallets: 'wallets',

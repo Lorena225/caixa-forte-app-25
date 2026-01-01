@@ -1,21 +1,21 @@
-import { useState } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { PageHeader } from '@/components/common/PageHeader';
 import { useAuth } from '@/contexts/AuthContext';
-import { useAccounts, useCostCenters, useCounterparties, useWallets, useTransactions } from '@/hooks/useCompanyData';
+import { useAccounts, useCostCenters, useCounterparties, useWallets, useTransactions, useAccountCategories } from '@/hooks/useCompanyData';
 import { supabase } from '@/integrations/supabase/client';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { formatCurrency } from '@/lib/formatters';
-import { Plus, Pencil, Trash2, ArrowUpCircle, ArrowDownCircle, Filter } from 'lucide-react';
+import { Plus, Pencil, Trash2, ArrowUpCircle, ArrowDownCircle, Filter, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -29,6 +29,7 @@ import { Database } from '@/integrations/supabase/types';
 
 type TransactionDirection = Database['public']['Enums']['transaction_direction'];
 type TransactionStatus = Database['public']['Enums']['transaction_status'];
+type DocumentType = Database['public']['Enums']['document_type'];
 
 interface TransactionFormData {
   description: string;
@@ -38,12 +39,16 @@ interface TransactionFormData {
   transaction_date: Date | undefined;
   due_date: Date | undefined;
   paid_date: Date | undefined;
+  category_id: string;
   account_id: string;
   wallet_id: string;
   counterparty_id: string;
   cost_center_id: string;
   status: TransactionStatus;
   notes: string;
+  document_number: string;
+  document_type: DocumentType | '';
+  document_series: string;
 }
 
 const initialFormData: TransactionFormData = {
@@ -54,13 +59,26 @@ const initialFormData: TransactionFormData = {
   transaction_date: new Date(),
   due_date: new Date(),
   paid_date: undefined,
+  category_id: '',
   account_id: '',
   wallet_id: '',
   counterparty_id: '',
   cost_center_id: '',
   status: 'lancado',
   notes: '',
+  document_number: '',
+  document_type: '',
+  document_series: '',
 };
+
+const DOCUMENT_TYPES: { value: DocumentType; label: string }[] = [
+  { value: 'nf', label: 'Nota Fiscal' },
+  { value: 'nfe', label: 'NF-e' },
+  { value: 'fatura', label: 'Fatura' },
+  { value: 'recibo', label: 'Recibo' },
+  { value: 'boleto', label: 'Boleto' },
+  { value: 'outro', label: 'Outro' },
+];
 
 export default function Lancamentos() {
   const { currentCompany } = useAuth();
@@ -78,9 +96,40 @@ export default function Lancamentos() {
     direction: activeTab === 'todos' ? undefined : activeTab as TransactionDirection,
   });
   const { data: accounts = [] } = useAccounts();
+  const { data: categories = [] } = useAccountCategories();
   const { data: wallets = [] } = useWallets();
   const { data: counterparties = [] } = useCounterparties();
   const { data: costCenters = [] } = useCostCenters();
+
+  // Filter categories based on direction
+  const filteredCategories = useMemo(() => {
+    if (formData.direction === 'entrada') {
+      return categories.filter((c: any) => c.category_type === 'receita');
+    } else {
+      return categories.filter((c: any) => ['custo', 'despesa'].includes(c.category_type));
+    }
+  }, [categories, formData.direction]);
+
+  // Filter accounts based on selected category or direction
+  const filteredAccounts = useMemo(() => {
+    if (formData.category_id) {
+      return accounts.filter((a: any) => a.category_id === formData.category_id);
+    }
+    if (formData.direction === 'entrada') {
+      return accounts.filter((a: any) => a.category_type === 'receita');
+    }
+    return accounts.filter((a: any) => ['custo', 'despesa'].includes(a.category_type));
+  }, [accounts, formData.category_id, formData.direction]);
+
+  // Auto-fill category when account is selected
+  useEffect(() => {
+    if (formData.account_id && !formData.category_id) {
+      const selectedAccount = accounts.find((a: any) => a.id === formData.account_id);
+      if (selectedAccount?.category_id) {
+        setFormData(prev => ({ ...prev, category_id: selectedAccount.category_id }));
+      }
+    }
+  }, [formData.account_id, formData.category_id, accounts]);
 
   const openNewDialog = (direction: TransactionDirection = 'entrada') => {
     setEditingTransaction(null);
@@ -98,12 +147,16 @@ export default function Lancamentos() {
       transaction_date: new Date(transaction.transaction_date),
       due_date: new Date(transaction.due_date),
       paid_date: transaction.paid_date ? new Date(transaction.paid_date) : undefined,
+      category_id: transaction.category_id || '',
       account_id: transaction.account_id,
       wallet_id: transaction.wallet_id,
       counterparty_id: transaction.counterparty_id || '',
       cost_center_id: transaction.cost_center_id || '',
       status: transaction.status,
       notes: transaction.notes || '',
+      document_number: transaction.document_number || '',
+      document_type: transaction.document_type || '',
+      document_series: transaction.document_series || '',
     });
     setIsDialogOpen(true);
   };
@@ -128,12 +181,16 @@ export default function Lancamentos() {
       transaction_date: formData.transaction_date ? format(formData.transaction_date, 'yyyy-MM-dd') : format(new Date(), 'yyyy-MM-dd'),
       due_date: formData.due_date ? format(formData.due_date, 'yyyy-MM-dd') : format(new Date(), 'yyyy-MM-dd'),
       paid_date: formData.paid_date ? format(formData.paid_date, 'yyyy-MM-dd') : null,
+      category_id: formData.category_id || null,
       account_id: formData.account_id,
       wallet_id: formData.wallet_id,
       counterparty_id: formData.counterparty_id || null,
       cost_center_id: formData.cost_center_id || null,
       status: formData.status,
       notes: formData.notes || null,
+      document_number: formData.document_number || null,
+      document_type: formData.document_type || null,
+      document_series: formData.document_series || null,
     };
 
     let error;
@@ -175,12 +232,6 @@ export default function Lancamentos() {
     const config = variants[status];
     return <Badge variant={config.variant}>{config.label}</Badge>;
   };
-
-  const filteredAccounts = accounts.filter((a) =>
-    formData.direction === 'entrada'
-      ? a.category_type === 'receita'
-      : ['custo', 'despesa'].includes(a.category_type)
-  );
 
   const months = [
     { value: 1, label: 'Janeiro' },
@@ -309,6 +360,7 @@ export default function Lancamentos() {
                       <TableHead>Tipo</TableHead>
                       <TableHead>Data</TableHead>
                       <TableHead>Descrição</TableHead>
+                      <TableHead>Categoria</TableHead>
                       <TableHead>Conta</TableHead>
                       <TableHead>Carteira</TableHead>
                       <TableHead className="text-right">Valor</TableHead>
@@ -319,13 +371,13 @@ export default function Lancamentos() {
                   <TableBody>
                     {isLoading ? (
                       <TableRow>
-                        <TableCell colSpan={8} className="text-center py-8">
+                        <TableCell colSpan={9} className="text-center py-8">
                           Carregando...
                         </TableCell>
                       </TableRow>
                     ) : transactions.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
+                        <TableCell colSpan={9} className="text-center py-8 text-muted-foreground">
                           Nenhum lançamento encontrado
                         </TableCell>
                       </TableRow>
@@ -342,7 +394,20 @@ export default function Lancamentos() {
                           <TableCell>
                             {format(new Date(t.transaction_date), 'dd/MM/yyyy')}
                           </TableCell>
-                          <TableCell className="font-medium">{t.description}</TableCell>
+                          <TableCell className="font-medium">
+                            <div>
+                              {t.description}
+                              {t.document_number && (
+                                <span className="block text-xs text-muted-foreground">
+                                  <FileText className="inline h-3 w-3 mr-1" />
+                                  {t.document_type?.toUpperCase()} {t.document_number}
+                                </span>
+                              )}
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-muted-foreground text-sm">
+                            {categories.find((c: any) => c.id === t.category_id)?.name || '-'}
+                          </TableCell>
                           <TableCell>{t.accounts?.name}</TableCell>
                           <TableCell>{t.wallets?.name}</TableCell>
                           <TableCell className={cn(
@@ -415,7 +480,12 @@ export default function Lancamentos() {
                 <Label>Tipo *</Label>
                 <Select
                   value={formData.direction}
-                  onValueChange={(v) => setFormData({ ...formData, direction: v as TransactionDirection, account_id: '' })}
+                  onValueChange={(v) => setFormData({ 
+                    ...formData, 
+                    direction: v as TransactionDirection, 
+                    account_id: '',
+                    category_id: ''
+                  })}
                 >
                   <SelectTrigger>
                     <SelectValue />
@@ -453,6 +523,65 @@ export default function Lancamentos() {
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 placeholder="Ex: Venda de produto, Pagamento de aluguel..."
               />
+            </div>
+
+            {/* Categoria e Conta */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Categoria *</Label>
+                <Select
+                  value={formData.category_id || "__none__"}
+                  onValueChange={(v) => {
+                    const newCategoryId = v === "__none__" ? "" : v;
+                    setFormData({ 
+                      ...formData, 
+                      category_id: newCategoryId,
+                      account_id: '' // Reset account when category changes
+                    });
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="__none__">Selecione...</SelectItem>
+                    {filteredCategories.map((c: any) => (
+                      <SelectItem key={c.id} value={c.id}>
+                        {c.code} - {c.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Conta Contábil *</Label>
+                <Select
+                  value={formData.account_id || "__none__"}
+                  onValueChange={(v) => {
+                    const newAccountId = v === "__none__" ? "" : v;
+                    // Auto-fill category from account
+                    const selectedAccount = accounts.find((a: any) => a.id === newAccountId);
+                    setFormData({ 
+                      ...formData, 
+                      account_id: newAccountId,
+                      category_id: selectedAccount?.category_id || formData.category_id
+                    });
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="__none__">Selecione...</SelectItem>
+                    {filteredAccounts.map((a: any) => (
+                      <SelectItem key={a.id} value={a.id}>
+                        {a.code} - {a.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -568,20 +697,22 @@ export default function Lancamentos() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            {/* Documento */}
+            <div className="grid grid-cols-3 gap-4">
               <div className="space-y-2">
-                <Label>Conta Contábil *</Label>
+                <Label>Tipo Documento</Label>
                 <Select
-                  value={formData.account_id}
-                  onValueChange={(v) => setFormData({ ...formData, account_id: v })}
+                  value={formData.document_type || "__none__"}
+                  onValueChange={(v) => setFormData({ ...formData, document_type: v === "__none__" ? "" : v as DocumentType })}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Selecione..." />
                   </SelectTrigger>
                   <SelectContent>
-                    {filteredAccounts.map((a) => (
-                      <SelectItem key={a.id} value={a.id}>
-                        {a.code} - {a.name}
+                    <SelectItem value="__none__">Nenhum</SelectItem>
+                    {DOCUMENT_TYPES.map((dt) => (
+                      <SelectItem key={dt.value} value={dt.value}>
+                        {dt.label}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -589,15 +720,36 @@ export default function Lancamentos() {
               </div>
 
               <div className="space-y-2">
+                <Label>Número do Documento</Label>
+                <Input
+                  value={formData.document_number}
+                  onChange={(e) => setFormData({ ...formData, document_number: e.target.value })}
+                  placeholder="NF 123, FAT-001..."
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Série (opcional)</Label>
+                <Input
+                  value={formData.document_series}
+                  onChange={(e) => setFormData({ ...formData, document_series: e.target.value })}
+                  placeholder="001"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
                 <Label>Carteira *</Label>
                 <Select
-                  value={formData.wallet_id}
-                  onValueChange={(v) => setFormData({ ...formData, wallet_id: v })}
+                  value={formData.wallet_id || "__none__"}
+                  onValueChange={(v) => setFormData({ ...formData, wallet_id: v === "__none__" ? "" : v })}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Selecione..." />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="__none__">Selecione...</SelectItem>
                     {wallets.map((w) => (
                       <SelectItem key={w.id} value={w.id}>
                         {w.name}
@@ -606,9 +758,7 @@ export default function Lancamentos() {
                   </SelectContent>
                 </Select>
               </div>
-            </div>
 
-            <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Cliente/Fornecedor</Label>
                 <Select
@@ -628,26 +778,26 @@ export default function Lancamentos() {
                   </SelectContent>
                 </Select>
               </div>
+            </div>
 
-              <div className="space-y-2">
-                <Label>Centro de Custo</Label>
-                <Select
-                  value={formData.cost_center_id || "__none__"}
-                  onValueChange={(v) => setFormData({ ...formData, cost_center_id: v === "__none__" ? "" : v })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecione..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="__none__">Nenhum</SelectItem>
-                    {costCenters.map((cc) => (
-                      <SelectItem key={cc.id} value={cc.id}>
-                        {cc.code} - {cc.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+            <div className="space-y-2">
+              <Label>Centro de Custo</Label>
+              <Select
+                value={formData.cost_center_id || "__none__"}
+                onValueChange={(v) => setFormData({ ...formData, cost_center_id: v === "__none__" ? "" : v })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="__none__">Nenhum</SelectItem>
+                  {costCenters.map((cc) => (
+                    <SelectItem key={cc.id} value={cc.id}>
+                      {cc.code} - {cc.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="space-y-2">
