@@ -69,6 +69,24 @@ const adminModules = [
     icon: FileText,
     href: "/admin/tipos-documento",
   },
+  {
+    title: "Períodos Fiscais",
+    description: "Gerenciar períodos e travas contábeis",
+    icon: FileCheck,
+    href: "/admin/periodos-fiscais",
+  },
+  {
+    title: "Regras SoD",
+    description: "Segregação de funções e conflitos",
+    icon: Shield,
+    href: "/admin/sod",
+  },
+  {
+    title: "Limites de Valores",
+    description: "Limites de transação por usuário",
+    icon: Key,
+    href: "/admin/limites",
+  },
 ];
 
 export default function AdminIndex() {
