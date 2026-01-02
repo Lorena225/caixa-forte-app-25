@@ -5010,6 +5010,56 @@ export type Database = {
           },
         ]
       }
+      saved_filters: {
+        Row: {
+          company_id: string
+          created_at: string
+          description: string | null
+          filter_type: string
+          filters_json: Json
+          id: string
+          is_default: boolean | null
+          is_shared: boolean | null
+          name: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          description?: string | null
+          filter_type?: string
+          filters_json?: Json
+          id?: string
+          is_default?: boolean | null
+          is_shared?: boolean | null
+          name: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          description?: string | null
+          filter_type?: string
+          filters_json?: Json
+          id?: string
+          is_default?: boolean | null
+          is_shared?: boolean | null
+          name?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "saved_filters_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       sod_exceptions: {
         Row: {
           approved_at: string | null
@@ -6404,6 +6454,24 @@ export type Database = {
           },
         ]
       }
+      v_ap_aging_summary: {
+        Row: {
+          aging_bucket: string | null
+          company_id: string | null
+          doc_count: number | null
+          oldest_date: string | null
+          total_amount: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transactions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       v_ap_open: {
         Row: {
           account_code: string | null
@@ -6527,6 +6595,24 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "customer_invoices_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_ar_aging_summary: {
+        Row: {
+          aging_bucket: string | null
+          company_id: string | null
+          doc_count: number | null
+          oldest_date: string | null
+          total_amount: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transactions_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
@@ -6677,6 +6763,70 @@ export type Database = {
           },
         ]
       }
+      v_budget_vs_actual_monthly: {
+        Row: {
+          actual_expense: number | null
+          actual_margin: number | null
+          actual_profit: number | null
+          actual_revenue: number | null
+          company_id: string | null
+          expense_variance: number | null
+          expense_variance_pct: number | null
+          month: number | null
+          profit_variance: number | null
+          revenue_variance: number | null
+          revenue_variance_pct: number | null
+          target_expense: number | null
+          target_margin: number | null
+          target_profit: number | null
+          target_revenue: number | null
+          year: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "budgets_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_cash_daily_balance: {
+        Row: {
+          closing_balance: number | null
+          company_id: string | null
+          inflows: number | null
+          movement_date: string | null
+          net: number | null
+          outflows: number | null
+          wallet_id: string | null
+          wallet_name: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transactions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_wallet_id_fkey"
+            columns: ["wallet_id"]
+            isOneToOne: false
+            referencedRelation: "v_cash_position_daily"
+            referencedColumns: ["wallet_id"]
+          },
+          {
+            foreignKeyName: "transactions_wallet_id_fkey"
+            columns: ["wallet_id"]
+            isOneToOne: false
+            referencedRelation: "wallets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       v_cash_position_daily: {
         Row: {
           company_id: string | null
@@ -6718,6 +6868,63 @@ export type Database = {
           },
         ]
       }
+      v_cashflow_projection_daily: {
+        Row: {
+          company_id: string | null
+          inflows: number | null
+          net: number | null
+          outflows: number | null
+          projected_balance: number | null
+          projection_date: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wallets_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_cashflow_weekly_projection: {
+        Row: {
+          company_id: string | null
+          inflows: number | null
+          net: number | null
+          outflows: number | null
+          projected_balance: number | null
+          week_number: number | null
+          week_start: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wallets_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_dpo_monthly: {
+        Row: {
+          company_id: string | null
+          dpo_days: number | null
+          month: number | null
+          total_payments: number | null
+          year: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transactions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       v_dre_monthly: {
         Row: {
           account_code: string | null
@@ -6726,6 +6933,24 @@ export type Database = {
           company_id: string | null
           month: number | null
           total: number | null
+          year: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transactions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_dso_monthly: {
+        Row: {
+          company_id: string | null
+          dso_days: number | null
+          month: number | null
+          total_sales: number | null
           year: number | null
         }
         Relationships: [
@@ -6870,6 +7095,62 @@ export type Database = {
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_top_creditors: {
+        Row: {
+          company_id: string | null
+          counterparty_id: string | null
+          counterparty_name: string | null
+          doc_count: number | null
+          max_days_overdue: number | null
+          oldest_due_date: string | null
+          total_open: number | null
+          total_overdue: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transactions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_counterparty_id_fkey"
+            columns: ["counterparty_id"]
+            isOneToOne: false
+            referencedRelation: "counterparties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_top_debtors: {
+        Row: {
+          company_id: string | null
+          counterparty_id: string | null
+          counterparty_name: string | null
+          doc_count: number | null
+          max_days_overdue: number | null
+          oldest_due_date: string | null
+          total_open: number | null
+          total_overdue: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transactions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_counterparty_id_fkey"
+            columns: ["counterparty_id"]
+            isOneToOne: false
+            referencedRelation: "counterparties"
             referencedColumns: ["id"]
           },
         ]
