@@ -249,6 +249,59 @@ export type Database = {
           },
         ]
       }
+      ai_company_settings: {
+        Row: {
+          agent_profile_id: string | null
+          allow_auto_create_and_settle: boolean
+          allow_auto_create_counterparty: boolean
+          allow_auto_settle: boolean
+          autopilot_mode: string
+          company_id: string
+          enabled: boolean
+          high_risk_amount_limit: number | null
+          require_pin_for_high_risk: boolean
+          thresholds_json: Json
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          agent_profile_id?: string | null
+          allow_auto_create_and_settle?: boolean
+          allow_auto_create_counterparty?: boolean
+          allow_auto_settle?: boolean
+          autopilot_mode?: string
+          company_id: string
+          enabled?: boolean
+          high_risk_amount_limit?: number | null
+          require_pin_for_high_risk?: boolean
+          thresholds_json?: Json
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          agent_profile_id?: string | null
+          allow_auto_create_and_settle?: boolean
+          allow_auto_create_counterparty?: boolean
+          allow_auto_settle?: boolean
+          autopilot_mode?: string
+          company_id?: string
+          enabled?: boolean
+          high_risk_amount_limit?: number | null
+          require_pin_for_high_risk?: boolean
+          thresholds_json?: Json
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_company_settings_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ai_confirmations: {
         Row: {
           approved_at: string | null
@@ -1682,6 +1735,59 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      company_ai_keys: {
+        Row: {
+          company_id: string
+          created_at: string
+          created_by: string | null
+          encrypted_key: string
+          encryption_meta: Json
+          id: string
+          is_active: boolean
+          key_last4: string
+          provider: string
+          revoked_at: string | null
+          rotated_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          created_by?: string | null
+          encrypted_key: string
+          encryption_meta?: Json
+          id?: string
+          is_active?: boolean
+          key_last4: string
+          provider?: string
+          revoked_at?: string | null
+          rotated_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          created_by?: string | null
+          encrypted_key?: string
+          encryption_meta?: Json
+          id?: string
+          is_active?: boolean
+          key_last4?: string
+          provider?: string
+          revoked_at?: string | null
+          rotated_at?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_ai_keys_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       company_users: {
         Row: {

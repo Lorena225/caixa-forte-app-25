@@ -60,6 +60,7 @@ const autopilot = [
 
 const integracoes = [
   { icon: Link2, label: 'Integrações', href: '/integracoes' },
+  { icon: Bot, label: 'IA (ChatGPT)', href: '/integracoes/ia' },
   { icon: FileSpreadsheet, label: 'Importar/Exportar', href: '/importar-exportar' },
 ];
 
@@ -139,6 +140,27 @@ export function Sidebar() {
                 className={cn(
                   'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
                   location.pathname.startsWith(item.href)
+                    ? 'bg-sidebar-accent text-sidebar-accent-foreground'
+                    : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'
+                )}
+              >
+                <item.icon className="h-4 w-4" />
+                {item.label}
+              </Link>
+            ))}
+          </div>
+
+          <div className="pt-4">
+            <p className="px-3 pb-2 text-xs font-medium uppercase tracking-wider text-sidebar-foreground/50">
+              Integrações
+            </p>
+            {integracoes.map((item) => (
+              <Link
+                key={item.href}
+                to={item.href}
+                className={cn(
+                  'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
+                  location.pathname === item.href || location.pathname.startsWith(item.href + '/')
                     ? 'bg-sidebar-accent text-sidebar-accent-foreground'
                     : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'
                 )}
