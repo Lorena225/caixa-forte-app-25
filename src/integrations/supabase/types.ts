@@ -1094,6 +1094,116 @@ export type Database = {
           },
         ]
       }
+      bank_accounts: {
+        Row: {
+          account_digit: string | null
+          account_number: string
+          account_type: string
+          agency: string
+          agency_digit: string | null
+          bank_code: string
+          bank_name: string | null
+          branch_id: string | null
+          cnab_agreement: string | null
+          cnab_layout: string | null
+          cnab_service_type: string | null
+          cnab_variation: string | null
+          cnab_wallet: string | null
+          company_id: string
+          created_at: string
+          credentials_encrypted: string | null
+          credentials_meta: Json | null
+          holder_document: string | null
+          holder_name: string | null
+          id: string
+          is_active: boolean
+          is_default: boolean
+          updated_at: string
+          wallet_id: string | null
+        }
+        Insert: {
+          account_digit?: string | null
+          account_number: string
+          account_type?: string
+          agency: string
+          agency_digit?: string | null
+          bank_code: string
+          bank_name?: string | null
+          branch_id?: string | null
+          cnab_agreement?: string | null
+          cnab_layout?: string | null
+          cnab_service_type?: string | null
+          cnab_variation?: string | null
+          cnab_wallet?: string | null
+          company_id: string
+          created_at?: string
+          credentials_encrypted?: string | null
+          credentials_meta?: Json | null
+          holder_document?: string | null
+          holder_name?: string | null
+          id?: string
+          is_active?: boolean
+          is_default?: boolean
+          updated_at?: string
+          wallet_id?: string | null
+        }
+        Update: {
+          account_digit?: string | null
+          account_number?: string
+          account_type?: string
+          agency?: string
+          agency_digit?: string | null
+          bank_code?: string
+          bank_name?: string | null
+          branch_id?: string | null
+          cnab_agreement?: string | null
+          cnab_layout?: string | null
+          cnab_service_type?: string | null
+          cnab_variation?: string | null
+          cnab_wallet?: string | null
+          company_id?: string
+          created_at?: string
+          credentials_encrypted?: string | null
+          credentials_meta?: Json | null
+          holder_document?: string | null
+          holder_name?: string | null
+          id?: string
+          is_active?: boolean
+          is_default?: boolean
+          updated_at?: string
+          wallet_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bank_accounts_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bank_accounts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bank_accounts_wallet_id_fkey"
+            columns: ["wallet_id"]
+            isOneToOne: false
+            referencedRelation: "v_cash_position_daily"
+            referencedColumns: ["wallet_id"]
+          },
+          {
+            foreignKeyName: "bank_accounts_wallet_id_fkey"
+            columns: ["wallet_id"]
+            isOneToOne: false
+            referencedRelation: "wallets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bank_statement_imports: {
         Row: {
           closing_balance: number | null
@@ -1297,6 +1407,186 @@ export type Database = {
           },
         ]
       }
+      boleto_events: {
+        Row: {
+          amount: number | null
+          boleto_id: string
+          company_id: string
+          created_at: string
+          event_date: string
+          event_type: string
+          id: string
+          metadata_json: Json | null
+          return_code: string | null
+          return_message: string | null
+          source: string | null
+          source_id: string | null
+        }
+        Insert: {
+          amount?: number | null
+          boleto_id: string
+          company_id: string
+          created_at?: string
+          event_date?: string
+          event_type: string
+          id?: string
+          metadata_json?: Json | null
+          return_code?: string | null
+          return_message?: string | null
+          source?: string | null
+          source_id?: string | null
+        }
+        Update: {
+          amount?: number | null
+          boleto_id?: string
+          company_id?: string
+          created_at?: string
+          event_date?: string
+          event_type?: string
+          id?: string
+          metadata_json?: Json | null
+          return_code?: string | null
+          return_message?: string | null
+          source?: string | null
+          source_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "boleto_events_boleto_id_fkey"
+            columns: ["boleto_id"]
+            isOneToOne: false
+            referencedRelation: "boletos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "boleto_events_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      boletos: {
+        Row: {
+          agreement_id: string | null
+          amount: number
+          amount_paid: number | null
+          barcode: string | null
+          cancelled_at: string | null
+          company_id: string
+          created_at: string
+          digitable_line: string | null
+          discount_amount: number | null
+          due_date: string
+          fine_amount: number | null
+          id: string
+          interest_amount: number | null
+          issue_date: string
+          our_number: string
+          paid_at: string | null
+          paid_date: string | null
+          pdf_url: string | null
+          pix_code: string | null
+          registered_at: string | null
+          registration_status: string | null
+          status: string
+          transaction_id: string | null
+          updated_at: string
+          your_number: string | null
+        }
+        Insert: {
+          agreement_id?: string | null
+          amount: number
+          amount_paid?: number | null
+          barcode?: string | null
+          cancelled_at?: string | null
+          company_id: string
+          created_at?: string
+          digitable_line?: string | null
+          discount_amount?: number | null
+          due_date: string
+          fine_amount?: number | null
+          id?: string
+          interest_amount?: number | null
+          issue_date?: string
+          our_number: string
+          paid_at?: string | null
+          paid_date?: string | null
+          pdf_url?: string | null
+          pix_code?: string | null
+          registered_at?: string | null
+          registration_status?: string | null
+          status?: string
+          transaction_id?: string | null
+          updated_at?: string
+          your_number?: string | null
+        }
+        Update: {
+          agreement_id?: string | null
+          amount?: number
+          amount_paid?: number | null
+          barcode?: string | null
+          cancelled_at?: string | null
+          company_id?: string
+          created_at?: string
+          digitable_line?: string | null
+          discount_amount?: number | null
+          due_date?: string
+          fine_amount?: number | null
+          id?: string
+          interest_amount?: number | null
+          issue_date?: string
+          our_number?: string
+          paid_at?: string | null
+          paid_date?: string | null
+          pdf_url?: string | null
+          pix_code?: string | null
+          registered_at?: string | null
+          registration_status?: string | null
+          status?: string
+          transaction_id?: string | null
+          updated_at?: string
+          your_number?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "boletos_agreement_id_fkey"
+            columns: ["agreement_id"]
+            isOneToOne: false
+            referencedRelation: "cnab_agreements"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "boletos_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "boletos_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "boletos_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "v_ap_open"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "boletos_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "v_ar_open"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       branches: {
         Row: {
           address: string | null
@@ -1402,6 +1692,370 @@ export type Database = {
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      card_merchants: {
+        Row: {
+          anticipation_rate: number | null
+          company_id: string
+          created_at: string
+          credentials_encrypted: string | null
+          credentials_meta: Json | null
+          default_mdr_credit: number | null
+          default_mdr_debit: number | null
+          default_mdr_installment: number | null
+          id: string
+          is_active: boolean
+          merchant_id: string | null
+          merchant_type: string
+          name: string
+          provider: string | null
+          settlement_wallet_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          anticipation_rate?: number | null
+          company_id: string
+          created_at?: string
+          credentials_encrypted?: string | null
+          credentials_meta?: Json | null
+          default_mdr_credit?: number | null
+          default_mdr_debit?: number | null
+          default_mdr_installment?: number | null
+          id?: string
+          is_active?: boolean
+          merchant_id?: string | null
+          merchant_type: string
+          name: string
+          provider?: string | null
+          settlement_wallet_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          anticipation_rate?: number | null
+          company_id?: string
+          created_at?: string
+          credentials_encrypted?: string | null
+          credentials_meta?: Json | null
+          default_mdr_credit?: number | null
+          default_mdr_debit?: number | null
+          default_mdr_installment?: number | null
+          id?: string
+          is_active?: boolean
+          merchant_id?: string | null
+          merchant_type?: string
+          name?: string
+          provider?: string | null
+          settlement_wallet_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "card_merchants_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "card_merchants_settlement_wallet_id_fkey"
+            columns: ["settlement_wallet_id"]
+            isOneToOne: false
+            referencedRelation: "v_cash_position_daily"
+            referencedColumns: ["wallet_id"]
+          },
+          {
+            foreignKeyName: "card_merchants_settlement_wallet_id_fkey"
+            columns: ["settlement_wallet_id"]
+            isOneToOne: false
+            referencedRelation: "wallets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      card_receivables: {
+        Row: {
+          anticipated_amount: number | null
+          anticipated_at: string | null
+          anticipation_cost: number | null
+          anticipation_rate: number | null
+          company_id: string
+          created_at: string
+          expected_date: string
+          gross_amount: number
+          id: string
+          installment_number: number
+          mdr_amount: number
+          net_amount: number
+          sale_id: string
+          settled_at: string | null
+          settlement_date: string | null
+          settlement_id: string | null
+          status: string
+        }
+        Insert: {
+          anticipated_amount?: number | null
+          anticipated_at?: string | null
+          anticipation_cost?: number | null
+          anticipation_rate?: number | null
+          company_id: string
+          created_at?: string
+          expected_date: string
+          gross_amount: number
+          id?: string
+          installment_number: number
+          mdr_amount?: number
+          net_amount: number
+          sale_id: string
+          settled_at?: string | null
+          settlement_date?: string | null
+          settlement_id?: string | null
+          status?: string
+        }
+        Update: {
+          anticipated_amount?: number | null
+          anticipated_at?: string | null
+          anticipation_cost?: number | null
+          anticipation_rate?: number | null
+          company_id?: string
+          created_at?: string
+          expected_date?: string
+          gross_amount?: number
+          id?: string
+          installment_number?: number
+          mdr_amount?: number
+          net_amount?: number
+          sale_id?: string
+          settled_at?: string | null
+          settlement_date?: string | null
+          settlement_id?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "card_receivables_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "card_receivables_sale_id_fkey"
+            columns: ["sale_id"]
+            isOneToOne: false
+            referencedRelation: "card_sales"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      card_sales: {
+        Row: {
+          authorization_code: string | null
+          cancelled_at: string | null
+          card_brand: string
+          card_last4: string | null
+          card_type: string
+          company_id: string
+          created_at: string
+          external_id: string | null
+          gross_amount: number
+          id: string
+          import_batch_id: string | null
+          installments: number
+          mdr_amount: number | null
+          mdr_rate: number | null
+          merchant_id: string
+          net_amount: number | null
+          nsu: string | null
+          sale_date: string
+          sale_time: string | null
+          status: string
+          tid: string | null
+          transaction_id: string | null
+        }
+        Insert: {
+          authorization_code?: string | null
+          cancelled_at?: string | null
+          card_brand: string
+          card_last4?: string | null
+          card_type: string
+          company_id: string
+          created_at?: string
+          external_id?: string | null
+          gross_amount: number
+          id?: string
+          import_batch_id?: string | null
+          installments?: number
+          mdr_amount?: number | null
+          mdr_rate?: number | null
+          merchant_id: string
+          net_amount?: number | null
+          nsu?: string | null
+          sale_date: string
+          sale_time?: string | null
+          status?: string
+          tid?: string | null
+          transaction_id?: string | null
+        }
+        Update: {
+          authorization_code?: string | null
+          cancelled_at?: string | null
+          card_brand?: string
+          card_last4?: string | null
+          card_type?: string
+          company_id?: string
+          created_at?: string
+          external_id?: string | null
+          gross_amount?: number
+          id?: string
+          import_batch_id?: string | null
+          installments?: number
+          mdr_amount?: number | null
+          mdr_rate?: number | null
+          merchant_id?: string
+          net_amount?: number | null
+          nsu?: string | null
+          sale_date?: string
+          sale_time?: string | null
+          status?: string
+          tid?: string | null
+          transaction_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "card_sales_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "card_sales_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "card_merchants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "card_sales_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "card_sales_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "v_ap_open"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "card_sales_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "v_ar_open"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      card_settlements: {
+        Row: {
+          adjustment_amount: number
+          anticipation_cost: number
+          company_id: string
+          created_at: string
+          fee_amount: number
+          gross_amount: number
+          id: string
+          is_reconciled: boolean
+          mdr_amount: number
+          merchant_id: string
+          net_amount: number
+          receivable_count: number
+          reconciled_at: string | null
+          reference_date: string | null
+          settlement_date: string
+          statement_line_id: string | null
+          status: string
+          wallet_id: string | null
+        }
+        Insert: {
+          adjustment_amount?: number
+          anticipation_cost?: number
+          company_id: string
+          created_at?: string
+          fee_amount?: number
+          gross_amount: number
+          id?: string
+          is_reconciled?: boolean
+          mdr_amount?: number
+          merchant_id: string
+          net_amount: number
+          receivable_count?: number
+          reconciled_at?: string | null
+          reference_date?: string | null
+          settlement_date: string
+          statement_line_id?: string | null
+          status?: string
+          wallet_id?: string | null
+        }
+        Update: {
+          adjustment_amount?: number
+          anticipation_cost?: number
+          company_id?: string
+          created_at?: string
+          fee_amount?: number
+          gross_amount?: number
+          id?: string
+          is_reconciled?: boolean
+          mdr_amount?: number
+          merchant_id?: string
+          net_amount?: number
+          receivable_count?: number
+          reconciled_at?: string | null
+          reference_date?: string | null
+          settlement_date?: string
+          statement_line_id?: string | null
+          status?: string
+          wallet_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "card_settlements_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "card_settlements_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "card_merchants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "card_settlements_statement_line_id_fkey"
+            columns: ["statement_line_id"]
+            isOneToOne: false
+            referencedRelation: "bank_statement_lines"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "card_settlements_wallet_id_fkey"
+            columns: ["wallet_id"]
+            isOneToOne: false
+            referencedRelation: "v_cash_position_daily"
+            referencedColumns: ["wallet_id"]
+          },
+          {
+            foreignKeyName: "card_settlements_wallet_id_fkey"
+            columns: ["wallet_id"]
+            isOneToOne: false
+            referencedRelation: "wallets"
             referencedColumns: ["id"]
           },
         ]
@@ -1664,6 +2318,78 @@ export type Database = {
           },
         ]
       }
+      cnab_agreements: {
+        Row: {
+          agreement_number: string
+          bank_account_id: string | null
+          bank_code: string
+          company_id: string
+          config_json: Json | null
+          created_at: string
+          id: string
+          is_active: boolean
+          layout: string
+          name: string
+          operation_type: string
+          service_type: string | null
+          transmission_code: string | null
+          updated_at: string
+          wallet_code: string | null
+          wallet_variation: string | null
+        }
+        Insert: {
+          agreement_number: string
+          bank_account_id?: string | null
+          bank_code: string
+          company_id: string
+          config_json?: Json | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          layout: string
+          name: string
+          operation_type: string
+          service_type?: string | null
+          transmission_code?: string | null
+          updated_at?: string
+          wallet_code?: string | null
+          wallet_variation?: string | null
+        }
+        Update: {
+          agreement_number?: string
+          bank_account_id?: string | null
+          bank_code?: string
+          company_id?: string
+          config_json?: Json | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          layout?: string
+          name?: string
+          operation_type?: string
+          service_type?: string | null
+          transmission_code?: string | null
+          updated_at?: string
+          wallet_code?: string | null
+          wallet_variation?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cnab_agreements_bank_account_id_fkey"
+            columns: ["bank_account_id"]
+            isOneToOne: false
+            referencedRelation: "bank_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cnab_agreements_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cnab_files: {
         Row: {
           cnab_layout: string
@@ -1819,6 +2545,252 @@ export type Database = {
             columns: ["related_transaction_id"]
             isOneToOne: false
             referencedRelation: "v_ar_open"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cnab_remittance_items: {
+        Row: {
+          amount: number
+          company_id: string
+          created_at: string
+          document_number: string | null
+          due_date: string | null
+          id: string
+          line_number: number | null
+          operation_code: string | null
+          our_number: string | null
+          processed_at: string | null
+          remittance_id: string
+          return_code: string | null
+          return_message: string | null
+          status: string
+          transaction_id: string | null
+          your_number: string | null
+        }
+        Insert: {
+          amount: number
+          company_id: string
+          created_at?: string
+          document_number?: string | null
+          due_date?: string | null
+          id?: string
+          line_number?: number | null
+          operation_code?: string | null
+          our_number?: string | null
+          processed_at?: string | null
+          remittance_id: string
+          return_code?: string | null
+          return_message?: string | null
+          status?: string
+          transaction_id?: string | null
+          your_number?: string | null
+        }
+        Update: {
+          amount?: number
+          company_id?: string
+          created_at?: string
+          document_number?: string | null
+          due_date?: string | null
+          id?: string
+          line_number?: number | null
+          operation_code?: string | null
+          our_number?: string | null
+          processed_at?: string | null
+          remittance_id?: string
+          return_code?: string | null
+          return_message?: string | null
+          status?: string
+          transaction_id?: string | null
+          your_number?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cnab_remittance_items_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cnab_remittance_items_remittance_id_fkey"
+            columns: ["remittance_id"]
+            isOneToOne: false
+            referencedRelation: "cnab_remittances"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cnab_remittance_items_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cnab_remittance_items_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "v_ap_open"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cnab_remittance_items_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "v_ar_open"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cnab_remittances: {
+        Row: {
+          agreement_id: string | null
+          approved_at: string | null
+          approved_by: string | null
+          company_id: string
+          confirmed_at: string | null
+          created_at: string
+          error_message: string | null
+          file_content: string | null
+          file_hash: string | null
+          file_sequence: number
+          file_url: string | null
+          generated_at: string
+          id: string
+          operation_type: string
+          record_count: number
+          remittance_number: number
+          requires_approval: boolean
+          sent_at: string | null
+          sent_by: string | null
+          status: string
+          total_amount: number
+        }
+        Insert: {
+          agreement_id?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
+          company_id: string
+          confirmed_at?: string | null
+          created_at?: string
+          error_message?: string | null
+          file_content?: string | null
+          file_hash?: string | null
+          file_sequence?: number
+          file_url?: string | null
+          generated_at?: string
+          id?: string
+          operation_type: string
+          record_count?: number
+          remittance_number?: number
+          requires_approval?: boolean
+          sent_at?: string | null
+          sent_by?: string | null
+          status?: string
+          total_amount?: number
+        }
+        Update: {
+          agreement_id?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
+          company_id?: string
+          confirmed_at?: string | null
+          created_at?: string
+          error_message?: string | null
+          file_content?: string | null
+          file_hash?: string | null
+          file_sequence?: number
+          file_url?: string | null
+          generated_at?: string
+          id?: string
+          operation_type?: string
+          record_count?: number
+          remittance_number?: number
+          requires_approval?: boolean
+          sent_at?: string | null
+          sent_by?: string | null
+          status?: string
+          total_amount?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cnab_remittances_agreement_id_fkey"
+            columns: ["agreement_id"]
+            isOneToOne: false
+            referencedRelation: "cnab_agreements"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cnab_remittances_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cnab_return_files: {
+        Row: {
+          agreement_id: string | null
+          company_id: string
+          created_at: string
+          error_message: string | null
+          file_content: string | null
+          file_hash: string
+          file_sequence: number | null
+          file_url: string | null
+          id: string
+          processed_at: string | null
+          processed_by: string | null
+          record_count: number | null
+          status: string
+          summary_json: Json | null
+        }
+        Insert: {
+          agreement_id?: string | null
+          company_id: string
+          created_at?: string
+          error_message?: string | null
+          file_content?: string | null
+          file_hash: string
+          file_sequence?: number | null
+          file_url?: string | null
+          id?: string
+          processed_at?: string | null
+          processed_by?: string | null
+          record_count?: number | null
+          status?: string
+          summary_json?: Json | null
+        }
+        Update: {
+          agreement_id?: string | null
+          company_id?: string
+          created_at?: string
+          error_message?: string | null
+          file_content?: string | null
+          file_hash?: string
+          file_sequence?: number | null
+          file_url?: string | null
+          id?: string
+          processed_at?: string | null
+          processed_by?: string | null
+          record_count?: number | null
+          status?: string
+          summary_json?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cnab_return_files_agreement_id_fkey"
+            columns: ["agreement_id"]
+            isOneToOne: false
+            referencedRelation: "cnab_agreements"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cnab_return_files_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
             referencedColumns: ["id"]
           },
         ]
@@ -5712,6 +6684,53 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "reconciliation_suggestions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reconciliation_tolerances: {
+        Row: {
+          amount_tolerance: number | null
+          amount_tolerance_percent: number | null
+          auto_confirm: boolean
+          company_id: string
+          created_at: string
+          date_tolerance_days: number | null
+          id: string
+          is_active: boolean
+          name: string
+          tolerance_type: string
+        }
+        Insert: {
+          amount_tolerance?: number | null
+          amount_tolerance_percent?: number | null
+          auto_confirm?: boolean
+          company_id: string
+          created_at?: string
+          date_tolerance_days?: number | null
+          id?: string
+          is_active?: boolean
+          name: string
+          tolerance_type: string
+        }
+        Update: {
+          amount_tolerance?: number | null
+          amount_tolerance_percent?: number | null
+          auto_confirm?: boolean
+          company_id?: string
+          created_at?: string
+          date_tolerance_days?: number | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          tolerance_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reconciliation_tolerances_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
