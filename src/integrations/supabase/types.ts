@@ -1505,6 +1505,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "categorization_rules_cost_center_id_fkey"
+            columns: ["cost_center_id"]
+            isOneToOne: false
+            referencedRelation: "v_cost_center_tree"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "categorization_rules_counterparty_id_fkey"
             columns: ["counterparty_id"]
             isOneToOne: false
@@ -1909,40 +1916,259 @@ export type Database = {
           },
         ]
       }
+      cost_center_closure: {
+        Row: {
+          ancestor_id: string
+          company_id: string
+          depth: number
+          descendant_id: string
+          id: string
+        }
+        Insert: {
+          ancestor_id: string
+          company_id: string
+          depth?: number
+          descendant_id: string
+          id?: string
+        }
+        Update: {
+          ancestor_id?: string
+          company_id?: string
+          depth?: number
+          descendant_id?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cost_center_closure_ancestor_id_fkey"
+            columns: ["ancestor_id"]
+            isOneToOne: false
+            referencedRelation: "cost_centers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cost_center_closure_ancestor_id_fkey"
+            columns: ["ancestor_id"]
+            isOneToOne: false
+            referencedRelation: "v_cost_center_tree"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cost_center_closure_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cost_center_closure_descendant_id_fkey"
+            columns: ["descendant_id"]
+            isOneToOne: false
+            referencedRelation: "cost_centers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cost_center_closure_descendant_id_fkey"
+            columns: ["descendant_id"]
+            isOneToOne: false
+            referencedRelation: "v_cost_center_tree"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cost_center_hierarchy_settings: {
+        Row: {
+          auto_create_root: boolean
+          code_policy_json: Json | null
+          company_id: string
+          created_at: string
+          level_labels_json: Json
+          level_types_json: Json
+          levels_enabled: number
+          posting_level_max: number | null
+          posting_level_min: number | null
+          posting_policy: string
+          require_cost_center: boolean
+          updated_at: string
+        }
+        Insert: {
+          auto_create_root?: boolean
+          code_policy_json?: Json | null
+          company_id: string
+          created_at?: string
+          level_labels_json?: Json
+          level_types_json?: Json
+          levels_enabled?: number
+          posting_level_max?: number | null
+          posting_level_min?: number | null
+          posting_policy?: string
+          require_cost_center?: boolean
+          updated_at?: string
+        }
+        Update: {
+          auto_create_root?: boolean
+          code_policy_json?: Json | null
+          company_id?: string
+          created_at?: string
+          level_labels_json?: Json
+          level_types_json?: Json
+          levels_enabled?: number
+          posting_level_max?: number | null
+          posting_level_min?: number | null
+          posting_policy?: string
+          require_cost_center?: boolean
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cost_center_hierarchy_settings_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cost_center_responsibles: {
+        Row: {
+          company_id: string
+          cost_center_id: string
+          created_at: string
+          id: string
+          limits_json: Json | null
+          resp_role: string
+          user_id: string
+        }
+        Insert: {
+          company_id: string
+          cost_center_id: string
+          created_at?: string
+          id?: string
+          limits_json?: Json | null
+          resp_role?: string
+          user_id: string
+        }
+        Update: {
+          company_id?: string
+          cost_center_id?: string
+          created_at?: string
+          id?: string
+          limits_json?: Json | null
+          resp_role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cost_center_responsibles_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cost_center_responsibles_cost_center_id_fkey"
+            columns: ["cost_center_id"]
+            isOneToOne: false
+            referencedRelation: "cost_centers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cost_center_responsibles_cost_center_id_fkey"
+            columns: ["cost_center_id"]
+            isOneToOne: false
+            referencedRelation: "v_cost_center_tree"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cost_centers: {
         Row: {
+          branch_id: string | null
           code: string
           company_id: string
           created_at: string | null
           id: string
           is_active: boolean | null
+          is_leaf: boolean
+          level: number
+          level_type: string | null
+          manager_user_id: string | null
           name: string
+          parent_id: string | null
+          path: string
+          path_codes: string
+          tags_json: Json | null
           updated_at: string | null
+          valid_from: string | null
+          valid_to: string | null
         }
         Insert: {
+          branch_id?: string | null
           code: string
           company_id: string
           created_at?: string | null
           id?: string
           is_active?: boolean | null
+          is_leaf?: boolean
+          level?: number
+          level_type?: string | null
+          manager_user_id?: string | null
           name: string
+          parent_id?: string | null
+          path?: string
+          path_codes?: string
+          tags_json?: Json | null
           updated_at?: string | null
+          valid_from?: string | null
+          valid_to?: string | null
         }
         Update: {
+          branch_id?: string | null
           code?: string
           company_id?: string
           created_at?: string | null
           id?: string
           is_active?: boolean | null
+          is_leaf?: boolean
+          level?: number
+          level_type?: string | null
+          manager_user_id?: string | null
           name?: string
+          parent_id?: string | null
+          path?: string
+          path_codes?: string
+          tags_json?: Json | null
           updated_at?: string | null
+          valid_from?: string | null
+          valid_to?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "cost_centers_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "cost_centers_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cost_centers_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "cost_centers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cost_centers_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "v_cost_center_tree"
             referencedColumns: ["id"]
           },
         ]
@@ -2331,6 +2557,13 @@ export type Database = {
             columns: ["cost_center_id"]
             isOneToOne: false
             referencedRelation: "cost_centers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "customer_invoice_lines_cost_center_id_fkey"
+            columns: ["cost_center_id"]
+            isOneToOne: false
+            referencedRelation: "v_cost_center_tree"
             referencedColumns: ["id"]
           },
           {
@@ -4160,6 +4393,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "journal_lines_cost_center_id_fkey"
+            columns: ["cost_center_id"]
+            isOneToOne: false
+            referencedRelation: "v_cost_center_tree"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "journal_lines_counterparty_id_fkey"
             columns: ["counterparty_id"]
             isOneToOne: false
@@ -5813,6 +6053,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "transactions_cost_center_id_fkey"
+            columns: ["cost_center_id"]
+            isOneToOne: false
+            referencedRelation: "v_cost_center_tree"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "transactions_counterparty_id_fkey"
             columns: ["counterparty_id"]
             isOneToOne: false
@@ -6059,6 +6306,13 @@ export type Database = {
             columns: ["cost_center_id"]
             isOneToOne: false
             referencedRelation: "cost_centers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_bill_lines_cost_center_id_fkey"
+            columns: ["cost_center_id"]
+            isOneToOne: false
+            referencedRelation: "v_cost_center_tree"
             referencedColumns: ["id"]
           },
           {
@@ -6695,6 +6949,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "transactions_cost_center_id_fkey"
+            columns: ["cost_center_id"]
+            isOneToOne: false
+            referencedRelation: "v_cost_center_tree"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "transactions_counterparty_id_fkey"
             columns: ["counterparty_id"]
             isOneToOne: false
@@ -6840,6 +7101,13 @@ export type Database = {
             columns: ["cost_center_id"]
             isOneToOne: false
             referencedRelation: "cost_centers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_cost_center_id_fkey"
+            columns: ["cost_center_id"]
+            isOneToOne: false
+            referencedRelation: "v_cost_center_tree"
             referencedColumns: ["id"]
           },
           {
@@ -7047,6 +7315,59 @@ export type Database = {
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_cost_center_tree: {
+        Row: {
+          branch_id: string | null
+          branch_name: string | null
+          children_count: number | null
+          code: string | null
+          company_id: string | null
+          id: string | null
+          is_active: boolean | null
+          is_leaf: boolean | null
+          level: number | null
+          level_label: string | null
+          level_type: string | null
+          manager_user_id: string | null
+          name: string | null
+          parent_id: string | null
+          path: string | null
+          path_codes: string | null
+          tags_json: Json | null
+          valid_from: string | null
+          valid_to: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cost_centers_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cost_centers_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cost_centers_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "cost_centers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cost_centers_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "v_cost_center_tree"
             referencedColumns: ["id"]
           },
         ]
