@@ -176,17 +176,17 @@ export function FilterBar({
             {/* Branches */}
             {branches.length > 0 && (
               <Select
-                value={filters.branchIds[0] || ''}
+                value={filters.branchIds[0] || '__all__'}
                 onValueChange={(value) => onFiltersChange({ 
                   ...filters, 
-                  branchIds: value ? [value] : [] 
+                  branchIds: value === '__all__' ? [] : [value] 
                 })}
               >
                 <SelectTrigger className="w-[160px] h-9">
                   <SelectValue placeholder="Filial" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Todas</SelectItem>
+                  <SelectItem value="__all__">Todas</SelectItem>
                   {branches.map((b) => (
                     <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>
                   ))}
@@ -197,17 +197,17 @@ export function FilterBar({
             {/* Cost Centers */}
             {costCenters.length > 0 && (
               <Select
-                value={filters.costCenterIds[0] || ''}
+                value={filters.costCenterIds[0] || '__all__'}
                 onValueChange={(value) => onFiltersChange({ 
                   ...filters, 
-                  costCenterIds: value ? [value] : [] 
+                  costCenterIds: value === '__all__' ? [] : [value] 
                 })}
               >
                 <SelectTrigger className="w-[160px] h-9">
                   <SelectValue placeholder="Centro de Custo" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Todos</SelectItem>
+                  <SelectItem value="__all__">Todos</SelectItem>
                   {costCenters.map((cc) => (
                     <SelectItem key={cc.id} value={cc.id}>{cc.code} - {cc.name}</SelectItem>
                   ))}
@@ -218,17 +218,17 @@ export function FilterBar({
             {/* Wallets */}
             {wallets.length > 0 && (
               <Select
-                value={filters.walletIds[0] || ''}
+                value={filters.walletIds[0] || '__all__'}
                 onValueChange={(value) => onFiltersChange({ 
                   ...filters, 
-                  walletIds: value ? [value] : [] 
+                  walletIds: value === '__all__' ? [] : [value] 
                 })}
               >
                 <SelectTrigger className="w-[160px] h-9">
                   <SelectValue placeholder="Carteira" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Todas</SelectItem>
+                  <SelectItem value="__all__">Todas</SelectItem>
                   {wallets.map((w) => (
                     <SelectItem key={w.id} value={w.id}>{w.name}</SelectItem>
                   ))}
@@ -306,17 +306,17 @@ export function FilterBar({
             {/* Customers */}
             {customers.length > 0 && (
               <Select
-                value={filters.customerIds[0] || ''}
+                value={filters.customerIds[0] || '__all__'}
                 onValueChange={(value) => onFiltersChange({ 
                   ...filters, 
-                  customerIds: value ? [value] : [] 
+                  customerIds: value === '__all__' ? [] : [value] 
                 })}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Cliente" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Todos</SelectItem>
+                  <SelectItem value="__all__">Todos</SelectItem>
                   {customers.map((c) => (
                     <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
                   ))}
@@ -327,17 +327,17 @@ export function FilterBar({
             {/* Suppliers */}
             {suppliers.length > 0 && (
               <Select
-                value={filters.supplierIds[0] || ''}
+                value={filters.supplierIds[0] || '__all__'}
                 onValueChange={(value) => onFiltersChange({ 
                   ...filters, 
-                  supplierIds: value ? [value] : [] 
+                  supplierIds: value === '__all__' ? [] : [value] 
                 })}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Fornecedor" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Todos</SelectItem>
+                  <SelectItem value="__all__">Todos</SelectItem>
                   {suppliers.map((s) => (
                     <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
                   ))}
@@ -353,12 +353,12 @@ export function FilterBar({
               return (
                 <Select
                   key={dim.id}
-                  value={filters.dimensionFilters[dim.id]?.[0] || ''}
+                  value={filters.dimensionFilters[dim.id]?.[0] || '__all__'}
                   onValueChange={(value) => onFiltersChange({ 
                     ...filters, 
                     dimensionFilters: {
                       ...filters.dimensionFilters,
-                      [dim.id]: value ? [value] : []
+                      [dim.id]: value === '__all__' ? [] : [value]
                     }
                   })}
                 >
@@ -366,7 +366,7 @@ export function FilterBar({
                     <SelectValue placeholder={dim.name} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Todos</SelectItem>
+                    <SelectItem value="__all__">Todos</SelectItem>
                     {values.map((v) => (
                       <SelectItem key={v.id} value={v.id}>{v.code} - {v.name}</SelectItem>
                     ))}
