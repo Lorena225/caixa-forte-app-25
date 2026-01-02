@@ -1,5 +1,5 @@
 import { useState } from "react";
-import MainLayout from "@/components/layout/MainLayout";
+import { MainLayout } from "@/components/layout/MainLayout";
 import { PageHeader } from "@/components/common/PageHeader";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -123,12 +123,11 @@ export default function Approvals() {
         <PageHeader
           title="Fluxos de Aprovação"
           description="Configure workflows de aprovação para diferentes tipos de documentos"
-          action={
-            <Button onClick={handleOpenCreate}>
-              <Plus className="mr-2 h-4 w-4" />
-              Novo Fluxo
-            </Button>
-          }
+          action={{
+            label: "Novo Fluxo",
+            onClick: handleOpenCreate,
+            icon: <Plus className="mr-2 h-4 w-4" />,
+          }}
         />
 
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>

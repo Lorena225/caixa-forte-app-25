@@ -1,5 +1,5 @@
 import { useState } from "react";
-import MainLayout from "@/components/layout/MainLayout";
+import { MainLayout } from "@/components/layout/MainLayout";
 import { PageHeader } from "@/components/common/PageHeader";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -35,7 +35,6 @@ import {
 const baseRoleLabels: Record<string, string> = {
   admin: "Administrador",
   gestor: "Gestor",
-  operador: "Operador",
   visualizador: "Visualizador",
 };
 
@@ -58,13 +57,13 @@ export default function Permissions() {
   const [newRole, setNewRole] = useState({
     name: "",
     description: "",
-    base_role: "operador" as "admin" | "gestor" | "operador" | "visualizador",
+    base_role: "gestor" as "admin" | "gestor" | "visualizador",
   });
 
   const handleCreate = async () => {
     await createRole.mutateAsync(newRole);
     setDialogOpen(false);
-    setNewRole({ name: "", description: "", base_role: "operador" });
+    setNewRole({ name: "", description: "", base_role: "gestor" });
   };
 
   if (isLoading) {
@@ -83,14 +82,14 @@ export default function Permissions() {
         <PageHeader
           title="Papéis e Permissões"
           description="Configure papéis customizados e controle de acesso (RBAC)"
-          action={
-            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-              <DialogTrigger asChild>
-                <Button>
-                  <Plus className="mr-2 h-4 w-4" />
-                  Novo Papel
-                </Button>
-              </DialogTrigger>
+        >
+          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+            <DialogTrigger asChild>
+              <Button>
+                <Plus className="mr-2 h-4 w-4" />
+                Novo Papel
+              </Button>
+            </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
                   <DialogTitle>Criar Novo Papel</DialogTitle>
@@ -129,7 +128,6 @@ export default function Permissions() {
                       <SelectContent>
                         <SelectItem value="admin">Administrador (acesso total)</SelectItem>
                         <SelectItem value="gestor">Gestor (leitura e escrita)</SelectItem>
-                        <SelectItem value="operador">Operador (operações do dia a dia)</SelectItem>
                         <SelectItem value="visualizador">Visualizador (apenas leitura)</SelectItem>
                       </SelectContent>
                     </Select>
@@ -152,8 +150,7 @@ export default function Permissions() {
                 </DialogFooter>
               </DialogContent>
             </Dialog>
-          }
-        />
+        </PageHeader>
 
         <div className="grid gap-6">
           <Card>

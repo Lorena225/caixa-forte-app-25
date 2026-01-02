@@ -142,7 +142,7 @@ export function useUpdateUserRole() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ id, role }: { id: string; role: 'admin' | 'gestor' | 'operador' | 'visualizador' }) => {
+    mutationFn: async ({ id, role }: { id: string; role: 'admin' | 'gestor' | 'visualizador' }) => {
       const { data, error } = await supabase
         .from('company_users')
         .update({ role })
@@ -360,7 +360,7 @@ export function useCreateCustomRole() {
     mutationFn: async (data: {
       name: string;
       description?: string;
-      base_role?: 'admin' | 'gestor' | 'operador' | 'visualizador';
+      base_role?: 'admin' | 'gestor' | 'visualizador';
     }) => {
       if (!currentCompany?.id) throw new Error('Empresa não selecionada');
       const { data: result, error } = await supabase

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import MainLayout from "@/components/layout/MainLayout";
+import { MainLayout } from "@/components/layout/MainLayout";
 import { PageHeader } from "@/components/common/PageHeader";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -52,20 +52,19 @@ export default function Company() {
         <PageHeader
           title="Dados da Empresa"
           description="Informações gerais da empresa"
-          action={
-            <Button 
-              onClick={handleSave} 
-              disabled={!hasChanges || updateCompany.isPending}
-            >
-              {updateCompany.isPending ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <Save className="mr-2 h-4 w-4" />
-              )}
-              Salvar Alterações
-            </Button>
-          }
-        />
+        >
+          <Button 
+            onClick={handleSave} 
+            disabled={!hasChanges || updateCompany.isPending}
+          >
+            {updateCompany.isPending ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Save className="mr-2 h-4 w-4" />
+            )}
+            Salvar Alterações
+          </Button>
+        </PageHeader>
 
         <div className="grid gap-6 md:grid-cols-2">
           <Card>

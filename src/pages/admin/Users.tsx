@@ -1,5 +1,5 @@
 import { useState } from "react";
-import MainLayout from "@/components/layout/MainLayout";
+import { MainLayout } from "@/components/layout/MainLayout";
 import { PageHeader } from "@/components/common/PageHeader";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -37,14 +37,12 @@ import { toast } from "sonner";
 const roleLabels: Record<string, string> = {
   admin: "Administrador",
   gestor: "Gestor",
-  operador: "Operador",
   visualizador: "Visualizador",
 };
 
 const roleBadgeVariants: Record<string, "default" | "secondary" | "outline" | "destructive"> = {
   admin: "default",
   gestor: "secondary",
-  operador: "outline",
   visualizador: "outline",
 };
 
@@ -55,7 +53,7 @@ export default function AdminUsers() {
   const { user: currentUser, currentCompany } = useAuth();
   const [inviteOpen, setInviteOpen] = useState(false);
   const [inviteEmail, setInviteEmail] = useState("");
-  const [inviteRole, setInviteRole] = useState<"admin" | "gestor" | "operador" | "visualizador">("operador");
+  const [inviteRole, setInviteRole] = useState<"admin" | "gestor" | "visualizador">("gestor");
   const [inviting, setInviting] = useState(false);
 
   const handleInvite = async () => {
@@ -72,11 +70,12 @@ export default function AdminUsers() {
 
       if (existingProfile) {
         // User exists, add to company
-        await supabase.from('company_users').insert({
+        const { error } = await supabase.from('company_users').insert([{
           company_id: currentCompany.id,
           user_id: existingProfile.id,
           role: inviteRole,
-        });
+        }]);
+        if (error) throw error;
         toast.success("Usuário adicionado à empresa");
       } else {
         // For now, just show a message - in production, send invite email
@@ -108,14 +107,14 @@ export default function AdminUsers() {
         <PageHeader
           title="Usuários"
           description="Gerenciar usuários e suas permissões na empresa"
-          action={
-            <Dialog open={inviteOpen} onOpenChange={setInviteOpen}>
-              <DialogTrigger asChild>
-                <Button>
-                  <UserPlus className="mr-2 h-4 w-4" />
-                  Convidar Usuário
-                </Button>
-              </DialogTrigger>
+        >
+          <Dialog open={inviteOpen} onOpenChange={setInviteOpen}>
+            <DialogTrigger asChild>
+              <Button>
+                <UserPlus className="mr-2 h-4 w-4" />
+                Convidar Usuário
+              </Button>
+            </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
                   <DialogTitle>Convidar Usuário</DialogTitle>
@@ -143,7 +142,6 @@ export default function AdminUsers() {
                       <SelectContent>
                         <SelectItem value="admin">Administrador</SelectItem>
                         <SelectItem value="gestor">Gestor</SelectItem>
-                        <SelectItem value="operador">Operador</SelectItem>
                         <SelectItem value="visualizador">Visualizador</SelectItem>
                       </SelectContent>
                     </Select>
@@ -162,8 +160,7 @@ export default function AdminUsers() {
                 </DialogFooter>
               </DialogContent>
             </Dialog>
-          }
-        />
+        </PageHeader>
 
         <Card>
           <CardHeader>
@@ -217,7 +214,6 @@ export default function AdminUsers() {
                         <SelectContent>
                           <SelectItem value="admin">Administrador</SelectItem>
                           <SelectItem value="gestor">Gestor</SelectItem>
-                          <SelectItem value="operador">Operador</SelectItem>
                           <SelectItem value="visualizador">Visualizador</SelectItem>
                         </SelectContent>
                       </Select>
