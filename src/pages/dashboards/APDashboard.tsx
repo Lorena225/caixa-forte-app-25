@@ -115,7 +115,7 @@ export default function APDashboard() {
         {/* Aging Chart */}
         <AgingChart
           data={apAging}
-          title="Aging Contas a Pagar"
+          title="Contas a Pagar"
           type="ap"
           isLoading={agingLoading}
           onBucketClick={handleDrilldown}
