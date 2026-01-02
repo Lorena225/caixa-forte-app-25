@@ -577,3 +577,73 @@ export function useCashPosition() {
     enabled: !!currentCompany?.id,
   });
 }
+
+// Hook para Document Types
+export function useDocumentTypes() {
+  const { currentCompany } = useAuth();
+  
+  return useQuery({
+    queryKey: ['document_types', currentCompany?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('document_types')
+        .select('*')
+        .or(`company_id.is.null,company_id.eq.${currentCompany?.id}`)
+        .eq('is_active', true)
+        .order('doc_group')
+        .order('doc_name');
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!currentCompany?.id,
+  });
+}
+
+// Hook para Chart of Accounts Settings
+export function useChartOfAccountsSettings() {
+  const { currentCompany } = useAuth();
+  
+  return useQuery({
+    queryKey: ['chart_of_accounts_settings', currentCompany?.id],
+    queryFn: async () => {
+      if (!currentCompany?.id) return null;
+      const { data, error } = await supabase
+        .from('chart_of_accounts_settings')
+        .select('*')
+        .eq('company_id', currentCompany.id)
+        .maybeSingle();
+      if (error) throw error;
+      return data || {
+        company_id: currentCompany.id,
+        posting_policy: 'leaf_or_flag',
+        max_code_length: 30,
+      };
+    },
+    enabled: !!currentCompany?.id,
+  });
+}
+
+// Hook para buscar contas com campos estendidos
+export function useAccountsExtended() {
+  const { currentCompany } = useAuth();
+  
+  return useQuery({
+    queryKey: ['accounts_extended', currentCompany?.id],
+    queryFn: async () => {
+      if (!currentCompany?.id) return [];
+      const { data, error } = await supabase
+        .from('accounts')
+        .select(`
+          *,
+          category:category_id(id, code, name, category_type),
+          parent:parent_id(id, code, name),
+          contra_target:contra_target_account_id(id, code, name)
+        `)
+        .eq('company_id', currentCompany.id)
+        .order('account_code');
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!currentCompany?.id,
+  });
+}

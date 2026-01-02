@@ -67,6 +67,7 @@ import AdminApprovals from "./pages/admin/Approvals";
 import AdminFiscal from "./pages/admin/Fiscal";
 import AdminSecurity from "./pages/admin/Security";
 import AdminCompany from "./pages/admin/Company";
+import AdminDocumentTypes from "./pages/admin/DocumentTypes";
 
 const queryClient = new QueryClient();
 
@@ -142,6 +143,7 @@ const App = () => (
             <Route path="/admin/fiscal" element={<AdminFiscal />} />
             <Route path="/admin/seguranca" element={<AdminSecurity />} />
             <Route path="/admin/empresa" element={<AdminCompany />} />
+            <Route path="/admin/tipos-documento" element={<AdminDocumentTypes />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
