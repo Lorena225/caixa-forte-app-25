@@ -1607,6 +1607,63 @@ export type Database = {
           },
         ]
       }
+      closing_checklists: {
+        Row: {
+          company_id: string
+          completed_at: string | null
+          completed_by: string | null
+          created_at: string
+          id: string
+          is_completed: boolean
+          is_required: boolean
+          item_code: string
+          item_name: string
+          notes: string | null
+          period_id: string
+        }
+        Insert: {
+          company_id: string
+          completed_at?: string | null
+          completed_by?: string | null
+          created_at?: string
+          id?: string
+          is_completed?: boolean
+          is_required?: boolean
+          item_code: string
+          item_name: string
+          notes?: string | null
+          period_id: string
+        }
+        Update: {
+          company_id?: string
+          completed_at?: string | null
+          completed_by?: string | null
+          created_at?: string
+          id?: string
+          is_completed?: boolean
+          is_required?: boolean
+          item_code?: string
+          item_name?: string
+          notes?: string | null
+          period_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "closing_checklists_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "closing_checklists_period_id_fkey"
+            columns: ["period_id"]
+            isOneToOne: false
+            referencedRelation: "fiscal_periods"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cnab_files: {
         Row: {
           cnab_layout: string
@@ -3444,6 +3501,157 @@ export type Database = {
             columns: ["counterparty_id"]
             isOneToOne: false
             referencedRelation: "counterparties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fiscal_periods: {
+        Row: {
+          closed_at: string | null
+          closed_by: string | null
+          company_id: string
+          created_at: string
+          id: string
+          opened_at: string
+          period_month: number
+          period_year: number
+          reopen_reason: string | null
+          reopened_at: string | null
+          reopened_by: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          closed_at?: string | null
+          closed_by?: string | null
+          company_id: string
+          created_at?: string
+          id?: string
+          opened_at?: string
+          period_month: number
+          period_year: number
+          reopen_reason?: string | null
+          reopened_at?: string | null
+          reopened_by?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          closed_at?: string | null
+          closed_by?: string | null
+          company_id?: string
+          created_at?: string
+          id?: string
+          opened_at?: string
+          period_month?: number
+          period_year?: number
+          reopen_reason?: string | null
+          reopened_at?: string | null
+          reopened_by?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fiscal_periods_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      gl_balances_monthly: {
+        Row: {
+          account_id: string
+          branch_id: string | null
+          company_id: string
+          cost_center_id: string | null
+          ending_balance: number
+          id: string
+          last_refreshed_at: string
+          period_month: number
+          period_year: number
+          total_credit: number
+          total_debit: number
+          transaction_count: number
+        }
+        Insert: {
+          account_id: string
+          branch_id?: string | null
+          company_id: string
+          cost_center_id?: string | null
+          ending_balance?: number
+          id?: string
+          last_refreshed_at?: string
+          period_month: number
+          period_year: number
+          total_credit?: number
+          total_debit?: number
+          transaction_count?: number
+        }
+        Update: {
+          account_id?: string
+          branch_id?: string | null
+          company_id?: string
+          cost_center_id?: string | null
+          ending_balance?: number
+          id?: string
+          last_refreshed_at?: string
+          period_month?: number
+          period_year?: number
+          total_credit?: number
+          total_debit?: number
+          transaction_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gl_balances_monthly_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "gl_balances_monthly_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "v_rc_flow_by_account"
+            referencedColumns: ["account_id"]
+          },
+          {
+            foreignKeyName: "gl_balances_monthly_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "v_trial_balance"
+            referencedColumns: ["account_id"]
+          },
+          {
+            foreignKeyName: "gl_balances_monthly_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "gl_balances_monthly_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "gl_balances_monthly_cost_center_id_fkey"
+            columns: ["cost_center_id"]
+            isOneToOne: false
+            referencedRelation: "cost_centers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "gl_balances_monthly_cost_center_id_fkey"
+            columns: ["cost_center_id"]
+            isOneToOne: false
+            referencedRelation: "v_cost_center_tree"
             referencedColumns: ["id"]
           },
         ]
