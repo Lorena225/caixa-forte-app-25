@@ -3389,6 +3389,59 @@ export type Database = {
           },
         ]
       }
+      integration_connections: {
+        Row: {
+          company_id: string
+          created_at: string
+          encrypted_credentials: string | null
+          encryption_meta: Json | null
+          id: string
+          last_error: string | null
+          last_sync_at: string | null
+          name: string
+          settings_json: Json | null
+          status: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          encrypted_credentials?: string | null
+          encryption_meta?: Json | null
+          id?: string
+          last_error?: string | null
+          last_sync_at?: string | null
+          name: string
+          settings_json?: Json | null
+          status?: string
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          encrypted_credentials?: string | null
+          encryption_meta?: Json | null
+          id?: string
+          last_error?: string | null
+          last_sync_at?: string | null
+          name?: string
+          settings_json?: Json | null
+          status?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "integration_connections_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       integration_credentials: {
         Row: {
           company_id: string
@@ -3432,6 +3485,243 @@ export type Database = {
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      integration_dlq: {
+        Row: {
+          attempts: number
+          company_id: string
+          connection_id: string | null
+          created_at: string
+          error_json: Json | null
+          event_type: string | null
+          failed_at: string
+          id: string
+          notes: string | null
+          payload_json: Json
+          resolved_at: string | null
+          resolved_by: string | null
+        }
+        Insert: {
+          attempts?: number
+          company_id: string
+          connection_id?: string | null
+          created_at?: string
+          error_json?: Json | null
+          event_type?: string | null
+          failed_at?: string
+          id?: string
+          notes?: string | null
+          payload_json: Json
+          resolved_at?: string | null
+          resolved_by?: string | null
+        }
+        Update: {
+          attempts?: number
+          company_id?: string
+          connection_id?: string | null
+          created_at?: string
+          error_json?: Json | null
+          event_type?: string | null
+          failed_at?: string
+          id?: string
+          notes?: string | null
+          payload_json?: Json
+          resolved_at?: string | null
+          resolved_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "integration_dlq_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "integration_dlq_connection_id_fkey"
+            columns: ["connection_id"]
+            isOneToOne: false
+            referencedRelation: "integration_connections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      integration_jobs: {
+        Row: {
+          attempts: number
+          company_id: string
+          completed_at: string | null
+          connection_id: string
+          created_at: string
+          id: string
+          job_type: string
+          last_error: string | null
+          max_attempts: number
+          payload_json: Json | null
+          result_json: Json | null
+          scheduled_at: string
+          started_at: string | null
+          status: string
+        }
+        Insert: {
+          attempts?: number
+          company_id: string
+          completed_at?: string | null
+          connection_id: string
+          created_at?: string
+          id?: string
+          job_type: string
+          last_error?: string | null
+          max_attempts?: number
+          payload_json?: Json | null
+          result_json?: Json | null
+          scheduled_at?: string
+          started_at?: string | null
+          status?: string
+        }
+        Update: {
+          attempts?: number
+          company_id?: string
+          completed_at?: string | null
+          connection_id?: string
+          created_at?: string
+          id?: string
+          job_type?: string
+          last_error?: string | null
+          max_attempts?: number
+          payload_json?: Json | null
+          result_json?: Json | null
+          scheduled_at?: string
+          started_at?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "integration_jobs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "integration_jobs_connection_id_fkey"
+            columns: ["connection_id"]
+            isOneToOne: false
+            referencedRelation: "integration_connections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      integration_logs: {
+        Row: {
+          company_id: string
+          connection_id: string | null
+          created_at: string
+          direction: string
+          duration_ms: number | null
+          endpoint: string
+          error_message: string | null
+          id: string
+          method: string | null
+          request_meta_json: Json | null
+          response_meta_json: Json | null
+          status_code: number | null
+        }
+        Insert: {
+          company_id: string
+          connection_id?: string | null
+          created_at?: string
+          direction: string
+          duration_ms?: number | null
+          endpoint: string
+          error_message?: string | null
+          id?: string
+          method?: string | null
+          request_meta_json?: Json | null
+          response_meta_json?: Json | null
+          status_code?: number | null
+        }
+        Update: {
+          company_id?: string
+          connection_id?: string | null
+          created_at?: string
+          direction?: string
+          duration_ms?: number | null
+          endpoint?: string
+          error_message?: string | null
+          id?: string
+          method?: string | null
+          request_meta_json?: Json | null
+          response_meta_json?: Json | null
+          status_code?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "integration_logs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "integration_logs_connection_id_fkey"
+            columns: ["connection_id"]
+            isOneToOne: false
+            referencedRelation: "integration_connections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      integration_webhooks: {
+        Row: {
+          company_id: string
+          connection_id: string
+          created_at: string
+          endpoint_url: string
+          event_key: string
+          id: string
+          is_active: boolean
+          secret_hash: string | null
+          updated_at: string
+        }
+        Insert: {
+          company_id: string
+          connection_id: string
+          created_at?: string
+          endpoint_url: string
+          event_key: string
+          id?: string
+          is_active?: boolean
+          secret_hash?: string | null
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string
+          connection_id?: string
+          created_at?: string
+          endpoint_url?: string
+          event_key?: string
+          id?: string
+          is_active?: boolean
+          secret_hash?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "integration_webhooks_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "integration_webhooks_connection_id_fkey"
+            columns: ["connection_id"]
+            isOneToOne: false
+            referencedRelation: "integration_connections"
             referencedColumns: ["id"]
           },
         ]

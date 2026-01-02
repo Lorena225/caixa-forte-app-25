@@ -24,6 +24,10 @@ import IntegracoesImportar from "./pages/integracoes/Importar";
 import IntegracoesConciliacao from "./pages/integracoes/Conciliacao";
 import IntegracoesConfigurar from "./pages/integracoes/Configurar";
 import IntegracoesLogs from "./pages/integracoes/Logs";
+import IntegracoesConnections from "./pages/integracoes/Connections";
+import IntegracoesJobs from "./pages/integracoes/Jobs";
+import IntegracoesEnterpriseLogs from "./pages/integracoes/EnterpriseLogs";
+import IntegracoesDLQ from "./pages/integracoes/DLQ";
 import IAConfig from "./pages/integracoes/IAConfig";
 import IATest from "./pages/integracoes/IATest";
 import ImportExportIndex from "./pages/importar-exportar/Index";
@@ -90,6 +94,10 @@ const App = () => (
             <Route path="/integracoes" element={<IntegracoesIndex />} />
             <Route path="/integracoes/ia" element={<IAConfig />} />
             <Route path="/integracoes/ia/testar" element={<IATest />} />
+            <Route path="/integracoes/connections" element={<IntegracoesConnections />} />
+            <Route path="/integracoes/jobs" element={<IntegracoesJobs />} />
+            <Route path="/integracoes/enterprise-logs" element={<IntegracoesEnterpriseLogs />} />
+            <Route path="/integracoes/dlq" element={<IntegracoesDLQ />} />
             <Route path="/integracoes/:integrationId/importar" element={<IntegracoesImportar />} />
             <Route path="/integracoes/:integrationId/configurar" element={<IntegracoesConfigurar />} />
             <Route path="/integracoes/conciliacao" element={<IntegracoesConciliacao />} />
