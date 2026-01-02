@@ -24,6 +24,7 @@ import IntegracoesImportar from "./pages/integracoes/Importar";
 import IntegracoesConciliacao from "./pages/integracoes/Conciliacao";
 import IntegracoesConfigurar from "./pages/integracoes/Configurar";
 import IntegracoesLogs from "./pages/integracoes/Logs";
+import IAConfig from "./pages/integracoes/IAConfig";
 import ImportExportIndex from "./pages/importar-exportar/Index";
 import ImportWizard from "./pages/importar-exportar/ImportWizard";
 import ImportHistory from "./pages/importar-exportar/ImportHistory";
@@ -76,6 +77,7 @@ const App = () => (
             <Route path="/autopilot/inbox" element={<Inbox />} />
             {/* Integrations */}
             <Route path="/integracoes" element={<IntegracoesIndex />} />
+            <Route path="/integracoes/ia" element={<IAConfig />} />
             <Route path="/integracoes/:integrationId/importar" element={<IntegracoesImportar />} />
             <Route path="/integracoes/:integrationId/configurar" element={<IntegracoesConfigurar />} />
             <Route path="/integracoes/conciliacao" element={<IntegracoesConciliacao />} />

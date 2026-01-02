@@ -26,3 +26,18 @@ verify_jwt = true
 
 [functions.reconcile-engine]
 verify_jwt = true
+
+[functions.ai-key-status]
+verify_jwt = true
+
+[functions.ai-key-set]
+verify_jwt = true
+
+[functions.ai-key-rotate]
+verify_jwt = true
+
+[functions.ai-key-revoke]
+verify_jwt = true
+
+[functions.ai-key-test]
+verify_jwt = true
