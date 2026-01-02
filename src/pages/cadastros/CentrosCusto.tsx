@@ -89,7 +89,7 @@ export default function CentrosCusto() {
 
   const handleMove = (item: CostCenter) => {
     setSelectedForMove(item);
-    setNewParentId(item.parent_id || '');
+    setNewParentId(item.parent_id || '__root__');
     setMoveDialogOpen(true);
   };
 
@@ -172,7 +172,7 @@ export default function CentrosCusto() {
     if (!selectedForMove) return;
 
     moveMutation.mutate(
-      { id: selectedForMove.id, newParentId: newParentId || null },
+      { id: selectedForMove.id, newParentId: newParentId === '__root__' ? null : newParentId },
       {
         onSuccess: () => {
           toast({ title: 'Centro movido com sucesso' });
@@ -377,7 +377,7 @@ export default function CentrosCusto() {
                     <SelectValue placeholder="Raiz (sem pai)" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Raiz (sem pai)</SelectItem>
+                    <SelectItem value="__root__">Raiz (sem pai)</SelectItem>
                     {moveTargets.map((cc) => (
                       <SelectItem key={cc.id} value={cc.id}>
                         {cc.path_codes} - {cc.name}
