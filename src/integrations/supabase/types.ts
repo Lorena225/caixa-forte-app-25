@@ -4211,6 +4211,481 @@ export type Database = {
           },
         ]
       }
+      fact_ap_aging: {
+        Row: {
+          branch_id: string | null
+          company_id: string
+          counterparty_id: string | null
+          current_amount: number
+          id: string
+          last_refreshed_at: string
+          overdue_1_30: number
+          overdue_31_60: number
+          overdue_61_90: number
+          overdue_91_plus: number
+          snapshot_date: string
+          total_open: number
+          total_overdue: number
+          transaction_count: number
+        }
+        Insert: {
+          branch_id?: string | null
+          company_id: string
+          counterparty_id?: string | null
+          current_amount?: number
+          id?: string
+          last_refreshed_at?: string
+          overdue_1_30?: number
+          overdue_31_60?: number
+          overdue_61_90?: number
+          overdue_91_plus?: number
+          snapshot_date: string
+          total_open?: number
+          total_overdue?: number
+          transaction_count?: number
+        }
+        Update: {
+          branch_id?: string | null
+          company_id?: string
+          counterparty_id?: string | null
+          current_amount?: number
+          id?: string
+          last_refreshed_at?: string
+          overdue_1_30?: number
+          overdue_31_60?: number
+          overdue_61_90?: number
+          overdue_91_plus?: number
+          snapshot_date?: string
+          total_open?: number
+          total_overdue?: number
+          transaction_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fact_ap_aging_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fact_ap_aging_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fact_ap_aging_counterparty_id_fkey"
+            columns: ["counterparty_id"]
+            isOneToOne: false
+            referencedRelation: "counterparties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fact_ar_aging: {
+        Row: {
+          branch_id: string | null
+          company_id: string
+          counterparty_id: string | null
+          current_amount: number
+          id: string
+          last_refreshed_at: string
+          overdue_1_30: number
+          overdue_31_60: number
+          overdue_61_90: number
+          overdue_91_plus: number
+          snapshot_date: string
+          total_open: number
+          total_overdue: number
+          transaction_count: number
+        }
+        Insert: {
+          branch_id?: string | null
+          company_id: string
+          counterparty_id?: string | null
+          current_amount?: number
+          id?: string
+          last_refreshed_at?: string
+          overdue_1_30?: number
+          overdue_31_60?: number
+          overdue_61_90?: number
+          overdue_91_plus?: number
+          snapshot_date: string
+          total_open?: number
+          total_overdue?: number
+          transaction_count?: number
+        }
+        Update: {
+          branch_id?: string | null
+          company_id?: string
+          counterparty_id?: string | null
+          current_amount?: number
+          id?: string
+          last_refreshed_at?: string
+          overdue_1_30?: number
+          overdue_31_60?: number
+          overdue_61_90?: number
+          overdue_91_plus?: number
+          snapshot_date?: string
+          total_open?: number
+          total_overdue?: number
+          transaction_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fact_ar_aging_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fact_ar_aging_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fact_ar_aging_counterparty_id_fkey"
+            columns: ["counterparty_id"]
+            isOneToOne: false
+            referencedRelation: "counterparties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fact_budget_vs_actual: {
+        Row: {
+          actual_expense: number
+          actual_profit: number
+          actual_revenue: number
+          branch_id: string | null
+          budget_expense: number
+          budget_profit: number
+          budget_revenue: number
+          company_id: string
+          cost_center_id: string | null
+          expense_variance: number
+          id: string
+          last_refreshed_at: string
+          period_month: number
+          period_year: number
+          profit_variance: number
+          revenue_variance: number
+        }
+        Insert: {
+          actual_expense?: number
+          actual_profit?: number
+          actual_revenue?: number
+          branch_id?: string | null
+          budget_expense?: number
+          budget_profit?: number
+          budget_revenue?: number
+          company_id: string
+          cost_center_id?: string | null
+          expense_variance?: number
+          id?: string
+          last_refreshed_at?: string
+          period_month: number
+          period_year: number
+          profit_variance?: number
+          revenue_variance?: number
+        }
+        Update: {
+          actual_expense?: number
+          actual_profit?: number
+          actual_revenue?: number
+          branch_id?: string | null
+          budget_expense?: number
+          budget_profit?: number
+          budget_revenue?: number
+          company_id?: string
+          cost_center_id?: string | null
+          expense_variance?: number
+          id?: string
+          last_refreshed_at?: string
+          period_month?: number
+          period_year?: number
+          profit_variance?: number
+          revenue_variance?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fact_budget_vs_actual_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fact_budget_vs_actual_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fact_budget_vs_actual_cost_center_id_fkey"
+            columns: ["cost_center_id"]
+            isOneToOne: false
+            referencedRelation: "cost_centers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fact_budget_vs_actual_cost_center_id_fkey"
+            columns: ["cost_center_id"]
+            isOneToOne: false
+            referencedRelation: "v_cost_center_tree"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fact_cashflow_day: {
+        Row: {
+          branch_id: string | null
+          closing_balance: number
+          company_id: string
+          id: string
+          last_refreshed_at: string
+          opening_balance: number
+          position_date: string
+          projected_balance: number
+          projected_inflows: number
+          projected_outflows: number
+          total_inflows: number
+          total_outflows: number
+          transaction_count: number
+          wallet_id: string | null
+        }
+        Insert: {
+          branch_id?: string | null
+          closing_balance?: number
+          company_id: string
+          id?: string
+          last_refreshed_at?: string
+          opening_balance?: number
+          position_date: string
+          projected_balance?: number
+          projected_inflows?: number
+          projected_outflows?: number
+          total_inflows?: number
+          total_outflows?: number
+          transaction_count?: number
+          wallet_id?: string | null
+        }
+        Update: {
+          branch_id?: string | null
+          closing_balance?: number
+          company_id?: string
+          id?: string
+          last_refreshed_at?: string
+          opening_balance?: number
+          position_date?: string
+          projected_balance?: number
+          projected_inflows?: number
+          projected_outflows?: number
+          total_inflows?: number
+          total_outflows?: number
+          transaction_count?: number
+          wallet_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fact_cashflow_day_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fact_cashflow_day_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fact_cashflow_day_wallet_id_fkey"
+            columns: ["wallet_id"]
+            isOneToOne: false
+            referencedRelation: "v_cash_position_daily"
+            referencedColumns: ["wallet_id"]
+          },
+          {
+            foreignKeyName: "fact_cashflow_day_wallet_id_fkey"
+            columns: ["wallet_id"]
+            isOneToOne: false
+            referencedRelation: "wallets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fact_dre_month: {
+        Row: {
+          account_code: string | null
+          account_id: string | null
+          account_name: string | null
+          branch_id: string | null
+          budget_amount: number | null
+          category_type: string | null
+          company_id: string
+          cost_center_id: string | null
+          financial_classification_code: string | null
+          id: string
+          last_refreshed_at: string
+          period_month: number
+          period_year: number
+          total_amount: number
+          variance_amount: number | null
+          variance_percent: number | null
+        }
+        Insert: {
+          account_code?: string | null
+          account_id?: string | null
+          account_name?: string | null
+          branch_id?: string | null
+          budget_amount?: number | null
+          category_type?: string | null
+          company_id: string
+          cost_center_id?: string | null
+          financial_classification_code?: string | null
+          id?: string
+          last_refreshed_at?: string
+          period_month: number
+          period_year: number
+          total_amount?: number
+          variance_amount?: number | null
+          variance_percent?: number | null
+        }
+        Update: {
+          account_code?: string | null
+          account_id?: string | null
+          account_name?: string | null
+          branch_id?: string | null
+          budget_amount?: number | null
+          category_type?: string | null
+          company_id?: string
+          cost_center_id?: string | null
+          financial_classification_code?: string | null
+          id?: string
+          last_refreshed_at?: string
+          period_month?: number
+          period_year?: number
+          total_amount?: number
+          variance_amount?: number | null
+          variance_percent?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fact_dre_month_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fact_dre_month_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "v_rc_flow_by_account"
+            referencedColumns: ["account_id"]
+          },
+          {
+            foreignKeyName: "fact_dre_month_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "v_trial_balance"
+            referencedColumns: ["account_id"]
+          },
+          {
+            foreignKeyName: "fact_dre_month_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fact_dre_month_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fact_dre_month_cost_center_id_fkey"
+            columns: ["cost_center_id"]
+            isOneToOne: false
+            referencedRelation: "cost_centers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fact_dre_month_cost_center_id_fkey"
+            columns: ["cost_center_id"]
+            isOneToOne: false
+            referencedRelation: "v_cost_center_tree"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fact_liquidity_indicators: {
+        Row: {
+          ap_balance: number
+          ar_balance: number
+          cash_balance: number
+          cash_conversion_cycle: number | null
+          company_id: string
+          current_ratio: number | null
+          dpo_days: number | null
+          dso_days: number | null
+          id: string
+          last_refreshed_at: string
+          quick_ratio: number | null
+          snapshot_date: string
+          working_capital: number
+        }
+        Insert: {
+          ap_balance?: number
+          ar_balance?: number
+          cash_balance?: number
+          cash_conversion_cycle?: number | null
+          company_id: string
+          current_ratio?: number | null
+          dpo_days?: number | null
+          dso_days?: number | null
+          id?: string
+          last_refreshed_at?: string
+          quick_ratio?: number | null
+          snapshot_date: string
+          working_capital?: number
+        }
+        Update: {
+          ap_balance?: number
+          ar_balance?: number
+          cash_balance?: number
+          cash_conversion_cycle?: number | null
+          company_id?: string
+          current_ratio?: number | null
+          dpo_days?: number | null
+          dso_days?: number | null
+          id?: string
+          last_refreshed_at?: string
+          quick_ratio?: number | null
+          snapshot_date?: string
+          working_capital?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fact_liquidity_indicators_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       field_visibility_policies: {
         Row: {
           company_id: string
@@ -5547,9 +6022,11 @@ export type Database = {
           attempts: number | null
           company_id: string
           created_at: string | null
+          dlq_id: string | null
           error_json: Json | null
           finished_at: string | null
           id: string
+          idempotency_key: string | null
           job_type: string
           max_attempts: number | null
           payload_json: Json
@@ -5563,9 +6040,11 @@ export type Database = {
           attempts?: number | null
           company_id: string
           created_at?: string | null
+          dlq_id?: string | null
           error_json?: Json | null
           finished_at?: string | null
           id?: string
+          idempotency_key?: string | null
           job_type: string
           max_attempts?: number | null
           payload_json?: Json
@@ -5579,9 +6058,11 @@ export type Database = {
           attempts?: number | null
           company_id?: string
           created_at?: string | null
+          dlq_id?: string | null
           error_json?: Json | null
           finished_at?: string | null
           id?: string
+          idempotency_key?: string | null
           job_type?: string
           max_attempts?: number | null
           payload_json?: Json
@@ -6969,6 +7450,142 @@ export type Database = {
           },
         ]
       }
+      sod_rules: {
+        Row: {
+          amount_threshold: number | null
+          company_id: string
+          created_at: string
+          description: string | null
+          enforcement_mode: string
+          entity_type: string | null
+          id: string
+          is_active: boolean
+          name: string
+          permission_a: string | null
+          permission_b: string | null
+          role_a: string | null
+          role_b: string | null
+          rule_type: string
+          updated_at: string
+        }
+        Insert: {
+          amount_threshold?: number | null
+          company_id: string
+          created_at?: string
+          description?: string | null
+          enforcement_mode?: string
+          entity_type?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          permission_a?: string | null
+          permission_b?: string | null
+          role_a?: string | null
+          role_b?: string | null
+          rule_type: string
+          updated_at?: string
+        }
+        Update: {
+          amount_threshold?: number | null
+          company_id?: string
+          created_at?: string
+          description?: string | null
+          enforcement_mode?: string
+          entity_type?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          permission_a?: string | null
+          permission_b?: string | null
+          role_a?: string | null
+          role_b?: string | null
+          rule_type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sod_rules_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sod_rules_role_a_fkey"
+            columns: ["role_a"]
+            isOneToOne: false
+            referencedRelation: "roles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sod_rules_role_b_fkey"
+            columns: ["role_b"]
+            isOneToOne: false
+            referencedRelation: "roles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sod_violations: {
+        Row: {
+          action_attempted: string
+          company_id: string
+          created_at: string
+          enforcement_result: string
+          entity_id: string | null
+          entity_type: string
+          id: string
+          override_by: string | null
+          override_reason: string | null
+          rule_id: string
+          user_id: string
+          violation_details: Json | null
+        }
+        Insert: {
+          action_attempted: string
+          company_id: string
+          created_at?: string
+          enforcement_result: string
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          override_by?: string | null
+          override_reason?: string | null
+          rule_id: string
+          user_id: string
+          violation_details?: Json | null
+        }
+        Update: {
+          action_attempted?: string
+          company_id?: string
+          created_at?: string
+          enforcement_result?: string
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          override_by?: string | null
+          override_reason?: string | null
+          rule_id?: string
+          user_id?: string
+          violation_details?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sod_violations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sod_violations_rule_id_fkey"
+            columns: ["rule_id"]
+            isOneToOne: false
+            referencedRelation: "sod_rules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       subledger_links: {
         Row: {
           created_at: string | null
@@ -7363,11 +7980,13 @@ export type Database = {
           paid_date: string | null
           payment_method_id: string | null
           recurrence_type: string | null
+          requires_workflow: boolean | null
           status: Database["public"]["Enums"]["transaction_status"]
           total_amount: number
           transaction_date: string
           updated_at: string | null
           wallet_id: string
+          workflow_status: string | null
         }
         Insert: {
           account_id: string
@@ -7396,11 +8015,13 @@ export type Database = {
           paid_date?: string | null
           payment_method_id?: string | null
           recurrence_type?: string | null
+          requires_workflow?: boolean | null
           status?: Database["public"]["Enums"]["transaction_status"]
           total_amount: number
           transaction_date: string
           updated_at?: string | null
           wallet_id: string
+          workflow_status?: string | null
         }
         Update: {
           account_id?: string
@@ -7429,11 +8050,13 @@ export type Database = {
           paid_date?: string | null
           payment_method_id?: string | null
           recurrence_type?: string | null
+          requires_workflow?: boolean | null
           status?: Database["public"]["Enums"]["transaction_status"]
           total_amount?: number
           transaction_date?: string
           updated_at?: string | null
           wallet_id?: string
+          workflow_status?: string | null
         }
         Relationships: [
           {
@@ -7532,6 +8155,56 @@ export type Database = {
             columns: ["wallet_id"]
             isOneToOne: false
             referencedRelation: "wallets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_amount_limits: {
+        Row: {
+          company_id: string
+          created_at: string
+          daily_limit: number | null
+          entity_type: string
+          id: string
+          is_active: boolean
+          monthly_limit: number | null
+          requires_approval_above: number | null
+          single_limit: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          daily_limit?: number | null
+          entity_type: string
+          id?: string
+          is_active?: boolean
+          monthly_limit?: number | null
+          requires_approval_above?: number | null
+          single_limit?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          daily_limit?: number | null
+          entity_type?: string
+          id?: string
+          is_active?: boolean
+          monthly_limit?: number | null
+          requires_approval_above?: number | null
+          single_limit?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_amount_limits_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
             referencedColumns: ["id"]
           },
         ]
