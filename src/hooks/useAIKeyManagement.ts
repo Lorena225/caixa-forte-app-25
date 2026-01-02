@@ -74,8 +74,7 @@ export function useSetAIKey() {
       const { data, error } = await supabase.functions.invoke('ai-key-set', {
         body: { 
           company_id: currentCompany.id,
-          api_key: apiKey,
-          user_id: user?.id
+          api_key: apiKey
         }
       });
       
@@ -96,7 +95,7 @@ export function useSetAIKey() {
 
 export function useRotateAIKey() {
   const queryClient = useQueryClient();
-  const { currentCompany, user } = useAuth();
+  const { currentCompany } = useAuth();
   
   return useMutation({
     mutationFn: async (apiKey: string) => {
@@ -105,8 +104,7 @@ export function useRotateAIKey() {
       const { data, error } = await supabase.functions.invoke('ai-key-rotate', {
         body: { 
           company_id: currentCompany.id,
-          api_key: apiKey,
-          user_id: user?.id
+          api_key: apiKey
         }
       });
       
@@ -126,7 +124,7 @@ export function useRotateAIKey() {
 
 export function useRevokeAIKey() {
   const queryClient = useQueryClient();
-  const { currentCompany, user } = useAuth();
+  const { currentCompany } = useAuth();
   
   return useMutation({
     mutationFn: async () => {
@@ -134,8 +132,7 @@ export function useRevokeAIKey() {
       
       const { data, error } = await supabase.functions.invoke('ai-key-revoke', {
         body: { 
-          company_id: currentCompany.id,
-          user_id: user?.id
+          company_id: currentCompany.id
         }
       });
       
