@@ -25,6 +25,7 @@ import IntegracoesConciliacao from "./pages/integracoes/Conciliacao";
 import IntegracoesConfigurar from "./pages/integracoes/Configurar";
 import IntegracoesLogs from "./pages/integracoes/Logs";
 import IAConfig from "./pages/integracoes/IAConfig";
+import IATest from "./pages/integracoes/IATest";
 import ImportExportIndex from "./pages/importar-exportar/Index";
 import ImportWizard from "./pages/importar-exportar/ImportWizard";
 import ImportHistory from "./pages/importar-exportar/ImportHistory";
@@ -78,6 +79,7 @@ const App = () => (
             {/* Integrations */}
             <Route path="/integracoes" element={<IntegracoesIndex />} />
             <Route path="/integracoes/ia" element={<IAConfig />} />
+            <Route path="/integracoes/ia/testar" element={<IATest />} />
             <Route path="/integracoes/:integrationId/importar" element={<IntegracoesImportar />} />
             <Route path="/integracoes/:integrationId/configurar" element={<IntegracoesConfigurar />} />
             <Route path="/integracoes/conciliacao" element={<IntegracoesConciliacao />} />
