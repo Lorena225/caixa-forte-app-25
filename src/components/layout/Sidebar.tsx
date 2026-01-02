@@ -55,7 +55,7 @@ const menuItems = [
 
 const dashboards = [
   { icon: BarChart3, label: 'Executivo', href: '/dashboards/executive' },
-  { icon: Wallet, label: 'Fluxo de Caixa', href: '/dashboards/cashflow' },
+  { icon: Wallet, label: 'Fluxo de Caixa', href: '/dashboards/cash' },
   { icon: ArrowDownCircle, label: 'Contas a Receber', href: '/dashboards/ar' },
   { icon: ArrowUpCircle, label: 'Contas a Pagar', href: '/dashboards/ap' },
   { icon: Target, label: 'Orçamento', href: '/dashboards/budget' },
