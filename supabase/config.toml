@@ -28,7 +28,7 @@ verify_jwt = true
 verify_jwt = true
 
 [functions.ai-key-status]
-verify_jwt = true
+verify_jwt = false
 
 [functions.ai-key-set]
 verify_jwt = true
