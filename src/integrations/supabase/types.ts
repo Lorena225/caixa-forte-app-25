@@ -961,6 +961,88 @@ export type Database = {
           },
         ]
       }
+      backup_artifacts: {
+        Row: {
+          checksum: string | null
+          created_at: string | null
+          file_size_bytes: number | null
+          id: string
+          job_id: string
+          storage_path: string
+        }
+        Insert: {
+          checksum?: string | null
+          created_at?: string | null
+          file_size_bytes?: number | null
+          id?: string
+          job_id: string
+          storage_path: string
+        }
+        Update: {
+          checksum?: string | null
+          created_at?: string | null
+          file_size_bytes?: number | null
+          id?: string
+          job_id?: string
+          storage_path?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "backup_artifacts_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "backup_jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      backup_jobs: {
+        Row: {
+          company_id: string
+          completed_at: string | null
+          created_at: string | null
+          created_by: string | null
+          error_message: string | null
+          id: string
+          scheduled_at: string | null
+          scope_json: Json | null
+          started_at: string | null
+          status: string | null
+        }
+        Insert: {
+          company_id: string
+          completed_at?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          error_message?: string | null
+          id?: string
+          scheduled_at?: string | null
+          scope_json?: Json | null
+          started_at?: string | null
+          status?: string | null
+        }
+        Update: {
+          company_id?: string
+          completed_at?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          error_message?: string | null
+          id?: string
+          scheduled_at?: string | null
+          scope_json?: Json | null
+          started_at?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "backup_jobs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bank_statement_imports: {
         Row: {
           closing_balance: number | null
@@ -2254,6 +2336,47 @@ export type Database = {
           },
         ]
       }
+      data_retention_policies: {
+        Row: {
+          action: string | null
+          company_id: string
+          created_at: string | null
+          entity_type: string
+          id: string
+          is_active: boolean | null
+          retention_days: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          action?: string | null
+          company_id: string
+          created_at?: string | null
+          entity_type: string
+          id?: string
+          is_active?: boolean | null
+          retention_days?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          action?: string | null
+          company_id?: string
+          created_at?: string | null
+          entity_type?: string
+          id?: string
+          is_active?: boolean | null
+          retention_days?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "data_retention_policies_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       dimension_values: {
         Row: {
           code: string
@@ -2346,6 +2469,53 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "dimensions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      export_profiles: {
+        Row: {
+          columns_json: Json
+          company_id: string
+          created_at: string | null
+          filters_json: Json | null
+          format: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          report_type: string
+          updated_at: string | null
+        }
+        Insert: {
+          columns_json?: Json
+          company_id: string
+          created_at?: string | null
+          filters_json?: Json | null
+          format?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          report_type: string
+          updated_at?: string | null
+        }
+        Update: {
+          columns_json?: Json
+          company_id?: string
+          created_at?: string | null
+          filters_json?: Json | null
+          format?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          report_type?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "export_profiles_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
@@ -3130,6 +3300,53 @@ export type Database = {
             columns: ["wallet_id"]
             isOneToOne: false
             referencedRelation: "wallets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      integration_credentials: {
+        Row: {
+          company_id: string
+          created_at: string | null
+          created_by: string | null
+          encrypted_payload: string
+          encryption_meta: Json | null
+          id: string
+          integration_key: string
+          last_used_at: string | null
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          company_id: string
+          created_at?: string | null
+          created_by?: string | null
+          encrypted_payload: string
+          encryption_meta?: Json | null
+          id?: string
+          integration_key: string
+          last_used_at?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          company_id?: string
+          created_at?: string | null
+          created_by?: string | null
+          encrypted_payload?: string
+          encryption_meta?: Json | null
+          id?: string
+          integration_key?: string
+          last_used_at?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "integration_credentials_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
             referencedColumns: ["id"]
           },
         ]
@@ -3950,6 +4167,53 @@ export type Database = {
           },
         ]
       }
+      privacy_requests: {
+        Row: {
+          company_id: string
+          created_at: string | null
+          id: string
+          notes: string | null
+          processed_at: string | null
+          processed_by: string | null
+          request_type: string
+          requester_email: string
+          status: string | null
+          target_user_id: string | null
+        }
+        Insert: {
+          company_id: string
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          processed_at?: string | null
+          processed_by?: string | null
+          request_type: string
+          requester_email: string
+          status?: string | null
+          target_user_id?: string | null
+        }
+        Update: {
+          company_id?: string
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          processed_at?: string | null
+          processed_by?: string | null
+          request_type?: string
+          requester_email?: string
+          status?: string | null
+          target_user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "privacy_requests_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -4396,6 +4660,47 @@ export type Database = {
             columns: ["journal_entry_id"]
             isOneToOne: false
             referencedRelation: "journal_entries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      system_health_snapshots: {
+        Row: {
+          ai_metrics_json: Json | null
+          company_id: string
+          created_at: string | null
+          id: string
+          integrations_status_json: Json | null
+          jobs_summary_json: Json | null
+          pending_items_count: number | null
+          snapshot_at: string | null
+        }
+        Insert: {
+          ai_metrics_json?: Json | null
+          company_id: string
+          created_at?: string | null
+          id?: string
+          integrations_status_json?: Json | null
+          jobs_summary_json?: Json | null
+          pending_items_count?: number | null
+          snapshot_at?: string | null
+        }
+        Update: {
+          ai_metrics_json?: Json | null
+          company_id?: string
+          created_at?: string | null
+          id?: string
+          integrations_status_json?: Json | null
+          jobs_summary_json?: Json | null
+          pending_items_count?: number | null
+          snapshot_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "system_health_snapshots_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
             referencedColumns: ["id"]
           },
         ]
