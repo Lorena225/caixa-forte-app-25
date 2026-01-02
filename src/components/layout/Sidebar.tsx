@@ -25,6 +25,9 @@ import {
   MessageSquare,
   Zap,
   Inbox,
+  BarChart3,
+  PieChart,
+  TrendingUp,
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -48,6 +51,19 @@ const menuItems = [
   { icon: FileText, label: 'DRE', href: '/dre' },
   { icon: Target, label: 'Metas', href: '/metas' },
   { icon: CreditCard, label: 'Cartões', href: '/cartoes' },
+];
+
+const dashboards = [
+  { icon: BarChart3, label: 'Executivo', href: '/dashboards/executive' },
+  { icon: Wallet, label: 'Fluxo de Caixa', href: '/dashboards/cashflow' },
+  { icon: ArrowDownCircle, label: 'Contas a Receber', href: '/dashboards/ar' },
+  { icon: ArrowUpCircle, label: 'Contas a Pagar', href: '/dashboards/ap' },
+  { icon: Target, label: 'Orçamento', href: '/dashboards/budget' },
+];
+
+const reports = [
+  { icon: PieChart, label: 'Relatórios', href: '/reports' },
+  { icon: TrendingUp, label: 'Drill-down', href: '/reports/drilldown' },
 ];
 
 const autopilot = [
@@ -187,6 +203,42 @@ export function Sidebar() {
                 icon={item.icon}
                 label={item.label}
                 isActive={isActive(item.href)}
+                collapsed={collapsed}
+              />
+            ))}
+          </div>
+
+          <div className="pt-4">
+            {!collapsed && (
+              <p className="px-3 pb-2 text-xs font-medium uppercase tracking-wider text-sidebar-foreground/50">
+                Dashboards
+              </p>
+            )}
+            {dashboards.map((item) => (
+              <NavLink
+                key={item.href}
+                href={item.href}
+                icon={item.icon}
+                label={item.label}
+                isActive={isActive(item.href)}
+                collapsed={collapsed}
+              />
+            ))}
+          </div>
+
+          <div className="pt-4">
+            {!collapsed && (
+              <p className="px-3 pb-2 text-xs font-medium uppercase tracking-wider text-sidebar-foreground/50">
+                Relatórios
+              </p>
+            )}
+            {reports.map((item) => (
+              <NavLink
+                key={item.href}
+                href={item.href}
+                icon={item.icon}
+                label={item.label}
+                isActive={isActive(item.href, false)}
                 collapsed={collapsed}
               />
             ))}
