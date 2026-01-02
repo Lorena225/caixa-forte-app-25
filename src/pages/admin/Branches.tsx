@@ -1,5 +1,5 @@
 import { useState } from "react";
-import MainLayout from "@/components/layout/MainLayout";
+import { MainLayout } from "@/components/layout/MainLayout";
 import { PageHeader } from "@/components/common/PageHeader";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -120,12 +120,11 @@ export default function Branches() {
         <PageHeader
           title="Filiais"
           description="Gerenciar filiais e estabelecimentos da empresa"
-          action={
-            <Button onClick={handleOpenCreate}>
-              <Plus className="mr-2 h-4 w-4" />
-              Nova Filial
-            </Button>
-          }
+          action={{
+            label: "Nova Filial",
+            onClick: handleOpenCreate,
+            icon: <Plus className="mr-2 h-4 w-4" />,
+          }}
         />
 
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>

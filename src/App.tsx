@@ -43,6 +43,16 @@ import WhatsAppConfig from "./pages/autopilot/WhatsAppConfig";
 import AutomationRules from "./pages/autopilot/AutomationRules";
 import PendingCenter from "./pages/autopilot/PendingCenter";
 import Inbox from "./pages/autopilot/Inbox";
+// Admin
+import AdminIndex from "./pages/admin/Index";
+import AdminBranding from "./pages/admin/Branding";
+import AdminUsers from "./pages/admin/Users";
+import AdminPermissions from "./pages/admin/Permissions";
+import AdminBranches from "./pages/admin/Branches";
+import AdminApprovals from "./pages/admin/Approvals";
+import AdminFiscal from "./pages/admin/Fiscal";
+import AdminSecurity from "./pages/admin/Security";
+import AdminCompany from "./pages/admin/Company";
 
 const queryClient = new QueryClient();
 
@@ -94,6 +104,16 @@ const App = () => (
             <Route path="/cadastros/clientes-fornecedores" element={<ClientesFornecedores />} />
             <Route path="/cadastros/carteiras" element={<Carteiras />} />
             <Route path="/cadastros/dimensoes" element={<Dimensoes />} />
+            {/* Admin */}
+            <Route path="/admin" element={<AdminIndex />} />
+            <Route path="/admin/branding" element={<AdminBranding />} />
+            <Route path="/admin/usuarios" element={<AdminUsers />} />
+            <Route path="/admin/permissoes" element={<AdminPermissions />} />
+            <Route path="/admin/filiais" element={<AdminBranches />} />
+            <Route path="/admin/aprovacoes" element={<AdminApprovals />} />
+            <Route path="/admin/fiscal" element={<AdminFiscal />} />
+            <Route path="/admin/seguranca" element={<AdminSecurity />} />
+            <Route path="/admin/empresa" element={<AdminCompany />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
