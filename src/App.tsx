@@ -68,6 +68,12 @@ import AdminFiscal from "./pages/admin/Fiscal";
 import AdminSecurity from "./pages/admin/Security";
 import AdminCompany from "./pages/admin/Company";
 import AdminDocumentTypes from "./pages/admin/DocumentTypes";
+import AdminFiscalPeriods from "./pages/admin/FiscalPeriods";
+import AdminSoDRules from "./pages/admin/SoDRules";
+import AdminUserLimits from "./pages/admin/UserLimits";
+import TesourariaCNAB from "./pages/tesouraria/CNAB";
+import TesourariaBoletos from "./pages/tesouraria/Boletos";
+import TesourariaCards from "./pages/tesouraria/CardsManagement";
 
 const queryClient = new QueryClient();
 
@@ -144,6 +150,12 @@ const App = () => (
             <Route path="/admin/seguranca" element={<AdminSecurity />} />
             <Route path="/admin/empresa" element={<AdminCompany />} />
             <Route path="/admin/tipos-documento" element={<AdminDocumentTypes />} />
+            <Route path="/admin/periodos-fiscais" element={<AdminFiscalPeriods />} />
+            <Route path="/admin/sod" element={<AdminSoDRules />} />
+            <Route path="/admin/limites" element={<AdminUserLimits />} />
+            <Route path="/tesouraria/cnab" element={<TesourariaCNAB />} />
+            <Route path="/tesouraria/boletos" element={<TesourariaBoletos />} />
+            <Route path="/tesouraria/cartoes" element={<TesourariaCards />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
