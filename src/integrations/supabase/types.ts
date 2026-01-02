@@ -1950,40 +1950,184 @@ export type Database = {
       counterparties: {
         Row: {
           address: string | null
+          address_city: string | null
+          address_complement: string | null
+          address_neighborhood: string | null
+          address_number: string | null
+          address_state: string | null
+          address_street: string | null
+          address_zip: string | null
+          bank_account: string | null
+          bank_account_digit: string | null
+          bank_account_type: string | null
+          bank_agency: string | null
+          bank_agency_digit: string | null
+          bank_code: string | null
+          bank_name: string | null
+          client_notes: string | null
+          collection_ready: boolean | null
           company_id: string
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
           created_at: string | null
+          credit_limit: number | null
+          delivery_address_city: string | null
+          delivery_address_complement: string | null
+          delivery_address_neighborhood: string | null
+          delivery_address_number: string | null
+          delivery_address_state: string | null
+          delivery_address_street: string | null
+          delivery_address_zip: string | null
+          delivery_same_as_billing: boolean | null
           document: string | null
           email: string | null
+          finance_contact_email: string | null
+          finance_contact_name: string | null
+          finance_contact_phone: string | null
+          fiscal_ready: boolean | null
           id: string
+          ie: string | null
+          ie_is_exempt: boolean | null
+          im: string | null
           is_active: boolean | null
+          is_client: boolean
+          is_supplier: boolean
+          legal_name: string | null
+          missing_fields_json: Json | null
           name: string
+          nf_email: string | null
+          payment_ready: boolean | null
+          payment_terms_payable: number | null
+          payment_terms_receivable: number | null
+          person_type: string
           phone: string | null
+          pix_key: string | null
+          pix_key_type: string | null
+          supplier_notes: string | null
+          trade_name: string | null
           type: Database["public"]["Enums"]["counterparty_type"]
           updated_at: string | null
         }
         Insert: {
           address?: string | null
+          address_city?: string | null
+          address_complement?: string | null
+          address_neighborhood?: string | null
+          address_number?: string | null
+          address_state?: string | null
+          address_street?: string | null
+          address_zip?: string | null
+          bank_account?: string | null
+          bank_account_digit?: string | null
+          bank_account_type?: string | null
+          bank_agency?: string | null
+          bank_agency_digit?: string | null
+          bank_code?: string | null
+          bank_name?: string | null
+          client_notes?: string | null
+          collection_ready?: boolean | null
           company_id: string
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
           created_at?: string | null
+          credit_limit?: number | null
+          delivery_address_city?: string | null
+          delivery_address_complement?: string | null
+          delivery_address_neighborhood?: string | null
+          delivery_address_number?: string | null
+          delivery_address_state?: string | null
+          delivery_address_street?: string | null
+          delivery_address_zip?: string | null
+          delivery_same_as_billing?: boolean | null
           document?: string | null
           email?: string | null
+          finance_contact_email?: string | null
+          finance_contact_name?: string | null
+          finance_contact_phone?: string | null
+          fiscal_ready?: boolean | null
           id?: string
+          ie?: string | null
+          ie_is_exempt?: boolean | null
+          im?: string | null
           is_active?: boolean | null
+          is_client?: boolean
+          is_supplier?: boolean
+          legal_name?: string | null
+          missing_fields_json?: Json | null
           name: string
+          nf_email?: string | null
+          payment_ready?: boolean | null
+          payment_terms_payable?: number | null
+          payment_terms_receivable?: number | null
+          person_type?: string
           phone?: string | null
+          pix_key?: string | null
+          pix_key_type?: string | null
+          supplier_notes?: string | null
+          trade_name?: string | null
           type?: Database["public"]["Enums"]["counterparty_type"]
           updated_at?: string | null
         }
         Update: {
           address?: string | null
+          address_city?: string | null
+          address_complement?: string | null
+          address_neighborhood?: string | null
+          address_number?: string | null
+          address_state?: string | null
+          address_street?: string | null
+          address_zip?: string | null
+          bank_account?: string | null
+          bank_account_digit?: string | null
+          bank_account_type?: string | null
+          bank_agency?: string | null
+          bank_agency_digit?: string | null
+          bank_code?: string | null
+          bank_name?: string | null
+          client_notes?: string | null
+          collection_ready?: boolean | null
           company_id?: string
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
           created_at?: string | null
+          credit_limit?: number | null
+          delivery_address_city?: string | null
+          delivery_address_complement?: string | null
+          delivery_address_neighborhood?: string | null
+          delivery_address_number?: string | null
+          delivery_address_state?: string | null
+          delivery_address_street?: string | null
+          delivery_address_zip?: string | null
+          delivery_same_as_billing?: boolean | null
           document?: string | null
           email?: string | null
+          finance_contact_email?: string | null
+          finance_contact_name?: string | null
+          finance_contact_phone?: string | null
+          fiscal_ready?: boolean | null
           id?: string
+          ie?: string | null
+          ie_is_exempt?: boolean | null
+          im?: string | null
           is_active?: boolean | null
+          is_client?: boolean
+          is_supplier?: boolean
+          legal_name?: string | null
+          missing_fields_json?: Json | null
           name?: string
+          nf_email?: string | null
+          payment_ready?: boolean | null
+          payment_terms_payable?: number | null
+          payment_terms_receivable?: number | null
+          person_type?: string
           phone?: string | null
+          pix_key?: string | null
+          pix_key_type?: string | null
+          supplier_notes?: string | null
+          trade_name?: string | null
           type?: Database["public"]["Enums"]["counterparty_type"]
           updated_at?: string | null
         }
