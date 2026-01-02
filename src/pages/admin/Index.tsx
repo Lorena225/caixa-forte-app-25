@@ -11,6 +11,7 @@ import {
   Settings2,
   FileCheck,
   Key,
+  FileText,
 } from "lucide-react";
 
 const adminModules = [
@@ -61,6 +62,12 @@ const adminModules = [
     description: "Dados gerais da empresa",
     icon: Settings2,
     href: "/admin/empresa",
+  },
+  {
+    title: "Tipos de Documento",
+    description: "NF, Fatura, Recibo, Boleto e outros",
+    icon: FileText,
+    href: "/admin/tipos-documento",
   },
 ];
 

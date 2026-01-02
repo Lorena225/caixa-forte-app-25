@@ -37,31 +37,39 @@ export const accountCategoriesTemplate: DefaultTemplate = {
   ],
 };
 
-// Accounts Template (updated with category_code)
+// Accounts Template (updated with category_code and new ERP fields)
 export const accountsTemplate: DefaultTemplate = {
   entity: 'accounts',
   name: 'Plano de Contas',
-  description: 'Importação de contas contábeis analíticas',
+  description: 'Importação de contas contábeis analíticas com suporte a contas redutoras',
   columns: [
-    { name: 'category_code', label: 'Código Categoria', type: 'text', required: true, description: 'Código da categoria a que pertence' },
-    { name: 'code', label: 'Código Conta', type: 'text', required: true, description: 'Código único da conta (ex: 3.1.01)' },
-    { name: 'name', label: 'Nome', type: 'text', required: true, description: 'Nome da conta' },
+    { name: 'account_code', label: 'Código Conta', type: 'text', required: true, description: 'Código único da conta (máx 30 caracteres)' },
+    { name: 'account_name', label: 'Nome', type: 'text', required: true, description: 'Nome da conta' },
+    { name: 'category_code', label: 'Código Categoria', type: 'text', required: false, description: 'Código da categoria a que pertence' },
     { name: 'category_type', label: 'Tipo', type: 'enum', required: true, options: ['receita', 'despesa', 'custo', 'ativo', 'passivo', 'patrimonio_liquido'], description: 'Tipo da conta' },
-    { name: 'parent_code', label: 'Código Conta Pai', type: 'text', required: false, description: 'Código da conta pai (para hierarquia)' },
+    { name: 'parent_account_code', label: 'Código Conta Pai', type: 'text', required: false, description: 'Código da conta pai (para hierarquia)' },
+    { name: 'allows_posting', label: 'Aceita Lançamentos', type: 'boolean', required: false, default: true, description: 'Se a conta pode receber lançamentos' },
+    { name: 'is_contra_account', label: 'Conta Redutora', type: 'boolean', required: false, default: false, description: 'Se é uma conta redutora' },
+    { name: 'contra_mode', label: 'Modo Redutor', type: 'enum', required: false, options: ['reduce_parent', 'reduce_classification'], description: 'Como a conta reduz: pai ou classificação' },
+    { name: 'contra_target_account_code', label: 'Conta Alvo Redução', type: 'text', required: false, description: 'Código da conta alvo (se reduce_classification)' },
+    { name: 'financial_classification_code', label: 'Classificação Financeira', type: 'text', required: false, description: 'Código de classificação gerencial' },
+    { name: 'financial_classification_reducer', label: 'Redutor Classificação', type: 'boolean', required: false, default: false, description: 'Se reduz a classificação financeira' },
+    { name: 'normal_balance', label: 'Saldo Normal', type: 'enum', required: false, options: ['debit', 'credit'], description: 'Devedor ou Credor' },
     { name: 'is_managerial', label: 'Gerencial', type: 'boolean', required: false, default: false },
     { name: 'is_active', label: 'Ativo', type: 'boolean', required: false, default: true },
     { name: 'external_key', label: 'Chave Externa', type: 'text', required: false, description: 'ID único para evitar duplicatas' },
   ],
   sampleData: [
-    { category_code: 'R01', code: '3.1.01', name: 'Consultoria', category_type: 'receita', parent_code: '', is_managerial: 'Não', is_active: 'Sim', external_key: 'ACC-3101' },
-    { category_code: 'R01', code: '3.1.02', name: 'Desenvolvimento', category_type: 'receita', parent_code: '', is_managerial: 'Não', is_active: 'Sim', external_key: 'ACC-3102' },
-    { category_code: 'D01', code: '4.1.01', name: 'Aluguel', category_type: 'despesa', parent_code: '', is_managerial: 'Não', is_active: 'Sim', external_key: 'ACC-4101' },
+    { account_code: '3.1.01', account_name: 'Receita de Serviços', category_code: 'R01', category_type: 'receita', allows_posting: 'Sim', is_contra_account: 'Não', is_active: 'Sim' },
+    { account_code: '3.1.02', account_name: '(-) Deduções de Receita', category_code: 'R01', category_type: 'receita', allows_posting: 'Sim', is_contra_account: 'Sim', contra_mode: 'reduce_parent', is_active: 'Sim' },
+    { account_code: '4.1.01', account_name: 'Despesas Administrativas', category_code: 'D01', category_type: 'despesa', allows_posting: 'Sim', is_contra_account: 'Não', is_active: 'Sim' },
   ],
   instructions: [
+    'Código da conta deve ter no máximo 30 caracteres',
     'Importe as categorias primeiro, depois as contas',
-    'O código da categoria deve existir na base',
-    'Cada conta pertence a uma única categoria',
-    'Use parent_code para criar subcontas',
+    'Use allows_posting=Não para contas sintéticas',
+    'Marque is_contra_account=Sim para contas redutoras (deduções, descontos)',
+    'Use parent_account_code para criar hierarquia',
   ],
 };
 
