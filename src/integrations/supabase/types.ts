@@ -2069,6 +2069,50 @@ export type Database = {
           },
         ]
       }
+      custom_roles: {
+        Row: {
+          base_role: Database["public"]["Enums"]["app_role"] | null
+          company_id: string
+          created_at: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          is_system: boolean | null
+          name: string
+          updated_at: string | null
+        }
+        Insert: {
+          base_role?: Database["public"]["Enums"]["app_role"] | null
+          company_id: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_system?: boolean | null
+          name: string
+          updated_at?: string | null
+        }
+        Update: {
+          base_role?: Database["public"]["Enums"]["app_role"] | null
+          company_id?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_system?: boolean | null
+          name?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "custom_roles_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       customer_invoice_lines: {
         Row: {
           account_id: string
@@ -2556,6 +2600,47 @@ export type Database = {
             foreignKeyName: "external_keys_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      field_visibility_policies: {
+        Row: {
+          company_id: string
+          created_at: string | null
+          id: string
+          mask_bank_accounts: boolean | null
+          mask_documents: boolean | null
+          mask_in_exports: boolean | null
+          updated_at: string | null
+          visible_roles_json: Json | null
+        }
+        Insert: {
+          company_id: string
+          created_at?: string | null
+          id?: string
+          mask_bank_accounts?: boolean | null
+          mask_documents?: boolean | null
+          mask_in_exports?: boolean | null
+          updated_at?: string | null
+          visible_roles_json?: Json | null
+        }
+        Update: {
+          company_id?: string
+          created_at?: string | null
+          id?: string
+          mask_bank_accounts?: boolean | null
+          mask_documents?: boolean | null
+          mask_in_exports?: boolean | null
+          updated_at?: string | null
+          visible_roles_json?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "field_visibility_policies_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
             referencedRelation: "companies"
             referencedColumns: ["id"]
           },
@@ -4555,18 +4640,21 @@ export type Database = {
       role_permissions: {
         Row: {
           created_at: string | null
+          granted: boolean | null
           id: string
           permission_id: string
           role_id: string
         }
         Insert: {
           created_at?: string | null
+          granted?: boolean | null
           id?: string
           permission_id: string
           role_id: string
         }
         Update: {
           created_at?: string | null
+          granted?: boolean | null
           id?: string
           permission_id?: string
           role_id?: string
@@ -4583,7 +4671,7 @@ export type Database = {
             foreignKeyName: "role_permissions_role_id_fkey"
             columns: ["role_id"]
             isOneToOne: false
-            referencedRelation: "roles"
+            referencedRelation: "custom_roles"
             referencedColumns: ["id"]
           },
         ]
@@ -4625,6 +4713,104 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "roles_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sod_exceptions: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          company_id: string
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          is_active: boolean | null
+          policy_id: string
+          reason: string
+          user_id: string
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          company_id: string
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          policy_id: string
+          reason: string
+          user_id: string
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          company_id?: string
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          policy_id?: string
+          reason?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sod_exceptions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sod_exceptions_policy_id_fkey"
+            columns: ["policy_id"]
+            isOneToOne: false
+            referencedRelation: "sod_policies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sod_policies: {
+        Row: {
+          company_id: string
+          conflicts_json: Json
+          created_at: string | null
+          description: string | null
+          enforcement: string | null
+          id: string
+          is_active: boolean | null
+          policy_key: string
+          updated_at: string | null
+        }
+        Insert: {
+          company_id: string
+          conflicts_json?: Json
+          created_at?: string | null
+          description?: string | null
+          enforcement?: string | null
+          id?: string
+          is_active?: boolean | null
+          policy_key: string
+          updated_at?: string | null
+        }
+        Update: {
+          company_id?: string
+          conflicts_json?: Json
+          created_at?: string | null
+          description?: string | null
+          enforcement?: string | null
+          id?: string
+          is_active?: boolean | null
+          policy_key?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sod_policies_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
@@ -5168,6 +5354,149 @@ export type Database = {
             columns: ["wallet_id"]
             isOneToOne: false
             referencedRelation: "wallets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_branch_access: {
+        Row: {
+          access_level: string | null
+          branch_id: string
+          company_id: string
+          created_at: string | null
+          id: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          access_level?: string | null
+          branch_id: string
+          company_id: string
+          created_at?: string | null
+          id?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          access_level?: string | null
+          branch_id?: string
+          company_id?: string
+          created_at?: string | null
+          id?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_branch_access_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_branch_access_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_limits: {
+        Row: {
+          approve_limit_amount: number | null
+          company_id: string
+          created_at: string | null
+          daily_limit_amount: number | null
+          execute_limit_amount: number | null
+          id: string
+          limit_by_branch_json: Json | null
+          limit_by_category_json: Json | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          approve_limit_amount?: number | null
+          company_id: string
+          created_at?: string | null
+          daily_limit_amount?: number | null
+          execute_limit_amount?: number | null
+          id?: string
+          limit_by_branch_json?: Json | null
+          limit_by_category_json?: Json | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          approve_limit_amount?: number | null
+          company_id?: string
+          created_at?: string | null
+          daily_limit_amount?: number | null
+          execute_limit_amount?: number | null
+          id?: string
+          limit_by_branch_json?: Json | null
+          limit_by_category_json?: Json | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_limits_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          assigned_at: string | null
+          assigned_by: string | null
+          company_id: string
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          is_active: boolean | null
+          role_id: string
+          user_id: string
+        }
+        Insert: {
+          assigned_at?: string | null
+          assigned_by?: string | null
+          company_id: string
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          role_id: string
+          user_id: string
+        }
+        Update: {
+          assigned_at?: string | null
+          assigned_by?: string | null
+          company_id?: string
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          role_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_roles_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_roles_role_id_fkey"
+            columns: ["role_id"]
+            isOneToOne: false
+            referencedRelation: "custom_roles"
             referencedColumns: ["id"]
           },
         ]
@@ -6306,6 +6635,14 @@ export type Database = {
         Args: { p_company_id: string }
         Returns: boolean
       }
+      user_has_permission: {
+        Args: {
+          p_company_id: string
+          p_permission_code: string
+          p_user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
       account_category:
@@ -6315,6 +6652,7 @@ export type Database = {
         | "receita"
         | "custo"
         | "despesa"
+      app_role: "admin" | "gestor" | "operador" | "visualizador" | "auditor"
       counterparty_type: "cliente" | "fornecedor" | "ambos"
       document_type: "nf" | "nfe" | "fatura" | "recibo" | "boleto" | "outro"
       import_batch_status: "processing" | "success" | "partial" | "error"
@@ -6492,6 +6830,7 @@ export const Constants = {
         "custo",
         "despesa",
       ],
+      app_role: ["admin", "gestor", "operador", "visualizador", "auditor"],
       counterparty_type: ["cliente", "fornecedor", "ambos"],
       document_type: ["nf", "nfe", "fatura", "recibo", "boleto", "outro"],
       import_batch_status: ["processing", "success", "partial", "error"],
