@@ -115,7 +115,7 @@ export default function ARDashboard() {
         {/* Aging Chart */}
         <AgingChart
           data={arAging}
-          title="Aging Contas a Receber"
+          title="Contas a Receber"
           type="ar"
           isLoading={agingLoading}
           onBucketClick={handleDrilldown}

@@ -163,14 +163,14 @@ export default function ExecutiveDashboard() {
         <div className="grid gap-6 lg:grid-cols-2">
           <AgingChart
             data={arAging}
-            title="Aging Contas a Receber"
+            title="Contas a Receber"
             type="ar"
             isLoading={arLoading}
             onBucketClick={(bucket) => handleDrilldown('ar_aging', { bucket })}
           />
           <AgingChart
             data={apAging}
-            title="Aging Contas a Pagar"
+            title="Contas a Pagar"
             type="ap"
             isLoading={apLoading}
             onBucketClick={(bucket) => handleDrilldown('ap_aging', { bucket })}
