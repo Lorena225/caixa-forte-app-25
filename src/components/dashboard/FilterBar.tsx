@@ -78,12 +78,12 @@ export function FilterBar({
   const { data: dimensionValues = [] } = useDimensionValues();
 
   const customers = useMemo(() => 
-    counterparties.filter(c => c.type === 'cliente' || c.type === 'ambos'),
+    counterparties.filter(c => c.is_client === true),
     [counterparties]
   );
   
   const suppliers = useMemo(() => 
-    counterparties.filter(c => c.type === 'fornecedor' || c.type === 'ambos'),
+    counterparties.filter(c => c.is_supplier === true),
     [counterparties]
   );
 

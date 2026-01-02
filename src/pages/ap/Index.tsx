@@ -83,7 +83,7 @@ export default function APIndex() {
     enabled: !!currentCompany?.id
   });
 
-  // Fetch counterparties (suppliers)
+  // Fetch counterparties (suppliers only)
   const { data: suppliers } = useQuery({
     queryKey: ['suppliers', currentCompany?.id],
     queryFn: async () => {
@@ -92,7 +92,7 @@ export default function APIndex() {
         .from('counterparties')
         .select('id, name')
         .eq('company_id', currentCompany.id)
-        .in('type', ['fornecedor', 'ambos'])
+        .eq('is_supplier', true)
         .eq('is_active', true)
         .order('name');
       

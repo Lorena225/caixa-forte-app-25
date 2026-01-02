@@ -83,7 +83,7 @@ export default function ARIndex() {
     enabled: !!currentCompany?.id
   });
 
-  // Fetch counterparties (customers)
+  // Fetch counterparties (customers only)
   const { data: customers } = useQuery({
     queryKey: ['customers', currentCompany?.id],
     queryFn: async () => {
@@ -92,7 +92,7 @@ export default function ARIndex() {
         .from('counterparties')
         .select('id, name')
         .eq('company_id', currentCompany.id)
-        .in('type', ['cliente', 'ambos'])
+        .eq('is_client', true)
         .eq('is_active', true)
         .order('name');
       
