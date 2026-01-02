@@ -42,6 +42,16 @@ import FiscalIndex from "./pages/fiscal/Index";
 import TesourariaIndex from "./pages/tesouraria/Index";
 import APIndex from "./pages/ap/Index";
 import ARIndex from "./pages/ar/Index";
+// Dashboards
+import DashboardsIndex from "./pages/dashboards/Index";
+import ExecutiveDashboard from "./pages/dashboards/ExecutiveDashboard";
+import CashFlowDashboard from "./pages/dashboards/CashFlowDashboard";
+import ARDashboard from "./pages/dashboards/ARDashboard";
+import APDashboard from "./pages/dashboards/APDashboard";
+import BudgetDashboard from "./pages/dashboards/BudgetDashboard";
+// Reports
+import ReportsIndex from "./pages/reports/Index";
+import DrilldownPage from "./pages/reports/DrilldownPage";
 // Autopilot
 import WhatsAppConfig from "./pages/autopilot/WhatsAppConfig";
 import AutomationRules from "./pages/autopilot/AutomationRules";
@@ -85,6 +95,16 @@ const App = () => (
             <Route path="/tesouraria" element={<TesourariaIndex />} />
             <Route path="/ap" element={<APIndex />} />
             <Route path="/ar" element={<ARIndex />} />
+            {/* Dashboards */}
+            <Route path="/dashboards" element={<DashboardsIndex />} />
+            <Route path="/dashboards/executive" element={<ExecutiveDashboard />} />
+            <Route path="/dashboards/cash" element={<CashFlowDashboard />} />
+            <Route path="/dashboards/ar" element={<ARDashboard />} />
+            <Route path="/dashboards/ap" element={<APDashboard />} />
+            <Route path="/dashboards/budget" element={<BudgetDashboard />} />
+            {/* Reports */}
+            <Route path="/reports" element={<ReportsIndex />} />
+            <Route path="/reports/drilldown" element={<DrilldownPage />} />
             {/* Autopilot */}
             <Route path="/autopilot/whatsapp" element={<WhatsAppConfig />} />
             <Route path="/autopilot/regras" element={<AutomationRules />} />
