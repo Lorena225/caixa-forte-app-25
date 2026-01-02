@@ -67,45 +67,75 @@ export type Database = {
       }
       accounts: {
         Row: {
+          account_code: string
+          account_name: string
+          allows_posting: boolean | null
           category_id: string | null
           category_type: Database["public"]["Enums"]["account_category"]
           code: string
           company_id: string
+          contra_mode: Database["public"]["Enums"]["contra_mode"] | null
+          contra_target_account_id: string | null
           created_at: string | null
+          financial_classification_code: string | null
+          financial_classification_reducer: boolean | null
           id: string
           is_active: boolean | null
+          is_contra_account: boolean | null
           is_managerial: boolean | null
           level: number | null
           name: string
+          normal_balance: Database["public"]["Enums"]["normal_balance"] | null
           parent_id: string | null
+          posting_block_reason: string | null
           updated_at: string | null
         }
         Insert: {
+          account_code: string
+          account_name: string
+          allows_posting?: boolean | null
           category_id?: string | null
           category_type: Database["public"]["Enums"]["account_category"]
           code: string
           company_id: string
+          contra_mode?: Database["public"]["Enums"]["contra_mode"] | null
+          contra_target_account_id?: string | null
           created_at?: string | null
+          financial_classification_code?: string | null
+          financial_classification_reducer?: boolean | null
           id?: string
           is_active?: boolean | null
+          is_contra_account?: boolean | null
           is_managerial?: boolean | null
           level?: number | null
           name: string
+          normal_balance?: Database["public"]["Enums"]["normal_balance"] | null
           parent_id?: string | null
+          posting_block_reason?: string | null
           updated_at?: string | null
         }
         Update: {
+          account_code?: string
+          account_name?: string
+          allows_posting?: boolean | null
           category_id?: string | null
           category_type?: Database["public"]["Enums"]["account_category"]
           code?: string
           company_id?: string
+          contra_mode?: Database["public"]["Enums"]["contra_mode"] | null
+          contra_target_account_id?: string | null
           created_at?: string | null
+          financial_classification_code?: string | null
+          financial_classification_reducer?: boolean | null
           id?: string
           is_active?: boolean | null
+          is_contra_account?: boolean | null
           is_managerial?: boolean | null
           level?: number | null
           name?: string
+          normal_balance?: Database["public"]["Enums"]["normal_balance"] | null
           parent_id?: string | null
+          posting_block_reason?: string | null
           updated_at?: string | null
         }
         Relationships: [
@@ -122,6 +152,27 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "accounts_contra_target_account_id_fkey"
+            columns: ["contra_target_account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "accounts_contra_target_account_id_fkey"
+            columns: ["contra_target_account_id"]
+            isOneToOne: false
+            referencedRelation: "v_rc_flow_by_account"
+            referencedColumns: ["account_id"]
+          },
+          {
+            foreignKeyName: "accounts_contra_target_account_id_fkey"
+            columns: ["contra_target_account_id"]
+            isOneToOne: false
+            referencedRelation: "v_trial_balance"
+            referencedColumns: ["account_id"]
           },
           {
             foreignKeyName: "accounts_parent_id_fkey"
@@ -1527,6 +1578,35 @@ export type Database = {
           },
         ]
       }
+      chart_of_accounts_settings: {
+        Row: {
+          company_id: string
+          max_code_length: number | null
+          posting_policy: Database["public"]["Enums"]["posting_policy"] | null
+          updated_at: string | null
+        }
+        Insert: {
+          company_id: string
+          max_code_length?: number | null
+          posting_policy?: Database["public"]["Enums"]["posting_policy"] | null
+          updated_at?: string | null
+        }
+        Update: {
+          company_id?: string
+          max_code_length?: number | null
+          posting_policy?: Database["public"]["Enums"]["posting_policy"] | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chart_of_accounts_settings_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cnab_files: {
         Row: {
           cnab_layout: string
@@ -2893,6 +2973,126 @@ export type Database = {
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      document_types: {
+        Row: {
+          company_id: string | null
+          created_at: string | null
+          doc_code: string
+          doc_group: Database["public"]["Enums"]["doc_group"]
+          doc_name: string
+          id: string
+          is_active: boolean | null
+          is_system: boolean | null
+          number_label: string | null
+          requires_counterparty: boolean | null
+          requires_number: boolean | null
+          updated_at: string | null
+        }
+        Insert: {
+          company_id?: string | null
+          created_at?: string | null
+          doc_code: string
+          doc_group?: Database["public"]["Enums"]["doc_group"]
+          doc_name: string
+          id?: string
+          is_active?: boolean | null
+          is_system?: boolean | null
+          number_label?: string | null
+          requires_counterparty?: boolean | null
+          requires_number?: boolean | null
+          updated_at?: string | null
+        }
+        Update: {
+          company_id?: string | null
+          created_at?: string | null
+          doc_code?: string
+          doc_group?: Database["public"]["Enums"]["doc_group"]
+          doc_name?: string
+          id?: string
+          is_active?: boolean | null
+          is_system?: boolean | null
+          number_label?: string | null
+          requires_counterparty?: boolean | null
+          requires_number?: boolean | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "document_types_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      documents: {
+        Row: {
+          amount: number | null
+          company_id: string
+          counterparty_id: string | null
+          created_at: string | null
+          document_number: string | null
+          document_series: string | null
+          document_type_id: string
+          file_url: string | null
+          id: string
+          issue_date: string | null
+          notes: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          amount?: number | null
+          company_id: string
+          counterparty_id?: string | null
+          created_at?: string | null
+          document_number?: string | null
+          document_series?: string | null
+          document_type_id: string
+          file_url?: string | null
+          id?: string
+          issue_date?: string | null
+          notes?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          amount?: number | null
+          company_id?: string
+          counterparty_id?: string | null
+          created_at?: string | null
+          document_number?: string | null
+          document_series?: string | null
+          document_type_id?: string
+          file_url?: string | null
+          id?: string
+          issue_date?: string | null
+          notes?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documents_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documents_counterparty_id_fkey"
+            columns: ["counterparty_id"]
+            isOneToOne: false
+            referencedRelation: "counterparties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documents_document_type_id_fkey"
+            columns: ["document_type_id"]
+            isOneToOne: false
+            referencedRelation: "document_types"
             referencedColumns: ["id"]
           },
         ]
@@ -5920,9 +6120,11 @@ export type Database = {
           direction: Database["public"]["Enums"]["transaction_direction"]
           discount_amount: number | null
           discount_percent: number | null
+          document_id: string | null
           document_number: string | null
           document_series: string | null
           document_type: Database["public"]["Enums"]["document_type"] | null
+          document_type_id: string | null
           due_date: string
           id: string
           installment_number: number | null
@@ -5951,9 +6153,11 @@ export type Database = {
           direction: Database["public"]["Enums"]["transaction_direction"]
           discount_amount?: number | null
           discount_percent?: number | null
+          document_id?: string | null
           document_number?: string | null
           document_series?: string | null
           document_type?: Database["public"]["Enums"]["document_type"] | null
+          document_type_id?: string | null
           due_date: string
           id?: string
           installment_number?: number | null
@@ -5982,9 +6186,11 @@ export type Database = {
           direction?: Database["public"]["Enums"]["transaction_direction"]
           discount_amount?: number | null
           discount_percent?: number | null
+          document_id?: string | null
           document_number?: string | null
           document_series?: string | null
           document_type?: Database["public"]["Enums"]["document_type"] | null
+          document_type_id?: string | null
           due_date?: string
           id?: string
           installment_number?: number | null
@@ -6064,6 +6270,20 @@ export type Database = {
             columns: ["counterparty_id"]
             isOneToOne: false
             referencedRelation: "counterparties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "documents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_document_type_id_fkey"
+            columns: ["document_type_id"]
+            isOneToOne: false
+            referencedRelation: "document_types"
             referencedColumns: ["id"]
           },
           {
@@ -7689,7 +7909,17 @@ export type Database = {
         | "custo"
         | "despesa"
       app_role: "admin" | "gestor" | "operador" | "visualizador" | "auditor"
+      contra_mode: "reduce_parent" | "reduce_classification"
       counterparty_type: "cliente" | "fornecedor" | "ambos"
+      doc_group:
+        | "fiscal"
+        | "financeiro"
+        | "comprovante"
+        | "contrato"
+        | "titulo"
+        | "movimento"
+        | "ajuste"
+        | "outros"
       document_type: "nf" | "nfe" | "fatura" | "recibo" | "boleto" | "outro"
       import_batch_status: "processing" | "success" | "partial" | "error"
       import_entity_type:
@@ -7726,6 +7956,8 @@ export type Database = {
         | "other"
       integration_status: "disconnected" | "connected" | "error" | "disabled"
       match_type: "exact" | "fuzzy" | "manual"
+      normal_balance: "debit" | "credit"
+      posting_policy: "leaf_only" | "allows_posting_flag" | "leaf_or_flag"
       reconciliation_action: "mark_paid" | "create" | "ignore" | "pending"
       transaction_direction: "entrada" | "saida"
       transaction_status: "rascunho" | "lancado" | "pago" | "cancelado"
@@ -7867,7 +8099,18 @@ export const Constants = {
         "despesa",
       ],
       app_role: ["admin", "gestor", "operador", "visualizador", "auditor"],
+      contra_mode: ["reduce_parent", "reduce_classification"],
       counterparty_type: ["cliente", "fornecedor", "ambos"],
+      doc_group: [
+        "fiscal",
+        "financeiro",
+        "comprovante",
+        "contrato",
+        "titulo",
+        "movimento",
+        "ajuste",
+        "outros",
+      ],
       document_type: ["nf", "nfe", "fatura", "recibo", "boleto", "outro"],
       import_batch_status: ["processing", "success", "partial", "error"],
       import_entity_type: [
@@ -7907,6 +8150,8 @@ export const Constants = {
       ],
       integration_status: ["disconnected", "connected", "error", "disabled"],
       match_type: ["exact", "fuzzy", "manual"],
+      normal_balance: ["debit", "credit"],
+      posting_policy: ["leaf_only", "allows_posting_flag", "leaf_or_flag"],
       reconciliation_action: ["mark_paid", "create", "ignore", "pending"],
       transaction_direction: ["entrada", "saida"],
       transaction_status: ["rascunho", "lancado", "pago", "cancelado"],
