@@ -41,7 +41,7 @@ export default function Conciliacao() {
       if (!currentCompany?.id) return [];
       const { data, error } = await supabase
         .from('wallets')
-        .select('id, name, wallet_type')
+        .select('id, name')
         .eq('company_id', currentCompany.id)
         .eq('is_active', true)
         .order('name');
