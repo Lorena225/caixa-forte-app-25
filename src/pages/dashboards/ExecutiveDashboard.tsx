@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { PageHeader } from '@/components/common/PageHeader';
@@ -6,6 +5,7 @@ import { FilterBar, useFilters } from '@/components/dashboard/FilterBar';
 import { KPICard, KPIGrid } from '@/components/dashboard/KPICard';
 import { AgingChart } from '@/components/dashboard/AgingChart';
 import { CashFlowChart } from '@/components/dashboard/CashFlowChart';
+import { DashboardSkeleton } from '@/components/common/DashboardSkeleton';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { formatCurrency } from '@/lib/formatters';
@@ -27,6 +27,7 @@ import {
   ArrowDownCircle,
   FileDown,
   BarChart3,
+  RefreshCw,
 } from 'lucide-react';
 
 export default function ExecutiveDashboard() {
@@ -47,6 +48,9 @@ export default function ExecutiveDashboard() {
     navigate(`/reports/drilldown?${searchParams.toString()}`);
   };
 
+  // Loading inicial do dashboard
+  const isInitialLoading = kpisLoading && !kpis;
+
   return (
     <MainLayout>
       <div className="space-y-6 animate-fade-in">
@@ -54,13 +58,28 @@ export default function ExecutiveDashboard() {
           title="Dashboard Executivo"
           description="Visão geral financeira em tempo real"
         >
-          <Button variant="outline" size="sm" className="gap-2">
-            <FileDown className="h-4 w-4" />
-            Exportar PDF
-          </Button>
+          <div className="flex gap-2">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="gap-2"
+              disabled={kpisLoading}
+            >
+              <RefreshCw className={`h-4 w-4 ${kpisLoading ? 'animate-spin' : ''}`} />
+            </Button>
+            <Button variant="outline" size="sm" className="gap-2">
+              <FileDown className="h-4 w-4" />
+              Exportar PDF
+            </Button>
+          </div>
         </PageHeader>
 
         <FilterBar filters={filters} onFiltersChange={setFilters} />
+
+        {isInitialLoading ? (
+          <DashboardSkeleton kpiCount={9} showCharts showTable={false} />
+        ) : (
+          <>
 
         {/* Main KPIs */}
         <KPIGrid columns={5}>
@@ -202,6 +221,8 @@ export default function ExecutiveDashboard() {
             </div>
           </CardContent>
         </Card>
+        </>
+        )}
       </div>
     </MainLayout>
   );
