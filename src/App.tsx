@@ -38,8 +38,17 @@ import ExportData from "./pages/importar-exportar/ExportData";
 import ContabilidadeIndex from "./pages/contabilidade/Index";
 import ContabilidadeLancamentos from "./pages/contabilidade/Lancamentos";
 import ContabilidadeBalancete from "./pages/contabilidade/Balancete";
+import ContabilidadeDiario from "./pages/contabilidade/Diario";
+import ContabilidadeRazao from "./pages/contabilidade/Razao";
+import ContabilidadeBalanco from "./pages/contabilidade/Balanco";
+import ContabilidadeDREContabil from "./pages/contabilidade/DREContabil";
+import ContabilidadeFechamento from "./pages/contabilidade/Fechamento";
 import FiscalIndex from "./pages/fiscal/Index";
 import TesourariaIndex from "./pages/tesouraria/Index";
+import TesourariaPosicao from "./pages/tesouraria/Posicao";
+import TesourariaConciliacao from "./pages/tesouraria/Conciliacao";
+import TesourariaBordero from "./pages/tesouraria/Bordero";
+import TesourariaExtratos from "./pages/tesouraria/Extratos";
 import APIndex from "./pages/ap/Index";
 import ARIndex from "./pages/ar/Index";
 // Dashboards
@@ -98,8 +107,17 @@ const App = () => (
             <Route path="/contabilidade" element={<ContabilidadeIndex />} />
             <Route path="/contabilidade/lancamentos" element={<ContabilidadeLancamentos />} />
             <Route path="/contabilidade/balancete" element={<ContabilidadeBalancete />} />
+            <Route path="/contabilidade/diario" element={<ContabilidadeDiario />} />
+            <Route path="/contabilidade/razao" element={<ContabilidadeRazao />} />
+            <Route path="/contabilidade/balanco" element={<ContabilidadeBalanco />} />
+            <Route path="/contabilidade/dre" element={<ContabilidadeDREContabil />} />
+            <Route path="/contabilidade/fechamento" element={<ContabilidadeFechamento />} />
             <Route path="/fiscal" element={<FiscalIndex />} />
             <Route path="/tesouraria" element={<TesourariaIndex />} />
+            <Route path="/tesouraria/posicao" element={<TesourariaPosicao />} />
+            <Route path="/tesouraria/conciliacao" element={<TesourariaConciliacao />} />
+            <Route path="/tesouraria/bordero" element={<TesourariaBordero />} />
+            <Route path="/tesouraria/extratos" element={<TesourariaExtratos />} />
             <Route path="/ap" element={<APIndex />} />
             <Route path="/ar" element={<ARIndex />} />
             {/* Dashboards */}

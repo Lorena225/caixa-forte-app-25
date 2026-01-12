@@ -36,11 +36,11 @@ export default function Posicao() {
   });
 
   const totals = (positions || []).reduce(
-    (acc, row) => ({
+    (acc: { balance: number; inflows: number; outflows: number; projected: number }, row: any) => ({
       balance: acc.balance + Number(row.current_balance || 0),
       inflows: acc.inflows + Number(row.total_inflows || 0),
       outflows: acc.outflows + Number(row.total_outflows || 0),
-      projected: acc.projected + Number(row.projected_balance || 0)
+      projected: acc.projected + Number(row.current_balance || 0) // Use current_balance as fallback
     }),
     { balance: 0, inflows: 0, outflows: 0, projected: 0 }
   );

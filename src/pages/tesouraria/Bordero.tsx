@@ -76,7 +76,6 @@ export default function Bordero() {
         .select('id, name')
         .eq('company_id', currentCompany.id)
         .eq('is_active', true)
-        .in('wallet_type', ['bank_account', 'cash'])
         .order('name');
       if (error) throw error;
       return data || [];

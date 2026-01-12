@@ -45,12 +45,18 @@ import {
 const menuItems = [
   { icon: LayoutDashboard, label: 'Dashboard', href: '/' },
   { icon: BookOpen, label: 'Lançamentos', href: '/lancamentos' },
-  { icon: ArrowDownCircle, label: 'Contas a Receber', href: '/contas-receber' },
-  { icon: ArrowUpCircle, label: 'Contas a Pagar', href: '/contas-pagar' },
+  { icon: ArrowDownCircle, label: 'Contas a Receber', href: '/ar' },
+  { icon: ArrowUpCircle, label: 'Contas a Pagar', href: '/ap' },
   { icon: Wallet, label: 'Fluxo de Caixa', href: '/fluxo-caixa' },
   { icon: FileText, label: 'DRE', href: '/dre' },
   { icon: Target, label: 'Metas', href: '/metas' },
   { icon: CreditCard, label: 'Cartões', href: '/cartoes' },
+];
+
+const erpModules = [
+  { icon: BookOpen, label: 'Contabilidade', href: '/contabilidade' },
+  { icon: Wallet, label: 'Tesouraria', href: '/tesouraria' },
+  { icon: FileText, label: 'Fiscal', href: '/fiscal' },
 ];
 
 const dashboards = [
@@ -203,6 +209,24 @@ export function Sidebar() {
                 icon={item.icon}
                 label={item.label}
                 isActive={isActive(item.href)}
+                collapsed={collapsed}
+              />
+            ))}
+          </div>
+
+          <div className="pt-4">
+            {!collapsed && (
+              <p className="px-3 pb-2 text-xs font-medium uppercase tracking-wider text-sidebar-foreground/50">
+                Módulos ERP
+              </p>
+            )}
+            {erpModules.map((item) => (
+              <NavLink
+                key={item.href}
+                href={item.href}
+                icon={item.icon}
+                label={item.label}
+                isActive={isActive(item.href) || location.pathname.startsWith(item.href + '/')}
                 collapsed={collapsed}
               />
             ))}
