@@ -1649,6 +1649,71 @@ export type Database = {
           },
         ]
       }
+      budget_accounts: {
+        Row: {
+          account_id: string
+          company_id: string
+          created_at: string
+          id: string
+          month: number
+          notes: string | null
+          target_amount: number
+          updated_at: string
+          year: number
+        }
+        Insert: {
+          account_id: string
+          company_id: string
+          created_at?: string
+          id?: string
+          month: number
+          notes?: string | null
+          target_amount?: number
+          updated_at?: string
+          year: number
+        }
+        Update: {
+          account_id?: string
+          company_id?: string
+          created_at?: string
+          id?: string
+          month?: number
+          notes?: string | null
+          target_amount?: number
+          updated_at?: string
+          year?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "budget_accounts_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_accounts_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "v_rc_flow_by_account"
+            referencedColumns: ["account_id"]
+          },
+          {
+            foreignKeyName: "budget_accounts_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "v_trial_balance"
+            referencedColumns: ["account_id"]
+          },
+          {
+            foreignKeyName: "budget_accounts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       budgets: {
         Row: {
           company_id: string
@@ -7586,6 +7651,87 @@ export type Database = {
           },
         ]
       }
+      sped_jobs: {
+        Row: {
+          branch_id: string | null
+          company_id: string
+          completed_at: string | null
+          created_at: string
+          created_by: string | null
+          error_message: string | null
+          file_path: string | null
+          file_size_bytes: number | null
+          hash: string | null
+          id: string
+          receipt_number: string | null
+          record_count: number | null
+          reference_month: number | null
+          reference_year: number
+          sped_type: string
+          started_at: string | null
+          status: string
+          transmitted_at: string | null
+          validation_errors_json: Json | null
+        }
+        Insert: {
+          branch_id?: string | null
+          company_id: string
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          error_message?: string | null
+          file_path?: string | null
+          file_size_bytes?: number | null
+          hash?: string | null
+          id?: string
+          receipt_number?: string | null
+          record_count?: number | null
+          reference_month?: number | null
+          reference_year: number
+          sped_type: string
+          started_at?: string | null
+          status?: string
+          transmitted_at?: string | null
+          validation_errors_json?: Json | null
+        }
+        Update: {
+          branch_id?: string | null
+          company_id?: string
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          error_message?: string | null
+          file_path?: string | null
+          file_size_bytes?: number | null
+          hash?: string | null
+          id?: string
+          receipt_number?: string | null
+          record_count?: number | null
+          reference_month?: number | null
+          reference_year?: number
+          sped_type?: string
+          started_at?: string | null
+          status?: string
+          transmitted_at?: string | null
+          validation_errors_json?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sped_jobs_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sped_jobs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       subledger_links: {
         Row: {
           created_at: string | null
@@ -9325,6 +9471,51 @@ export type Database = {
             columns: ["wallet_id"]
             isOneToOne: false
             referencedRelation: "wallets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_budget_by_account: {
+        Row: {
+          account_code: string | null
+          account_id: string | null
+          account_name: string | null
+          actual_amount: number | null
+          category_type: Database["public"]["Enums"]["account_category"] | null
+          company_id: string | null
+          id: string | null
+          month: number | null
+          target_amount: number | null
+          variance: number | null
+          year: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "budget_accounts_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_accounts_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "v_rc_flow_by_account"
+            referencedColumns: ["account_id"]
+          },
+          {
+            foreignKeyName: "budget_accounts_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "v_trial_balance"
+            referencedColumns: ["account_id"]
+          },
+          {
+            foreignKeyName: "budget_accounts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
             referencedColumns: ["id"]
           },
         ]
