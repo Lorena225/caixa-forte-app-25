@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -23,8 +23,12 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
-import { Pencil, Trash2, CheckCircle2, AlertTriangle, Search, Filter } from 'lucide-react';
+import { Pencil, Trash2, CheckCircle2, AlertTriangle, Search, Filter, Check, X, Download, UserCheck, Building } from 'lucide-react';
 import { CounterpartyForm, CounterpartyFormData, emptyFormData } from '@/components/cadastros/CounterpartyForm';
+import { useBulkSelection } from '@/hooks/useBulkSelection';
+import { useBulkActions } from '@/hooks/useBulkActions';
+import { BulkActionsBar, BulkEditModal, BulkSelectionCheckbox, type BulkAction } from '@/components/bulk';
+import type { BulkEditInputType } from '@/components/bulk/BulkEditModal';
 
 type FilterType = 'all' | 'clients' | 'suppliers';
 
@@ -37,6 +41,65 @@ export default function ClientesFornecedores() {
   const [editingItem, setEditingItem] = useState<Counterparty | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState<FilterType>('all');
+
+  // Filtragem
+  const filteredData = counterparties.filter((item) => {
+    if (filterType === 'clients' && !item.is_client) return false;
+    if (filterType === 'suppliers' && !item.is_supplier) return false;
+
+    if (searchTerm) {
+      const search = searchTerm.toLowerCase();
+      return (
+        item.name.toLowerCase().includes(search) ||
+        (item.document && item.document.includes(search)) ||
+        (item.email && item.email.toLowerCase().includes(search))
+      );
+    }
+
+    return true;
+  });
+
+  // Bulk selection
+  const {
+    selectedIds,
+    isAllSelected,
+    isPartialSelected,
+    selectAll,
+    deselectAll,
+    toggleItem,
+    isSelected,
+    count: selectedCount,
+  } = useBulkSelection({
+    data: filteredData,
+  });
+
+  // Bulk actions
+  const { bulkUpdate, bulkDelete, bulkExport, isProcessing, progress } = useBulkActions({
+    tableName: 'counterparties',
+    queryKey: ['counterparties-all'],
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['counterparties-all'] });
+      queryClient.invalidateQueries({ queryKey: ['counterparties-clients'] });
+      queryClient.invalidateQueries({ queryKey: ['counterparties-suppliers'] });
+      queryClient.invalidateQueries({ queryKey: ['counterparties'] });
+      deselectAll();
+    },
+  });
+
+  // Bulk edit modal state
+  const [bulkEditModal, setBulkEditModal] = useState<{
+    open: boolean;
+    title: string;
+    field: string;
+    inputType: BulkEditInputType;
+    isDestructive?: boolean;
+    confirmMessage?: string;
+  }>({
+    open: false,
+    title: '',
+    field: '',
+    inputType: 'text',
+  });
 
   const saveMutation = useMutation({
     mutationFn: async (data: CounterpartyFormData) => {
@@ -202,25 +265,6 @@ export default function ClientesFornecedores() {
     collection_ready: item.collection_ready,
   });
 
-  // Filtragem
-  const filteredData = counterparties.filter((item) => {
-    // Filtro por tipo
-    if (filterType === 'clients' && !item.is_client) return false;
-    if (filterType === 'suppliers' && !item.is_supplier) return false;
-
-    // Filtro por busca
-    if (searchTerm) {
-      const search = searchTerm.toLowerCase();
-      return (
-        item.name.toLowerCase().includes(search) ||
-        (item.document && item.document.includes(search)) ||
-        (item.email && item.email.toLowerCase().includes(search))
-      );
-    }
-
-    return true;
-  });
-
   const getRoleLabel = (item: Counterparty) => {
     if (item.is_client && item.is_supplier) return 'Ambos';
     if (item.is_client) return 'Cliente';
@@ -235,7 +279,113 @@ export default function ClientesFornecedores() {
     return '';
   };
 
+  // Bulk actions definitions
+  const bulkActions: BulkAction[] = [
+    {
+      id: 'activate',
+      label: 'Ativar',
+      icon: <Check className="h-4 w-4" />,
+      onClick: () => {
+        const ids = Array.from(selectedIds);
+        bulkUpdate(ids, { is_active: true });
+      },
+    },
+    {
+      id: 'deactivate',
+      label: 'Inativar',
+      icon: <X className="h-4 w-4" />,
+      onClick: () => {
+        const ids = Array.from(selectedIds);
+        bulkUpdate(ids, { is_active: false });
+      },
+    },
+    {
+      id: 'set_as_client',
+      label: 'Marcar como Cliente',
+      icon: <UserCheck className="h-4 w-4" />,
+      onClick: () => {
+        const ids = Array.from(selectedIds);
+        bulkUpdate(ids, { is_client: true });
+      },
+    },
+    {
+      id: 'set_as_supplier',
+      label: 'Marcar como Fornecedor',
+      icon: <Building className="h-4 w-4" />,
+      onClick: () => {
+        const ids = Array.from(selectedIds);
+        bulkUpdate(ids, { is_supplier: true });
+      },
+    },
+    {
+      id: 'export',
+      label: 'Exportar',
+      icon: <Download className="h-4 w-4" />,
+      onClick: () => {
+        const selectedItems = filteredData.filter(item => selectedIds.has(item.id));
+        bulkExport(selectedItems, [
+          { key: 'name', header: 'Nome' },
+          { key: 'document', header: 'CPF/CNPJ' },
+          { key: 'email', header: 'E-mail' },
+          { key: 'phone', header: 'Telefone' },
+          { key: 'is_client', header: 'Cliente', formatter: (v: boolean) => v ? 'Sim' : 'Não' },
+          { key: 'is_supplier', header: 'Fornecedor', formatter: (v: boolean) => v ? 'Sim' : 'Não' },
+          { key: 'is_active', header: 'Ativo', formatter: (v: boolean) => v ? 'Sim' : 'Não' },
+        ], 'Parceiros_Selecionados');
+      },
+    },
+    {
+      id: 'delete',
+      label: 'Excluir',
+      icon: <Trash2 className="h-4 w-4" />,
+      variant: 'destructive',
+      onClick: () => {
+        setBulkEditModal({
+          open: true,
+          title: `Excluir ${selectedCount} parceiro(s)`,
+          field: '',
+          inputType: 'confirm',
+          isDestructive: true,
+          confirmMessage: `Tem certeza que deseja excluir ${selectedCount} parceiro(s)? Esta ação não pode ser desfeita.`,
+        });
+      },
+    },
+  ];
+
+  const handleBulkEditConfirm = useCallback(async () => {
+    if (bulkEditModal.isDestructive) {
+      const ids = Array.from(selectedIds);
+      await bulkDelete(ids);
+    }
+    setBulkEditModal(prev => ({ ...prev, open: false }));
+  }, [bulkEditModal.isDestructive, selectedIds, bulkDelete]);
+
+  const getSelectedItemsSummary = useCallback(() => {
+    return filteredData
+      .filter(item => selectedIds.has(item.id))
+      .map(item => ({
+        id: item.id,
+        label: item.name,
+        sublabel: item.document || item.email || '-',
+      }));
+  }, [filteredData, selectedIds]);
+
   const columns = [
+    {
+      key: 'select',
+      header: '',
+      render: (item: Counterparty, index: number, allData: Counterparty[]) => {
+        // Render header checkbox for first item in a special way
+        return (
+          <BulkSelectionCheckbox
+            checked={isSelected(item.id)}
+            onChange={() => toggleItem(item.id)}
+            aria-label={`Selecionar ${item.name}`}
+          />
+        );
+      },
+      className: 'w-10',
+    },
     { key: 'name', header: 'Nome' },
     {
       key: 'role',
@@ -349,8 +499,27 @@ export default function ClientesFornecedores() {
           action={{ label: 'Novo Cadastro', onClick: handleNew }}
         />
 
+        {/* Bulk Actions Bar */}
+        <BulkActionsBar
+          selectedCount={selectedCount}
+          onClearSelection={deselectAll}
+          actions={bulkActions}
+          isProcessing={isProcessing}
+          progress={progress}
+        />
+
         {/* Filtros */}
         <div className="flex flex-wrap gap-4">
+          <div className="flex items-center gap-2">
+            <BulkSelectionCheckbox
+              checked={isAllSelected}
+              indeterminate={isPartialSelected}
+              onChange={isAllSelected ? deselectAll : selectAll}
+              isHeader
+              aria-label="Selecionar todos"
+            />
+            <span className="text-sm text-muted-foreground">Selecionar todos</span>
+          </div>
           <div className="relative flex-1 min-w-64">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
@@ -397,6 +566,19 @@ export default function ClientesFornecedores() {
             />
           </DialogContent>
         </Dialog>
+
+        {/* Bulk Edit Modal */}
+        <BulkEditModal
+          open={bulkEditModal.open}
+          onOpenChange={(open) => setBulkEditModal(prev => ({ ...prev, open }))}
+          title={bulkEditModal.title}
+          items={getSelectedItemsSummary()}
+          inputType={bulkEditModal.inputType}
+          onConfirm={handleBulkEditConfirm}
+          isLoading={isProcessing}
+          isDestructive={bulkEditModal.isDestructive}
+          confirmMessage={bulkEditModal.confirmMessage}
+        />
       </div>
     </MainLayout>
   );

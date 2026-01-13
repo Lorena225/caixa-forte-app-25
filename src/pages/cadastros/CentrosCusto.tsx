@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { PageHeader } from '@/components/common/PageHeader';
@@ -7,8 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Dialog,
   DialogContent,
@@ -24,7 +23,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
-import { Plus, Settings, FolderTree, List } from 'lucide-react';
+import { FolderTree, List, Check, X, Download, Trash2 } from 'lucide-react';
 import { CostCenterTree } from '@/components/cadastros/CostCenterTree';
 import {
   useCostCenterTree,
@@ -39,6 +38,10 @@ import {
   getLevelLabel,
 } from '@/hooks/useCostCenterHierarchy';
 import { DataTable } from '@/components/common/DataTable';
+import { useBulkSelection } from '@/hooks/useBulkSelection';
+import { useBulkActions } from '@/hooks/useBulkActions';
+import { BulkActionsBar, BulkEditModal, BulkSelectionCheckbox, type BulkAction } from '@/components/bulk';
+import type { BulkEditInputType } from '@/components/bulk/BulkEditModal';
 
 export default function CentrosCusto() {
   const { toast } = useToast();
@@ -66,6 +69,56 @@ export default function CentrosCusto() {
   const [formData, setFormData] = useState({
     code: '',
     name: '',
+  });
+
+  // Filtered list for display
+  const displayList = showInactive ? listData : listData.filter((cc) => cc.is_active);
+
+  // Can select function for bulk selection
+  const canSelectItem = useCallback((item: CostCenter) => {
+    return item.is_leaf;
+  }, []);
+
+  // Bulk selection
+  const {
+    selectedIds,
+    isAllSelected,
+    isPartialSelected,
+    selectAll,
+    deselectAll,
+    toggleItem,
+    isSelected,
+    count: selectedCount,
+  } = useBulkSelection({
+    data: displayList,
+    canSelect: canSelectItem,
+  });
+
+  // Bulk actions
+  const { bulkUpdate, bulkDelete, bulkExport, isProcessing, progress } = useBulkActions({
+    tableName: 'cost_centers',
+    queryKey: ['cost-center-list'],
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['cost_centers'] });
+      queryClient.invalidateQueries({ queryKey: ['cost-center-tree'] });
+      queryClient.invalidateQueries({ queryKey: ['cost-center-list'] });
+      deselectAll();
+    },
+  });
+
+  // Bulk edit modal state
+  const [bulkEditModal, setBulkEditModal] = useState<{
+    open: boolean;
+    title: string;
+    field: string;
+    inputType: BulkEditInputType;
+    isDestructive?: boolean;
+    confirmMessage?: string;
+  }>({
+    open: false,
+    title: '',
+    field: '',
+    inputType: 'text',
   });
 
   const resetForm = () => {
@@ -189,16 +242,112 @@ export default function CentrosCusto() {
   // Possíveis destinos para mover (excluindo o próprio nó e seus descendentes)
   const moveTargets = listData.filter((cc) => {
     if (!selectedForMove) return true;
-    // Não pode mover para si mesmo
     if (cc.id === selectedForMove.id) return false;
-    // Não pode mover para um descendente
     if (cc.path.startsWith(selectedForMove.path)) return false;
-    // Respeitar limite de níveis
-    if (cc.level >= 4) return false; // Filho teria nível 5+
+    if (cc.level >= 4) return false;
     return true;
   });
 
+  // Bulk actions definitions
+  const bulkActions: BulkAction[] = [
+    {
+      id: 'activate',
+      label: 'Ativar',
+      icon: <Check className="h-4 w-4" />,
+      onClick: () => {
+        const ids = Array.from(selectedIds);
+        bulkUpdate(ids, { is_active: true });
+      },
+    },
+    {
+      id: 'deactivate',
+      label: 'Inativar',
+      icon: <X className="h-4 w-4" />,
+      onClick: () => {
+        const ids = Array.from(selectedIds);
+        bulkUpdate(ids, { is_active: false });
+      },
+    },
+    {
+      id: 'export',
+      label: 'Exportar',
+      icon: <Download className="h-4 w-4" />,
+      onClick: () => {
+        const selectedItems = displayList.filter(item => selectedIds.has(item.id));
+        bulkExport(selectedItems, [
+          { key: 'code', header: 'Código' },
+          { key: 'name', header: 'Nome' },
+          { key: 'path_codes', header: 'Caminho' },
+          { key: 'level', header: 'Nível' },
+          { key: 'is_leaf', header: 'Tipo', formatter: (v: boolean) => v ? 'Folha' : 'Grupo' },
+          { key: 'is_active', header: 'Ativo', formatter: (v: boolean) => v ? 'Sim' : 'Não' },
+        ], 'CentrosCusto_Selecionados');
+      },
+    },
+    {
+      id: 'delete',
+      label: 'Excluir',
+      icon: <Trash2 className="h-4 w-4" />,
+      variant: 'destructive',
+      onClick: () => {
+        // Check if any selected has children
+        const selectedItems = displayList.filter(item => selectedIds.has(item.id));
+        const hasNonLeaf = selectedItems.some(item => !item.is_leaf);
+        
+        if (hasNonLeaf) {
+          toast({
+            title: 'Alguns itens não podem ser excluídos',
+            description: 'Apenas centros de custo folha podem ser excluídos',
+            variant: 'destructive',
+          });
+          return;
+        }
+
+        setBulkEditModal({
+          open: true,
+          title: `Excluir ${selectedCount} centro(s) de custo`,
+          field: '',
+          inputType: 'confirm',
+          isDestructive: true,
+          confirmMessage: `Tem certeza que deseja excluir ${selectedCount} centro(s) de custo? Esta ação não pode ser desfeita.`,
+        });
+      },
+    },
+  ];
+
+  const handleBulkEditConfirm = useCallback(async () => {
+    if (bulkEditModal.isDestructive) {
+      const ids = Array.from(selectedIds);
+      await bulkDelete(ids);
+    }
+    setBulkEditModal(prev => ({ ...prev, open: false }));
+  }, [bulkEditModal.isDestructive, selectedIds, bulkDelete]);
+
+  const getSelectedItemsSummary = useCallback(() => {
+    return displayList
+      .filter(item => selectedIds.has(item.id))
+      .map(item => ({
+        id: item.id,
+        label: item.name,
+        sublabel: item.path_codes,
+      }));
+  }, [displayList, selectedIds]);
+
   const columns = [
+    {
+      key: 'select',
+      header: '',
+      render: (item: CostCenter) => (
+        <BulkSelectionCheckbox
+          checked={isSelected(item.id)}
+          onChange={() => toggleItem(item.id)}
+          disabled={!canSelectItem(item)}
+          tooltip={!canSelectItem(item) ? 'Apenas folhas podem ser selecionadas' : undefined}
+          aria-label={`Selecionar ${item.name}`}
+        />
+      ),
+      className: 'w-10',
+    },
     {
       key: 'path_codes',
       header: 'Caminho',
@@ -247,6 +396,15 @@ export default function CentrosCusto() {
           action={{ label: 'Novo Centro', onClick: () => handleNew() }}
         />
 
+        {/* Bulk Actions Bar */}
+        <BulkActionsBar
+          selectedCount={selectedCount}
+          onClearSelection={deselectAll}
+          actions={bulkActions}
+          isProcessing={isProcessing}
+          progress={progress}
+        />
+
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as 'tree' | 'list')}>
@@ -261,6 +419,19 @@ export default function CentrosCusto() {
                 </TabsTrigger>
               </TabsList>
             </Tabs>
+
+            {viewMode === 'list' && (
+              <div className="flex items-center gap-2">
+                <BulkSelectionCheckbox
+                  checked={isAllSelected}
+                  indeterminate={isPartialSelected}
+                  onChange={isAllSelected ? deselectAll : selectAll}
+                  isHeader
+                  aria-label="Selecionar todos"
+                />
+                <span className="text-sm text-muted-foreground">Todos</span>
+              </div>
+            )}
 
             <div className="flex items-center gap-2">
               <Switch
@@ -304,7 +475,7 @@ export default function CentrosCusto() {
         ) : (
           <DataTable
             columns={columns}
-            data={showInactive ? listData : listData.filter((cc) => cc.is_active)}
+            data={displayList}
             loading={isLoading}
             onRowClick={handleEdit}
             emptyMessage="Nenhum centro de custo cadastrado"
@@ -397,6 +568,19 @@ export default function CentrosCusto() {
             </div>
           </DialogContent>
         </Dialog>
+
+        {/* Bulk Edit Modal */}
+        <BulkEditModal
+          open={bulkEditModal.open}
+          onOpenChange={(open) => setBulkEditModal(prev => ({ ...prev, open }))}
+          title={bulkEditModal.title}
+          items={getSelectedItemsSummary()}
+          inputType={bulkEditModal.inputType}
+          onConfirm={handleBulkEditConfirm}
+          isLoading={isProcessing}
+          isDestructive={bulkEditModal.isDestructive}
+          confirmMessage={bulkEditModal.confirmMessage}
+        />
       </div>
     </MainLayout>
   );
