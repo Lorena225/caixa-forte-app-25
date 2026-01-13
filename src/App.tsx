@@ -101,6 +101,8 @@ import AdminGoLive from "./pages/admin/GoLiveChecklist";
 import AdminSystemTier from "./pages/admin/SystemTier";
 import AdminNavigationSettings from "./pages/admin/NavigationSettings";
 import TesourariaCNAB from "./pages/tesouraria/CNAB";
+import TesourariaCNABRemessa from "./pages/tesouraria/CNABRemessa";
+import TesourariaCNABRetorno from "./pages/tesouraria/CNABRetorno";
 import TesourariaBoletos from "./pages/tesouraria/Boletos";
 import TesourariaCards from "./pages/tesouraria/CardsManagement";
 import TesourariaContratos from "./pages/tesouraria/Contratos";
@@ -168,13 +170,15 @@ const App = () => (
                 <Route path="/fiscal/obrigacoes" element={<FiscalObrigacoes />} />
                 <Route path="/fiscal/empresa" element={<FiscalEmpresa />} />
                 
-                {/* ERP Modules - Tesouraria */}
+{/* ERP Modules - Tesouraria */}
                 <Route path="/tesouraria" element={<TesourariaIndex />} />
                 <Route path="/tesouraria/posicao" element={<TesourariaPosicao />} />
                 <Route path="/tesouraria/conciliacao" element={<TesourariaConciliacao />} />
                 <Route path="/tesouraria/bordero" element={<TesourariaBordero />} />
                 <Route path="/tesouraria/extratos" element={<TesourariaExtratos />} />
                 <Route path="/tesouraria/cnab" element={<TesourariaCNAB />} />
+                <Route path="/tesouraria/cnab-remessa" element={<TesourariaCNABRemessa />} />
+                <Route path="/tesouraria/cnab-retorno" element={<TesourariaCNABRetorno />} />
                 <Route path="/tesouraria/boletos" element={<TesourariaBoletos />} />
                 <Route path="/tesouraria/cartoes" element={<TesourariaCards />} />
                 <Route path="/tesouraria/contratos" element={<TesourariaContratos />} />

@@ -11,7 +11,10 @@ import {
   RefreshCw,
   Send,
   Download,
-  TrendingUp
+  TrendingUp,
+  Landmark,
+  CreditCard,
+  Barcode
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -34,6 +37,13 @@ const modules = [
     color: 'text-primary'
   },
   {
+    title: 'Empréstimos e Financiamentos',
+    description: 'Contratos, parcelas e geração de títulos',
+    icon: Landmark,
+    href: '/tesouraria/contratos',
+    color: 'text-primary'
+  },
+  {
     title: 'CNAB - Remessas',
     description: 'Gerar arquivos de cobrança e pagamento',
     icon: Send,
@@ -46,6 +56,20 @@ const modules = [
     icon: Download,
     href: '/tesouraria/cnab-retorno',
     color: 'text-warning'
+  },
+  {
+    title: 'Boletos',
+    description: 'Emissão e gestão de boletos bancários',
+    icon: Barcode,
+    href: '/tesouraria/boletos',
+    color: 'text-muted-foreground'
+  },
+  {
+    title: 'Cartões Corporativos',
+    description: 'Gestão de cartões e despesas',
+    icon: CreditCard,
+    href: '/tesouraria/cartoes',
+    color: 'text-primary'
   },
   {
     title: 'Lotes de Pagamento',
