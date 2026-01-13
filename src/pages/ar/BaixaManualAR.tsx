@@ -1,6 +1,4 @@
 import { useState, useMemo } from 'react';
-import { MainLayout } from '@/components/layout/MainLayout';
-import { PageHeader } from '@/components/common/PageHeader';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,6 +7,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import {
   Select,
   SelectContent,
@@ -45,7 +44,7 @@ import {
 import { formatCurrency, formatDate } from '@/lib/formatters';
 import { 
   Search, ArrowRight, ArrowLeft, Check, AlertCircle, 
-  XCircle, CheckCircle2, AlertTriangle, Loader2, ExternalLink
+  XCircle, CheckCircle2, AlertTriangle, Loader2, ExternalLink, Ban
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -88,6 +87,8 @@ export default function BaixaManualAR() {
   const processSettlement = useProcessSettlement();
   const validateSettlement = useValidateSettlement();
 
+  const bankWallets = wallets.filter((w) => w.type === 'banco');
+
   const { data: openTitles = [], isLoading } = useOpenTitles({
     title_type: 'RECEBER',
     counterparty_id: counterpartyId || undefined,
@@ -106,7 +107,14 @@ export default function BaixaManualAR() {
     );
   }, [openTitles, searchTerm]);
 
+  const canSelectTitle = (title: typeof openTitles[0]) => {
+    return title.balance_amount > 0;
+  };
+
   const handleToggleSelect = (id: string) => {
+    const title = openTitles.find((t) => t.id === id);
+    if (title && !canSelectTitle(title)) return;
+    
     const newSet = new Set(selectedIds);
     if (newSet.has(id)) {
       newSet.delete(id);
@@ -117,10 +125,11 @@ export default function BaixaManualAR() {
   };
 
   const handleSelectAll = () => {
-    if (selectedIds.size === filteredTitles.length) {
+    const selectableTitles = filteredTitles.filter(canSelectTitle);
+    if (selectedIds.size === selectableTitles.length) {
       setSelectedIds(new Set());
     } else {
-      setSelectedIds(new Set(filteredTitles.map((t) => t.id)));
+      setSelectedIds(new Set(selectableTitles.map((t) => t.id)));
     }
   };
 
@@ -129,9 +138,9 @@ export default function BaixaManualAR() {
     setSelectedIds(new Set());
   };
 
-  const handleGoToSettlement = () => {
+  const handleGoToSettlementWithTitles = (titleIds: string[]) => {
     const titles = openTitles
-      .filter((t) => selectedIds.has(t.id))
+      .filter((t) => titleIds.includes(t.id) && canSelectTitle(t))
       .map((t) => ({
         ...t,
         amount_to_settle: t.balance_amount,
@@ -143,6 +152,14 @@ export default function BaixaManualAR() {
     setSettlementType('RECEBIMENTO');
     setValidationResult(null);
     setStep('settlement');
+  };
+
+  const handleGoToSettlement = () => {
+    handleGoToSettlementWithTitles(Array.from(selectedIds));
+  };
+
+  const handleSettleSingleTitle = (id: string) => {
+    handleGoToSettlementWithTitles([id]);
   };
 
   const handleBack = () => {
@@ -185,6 +202,47 @@ export default function BaixaManualAR() {
 
   const handleValidate = async () => {
     const requiresBankAccount = ['PAGAMENTO', 'RECEBIMENTO'].includes(settlementType);
+    
+    // Frontend validation
+    if (!settlementDate) {
+      setValidationResult({
+        is_valid: false,
+        global_errors: [{ code: 'MISSING_DATE', message: 'A data da baixa é obrigatória.' }],
+        item_results: [],
+        summary: { total_titles: 0, total_amount: 0, bank_account_id: '', settlement_date: '', settlement_type: '', mode: '' },
+      });
+      return;
+    }
+    
+    if (requiresBankAccount && !bankAccountId) {
+      setValidationResult({
+        is_valid: false,
+        global_errors: [{ code: 'MISSING_BANK', message: 'Selecione uma conta bancária.' }],
+        item_results: [],
+        summary: { total_titles: 0, total_amount: 0, bank_account_id: '', settlement_date: '', settlement_type: '', mode: '' },
+      });
+      return;
+    }
+    
+    if (selectedTitles.length === 0) {
+      setValidationResult({
+        is_valid: false,
+        global_errors: [{ code: 'NO_TITLES', message: 'Selecione pelo menos um título.' }],
+        item_results: [],
+        summary: { total_titles: 0, total_amount: 0, bank_account_id: '', settlement_date: '', settlement_type: '', mode: '' },
+      });
+      return;
+    }
+    
+    if (totalToSettle <= 0) {
+      setValidationResult({
+        is_valid: false,
+        global_errors: [{ code: 'ZERO_AMOUNT', message: 'O valor total deve ser maior que zero.' }],
+        item_results: [],
+        summary: { total_titles: 0, total_amount: 0, bank_account_id: '', settlement_date: '', settlement_type: '', mode: '' },
+      });
+      return;
+    }
     
     try {
       const result = await validateSettlement.mutateAsync({
@@ -253,6 +311,7 @@ export default function BaixaManualAR() {
   const validItemsCount = validationResult?.item_results.filter((r) => r.ok).length || 0;
   const invalidItemsCount = validationResult?.item_results.filter((r) => !r.ok).length || 0;
   const hasWarnings = validationResult?.item_results.some((r) => r.warnings.length > 0);
+  const selectableCount = filteredTitles.filter(canSelectTitle).length;
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -370,7 +429,7 @@ export default function BaixaManualAR() {
               <div>
                 <CardTitle>Selecionar Títulos</CardTitle>
                 <CardDescription>
-                  Marque os títulos que deseja baixar
+                  Marque os títulos que deseja baixar ou clique no ícone para baixar individualmente
                 </CardDescription>
               </div>
               <div className="relative w-64">
@@ -391,7 +450,7 @@ export default function BaixaManualAR() {
                   <TableRow>
                     <TableHead className="w-12">
                       <Checkbox
-                        checked={selectedIds.size === filteredTitles.length && filteredTitles.length > 0}
+                        checked={selectedIds.size === selectableCount && selectableCount > 0}
                         onCheckedChange={handleSelectAll}
                       />
                     </TableHead>
@@ -400,29 +459,78 @@ export default function BaixaManualAR() {
                     <TableHead>Documento</TableHead>
                     <TableHead>Vencimento</TableHead>
                     <TableHead className="text-right">Saldo</TableHead>
+                    <TableHead className="w-14 text-center">Baixar</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredTitles.map((title) => (
-                    <TableRow key={title.id} className="cursor-pointer" onClick={() => handleToggleSelect(title.id)}>
-                      <TableCell>
-                        <Checkbox
-                          checked={selectedIds.has(title.id)}
-                          onCheckedChange={() => handleToggleSelect(title.id)}
-                        />
-                      </TableCell>
-                      <TableCell className="font-medium">{title.description}</TableCell>
-                      <TableCell>{title.counterparty_name || '-'}</TableCell>
-                      <TableCell>{title.document_number || '-'}</TableCell>
-                      <TableCell>{formatDate(title.due_date)}</TableCell>
-                      <TableCell className="text-right font-semibold">
-                        {formatCurrency(title.balance_amount)}
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                  {filteredTitles.map((title) => {
+                    const isSelectable = canSelectTitle(title);
+                    return (
+                      <TableRow 
+                        key={title.id} 
+                        className={`${isSelectable ? 'cursor-pointer hover:bg-muted/50' : 'opacity-60'}`}
+                        onClick={() => isSelectable && handleToggleSelect(title.id)}
+                      >
+                        <TableCell>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div>
+                                  <Checkbox
+                                    checked={selectedIds.has(title.id)}
+                                    onCheckedChange={() => handleToggleSelect(title.id)}
+                                    disabled={!isSelectable}
+                                  />
+                                </div>
+                              </TooltipTrigger>
+                              {!isSelectable && (
+                                <TooltipContent>
+                                  <p>Título sem saldo disponível</p>
+                                </TooltipContent>
+                              )}
+                            </Tooltip>
+                          </TooltipProvider>
+                        </TableCell>
+                        <TableCell className="font-medium">{title.description}</TableCell>
+                        <TableCell>{title.counterparty_name || '-'}</TableCell>
+                        <TableCell>{title.document_number || '-'}</TableCell>
+                        <TableCell>{formatDate(title.due_date)}</TableCell>
+                        <TableCell className="text-right font-semibold">
+                          {formatCurrency(title.balance_amount)}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-8 w-8"
+                                  disabled={!isSelectable}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleSettleSingleTitle(title.id);
+                                  }}
+                                >
+                                  {isSelectable ? (
+                                    <Check className="h-4 w-4 text-success" />
+                                  ) : (
+                                    <Ban className="h-4 w-4 text-muted-foreground" />
+                                  )}
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>{isSelectable ? 'Baixar este título' : 'Título sem saldo'}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
                   {filteredTitles.length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                      <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
                         Nenhum título encontrado
                       </TableCell>
                     </TableRow>
@@ -431,23 +539,33 @@ export default function BaixaManualAR() {
               </Table>
             </div>
 
-            <div className="flex items-center justify-between pt-4 border-t mt-4">
-              <div className="flex items-center gap-4">
-                <Button variant="outline" onClick={handleBack}>
-                  <ArrowLeft className="mr-2 h-4 w-4" /> Voltar
-                </Button>
-                <div className="text-sm">
-                  <Badge variant="secondary" className="mr-2">
-                    {selectedCount} selecionados
+            {/* Fixed Selection Bar */}
+            {selectedCount > 0 && (
+              <div className="sticky bottom-0 left-0 right-0 mt-4 p-4 bg-primary/10 border border-primary/20 rounded-lg flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <Badge variant="default" className="text-sm px-3 py-1">
+                    {selectedCount} título{selectedCount > 1 ? 's' : ''} selecionado{selectedCount > 1 ? 's' : ''}
                   </Badge>
-                  <span className="text-muted-foreground">
-                    Total: <strong>{formatCurrency(selectedTotal)}</strong>
+                  <span className="text-sm font-medium">
+                    Total: <span className="text-primary font-bold">{formatCurrency(selectedTotal)}</span>
                   </span>
                 </div>
+                <Button onClick={handleGoToSettlement}>
+                  <Check className="mr-2 h-4 w-4" />
+                  Baixar selecionados
+                </Button>
               </div>
-              <Button onClick={handleGoToSettlement} disabled={selectedCount === 0}>
-                Continuar <ArrowRight className="ml-2 h-4 w-4" />
+            )}
+
+            <div className="flex items-center justify-between pt-4 border-t mt-4">
+              <Button variant="outline" onClick={handleBack}>
+                <ArrowLeft className="mr-2 h-4 w-4" /> Voltar
               </Button>
+              {selectedCount === 0 && (
+                <p className="text-sm text-muted-foreground">
+                  Selecione títulos ou clique no ícone de baixa individual
+                </p>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -460,7 +578,9 @@ export default function BaixaManualAR() {
             <Card>
               <CardHeader>
                 <CardTitle>Itens da Baixa</CardTitle>
-                <CardDescription>Ajuste os valores de cada título se necessário</CardDescription>
+                <CardDescription>
+                  {selectedTitles.length} título{selectedTitles.length > 1 ? 's' : ''} selecionado{selectedTitles.length > 1 ? 's' : ''} - Ajuste os valores se necessário
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="border rounded-lg overflow-hidden">
@@ -653,7 +773,7 @@ export default function BaixaManualAR() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Data da Baixa</Label>
+                  <Label>Data da Baixa *</Label>
                   <Input
                     type="date"
                     value={settlementDate}
@@ -662,6 +782,9 @@ export default function BaixaManualAR() {
                       setValidationResult(null);
                     }}
                   />
+                  {validationResult?.global_errors.some((e) => e.code === 'MISSING_DATE') && (
+                    <p className="text-xs text-destructive">A data da baixa é obrigatória.</p>
+                  )}
                 </div>
 
                 {requiresBankAccount && (
@@ -676,13 +799,16 @@ export default function BaixaManualAR() {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="__none__">Selecione...</SelectItem>
-                        {wallets.map((w) => (
+                        {bankWallets.map((w) => (
                           <SelectItem key={w.id} value={w.id}>
                             {w.name}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
+                    {validationResult?.global_errors.some((e) => e.code === 'MISSING_BANK') && (
+                      <p className="text-xs text-destructive">Selecione uma conta bancária.</p>
+                    )}
                   </div>
                 )}
 
