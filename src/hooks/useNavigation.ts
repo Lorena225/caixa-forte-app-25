@@ -164,21 +164,29 @@ export function useActiveProfile() {
   const { preferences } = useUserNavPreferences();
   const { data: profiles } = useNavigationProfiles();
   
-  return profiles?.find(p => p.profile_key === preferences?.active_profile_key) || profiles?.[5]; // Default to Admin
+  if (!profiles || profiles.length === 0) return undefined;
+  
+  // Find by preference or default to PROFILE_ADMIN
+  const activeKey = preferences?.active_profile_key || 'PROFILE_ADMIN';
+  return profiles.find(p => p.profile_key === activeKey) || profiles.find(p => p.profile_key === 'PROFILE_ADMIN') || profiles[0];
 }
 
 export function useResolvedNavigation() {
-  const { data: items } = useNavigationItems();
+  const { data: items, isLoading: itemsLoading } = useNavigationItems();
   const { preferences } = useUserNavPreferences();
   const activeProfile = useActiveProfile();
   
-  if (!items || !activeProfile) return { groups: [], favorites: [], recents: [] };
+  // If still loading or no items, return empty
+  if (itemsLoading || !items || items.length === 0) {
+    return { groups: [], favorites: [], recents: [], isLoading: true };
+  }
   
-  const labelOverrides = activeProfile.label_overrides || {};
-  const visibleKeys = activeProfile.visible_keys_ordered || [];
+  // Default to showing all items if no profile
+  const labelOverrides = activeProfile?.label_overrides || {};
+  const visibleKeys = activeProfile?.visible_keys_ordered || [];
   const favoriteKeys = preferences?.favorite_keys || [];
   const recentKeys = preferences?.recent_keys || [];
-  
+  const isAdminProfile = !activeProfile || activeProfile.profile_key === 'PROFILE_ADMIN';
   // Build item map with resolved labels
   const itemMap = new Map(items.map(item => [
     item.key,
@@ -188,46 +196,47 @@ export function useResolvedNavigation() {
     },
   ]));
   
-  // Filter to visible items only
+  // Filter to visible items only (for Admin profile or no profile, show all non-hidden items)
   const visibleItems = items
     .filter(item => !item.hidden_by_default)
     .filter(item => {
-      // Groups are always visible if they have visible children
-      if (!item.parent_key) return true;
-      // Items must be in visible_keys or be a group
-      return visibleKeys.includes(item.key) || item.key.startsWith('group.');
+      // Groups are always visible
+      if (item.key.startsWith('group.')) return true;
+      // For admin, all items are visible
+      if (isAdminProfile) return true;
+      // For other profiles, check if in visible_keys
+      return visibleKeys.includes(item.key);
     });
   
-  // Build groups
-  const groups = visibleItems
-    .filter(item => item.key.startsWith('group.'))
-    .map(group => ({
-      key: group.key,
-      label: labelOverrides[group.key] || group.label_default,
-      icon: group.icon,
-      isOpen: !(preferences?.collapsed_groups || []).includes(group.key),
-      items: visibleItems
-        .filter(item => item.parent_key === group.key && !item.key.includes('.panels.'))
-        .map(item => ({
-          key: item.key,
-          label: labelOverrides[item.key] || item.label_default,
-          route: item.route || '',
-          icon: item.icon,
-          isFavorite: favoriteKeys.includes(item.key),
-          isRecent: recentKeys.includes(item.key),
-          children: visibleItems
-            .filter(child => child.parent_key === item.key)
-            .map(child => ({
-              key: child.key,
-              label: labelOverrides[child.key] || child.label_default,
-              route: child.route || '',
-              icon: child.icon,
-              isFavorite: favoriteKeys.includes(child.key),
-              isRecent: recentKeys.includes(child.key),
-            })),
-        })),
-    }))
-    .filter(group => group.items.length > 0);
+  // Build groups - groups are items with key starting with 'group.'
+  const groupItems = visibleItems.filter(item => item.key.startsWith('group.'));
+  
+  const groups = groupItems.map(group => ({
+    key: group.key,
+    label: labelOverrides[group.key] || group.label_default,
+    icon: group.icon,
+    isOpen: !(preferences?.collapsed_groups || []).includes(group.key),
+    items: visibleItems
+      .filter(item => item.parent_key === group.key)
+      .map(item => ({
+        key: item.key,
+        label: labelOverrides[item.key] || item.label_default,
+        route: item.route || '',
+        icon: item.icon,
+        isFavorite: favoriteKeys.includes(item.key),
+        isRecent: recentKeys.includes(item.key),
+        children: visibleItems
+          .filter(child => child.parent_key === item.key)
+          .map(child => ({
+            key: child.key,
+            label: labelOverrides[child.key] || child.label_default,
+            route: child.route || '',
+            icon: child.icon,
+            isFavorite: favoriteKeys.includes(child.key),
+            isRecent: recentKeys.includes(child.key),
+          })),
+      })),
+  })).filter(group => group.items.length > 0);
   
   // Build favorites list
   const favorites = favoriteKeys
@@ -257,5 +266,5 @@ export function useResolvedNavigation() {
       isRecent: true,
     }));
   
-  return { groups, favorites, recents };
+  return { groups, favorites, recents, isLoading: false };
 }
