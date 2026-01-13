@@ -12,6 +12,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from '@/components/ui/dialog';
 import {
   Select,
@@ -20,66 +21,63 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from '@/components/ui/command';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
 import { useToast } from '@/hooks/use-toast';
+import { BankSelect } from '@/components/cadastros/BankSelect';
 import {
   useBanksReference,
-  useCompanyBankBranches,
   useCompanyBankAccounts,
   useBankAccountMutations,
   useBankRequestMutation,
   type BankReference,
-  type BankBranch,
 } from '@/hooks/useBanksReference';
 import {
   Pencil,
   Trash2,
   Building2,
-  ChevronsUpDown,
-  Check,
   Plus,
-  AlertCircle,
   Star,
   Landmark,
+  AlertCircle,
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
 
-const accountTypes: Record<string, string> = {
+// Tipos de conta disponíveis
+const accountTypeOptions = [
+  { value: 'corrente', label: 'Conta Corrente' },
+  { value: 'poupanca', label: 'Conta Poupança' },
+  { value: 'universitaria', label: 'Conta Universitária' },
+] as const;
+
+const accountTypeLabels: Record<string, string> = {
   corrente: 'Conta Corrente',
-  poupanca: 'Poupança',
+  poupanca: 'Conta Poupança',
+  universitaria: 'Conta Universitária',
   pagamentos: 'Conta de Pagamentos',
   caixa: 'Caixa',
 };
 
+interface FormErrors {
+  bank?: string;
+  agency_number?: string;
+  account_number?: string;
+  account_type?: string;
+}
+
 export default function ContasBancarias() {
   const { toast } = useToast();
-  const { data: banks = [] } = useBanksReference();
-  const { data: branches = [] } = useCompanyBankBranches();
   const { data: accounts = [], isLoading } = useCompanyBankAccounts();
   const { createAccount, updateAccount, deleteAccount } = useBankAccountMutations();
   const bankRequestMutation = useBankRequestMutation();
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [requestDialogOpen, setRequestDialogOpen] = useState(false);
-  const [bankOpen, setBankOpen] = useState(false);
-  const [branchOpen, setBranchOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<any>(null);
   const [selectedBank, setSelectedBank] = useState<BankReference | null>(null);
-  const [selectedBranch, setSelectedBranch] = useState<BankBranch | null>(null);
   const [requestName, setRequestName] = useState('');
+  const [errors, setErrors] = useState<FormErrors>({});
+
   const [formData, setFormData] = useState({
+    agency_number: '',
+    agency_digit: '',
     account_number: '',
     account_digit: '',
     account_type: 'corrente',
@@ -91,14 +89,10 @@ export default function ContasBancarias() {
     is_default_payments: false,
   });
 
-  // Filtrar agências pelo banco selecionado
-  const filteredBranches = useMemo(() => {
-    if (!selectedBank) return [];
-    return branches.filter((b) => b.bank_id === selectedBank.id);
-  }, [selectedBank, branches]);
-
   const resetForm = () => {
     setFormData({
+      agency_number: '',
+      agency_digit: '',
       account_number: '',
       account_digit: '',
       account_type: 'corrente',
@@ -110,8 +104,8 @@ export default function ContasBancarias() {
       is_default_payments: false,
     });
     setSelectedBank(null);
-    setSelectedBranch(null);
     setEditingItem(null);
+    setErrors({});
   };
 
   const handleNew = () => {
@@ -122,8 +116,9 @@ export default function ContasBancarias() {
   const handleEdit = (item: any) => {
     setEditingItem(item);
     setSelectedBank(item.bank);
-    setSelectedBranch(item.branch || null);
     setFormData({
+      agency_number: item.agency_number || '',
+      agency_digit: item.agency_digit || '',
       account_number: item.account_number,
       account_digit: item.account_digit || '',
       account_type: item.account_type,
@@ -134,6 +129,7 @@ export default function ContasBancarias() {
       is_default_receipts: item.is_default_receipts,
       is_default_payments: item.is_default_payments,
     });
+    setErrors({});
     setDialogOpen(true);
   };
 
@@ -147,17 +143,53 @@ export default function ContasBancarias() {
     }
   };
 
+  // Validação de campos
+  const validateForm = (): boolean => {
+    const newErrors: FormErrors = {};
+
+    if (!selectedBank) {
+      newErrors.bank = 'Banco é obrigatório';
+    }
+    if (!formData.agency_number.trim()) {
+      newErrors.agency_number = 'Agência é obrigatória';
+    } else if (!/^[0-9]+$/.test(formData.agency_number)) {
+      newErrors.agency_number = 'Agência deve conter apenas números';
+    }
+    if (!formData.account_number.trim()) {
+      newErrors.account_number = 'Número da conta é obrigatório';
+    } else if (!/^[0-9]+$/.test(formData.account_number)) {
+      newErrors.account_number = 'Conta deve conter apenas números';
+    }
+    if (!formData.account_type) {
+      newErrors.account_type = 'Tipo de conta é obrigatório';
+    }
+    // Validar dígitos opcionais
+    if (formData.agency_digit && !/^[0-9]{1,2}$/.test(formData.agency_digit)) {
+      newErrors.agency_number = 'Dígito da agência inválido (1-2 números)';
+    }
+    if (formData.account_digit && !/^[0-9]{1,3}$/.test(formData.account_digit)) {
+      newErrors.account_number = 'Dígito da conta inválido (1-3 números)';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedBank) {
-      toast({ title: 'Erro', description: 'Selecione um banco', variant: 'destructive' });
+
+    if (!validateForm()) {
+      toast({ title: 'Erro', description: 'Preencha os campos obrigatórios', variant: 'destructive' });
       return;
     }
 
     try {
       const payload = {
-        bank_id: selectedBank.id,
-        branch_id: selectedBranch?.id || null,
+        bank_id: selectedBank!.id,
+        branch_id: null,
+        wallet_id: null,
+        agency_number: formData.agency_number,
+        agency_digit: formData.agency_digit || null,
         account_number: formData.account_number,
         account_digit: formData.account_digit || null,
         account_type: formData.account_type,
@@ -167,7 +199,6 @@ export default function ContasBancarias() {
         is_active: formData.is_active,
         is_default_receipts: formData.is_default_receipts,
         is_default_payments: formData.is_default_payments,
-        wallet_id: null,
         cnab_agreement: null,
         cnab_wallet: null,
         cnab_layout: null,
@@ -202,6 +233,16 @@ export default function ContasBancarias() {
     }
   };
 
+  // Formatação de agência e conta para exibição
+  const formatAgency = (item: any) => {
+    if (!item.agency_number) return '-';
+    return `${item.agency_number}${item.agency_digit ? `-${item.agency_digit}` : ''}`;
+  };
+
+  const formatAccount = (item: any) => {
+    return `${item.account_number}${item.account_digit ? `-${item.account_digit}` : ''}`;
+  };
+
   const columns = [
     {
       key: 'bank',
@@ -221,34 +262,25 @@ export default function ContasBancarias() {
       ),
     },
     {
-      key: 'branch',
+      key: 'agency',
       header: 'Agência',
-      render: (item: any) =>
-        item.branch ? (
-          <span className="font-mono">
-            {item.branch.agency_number}
-            {item.branch.agency_digit && `-${item.branch.agency_digit}`}
-          </span>
-        ) : (
-          <span className="text-muted-foreground">-</span>
-        ),
+      render: (item: any) => (
+        <span className="font-mono">{formatAgency(item)}</span>
+      ),
       className: 'w-28',
     },
     {
       key: 'account',
       header: 'Conta',
       render: (item: any) => (
-        <span className="font-mono">
-          {item.account_number}
-          {item.account_digit && <span className="text-muted-foreground">-{item.account_digit}</span>}
-        </span>
+        <span className="font-mono">{formatAccount(item)}</span>
       ),
       className: 'w-36',
     },
     {
       key: 'account_type',
       header: 'Tipo',
-      render: (item: any) => accountTypes[item.account_type] || item.account_type,
+      render: (item: any) => accountTypeLabels[item.account_type] || item.account_type,
       className: 'w-36',
     },
     {
@@ -322,210 +354,166 @@ export default function ContasBancarias() {
 
         {/* Dialog de Conta */}
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
                 <Landmark className="h-5 w-5" />
                 {editingItem ? 'Editar Conta Bancária' : 'Nova Conta Bancária'}
               </DialogTitle>
+              <DialogDescription>
+                Preencha os dados da conta bancária. Campos com * são obrigatórios.
+              </DialogDescription>
             </DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-5">
               {/* Banco */}
               <div className="space-y-2">
-                <Label>Banco *</Label>
-                <Popover open={bankOpen} onOpenChange={setBankOpen}>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      aria-expanded={bankOpen}
-                      className="w-full justify-between"
-                      disabled={!!editingItem}
-                    >
-                      {selectedBank ? selectedBank.display_name : 'Selecione um banco...'}
-                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-[500px] p-0">
-                    <Command>
-                      <CommandInput placeholder="Buscar banco por código ou nome..." />
-                      <CommandList>
-                        <CommandEmpty>
-                          <div className="p-4 text-center space-y-2">
-                            <AlertCircle className="h-8 w-8 mx-auto text-muted-foreground" />
-                            <p className="text-sm text-muted-foreground">
-                              Banco não encontrado na lista oficial.
-                            </p>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => {
-                                setBankOpen(false);
-                                setRequestDialogOpen(true);
-                              }}
-                            >
-                              Solicitar inclusão de banco
-                            </Button>
-                          </div>
-                        </CommandEmpty>
-                        <CommandGroup>
-                          {banks.map((bank) => (
-                            <CommandItem
-                              key={bank.id}
-                              value={`${bank.compe_code} ${bank.name} ${bank.display_name}`}
-                              onSelect={() => {
-                                setSelectedBank(bank);
-                                setSelectedBranch(null);
-                                setBankOpen(false);
-                              }}
-                            >
-                              <Check
-                                className={cn(
-                                  'mr-2 h-4 w-4',
-                                  selectedBank?.id === bank.id ? 'opacity-100' : 'opacity-0'
-                                )}
-                              />
-                              <span className="font-mono mr-2">{bank.compe_code}</span>
-                              <span>{bank.display_name.split(' - ')[1] || bank.name}</span>
-                            </CommandItem>
-                          ))}
-                        </CommandGroup>
-                      </CommandList>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
+                <Label className="text-sm font-medium">
+                  Banco <span className="text-destructive">*</span>
+                </Label>
+                <BankSelect
+                  value={selectedBank}
+                  onChange={(bank) => {
+                    setSelectedBank(bank);
+                    if (bank) setErrors((prev) => ({ ...prev, bank: undefined }));
+                  }}
+                  disabled={!!editingItem}
+                  onRequestBank={() => setRequestDialogOpen(true)}
+                  error={!!errors.bank}
+                />
                 {selectedBank && (
-                  <div className="text-xs text-muted-foreground">
-                    Código COMPE: <span className="font-mono font-medium">{selectedBank.compe_code}</span> (não editável)
-                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Código COMPE: <span className="font-mono font-semibold">{selectedBank.compe_code}</span> (não editável)
+                  </p>
+                )}
+                {errors.bank && (
+                  <p className="text-xs text-destructive flex items-center gap-1">
+                    <AlertCircle className="h-3 w-3" />
+                    {errors.bank}
+                  </p>
                 )}
               </div>
 
               {/* Agência */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">
+                    Agência <span className="text-destructive">*</span>
+                  </Label>
+                  <Input
+                    value={formData.agency_number}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setFormData({ ...formData, agency_number: value });
+                      if (value.trim()) setErrors((prev) => ({ ...prev, agency_number: undefined }));
+                    }}
+                    placeholder="0001"
+                    maxLength={10}
+                    className={errors.agency_number ? 'border-destructive' : ''}
+                  />
+                  {errors.agency_number && (
+                    <p className="text-xs text-destructive flex items-center gap-1">
+                      <AlertCircle className="h-3 w-3" />
+                      {errors.agency_number}
+                    </p>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Dígito da Agência</Label>
+                  <Input
+                    value={formData.agency_digit}
+                    onChange={(e) => setFormData({ ...formData, agency_digit: e.target.value.replace(/\D/g, '').slice(0, 2) })}
+                    placeholder="0"
+                    maxLength={2}
+                    className="w-24"
+                  />
+                  <p className="text-xs text-muted-foreground">Opcional (1-2 números)</p>
+                </div>
+              </div>
+
+              {/* Tipo de Conta */}
               <div className="space-y-2">
-                <Label>Agência (opcional)</Label>
-                <Popover open={branchOpen} onOpenChange={setBranchOpen}>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      className="w-full justify-between"
-                      disabled={!selectedBank}
-                    >
-                      {selectedBranch
-                        ? `${selectedBranch.agency_number}${selectedBranch.agency_digit ? '-' + selectedBranch.agency_digit : ''} ${selectedBranch.agency_name || ''}`
-                        : 'Selecione uma agência...'}
-                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-[400px] p-0">
-                    <Command>
-                      <CommandInput placeholder="Buscar agência..." />
-                      <CommandList>
-                        <CommandEmpty>Nenhuma agência cadastrada para este banco.</CommandEmpty>
-                        <CommandGroup>
-                          <CommandItem
-                            value="none"
-                            onSelect={() => {
-                              setSelectedBranch(null);
-                              setBranchOpen(false);
-                            }}
-                          >
-                            <Check
-                              className={cn('mr-2 h-4 w-4', !selectedBranch ? 'opacity-100' : 'opacity-0')}
-                            />
-                            <span className="text-muted-foreground">Sem agência</span>
-                          </CommandItem>
-                          {filteredBranches.map((branch) => (
-                            <CommandItem
-                              key={branch.id}
-                              value={`${branch.agency_number} ${branch.agency_name || ''}`}
-                              onSelect={() => {
-                                setSelectedBranch(branch);
-                                setBranchOpen(false);
-                              }}
-                            >
-                              <Check
-                                className={cn(
-                                  'mr-2 h-4 w-4',
-                                  selectedBranch?.id === branch.id ? 'opacity-100' : 'opacity-0'
-                                )}
-                              />
-                              <span className="font-mono">
-                                {branch.agency_number}
-                                {branch.agency_digit && `-${branch.agency_digit}`}
-                              </span>
-                              {branch.agency_name && (
-                                <span className="ml-2 text-muted-foreground">{branch.agency_name}</span>
-                              )}
-                            </CommandItem>
-                          ))}
-                        </CommandGroup>
-                      </CommandList>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
+                <Label className="text-sm font-medium">
+                  Tipo de Conta <span className="text-destructive">*</span>
+                </Label>
+                <Select
+                  value={formData.account_type}
+                  onValueChange={(value) => {
+                    setFormData({ ...formData, account_type: value });
+                    setErrors((prev) => ({ ...prev, account_type: undefined }));
+                  }}
+                >
+                  <SelectTrigger className={errors.account_type ? 'border-destructive' : ''}>
+                    <SelectValue placeholder="Selecione o tipo de conta" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {accountTypeOptions.map((opt) => (
+                      <SelectItem key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {errors.account_type && (
+                  <p className="text-xs text-destructive flex items-center gap-1">
+                    <AlertCircle className="h-3 w-3" />
+                    {errors.account_type}
+                  </p>
+                )}
               </div>
 
               {/* Número da Conta */}
-              <div className="grid grid-cols-4 gap-4">
-                <div className="col-span-2 space-y-2">
-                  <Label>Número da Conta *</Label>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">
+                    Número da Conta <span className="text-destructive">*</span>
+                  </Label>
                   <Input
                     value={formData.account_number}
-                    onChange={(e) =>
-                      setFormData({ ...formData, account_number: e.target.value.replace(/\D/g, '') })
-                    }
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setFormData({ ...formData, account_number: value });
+                      if (value.trim()) setErrors((prev) => ({ ...prev, account_number: undefined }));
+                    }}
                     placeholder="12345678"
-                    required
                     maxLength={20}
+                    className={errors.account_number ? 'border-destructive' : ''}
                   />
+                  {errors.account_number && (
+                    <p className="text-xs text-destructive flex items-center gap-1">
+                      <AlertCircle className="h-3 w-3" />
+                      {errors.account_number}
+                    </p>
+                  )}
                 </div>
                 <div className="space-y-2">
-                  <Label>Dígito</Label>
+                  <Label className="text-sm font-medium">Dígito da Conta</Label>
                   <Input
                     value={formData.account_digit}
-                    onChange={(e) =>
-                      setFormData({ ...formData, account_digit: e.target.value.replace(/\D/g, '').slice(0, 3) })
-                    }
+                    onChange={(e) => setFormData({ ...formData, account_digit: e.target.value.replace(/\D/g, '').slice(0, 3) })}
                     placeholder="0"
                     maxLength={3}
+                    className="w-24"
                   />
-                </div>
-                <div className="space-y-2">
-                  <Label>Tipo *</Label>
-                  <Select
-                    value={formData.account_type}
-                    onValueChange={(v) => setFormData({ ...formData, account_type: v })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Object.entries(accountTypes).map(([value, label]) => (
-                        <SelectItem key={value} value={value}>
-                          {label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <p className="text-xs text-muted-foreground">Opcional (1-3 números)</p>
                 </div>
               </div>
 
               {/* Apelido */}
               <div className="space-y-2">
-                <Label>Apelido (opcional)</Label>
+                <Label className="text-sm font-medium">Apelido</Label>
                 <Input
                   value={formData.nickname}
                   onChange={(e) => setFormData({ ...formData, nickname: e.target.value })}
-                  placeholder="Ex: Conta Principal, Itaú Matriz"
+                  placeholder="Ex: Conta Principal, Folha de Pagamento"
+                  maxLength={60}
                 />
+                <p className="text-xs text-muted-foreground">Nome interno para identificação rápida</p>
               </div>
 
               {/* Titular */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>Nome do Titular</Label>
+                  <Label className="text-sm font-medium">Nome do Titular</Label>
                   <Input
                     value={formData.holder_name}
                     onChange={(e) => setFormData({ ...formData, holder_name: e.target.value })}
@@ -533,7 +521,7 @@ export default function ContasBancarias() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>CPF/CNPJ do Titular</Label>
+                  <Label className="text-sm font-medium">CPF/CNPJ do Titular</Label>
                   <Input
                     value={formData.holder_document}
                     onChange={(e) => setFormData({ ...formData, holder_document: e.target.value })}
@@ -542,32 +530,42 @@ export default function ContasBancarias() {
                 </div>
               </div>
 
-              {/* Flags */}
-              <div className="grid grid-cols-3 gap-4 pt-2">
-                <div className="flex items-center gap-2">
+              {/* Switches */}
+              <div className="space-y-4 pt-2 border-t">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <Label className="text-sm font-medium">Conta Ativa</Label>
+                    <p className="text-xs text-muted-foreground">Conta disponível para uso no sistema</p>
+                  </div>
                   <Switch
                     checked={formData.is_active}
-                    onCheckedChange={(v) => setFormData({ ...formData, is_active: v })}
+                    onCheckedChange={(checked) => setFormData({ ...formData, is_active: checked })}
                   />
-                  <Label>Ativa</Label>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <Label className="text-sm font-medium">Padrão para Recebimentos</Label>
+                    <p className="text-xs text-muted-foreground">Usar como conta principal para receber</p>
+                  </div>
                   <Switch
                     checked={formData.is_default_receipts}
-                    onCheckedChange={(v) => setFormData({ ...formData, is_default_receipts: v })}
+                    onCheckedChange={(checked) => setFormData({ ...formData, is_default_receipts: checked })}
                   />
-                  <Label>Padrão Recebimentos</Label>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <Label className="text-sm font-medium">Padrão para Pagamentos</Label>
+                    <p className="text-xs text-muted-foreground">Usar como conta principal para pagar</p>
+                  </div>
                   <Switch
                     checked={formData.is_default_payments}
-                    onCheckedChange={(v) => setFormData({ ...formData, is_default_payments: v })}
+                    onCheckedChange={(checked) => setFormData({ ...formData, is_default_payments: checked })}
                   />
-                  <Label>Padrão Pagamentos</Label>
                 </div>
               </div>
 
-              <div className="flex justify-end gap-2 pt-4">
+              {/* Botões */}
+              <div className="flex justify-end gap-3 pt-4 border-t">
                 <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
                   Cancelar
                 </Button>
@@ -579,29 +577,25 @@ export default function ContasBancarias() {
           </DialogContent>
         </Dialog>
 
-        {/* Dialog de Solicitação de Banco */}
+        {/* Dialog Solicitar Banco */}
         <Dialog open={requestDialogOpen} onOpenChange={setRequestDialogOpen}>
-          <DialogContent>
+          <DialogContent className="max-w-md">
             <DialogHeader>
-              <DialogTitle className="flex items-center gap-2">
-                <AlertCircle className="h-5 w-5 text-warning" />
-                Solicitar Inclusão de Banco
-              </DialogTitle>
+              <DialogTitle>Solicitar Inclusão de Banco</DialogTitle>
+              <DialogDescription>
+                Se o banco não está na lista oficial, envie uma solicitação para análise do administrador.
+              </DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
-              <p className="text-sm text-muted-foreground">
-                O banco que você procura não está na lista oficial. Preencha os dados abaixo para solicitar a inclusão.
-                Um administrador irá analisar sua solicitação.
-              </p>
               <div className="space-y-2">
                 <Label>Nome do Banco *</Label>
                 <Input
                   value={requestName}
                   onChange={(e) => setRequestName(e.target.value)}
-                  placeholder="Ex: Banco XYZ S.A."
+                  placeholder="Nome completo do banco"
                 />
               </div>
-              <div className="flex justify-end gap-2">
+              <div className="flex justify-end gap-3">
                 <Button variant="outline" onClick={() => setRequestDialogOpen(false)}>
                   Cancelar
                 </Button>
