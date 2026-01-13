@@ -274,13 +274,13 @@ export default function CentrosCusto() {
       icon: <Download className="h-4 w-4" />,
       onClick: () => {
         const selectedItems = displayList.filter(item => selectedIds.has(item.id));
-        bulkExport(selectedItems, [
+        bulkExport(selectedItems as unknown as Record<string, unknown>[], [
           { key: 'code', header: 'Código' },
           { key: 'name', header: 'Nome' },
           { key: 'path_codes', header: 'Caminho' },
           { key: 'level', header: 'Nível' },
-          { key: 'is_leaf', header: 'Tipo', formatter: (v: boolean) => v ? 'Folha' : 'Grupo' },
-          { key: 'is_active', header: 'Ativo', formatter: (v: boolean) => v ? 'Sim' : 'Não' },
+          { key: 'is_leaf', header: 'Tipo', formatter: (v: unknown) => v ? 'Folha' : 'Grupo' },
+          { key: 'is_active', header: 'Ativo', formatter: (v: unknown) => v ? 'Sim' : 'Não' },
         ], 'CentrosCusto_Selecionados');
       },
     },
