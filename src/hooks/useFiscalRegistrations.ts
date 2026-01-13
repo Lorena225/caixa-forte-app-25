@@ -156,25 +156,35 @@ export function useCreateFiscalTaxRule() {
   return useMutation({
     mutationFn: async (data: {
       name: string;
+      tax_type: string;
+      rate: number;
       priority?: number;
-      tax_regime: string;
+      operation_type?: string;
       origin_state?: string;
       destination_state?: string;
       cst_code?: string;
-      tax_rate?: number;
       base_reduction_percent?: number;
+      cfop_codes?: string[];
+      ncm_codes?: string[];
+      is_exempt?: boolean;
+      is_retained?: boolean;
     }) => {
       if (!currentCompany?.id) throw new Error("Empresa não selecionada");
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { error } = await (supabase.from("fiscal_tax_rules") as any).insert({
+      
+      const { error } = await supabase.from("fiscal_tax_rules").insert({
         name: data.name,
+        tax_type: data.tax_type,
+        rate: data.rate,
         priority: data.priority ?? 0,
-        tax_regime: data.tax_regime,
+        operation_type: data.operation_type,
         origin_state: data.origin_state,
         destination_state: data.destination_state,
         cst_code: data.cst_code,
-        tax_rate: data.tax_rate,
         base_reduction_percent: data.base_reduction_percent,
+        cfop_codes: data.cfop_codes,
+        ncm_codes: data.ncm_codes,
+        is_exempt: data.is_exempt,
+        is_retained: data.is_retained,
         company_id: currentCompany.id,
         is_active: true,
       });

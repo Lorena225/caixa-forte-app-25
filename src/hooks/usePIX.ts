@@ -63,20 +63,45 @@ export function usePIXCharges(filters?: { status?: string; dateFrom?: string; da
   });
 }
 
-export function usePIXEvents(chargeId: string | null) {
+// PIX Events interface based on actual database schema
+interface PIXEventDB {
+  id: string;
+  company_id: string;
+  provider_key: string;
+  event_id: string | null;
+  txid: string | null;
+  end_to_end_id: string | null;
+  event_type: string | null;
+  status: string | null;
+  amount: number | null;
+  raw_json_sanitized: Json | null;
+  signature_valid: boolean | null;
+  is_duplicate: boolean | null;
+  processed_at: string | null;
+  error_message: string | null;
+  created_at: string;
+}
+
+export function usePIXEvents(txid: string | null) {
+  const { currentCompany } = useAuth();
+  
   return useQuery({
-    queryKey: ["pix-events", chargeId],
-    queryFn: async () => {
-      if (!chargeId) return [];
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data, error } = await (supabase.from("pix_events") as any)
+    queryKey: ["pix-events", txid],
+    queryFn: async (): Promise<PIXEventDB[]> => {
+      if (!txid || !currentCompany?.id) return [];
+      
+      // Query pix_events by txid since pix_charge_id doesn't exist
+      const { data, error } = await supabase
+        .from("pix_events")
         .select("*")
-        .eq("pix_charge_id", chargeId)
+        .eq("company_id", currentCompany.id)
+        .eq("txid", txid)
         .order("created_at", { ascending: false });
+      
       if (error) throw error;
-      return data ?? [];
+      return (data ?? []) as unknown as PIXEventDB[];
     },
-    enabled: !!chargeId,
+    enabled: !!txid && !!currentCompany?.id,
   });
 }
 

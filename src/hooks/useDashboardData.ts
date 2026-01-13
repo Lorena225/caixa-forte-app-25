@@ -251,7 +251,8 @@ export function useCashFlowDaily(filters: DashboardFilters) {
         .eq('company_id', currentCompany.id)
         .gte('movement_date', fromDate)
         .lte('movement_date', toDate)
-        .order('movement_date');
+        .order('movement_date')
+        .limit(400);
       if (error) throw error;
       return data;
     },
@@ -271,7 +272,8 @@ export function useCashFlowProjection() {
         .from('v_cashflow_weekly_projection')
         .select('*')
         .eq('company_id', currentCompany.id)
-        .order('week_start');
+        .order('week_start')
+        .limit(52);
       if (error) throw error;
       return data;
     },
@@ -343,7 +345,8 @@ export function useUpcomingTransactions(days = 14) {
         .neq('status', 'cancelado')
         .gte('due_date', today)
         .lte('due_date', futureDate)
-        .order('due_date');
+        .order('due_date')
+        .limit(100);
       if (error) throw error;
       return data;
     },

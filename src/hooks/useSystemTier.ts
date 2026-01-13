@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import type { Json } from "@/integrations/supabase/types";
 
 export type SystemTier = 'FINANCEIRO_ESSENCIAL' | 'FINANCEIRO_CONTABIL' | 'FINANCEIRO_CONTABIL_FISCAL';
 
@@ -189,13 +190,12 @@ export function useUpdateFeatureFlag() {
     }) => {
       if (!currentCompany?.id) throw new Error("Empresa não selecionada");
       
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { error } = await (supabase.from("company_feature_flags") as any).upsert({
+      const { error } = await supabase.from("company_feature_flags").upsert([{
         company_id: currentCompany.id,
         feature_key: featureKey,
         enabled,
-        config_json: configJson || {},
-      }, { onConflict: "company_id,feature_key" });
+        config_json: (configJson || {}) as Json,
+      }], { onConflict: "company_id,feature_key" });
       
       if (error) throw error;
     },
