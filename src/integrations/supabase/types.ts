@@ -10613,6 +10613,368 @@ export type Database = {
           },
         ]
       }
+      settlement_file_rows: {
+        Row: {
+          amount: number
+          company_id: string
+          created_at: string
+          event_date: string | null
+          external_key: string | null
+          file_id: string
+          id: string
+          match_reason: string | null
+          match_status: Database["public"]["Enums"]["settlement_match_status"]
+          raw_description: string | null
+          selected: boolean | null
+          settlement_item_id: string | null
+          suggested_transaction_id: string | null
+        }
+        Insert: {
+          amount: number
+          company_id: string
+          created_at?: string
+          event_date?: string | null
+          external_key?: string | null
+          file_id: string
+          id?: string
+          match_reason?: string | null
+          match_status?: Database["public"]["Enums"]["settlement_match_status"]
+          raw_description?: string | null
+          selected?: boolean | null
+          settlement_item_id?: string | null
+          suggested_transaction_id?: string | null
+        }
+        Update: {
+          amount?: number
+          company_id?: string
+          created_at?: string
+          event_date?: string | null
+          external_key?: string | null
+          file_id?: string
+          id?: string
+          match_reason?: string | null
+          match_status?: Database["public"]["Enums"]["settlement_match_status"]
+          raw_description?: string | null
+          selected?: boolean | null
+          settlement_item_id?: string | null
+          suggested_transaction_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "settlement_file_rows_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "settlement_file_rows_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "settlement_file_rows_file_id_fkey"
+            columns: ["file_id"]
+            isOneToOne: false
+            referencedRelation: "settlement_files"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "settlement_file_rows_settlement_item_id_fkey"
+            columns: ["settlement_item_id"]
+            isOneToOne: false
+            referencedRelation: "settlement_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "settlement_file_rows_settlement_item_id_fkey"
+            columns: ["settlement_item_id"]
+            isOneToOne: false
+            referencedRelation: "v_settlement_history"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "settlement_file_rows_suggested_transaction_id_fkey"
+            columns: ["suggested_transaction_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "settlement_file_rows_suggested_transaction_id_fkey"
+            columns: ["suggested_transaction_id"]
+            isOneToOne: false
+            referencedRelation: "v_ap_open"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "settlement_file_rows_suggested_transaction_id_fkey"
+            columns: ["suggested_transaction_id"]
+            isOneToOne: false
+            referencedRelation: "v_ar_open"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      settlement_files: {
+        Row: {
+          bank_account_id: string | null
+          bank_id: string | null
+          company_id: string
+          created_at: string
+          file_name: string
+          file_type: Database["public"]["Enums"]["settlement_file_type"]
+          id: string
+          idempotency_key: string
+          imported_at: string
+          storage_path: string | null
+          summary_json: Json | null
+          total_errors: number
+          total_matched_ok: number
+          total_processed: number
+          total_records: number
+          user_id: string
+        }
+        Insert: {
+          bank_account_id?: string | null
+          bank_id?: string | null
+          company_id: string
+          created_at?: string
+          file_name: string
+          file_type: Database["public"]["Enums"]["settlement_file_type"]
+          id?: string
+          idempotency_key: string
+          imported_at?: string
+          storage_path?: string | null
+          summary_json?: Json | null
+          total_errors?: number
+          total_matched_ok?: number
+          total_processed?: number
+          total_records?: number
+          user_id: string
+        }
+        Update: {
+          bank_account_id?: string | null
+          bank_id?: string | null
+          company_id?: string
+          created_at?: string
+          file_name?: string
+          file_type?: Database["public"]["Enums"]["settlement_file_type"]
+          id?: string
+          idempotency_key?: string
+          imported_at?: string
+          storage_path?: string | null
+          summary_json?: Json | null
+          total_errors?: number
+          total_matched_ok?: number
+          total_processed?: number
+          total_records?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "settlement_files_bank_account_id_fkey"
+            columns: ["bank_account_id"]
+            isOneToOne: false
+            referencedRelation: "bank_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "settlement_files_bank_id_fkey"
+            columns: ["bank_id"]
+            isOneToOne: false
+            referencedRelation: "banks_reference"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "settlement_files_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "settlement_files_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      settlement_items: {
+        Row: {
+          amount_settled: number
+          company_id: string
+          created_at: string
+          discount: number
+          fx_difference: number
+          id: string
+          interest: number
+          new_balance: number
+          penalty: number
+          previous_balance: number
+          settlement_id: string
+          transaction_id: string
+        }
+        Insert: {
+          amount_settled: number
+          company_id: string
+          created_at?: string
+          discount?: number
+          fx_difference?: number
+          id?: string
+          interest?: number
+          new_balance: number
+          penalty?: number
+          previous_balance: number
+          settlement_id: string
+          transaction_id: string
+        }
+        Update: {
+          amount_settled?: number
+          company_id?: string
+          created_at?: string
+          discount?: number
+          fx_difference?: number
+          id?: string
+          interest?: number
+          new_balance?: number
+          penalty?: number
+          previous_balance?: number
+          settlement_id?: string
+          transaction_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "settlement_items_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "settlement_items_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "settlement_items_settlement_id_fkey"
+            columns: ["settlement_id"]
+            isOneToOne: false
+            referencedRelation: "settlements"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "settlement_items_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "settlement_items_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "v_ap_open"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "settlement_items_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "v_ar_open"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      settlements: {
+        Row: {
+          bank_account_id: string | null
+          company_id: string
+          created_at: string
+          id: string
+          is_reversal: boolean | null
+          notes: string | null
+          origin: Database["public"]["Enums"]["settlement_origin"]
+          reversed_settlement_id: string | null
+          settlement_date: string
+          settlement_type: Database["public"]["Enums"]["settlement_type"]
+          source_file_id: string | null
+          status: Database["public"]["Enums"]["settlement_status"]
+          title_type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          bank_account_id?: string | null
+          company_id: string
+          created_at?: string
+          id?: string
+          is_reversal?: boolean | null
+          notes?: string | null
+          origin: Database["public"]["Enums"]["settlement_origin"]
+          reversed_settlement_id?: string | null
+          settlement_date: string
+          settlement_type: Database["public"]["Enums"]["settlement_type"]
+          source_file_id?: string | null
+          status?: Database["public"]["Enums"]["settlement_status"]
+          title_type: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          bank_account_id?: string | null
+          company_id?: string
+          created_at?: string
+          id?: string
+          is_reversal?: boolean | null
+          notes?: string | null
+          origin?: Database["public"]["Enums"]["settlement_origin"]
+          reversed_settlement_id?: string | null
+          settlement_date?: string
+          settlement_type?: Database["public"]["Enums"]["settlement_type"]
+          source_file_id?: string | null
+          status?: Database["public"]["Enums"]["settlement_status"]
+          title_type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "settlements_bank_account_id_fkey"
+            columns: ["bank_account_id"]
+            isOneToOne: false
+            referencedRelation: "bank_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "settlements_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "settlements_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "settlements_reversed_settlement_id_fkey"
+            columns: ["reversed_settlement_id"]
+            isOneToOne: false
+            referencedRelation: "settlements"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       sod_exceptions: {
         Row: {
           approved_at: string | null
@@ -11367,6 +11729,7 @@ export type Database = {
       transactions: {
         Row: {
           account_id: string
+          balance_amount: number | null
           category_id: string | null
           company_id: string
           cost_center_id: string | null
@@ -11405,6 +11768,7 @@ export type Database = {
         }
         Insert: {
           account_id: string
+          balance_amount?: number | null
           category_id?: string | null
           company_id: string
           cost_center_id?: string | null
@@ -11443,6 +11807,7 @@ export type Database = {
         }
         Update: {
           account_id?: string
+          balance_amount?: number | null
           category_id?: string | null
           company_id?: string
           cost_center_id?: string | null
@@ -13702,6 +14067,73 @@ export type Database = {
         }
         Relationships: []
       }
+      v_settlement_history: {
+        Row: {
+          amount_settled: number | null
+          company_id: string | null
+          created_at: string | null
+          discount: number | null
+          fx_difference: number | null
+          id: string | null
+          interest: number | null
+          is_reversal: boolean | null
+          new_balance: number | null
+          notes: string | null
+          origin: string | null
+          penalty: number | null
+          previous_balance: number | null
+          settlement_date: string | null
+          settlement_id: string | null
+          settlement_status: string | null
+          settlement_type: string | null
+          transaction_id: string | null
+          user_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "settlement_items_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "settlement_items_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "settlement_items_settlement_id_fkey"
+            columns: ["settlement_id"]
+            isOneToOne: false
+            referencedRelation: "settlements"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "settlement_items_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "settlement_items_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "v_ap_open"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "settlement_items_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "v_ar_open"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       v_system_metrics: {
         Row: {
           avg_job_duration_1h: number | null
@@ -14000,6 +14432,21 @@ export type Database = {
         Args: { p_company_id: string; p_feature_key: string }
         Returns: boolean
       }
+      process_settlement: {
+        Args: {
+          p_bank_account_id: string
+          p_company_id: string
+          p_items: Json
+          p_notes: string
+          p_origin: string
+          p_settlement_date: string
+          p_settlement_type: string
+          p_source_file_id?: string
+          p_title_type: string
+          p_user_id: string
+        }
+        Returns: string
+      }
       record_login_attempt: {
         Args: {
           p_email: string
@@ -14011,6 +14458,10 @@ export type Database = {
         Returns: undefined
       }
       refresh_dashboard_cache: { Args: never; Returns: undefined }
+      reverse_settlement: {
+        Args: { p_notes?: string; p_settlement_id: string; p_user_id: string }
+        Returns: string
+      }
       sanitize_pii: { Args: { p_data: Json }; Returns: Json }
       user_can_write: { Args: { p_company_id: string }; Returns: boolean }
       user_has_company_access: {
@@ -14105,6 +14556,28 @@ export type Database = {
       rate_period: "MES" | "ANO" | "DIA"
       rate_type: "FIXA" | "INDEXADA"
       reconciliation_action: "mark_paid" | "create" | "ignore" | "pending"
+      settlement_file_type: "CNAB_RETORNO" | "CSV" | "OUTRO"
+      settlement_match_status:
+        | "OK"
+        | "NOT_FOUND"
+        | "VALUE_MISMATCH"
+        | "ALREADY_SETTLED"
+        | "AMBIGUOUS"
+      settlement_origin:
+        | "MANUAL"
+        | "CNAB"
+        | "CSV"
+        | "BORDERO"
+        | "IMPORTACAO"
+        | "COMPENSACAO"
+      settlement_status: "RASCUNHO" | "PROCESSADO" | "CANCELADO"
+      settlement_type:
+        | "PAGAMENTO"
+        | "RECEBIMENTO"
+        | "CANCELAMENTO"
+        | "ABATIMENTO"
+        | "LUCRO_PERDA"
+        | "COMPENSACAO"
       system_tier:
         | "FINANCEIRO_ESSENCIAL"
         | "FINANCEIRO_CONTABIL"
@@ -14325,6 +14798,31 @@ export const Constants = {
       rate_period: ["MES", "ANO", "DIA"],
       rate_type: ["FIXA", "INDEXADA"],
       reconciliation_action: ["mark_paid", "create", "ignore", "pending"],
+      settlement_file_type: ["CNAB_RETORNO", "CSV", "OUTRO"],
+      settlement_match_status: [
+        "OK",
+        "NOT_FOUND",
+        "VALUE_MISMATCH",
+        "ALREADY_SETTLED",
+        "AMBIGUOUS",
+      ],
+      settlement_origin: [
+        "MANUAL",
+        "CNAB",
+        "CSV",
+        "BORDERO",
+        "IMPORTACAO",
+        "COMPENSACAO",
+      ],
+      settlement_status: ["RASCUNHO", "PROCESSADO", "CANCELADO"],
+      settlement_type: [
+        "PAGAMENTO",
+        "RECEBIMENTO",
+        "CANCELAMENTO",
+        "ABATIMENTO",
+        "LUCRO_PERDA",
+        "COMPENSACAO",
+      ],
       system_tier: [
         "FINANCEIRO_ESSENCIAL",
         "FINANCEIRO_CONTABIL",
