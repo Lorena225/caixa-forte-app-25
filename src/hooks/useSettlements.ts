@@ -8,6 +8,7 @@ export type SettlementOrigin = 'MANUAL' | 'CNAB' | 'CSV' | 'BORDERO' | 'IMPORTAC
 export type SettlementStatus = 'RASCUNHO' | 'PROCESSADO' | 'CANCELADO';
 export type TitleType = 'PAGAR' | 'RECEBER';
 export type MatchStatus = 'OK' | 'NOT_FOUND' | 'VALUE_MISMATCH' | 'ALREADY_SETTLED' | 'AMBIGUOUS';
+export type ValidationMode = 'ALL_OR_NOTHING' | 'PARTIAL_OK';
 
 export interface SettlementItem {
   transaction_id: string;
@@ -16,6 +17,7 @@ export interface SettlementItem {
   penalty?: number;
   discount?: number;
   fx_difference?: number;
+  expected_updated_at?: string;
 }
 
 export interface CreateSettlementParams {
@@ -29,6 +31,59 @@ export interface CreateSettlementParams {
   source_file_id?: string;
 }
 
+export interface ValidateSettlementParams {
+  settlement_type: SettlementType;
+  settlement_date: string;
+  bank_account_id?: string;
+  notes?: string;
+  items: SettlementItem[];
+  mode?: ValidationMode;
+}
+
+export interface ValidationError {
+  code: string;
+  message: string;
+  field?: string;
+}
+
+export interface ValidationWarning {
+  code: string;
+  message: string;
+}
+
+export interface ValidationItemResult {
+  transaction_id: string;
+  document_number: string;
+  description: string;
+  counterparty_name: string;
+  ok: boolean;
+  errors: ValidationError[];
+  warnings: ValidationWarning[];
+  computed: {
+    previous_balance: number;
+    new_balance: number;
+    effective_amount: number;
+    amount_settled: number;
+    interest: number;
+    penalty: number;
+    discount: number;
+  } | null;
+}
+
+export interface ValidationResult {
+  is_valid: boolean;
+  summary: {
+    total_titles: number;
+    total_amount: number;
+    bank_account_id: string | null;
+    settlement_date: string;
+    settlement_type: string;
+    mode: string;
+  } | null;
+  item_results: ValidationItemResult[];
+  global_errors: ValidationError[];
+}
+
 export interface OpenTitle {
   id: string;
   description: string;
@@ -39,6 +94,7 @@ export interface OpenTitle {
   balance_amount: number;
   status: string;
   direction: 'entrada' | 'saida';
+  updated_at?: string;
 }
 
 export interface Settlement {
@@ -103,6 +159,7 @@ export function useOpenTitles(filters?: {
           total_amount,
           status,
           direction,
+          updated_at,
           counterparties:counterparty_id (name)
         `)
         .eq('company_id', currentCompany.id)
@@ -141,6 +198,7 @@ export function useOpenTitles(filters?: {
         balance_amount: Number(t.balance_amount || t.total_amount),
         status: t.status,
         direction: t.direction,
+        updated_at: t.updated_at,
       })) as OpenTitle[];
     },
     enabled: !!currentCompany?.id,
@@ -213,6 +271,40 @@ export function useSettlementHistory(transactionId: string) {
       return data as SettlementHistory[];
     },
     enabled: !!currentCompany?.id && !!transactionId,
+  });
+}
+
+// Hook para validar baixa (ERP-grade validations)
+export function useValidateSettlement() {
+  const { currentCompany, user } = useAuth();
+
+  return useMutation({
+    mutationFn: async (params: ValidateSettlementParams): Promise<ValidationResult> => {
+      if (!currentCompany?.id) {
+        throw new Error('Empresa não identificada');
+      }
+
+      const { data, error } = await supabase.rpc('validate_manual_settlement', {
+        p_company_id: currentCompany.id,
+        p_settlement_type: params.settlement_type,
+        p_settlement_date: params.settlement_date,
+        p_bank_account_id: params.bank_account_id || null,
+        p_notes: params.notes || null,
+        p_items: JSON.parse(JSON.stringify(params.items)),
+        p_mode: params.mode || 'PARTIAL_OK',
+        p_user_id: user?.id || null,
+      });
+
+      if (error) throw error;
+      
+      const result = data as any;
+      return {
+        is_valid: result.is_valid,
+        summary: result.summary,
+        item_results: result.item_results || [],
+        global_errors: result.global_errors || [],
+      };
+    },
   });
 }
 

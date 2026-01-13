@@ -14476,6 +14476,19 @@ export type Database = {
         }
         Returns: boolean
       }
+      validate_manual_settlement: {
+        Args: {
+          p_bank_account_id?: string
+          p_company_id: string
+          p_items?: Json
+          p_mode?: string
+          p_notes?: string
+          p_settlement_date: string
+          p_settlement_type: string
+          p_user_id?: string
+        }
+        Returns: Json
+      }
     }
     Enums: {
       account_category:
@@ -14588,7 +14601,19 @@ export type Database = {
       wallet_type: "caixa" | "banco" | "cartao"
     }
     CompositeTypes: {
-      [_ in never]: never
+      settlement_item_validation: {
+        transaction_id: string | null
+        ok: boolean | null
+        errors: Json | null
+        warnings: Json | null
+        computed: Json | null
+      }
+      settlement_validation_result: {
+        is_valid: boolean | null
+        summary: Json | null
+        item_results: Json | null
+        global_errors: Json | null
+      }
     }
   }
 }
