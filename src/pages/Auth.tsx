@@ -7,7 +7,24 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-import { Building2, Loader2 } from 'lucide-react';
+import { Building2, Loader2, Eye, EyeOff, CheckCircle2, XCircle } from 'lucide-react';
+
+// Password strength validation
+function getPasswordStrength(password: string): { score: number; checks: { label: string; passed: boolean }[] } {
+  const checks = [
+    { label: 'Mínimo 8 caracteres', passed: password.length >= 8 },
+    { label: 'Letra maiúscula', passed: /[A-Z]/.test(password) },
+    { label: 'Letra minúscula', passed: /[a-z]/.test(password) },
+    { label: 'Número', passed: /[0-9]/.test(password) },
+  ];
+  const score = checks.filter(c => c.passed).length;
+  return { score, checks };
+}
+
+// Email validation
+function isValidEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
 
 export default function Auth() {
   const [loading, setLoading] = useState(false);
@@ -15,11 +32,35 @@ export default function Auth() {
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [companyName, setCompanyName] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [touched, setTouched] = useState({ email: false, password: false, fullName: false });
   const { toast } = useToast();
   const navigate = useNavigate();
 
+  const passwordStrength = getPasswordStrength(password);
+  const emailValid = isValidEmail(email);
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!emailValid) {
+      toast({
+        title: 'Email inválido',
+        description: 'Por favor, insira um email válido.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (password.length < 6) {
+      toast({
+        title: 'Senha muito curta',
+        description: 'A senha deve ter pelo menos 6 caracteres.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     setLoading(true);
 
     const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -40,6 +81,35 @@ export default function Auth() {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validações
+    if (!fullName.trim()) {
+      toast({
+        title: 'Nome obrigatório',
+        description: 'Por favor, insira seu nome completo.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (!emailValid) {
+      toast({
+        title: 'Email inválido',
+        description: 'Por favor, insira um email válido.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (passwordStrength.score < 3) {
+      toast({
+        title: 'Senha fraca',
+        description: 'A senha deve ter pelo menos 8 caracteres, incluindo maiúsculas, minúsculas e números.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     setLoading(true);
 
     const redirectUrl = `${window.location.origin}/`;
@@ -128,19 +198,38 @@ export default function Auth() {
                       placeholder="seu@email.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
+                      onBlur={() => setTouched(t => ({ ...t, email: true }))}
+                      className={touched.email && !emailValid && email ? 'border-destructive' : ''}
                       required
+                      autoComplete="email"
                     />
+                    {touched.email && !emailValid && email && (
+                      <p className="text-sm text-destructive">Email inválido</p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="password-login">Senha</Label>
-                    <Input
-                      id="password-login"
-                      type="password"
-                      placeholder="••••••••"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                    />
+                    <div className="relative">
+                      <Input
+                        id="password-login"
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder="••••••••"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                        autoComplete="current-password"
+                        className="pr-10"
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </Button>
+                    </div>
                   </div>
                   <Button type="submit" className="w-full" disabled={loading}>
                     {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
@@ -152,14 +241,20 @@ export default function Auth() {
               <TabsContent value="signup" className="mt-0">
                 <form onSubmit={handleSignUp} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="fullName">Nome completo</Label>
+                    <Label htmlFor="fullName">Nome completo *</Label>
                     <Input
                       id="fullName"
                       placeholder="Seu nome"
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
+                      onBlur={() => setTouched(t => ({ ...t, fullName: true }))}
+                      className={touched.fullName && !fullName.trim() ? 'border-destructive' : ''}
                       required
+                      autoComplete="name"
                     />
+                    {touched.fullName && !fullName.trim() && (
+                      <p className="text-sm text-destructive">Nome é obrigatório</p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="companyName">Nome da empresa</Label>
@@ -168,32 +263,72 @@ export default function Auth() {
                       placeholder="Minha Empresa"
                       value={companyName}
                       onChange={(e) => setCompanyName(e.target.value)}
+                      autoComplete="organization"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="email-signup">Email</Label>
+                    <Label htmlFor="email-signup">Email *</Label>
                     <Input
                       id="email-signup"
                       type="email"
                       placeholder="seu@email.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
+                      onBlur={() => setTouched(t => ({ ...t, email: true }))}
+                      className={touched.email && !emailValid && email ? 'border-destructive' : ''}
                       required
+                      autoComplete="email"
                     />
+                    {touched.email && !emailValid && email && (
+                      <p className="text-sm text-destructive">Email inválido</p>
+                    )}
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="password-signup">Senha</Label>
-                    <Input
-                      id="password-signup"
-                      type="password"
-                      placeholder="Mínimo 6 caracteres"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                      minLength={6}
-                    />
+                    <Label htmlFor="password-signup">Senha *</Label>
+                    <div className="relative">
+                      <Input
+                        id="password-signup"
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder="Mínimo 8 caracteres"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        onBlur={() => setTouched(t => ({ ...t, password: true }))}
+                        required
+                        autoComplete="new-password"
+                        className="pr-10"
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </Button>
+                    </div>
+                    {touched.password && password && (
+                      <div className="space-y-1 pt-1">
+                        {passwordStrength.checks.map((check, i) => (
+                          <div key={i} className="flex items-center gap-2 text-xs">
+                            {check.passed ? (
+                              <CheckCircle2 className="h-3 w-3 text-green-500" />
+                            ) : (
+                              <XCircle className="h-3 w-3 text-muted-foreground" />
+                            )}
+                            <span className={check.passed ? 'text-green-600' : 'text-muted-foreground'}>
+                              {check.label}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                  <Button type="submit" className="w-full" disabled={loading}>
+                  <Button 
+                    type="submit" 
+                    className="w-full" 
+                    disabled={loading || passwordStrength.score < 3 || !emailValid || !fullName.trim()}
+                  >
                     {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                     Criar conta
                   </Button>
