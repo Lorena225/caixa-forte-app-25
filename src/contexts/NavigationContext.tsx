@@ -8,10 +8,18 @@ import {
 } from '@/hooks/useNavigation';
 import { NavigationProfile, NavigationGroup, NavigationMenuItem, QuickAction } from '@/types/navigation';
 
+// Mobile breakpoint (matches Tailwind's md: breakpoint)
+const MOBILE_BREAKPOINT = 768;
+
 interface NavigationContextType {
   // Sidebar state
   collapsed: boolean;
   toggleSidebar: () => void;
+  
+  // Mobile state
+  isMobile: boolean;
+  mobileMenuOpen: boolean;
+  setMobileMenuOpen: (open: boolean) => void;
   
   // Groups
   groups: NavigationGroup[];
@@ -42,6 +50,13 @@ const NavigationContext = createContext<NavigationContextType | undefined>(undef
 export function NavigationProvider({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth < MOBILE_BREAKPOINT;
+    }
+    return false;
+  });
   
   const {
     preferences,
@@ -55,6 +70,21 @@ export function NavigationProvider({ children }: { children: ReactNode }) {
   const activeProfile = useActiveProfile();
   const { groups, favorites } = useResolvedNavigation();
   
+  // Handle window resize for mobile detection
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth < MOBILE_BREAKPOINT;
+      setIsMobile(mobile);
+      // Close mobile menu when switching to desktop
+      if (!mobile && mobileMenuOpen) {
+        setMobileMenuOpen(false);
+      }
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [mobileMenuOpen]);
+  
   // Keyboard shortcut for command palette
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -64,6 +94,7 @@ export function NavigationProvider({ children }: { children: ReactNode }) {
       }
       if (e.key === 'Escape') {
         setCommandPaletteOpen(false);
+        setMobileMenuOpen(false);
       }
     };
     
@@ -74,11 +105,15 @@ export function NavigationProvider({ children }: { children: ReactNode }) {
   const navigateTo = useCallback((route: string, itemKey?: string) => {
     navigate(route);
     setCommandPaletteOpen(false);
+    setMobileMenuOpen(false);
   }, [navigate]);
   
   const value: NavigationContextType = {
     collapsed: preferences?.sidebar_collapsed || false,
     toggleSidebar,
+    isMobile,
+    mobileMenuOpen,
+    setMobileMenuOpen,
     groups,
     toggleGroup,
     favorites,

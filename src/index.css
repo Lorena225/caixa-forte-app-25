@@ -7,6 +7,7 @@
 /* 
   SISTEMA GERENCIAL FINANCEIRO - Design System
   Tema: Corporativo Financeiro com Verde/Vermelho para indicadores
+  Versão: 2.0 - Responsivo
 */
 
 @layer base {
@@ -91,6 +92,10 @@
     --shadow-md: 0 4px 6px -1px hsl(220 25% 10% / 0.1), 0 2px 4px -2px hsl(220 25% 10% / 0.1);
     --shadow-lg: 0 10px 15px -3px hsl(220 25% 10% / 0.1), 0 4px 6px -4px hsl(220 25% 10% / 0.1);
     --shadow-card: 0 1px 3px 0 hsl(220 25% 10% / 0.1), 0 1px 2px -1px hsl(220 25% 10% / 0.1);
+
+    /* Sidebar width tokens */
+    --sidebar-width: 16rem;
+    --sidebar-width-collapsed: 4rem;
   }
 
   .dark {
@@ -148,12 +153,34 @@
   }
 
   html {
+    font-size: 16px;
     font-feature-settings: "cv11", "ss01";
     font-variation-settings: "opsz" 32;
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
+    @apply bg-background text-foreground font-sans antialiased text-sm leading-relaxed;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  /* Responsive Typography Base */
+  h1 {
+    @apply text-xl font-bold tracking-tight md:text-2xl;
+  }
+
+  h2 {
+    @apply text-lg font-semibold tracking-tight md:text-xl;
+  }
+
+  h3 {
+    @apply text-base font-semibold md:text-lg;
+  }
+
+  h4 {
+    @apply text-sm font-medium md:text-base;
   }
 
   /* Scrollbar personalizada */
@@ -175,7 +202,17 @@
 }
 
 @layer components {
-  /* Card com hover suave */
+  /* App Container - Responsive */
+  .app-container {
+    @apply mx-auto w-full max-w-screen-2xl px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Page Content Area */
+  .page-content {
+    @apply min-h-screen py-4 sm:py-6;
+  }
+
+  /* Card with hover effect */
   .card-hover {
     @apply transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5;
   }
@@ -210,9 +247,9 @@
     @apply text-muted-foreground;
   }
 
-  /* KPI Cards */
+  /* KPI Cards - Responsive */
   .kpi-card {
-    @apply relative overflow-hidden rounded-xl border bg-card p-5 shadow-sm;
+    @apply relative overflow-hidden rounded-xl border bg-card p-4 shadow-sm sm:p-5;
   }
 
   .kpi-card::before {
@@ -261,21 +298,68 @@
     }
   }
 
-  /* Table styles */
+  /* Table styles - Responsive */
   .data-table {
     @apply w-full text-sm;
   }
 
   .data-table th {
-    @apply px-4 py-3 text-left font-medium text-muted-foreground bg-muted/50 first:rounded-tl-lg last:rounded-tr-lg;
+    @apply px-3 py-2.5 text-left text-xs font-medium text-muted-foreground bg-muted/50 first:rounded-tl-lg last:rounded-tr-lg sm:px-4 sm:py-3 sm:text-sm;
   }
 
   .data-table td {
-    @apply px-4 py-3 border-t border-border;
+    @apply px-3 py-2.5 border-t border-border sm:px-4 sm:py-3;
   }
 
   .data-table tr:hover td {
     @apply bg-muted/30;
+  }
+
+  /* Responsive Table Container */
+  .table-container {
+    @apply -mx-4 overflow-x-auto sm:mx-0 sm:rounded-lg;
+  }
+
+  .table-container > table {
+    @apply min-w-[640px];
+  }
+
+  /* Form Grid - Responsive */
+  .form-grid {
+    @apply grid gap-4 grid-cols-1 sm:grid-cols-2;
+  }
+
+  .form-grid-3 {
+    @apply grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3;
+  }
+
+  /* Button Group - Responsive */
+  .button-group {
+    @apply flex flex-wrap gap-2;
+  }
+
+  /* Filter Bar - Responsive */
+  .filter-bar {
+    @apply flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center;
+  }
+
+  /* Mobile Action Menu Trigger */
+  .mobile-actions {
+    @apply sm:hidden;
+  }
+
+  .desktop-actions {
+    @apply hidden sm:flex;
+  }
+
+  /* Truncate text with tooltip support */
+  .truncate-text {
+    @apply truncate max-w-[200px] sm:max-w-none;
+  }
+
+  /* Modal/Dialog responsive */
+  .dialog-responsive {
+    @apply max-h-[85vh] overflow-y-auto;
   }
 }
 
@@ -292,5 +376,29 @@
   /* Gradient text */
   .gradient-text {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/70;
+  }
+
+  /* Hide on mobile / show on desktop */
+  .hide-mobile {
+    @apply hidden sm:table-cell;
+  }
+
+  .show-mobile-only {
+    @apply sm:hidden;
+  }
+
+  /* Safe area for mobile */
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+
+  .safe-top {
+    padding-top: env(safe-area-inset-top, 0);
+  }
+
+  /* Prevent text overflow */
+  .break-anywhere {
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
 }

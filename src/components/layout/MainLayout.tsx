@@ -1,19 +1,14 @@
 import { ReactNode } from 'react';
-import { SidebarPro } from '@/components/navigation/SidebarPro';
-import { CommandPalette } from '@/components/navigation/CommandPalette';
+import { AppShell } from '@/components/layout/AppShell';
 
 interface MainLayoutProps {
   children: ReactNode;
 }
 
+/**
+ * MainLayout - Wrapper component that uses AppShell
+ * Maintained for backwards compatibility with existing pages
+ */
 export function MainLayout({ children }: MainLayoutProps) {
-  return (
-    <div className="min-h-screen bg-background flex">
-      <SidebarPro />
-      <CommandPalette />
-      <main className="flex-1 min-h-screen p-6 transition-all duration-300">
-        {children}
-      </main>
-    </div>
-  );
+  return <AppShell>{children}</AppShell>;
 }

@@ -1,10 +1,10 @@
-import { memo } from 'react';
+import { memo, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { useNavigation } from '@/contexts/NavigationContext';
 import { 
   ChevronLeft, ChevronRight, ChevronDown, ChevronUp, 
-  Star, Command,
+  Star, Command, X, Menu,
   LayoutDashboard, ReceiptText, ArrowDownToLine, ArrowUpFromLine,
   Wallet, TrendingUp, Target, CreditCard, BookOpen, Landmark,
   FileCheck2, BarChart3, Gauge, LineChart, ChartColumn, PieChart,
@@ -17,6 +17,7 @@ import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/comp
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Separator } from '@/components/ui/separator';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 
 // Icon map
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -41,102 +42,162 @@ export const SidebarPro = memo(function SidebarPro() {
     toggleFavorite,
     navigateTo,
     setCommandPaletteOpen,
+    isMobile,
+    mobileMenuOpen,
+    setMobileMenuOpen,
   } = useNavigation();
 
+  // Close mobile menu on route change
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      setMobileMenuOpen(false);
+    }
+  }, [location.pathname]);
+
+  const sidebarContent = (
+    <div className="flex h-full flex-col">
+      {/* Header */}
+      <div className="flex h-14 items-center justify-between border-b border-sidebar-border px-3 shrink-0">
+        {(!collapsed || isMobile) && (
+          <span className="text-base font-semibold text-sidebar-foreground">ERP Pro</span>
+        )}
+        {isMobile ? (
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setMobileMenuOpen(false)}
+            className="h-8 w-8 text-sidebar-foreground hover:bg-sidebar-accent"
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        ) : (
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleSidebar}
+            className="h-8 w-8 text-sidebar-foreground hover:bg-sidebar-accent"
+          >
+            {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+          </Button>
+        )}
+      </div>
+
+      {/* Command Palette Trigger */}
+      <div className="px-3 py-2 shrink-0">
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="outline"
+              className={cn(
+                'w-full justify-start gap-2 text-muted-foreground bg-sidebar-accent/50 border-sidebar-border hover:bg-sidebar-accent',
+                collapsed && !isMobile && 'justify-center px-0'
+              )}
+              onClick={() => {
+                setCommandPaletteOpen(true);
+                if (isMobile) setMobileMenuOpen(false);
+              }}
+            >
+              <Command className="h-4 w-4 shrink-0" />
+              {(!collapsed || isMobile) && (
+                <>
+                  <span className="flex-1 text-left text-sm">Buscar...</span>
+                  <kbd className="pointer-events-none hidden h-5 select-none items-center gap-1 rounded border bg-sidebar-accent px-1.5 font-mono text-[10px] font-medium text-muted-foreground sm:flex">
+                    <span className="text-xs">⌘</span>K
+                  </kbd>
+                </>
+              )}
+            </Button>
+          </TooltipTrigger>
+          {collapsed && !isMobile && <TooltipContent side="right">Buscar (Ctrl+K)</TooltipContent>}
+        </Tooltip>
+      </div>
+
+      <ScrollArea className="flex-1 px-3">
+        {/* Favorites Section */}
+        {favorites.length > 0 && (
+          <div className="mb-4">
+            {(!collapsed || isMobile) && (
+              <div className="mb-2 flex items-center gap-2 text-xs font-medium text-sidebar-foreground/60">
+                <Star className="h-3 w-3" />
+                Favoritos
+              </div>
+            )}
+            <div className="space-y-1">
+              {favorites.map((item) => (
+                <SidebarItem
+                  key={item.key}
+                  item={item}
+                  collapsed={collapsed && !isMobile}
+                  isActive={location.pathname === item.route}
+                  onNavigate={() => navigateTo(item.route, item.key)}
+                  onToggleFavorite={() => toggleFavorite(item.key)}
+                  showFavorite
+                />
+              ))}
+            </div>
+            <Separator className="my-3 bg-sidebar-border" />
+          </div>
+        )}
+
+        {/* Navigation Groups */}
+        <div className="space-y-2 pb-4">
+          {groups.map((group) => (
+            <SidebarGroup
+              key={group.key}
+              group={group}
+              collapsed={collapsed && !isMobile}
+              onToggle={() => toggleGroup(group.key)}
+              onNavigate={navigateTo}
+              onToggleFavorite={toggleFavorite}
+              currentPath={location.pathname}
+            />
+          ))}
+        </div>
+      </ScrollArea>
+    </div>
+  );
+
+  // Mobile: Use Sheet (drawer)
+  if (isMobile) {
+    return (
+      <TooltipProvider delayDuration={0}>
+        {/* Mobile Menu Trigger */}
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setMobileMenuOpen(true)}
+          className="fixed left-4 top-3 z-50 h-10 w-10 bg-background shadow-md border md:hidden"
+          aria-label="Abrir menu"
+        >
+          <Menu className="h-5 w-5" />
+        </Button>
+
+        {/* Mobile Drawer */}
+        <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+          <SheetContent 
+            side="left" 
+            className="w-[280px] p-0 bg-sidebar border-sidebar-border"
+          >
+            <SheetHeader className="sr-only">
+              <SheetTitle>Menu de Navegação</SheetTitle>
+            </SheetHeader>
+            {sidebarContent}
+          </SheetContent>
+        </Sheet>
+      </TooltipProvider>
+    );
+  }
+
+  // Desktop: Fixed sidebar
   return (
     <TooltipProvider delayDuration={0}>
       <aside
         className={cn(
-          'fixed left-0 top-0 z-40 h-screen border-r bg-sidebar transition-all duration-300',
+          'fixed left-0 top-0 z-40 h-screen border-r border-sidebar-border bg-sidebar transition-all duration-300 hidden md:block',
           collapsed ? 'w-16' : 'w-64'
         )}
       >
-        <div className="flex h-full flex-col">
-          {/* Header */}
-          <div className="flex h-14 items-center justify-between border-b px-3">
-            {!collapsed && (
-              <span className="text-lg font-semibold text-foreground">ERP Pro</span>
-            )}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleSidebar}
-              className="h-8 w-8"
-            >
-              {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
-            </Button>
-          </div>
-
-          {/* Command Palette Trigger */}
-          <div className="px-3 py-2">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={cn(
-                    'w-full justify-start gap-2 text-muted-foreground',
-                    collapsed && 'justify-center px-0'
-                  )}
-                  onClick={() => setCommandPaletteOpen(true)}
-                >
-                  <Command className="h-4 w-4" />
-                  {!collapsed && (
-                    <>
-                      <span className="flex-1 text-left">Buscar...</span>
-                      <kbd className="pointer-events-none hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground sm:flex">
-                        <span className="text-xs">⌘</span>K
-                      </kbd>
-                    </>
-                  )}
-                </Button>
-              </TooltipTrigger>
-              {collapsed && <TooltipContent side="right">Buscar (Ctrl+K)</TooltipContent>}
-            </Tooltip>
-          </div>
-
-          <ScrollArea className="flex-1 px-3">
-            {/* Favorites Section */}
-            {favorites.length > 0 && (
-              <div className="mb-4">
-                {!collapsed && (
-                  <div className="mb-2 flex items-center gap-2 text-xs font-medium text-muted-foreground">
-                    <Star className="h-3 w-3" />
-                    Favoritos
-                  </div>
-                )}
-                <div className="space-y-1">
-                  {favorites.map((item) => (
-                    <SidebarItem
-                      key={item.key}
-                      item={item}
-                      collapsed={collapsed}
-                      isActive={location.pathname === item.route}
-                      onNavigate={() => navigateTo(item.route, item.key)}
-                      onToggleFavorite={() => toggleFavorite(item.key)}
-                      showFavorite
-                    />
-                  ))}
-                </div>
-                <Separator className="my-3" />
-              </div>
-            )}
-
-            {/* Navigation Groups */}
-            <div className="space-y-2 pb-4">
-              {groups.map((group) => (
-                <SidebarGroup
-                  key={group.key}
-                  group={group}
-                  collapsed={collapsed}
-                  onToggle={() => toggleGroup(group.key)}
-                  onNavigate={navigateTo}
-                  onToggleFavorite={toggleFavorite}
-                  currentPath={location.pathname}
-                />
-              ))}
-            </div>
-          </ScrollArea>
-        </div>
+        {sidebarContent}
       </aside>
     </TooltipProvider>
   );
@@ -173,8 +234,8 @@ const SidebarItem = memo(function SidebarItem({
       className={cn(
         'group flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
         isActive
-          ? 'bg-primary/10 text-primary'
-          : 'text-muted-foreground hover:bg-muted hover:text-foreground',
+          ? 'bg-sidebar-primary/20 text-sidebar-primary'
+          : 'text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-foreground',
         collapsed && 'justify-center px-2'
       )}
     >
@@ -262,8 +323,8 @@ const SidebarGroup = memo(function SidebarGroup({
             className={cn(
               'flex w-full items-center justify-center rounded-md px-2 py-2 text-sm font-medium transition-colors',
               hasActiveChild
-                ? 'bg-primary/10 text-primary'
-                : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                ? 'bg-sidebar-primary/20 text-sidebar-primary'
+                : 'text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-foreground'
             )}
           >
             <Icon className="h-4 w-4" />
@@ -292,8 +353,8 @@ const SidebarGroup = memo(function SidebarGroup({
           className={cn(
             'flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
             hasActiveChild
-              ? 'text-primary'
-              : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+              ? 'text-sidebar-primary'
+              : 'text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-foreground'
           )}
         >
           <Icon className="h-4 w-4 shrink-0" />
@@ -306,7 +367,7 @@ const SidebarGroup = memo(function SidebarGroup({
         </button>
       </CollapsibleTrigger>
       <CollapsibleContent className="pl-4">
-        <div className="mt-1 space-y-1 border-l pl-3">
+        <div className="mt-1 space-y-1 border-l border-sidebar-border pl-3">
           {group.items.map((item) => (
             <div key={item.key}>
               <SidebarItem
@@ -318,7 +379,7 @@ const SidebarGroup = memo(function SidebarGroup({
               />
               {/* Nested children */}
               {item.children && item.children.length > 0 && (
-                <div className="ml-4 mt-1 space-y-1 border-l pl-3">
+                <div className="ml-4 mt-1 space-y-1 border-l border-sidebar-border pl-3">
                   {item.children.map((child) => (
                     <SidebarItem
                       key={child.key}

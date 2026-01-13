@@ -69,25 +69,28 @@ export function KPICard({
       )}
       onClick={onClick}
     >
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <CardTitle className="text-sm font-medium text-muted-foreground">
+      <CardHeader className="flex flex-row items-center justify-between pb-1 sm:pb-2">
+        <CardTitle className="text-xs font-medium text-muted-foreground sm:text-sm truncate pr-2">
           {title}
         </CardTitle>
-        {Icon && <Icon className={cn('h-4 w-4', styles.icon)} />}
+        {Icon && <Icon className={cn('h-4 w-4 shrink-0', styles.icon)} />}
       </CardHeader>
-      <CardContent>
+      <CardContent className="pt-0">
         {isLoading ? (
-          <div className="h-8 w-24 bg-muted animate-pulse rounded" />
+          <div className="h-7 w-20 bg-muted animate-pulse rounded sm:h-8 sm:w-24" />
         ) : (
-          <div className={cn('text-2xl font-bold', styles.value)}>
+          <div className={cn(
+            'text-lg font-bold sm:text-xl md:text-2xl truncate',
+            styles.value
+          )}>
             {value}
           </div>
         )}
         {(change || subtitle) && (
-          <div className="flex items-center gap-2 mt-1">
+          <div className="flex flex-wrap items-center gap-1.5 mt-1">
             {change && (
               <span className={cn(
-                'text-xs font-medium',
+                'text-[10px] font-medium sm:text-xs',
                 trend === 'up' && 'text-success',
                 trend === 'down' && 'text-destructive',
                 trend === 'neutral' && 'text-muted-foreground'
@@ -96,7 +99,7 @@ export function KPICard({
               </span>
             )}
             {subtitle && (
-              <span className="text-xs text-muted-foreground">
+              <span className="text-[10px] text-muted-foreground sm:text-xs truncate">
                 {subtitle}
               </span>
             )}
@@ -114,15 +117,15 @@ interface KPIGridProps {
 
 export function KPIGrid({ children, columns = 4 }: KPIGridProps) {
   const gridCols = {
-    2: 'md:grid-cols-2',
-    3: 'md:grid-cols-3',
-    4: 'md:grid-cols-2 lg:grid-cols-4',
-    5: 'md:grid-cols-3 lg:grid-cols-5',
-    6: 'md:grid-cols-3 lg:grid-cols-6',
+    2: 'grid-cols-1 xs:grid-cols-2',
+    3: 'grid-cols-1 xs:grid-cols-2 md:grid-cols-3',
+    4: 'grid-cols-1 xs:grid-cols-2 lg:grid-cols-4',
+    5: 'grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-5',
+    6: 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-6',
   };
 
   return (
-    <div className={cn('grid gap-4', gridCols[columns])}>
+    <div className={cn('grid gap-3 sm:gap-4', gridCols[columns])}>
       {children}
     </div>
   );
