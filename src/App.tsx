@@ -47,6 +47,11 @@ import ContabilidadeFechamento from "./pages/contabilidade/Fechamento";
 import FiscalIndex from "./pages/fiscal/Index";
 import FiscalDocumentos from "./pages/fiscal/Documentos";
 import FiscalSPED from "./pages/fiscal/SPED";
+import FiscalRetencoes from "./pages/fiscal/Retencoes";
+import FiscalApuracao from "./pages/fiscal/Apuracao";
+import FiscalRegras from "./pages/fiscal/Regras";
+import FiscalObrigacoes from "./pages/fiscal/Obrigacoes";
+import FiscalEmpresa from "./pages/fiscal/Empresa";
 import TesourariaIndex from "./pages/tesouraria/Index";
 import TesourariaPosicao from "./pages/tesouraria/Posicao";
 import TesourariaConciliacao from "./pages/tesouraria/Conciliacao";
@@ -126,6 +131,11 @@ const App = () => (
               <Route path="/fiscal" element={<FiscalIndex />} />
               <Route path="/fiscal/documentos" element={<FiscalDocumentos />} />
               <Route path="/fiscal/sped" element={<FiscalSPED />} />
+              <Route path="/fiscal/retencoes" element={<FiscalRetencoes />} />
+              <Route path="/fiscal/apuracao" element={<FiscalApuracao />} />
+              <Route path="/fiscal/regras" element={<FiscalRegras />} />
+              <Route path="/fiscal/obrigacoes" element={<FiscalObrigacoes />} />
+              <Route path="/fiscal/empresa" element={<FiscalEmpresa />} />
               <Route path="/tesouraria" element={<TesourariaIndex />} />
               <Route path="/tesouraria/posicao" element={<TesourariaPosicao />} />
               <Route path="/tesouraria/conciliacao" element={<TesourariaConciliacao />} />
