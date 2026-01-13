@@ -96,6 +96,7 @@ import AdminSecurityDashboard from "./pages/admin/SecurityDashboard";
 import AdminSystemHealth from "./pages/admin/SystemHealth";
 import AdminGoLive from "./pages/admin/GoLiveChecklist";
 import AdminSystemTier from "./pages/admin/SystemTier";
+import AdminNavigationSettings from "./pages/admin/NavigationSettings";
 import AutopilotInbox from "./pages/autopilot/Inbox";
 import AutopilotPending from "./pages/autopilot/PendingCenter";
 import AutopilotRules from "./pages/autopilot/AutomationRules";
@@ -223,6 +224,7 @@ const App = () => (
                 <Route path="/admin/system-health" element={<AdminSystemHealth />} />
                 <Route path="/admin/jobs-monitor" element={<AdminJobsMonitor />} />
                 <Route path="/admin/go-live" element={<AdminGoLive />} />
+                <Route path="/admin/navigation" element={<AdminNavigationSettings />} />
                 {/* Autopilot */}
                 <Route path="/autopilot/inbox" element={<AutopilotInbox />} />
                 <Route path="/autopilot/pending" element={<AutopilotPending />} />
