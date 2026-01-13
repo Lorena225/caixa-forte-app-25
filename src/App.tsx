@@ -174,10 +174,12 @@ const App = () => (
                 <Route path="/dashboards/executive" element={<ExecutiveDashboard />} />
                 <Route path="/dashboards/executivo" element={<ExecutiveDashboard />} />
                 <Route path="/dashboards/cashflow" element={<CashFlowDashboard />} />
+                <Route path="/dashboards/fluxo-caixa" element={<CashFlowDashboard />} />
                 <Route path="/dashboards/ar" element={<ARDashboard />} />
                 <Route path="/dashboards/ap" element={<APDashboard />} />
                 <Route path="/dashboards/budget" element={<BudgetDashboard />} />
                 <Route path="/dashboards/budget-account" element={<BudgetByAccountDashboard />} />
+                <Route path="/dashboards/budget-accounts" element={<BudgetByAccountDashboard />} />
                 {/* Cadastros */}
                 <Route path="/cadastros/plano-contas" element={<PlanoContas />} />
                 <Route path="/cadastros/centros-custo" element={<CentrosCusto />} />
