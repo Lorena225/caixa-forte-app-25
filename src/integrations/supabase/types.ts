@@ -7871,6 +7871,494 @@ export type Database = {
           },
         ]
       }
+      loan_contract_types: {
+        Row: {
+          company_id: string
+          created_at: string
+          default_amortization: Database["public"]["Enums"]["amortization_system"]
+          default_cost_center_id: string | null
+          default_interest_expense_account_id: string | null
+          default_liability_account_id: string | null
+          id: string
+          is_active: boolean
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          default_amortization?: Database["public"]["Enums"]["amortization_system"]
+          default_cost_center_id?: string | null
+          default_interest_expense_account_id?: string | null
+          default_liability_account_id?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          default_amortization?: Database["public"]["Enums"]["amortization_system"]
+          default_cost_center_id?: string | null
+          default_interest_expense_account_id?: string | null
+          default_liability_account_id?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "loan_contract_types_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loan_contract_types_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "loan_contract_types_default_cost_center_id_fkey"
+            columns: ["default_cost_center_id"]
+            isOneToOne: false
+            referencedRelation: "cost_centers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loan_contract_types_default_cost_center_id_fkey"
+            columns: ["default_cost_center_id"]
+            isOneToOne: false
+            referencedRelation: "v_cost_center_tree"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loan_contract_types_default_interest_expense_account_id_fkey"
+            columns: ["default_interest_expense_account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loan_contract_types_default_interest_expense_account_id_fkey"
+            columns: ["default_interest_expense_account_id"]
+            isOneToOne: false
+            referencedRelation: "v_rc_flow_by_account"
+            referencedColumns: ["account_id"]
+          },
+          {
+            foreignKeyName: "loan_contract_types_default_interest_expense_account_id_fkey"
+            columns: ["default_interest_expense_account_id"]
+            isOneToOne: false
+            referencedRelation: "v_trial_balance"
+            referencedColumns: ["account_id"]
+          },
+          {
+            foreignKeyName: "loan_contract_types_default_liability_account_id_fkey"
+            columns: ["default_liability_account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loan_contract_types_default_liability_account_id_fkey"
+            columns: ["default_liability_account_id"]
+            isOneToOne: false
+            referencedRelation: "v_rc_flow_by_account"
+            referencedColumns: ["account_id"]
+          },
+          {
+            foreignKeyName: "loan_contract_types_default_liability_account_id_fkey"
+            columns: ["default_liability_account_id"]
+            isOneToOne: false
+            referencedRelation: "v_trial_balance"
+            referencedColumns: ["account_id"]
+          },
+        ]
+      }
+      loan_contracts: {
+        Row: {
+          allow_recalculate: boolean
+          amortization_system: Database["public"]["Enums"]["amortization_system"]
+          ap_series: string | null
+          ap_title_type: string
+          bank_id: string
+          company_bank_account_id: string
+          company_id: string
+          contract_date: string
+          contract_number: string
+          contract_type_id: string | null
+          cost_center_id: string | null
+          created_at: string
+          created_by: string | null
+          creditor_partner_id: string
+          currency: string
+          description_template: string | null
+          disbursement_date: string
+          first_due_date: string
+          grace_periods: number
+          grace_type: Database["public"]["Enums"]["grace_type"]
+          id: string
+          installment_period: Database["public"]["Enums"]["installment_period"]
+          installments_count: number
+          interest_expense_account_id: string | null
+          liability_account_id: string | null
+          nominal_rate: number
+          notes: string | null
+          opening_balance: number | null
+          operation_type: Database["public"]["Enums"]["loan_operation_type"]
+          payment_bank_account_id: string | null
+          principal_amount: number
+          rate_index: Database["public"]["Enums"]["rate_index"] | null
+          rate_period: Database["public"]["Enums"]["rate_period"]
+          rate_type: Database["public"]["Enums"]["rate_type"]
+          status: Database["public"]["Enums"]["loan_contract_status"]
+          updated_at: string
+        }
+        Insert: {
+          allow_recalculate?: boolean
+          amortization_system?: Database["public"]["Enums"]["amortization_system"]
+          ap_series?: string | null
+          ap_title_type?: string
+          bank_id: string
+          company_bank_account_id: string
+          company_id: string
+          contract_date: string
+          contract_number: string
+          contract_type_id?: string | null
+          cost_center_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          creditor_partner_id: string
+          currency?: string
+          description_template?: string | null
+          disbursement_date: string
+          first_due_date: string
+          grace_periods?: number
+          grace_type?: Database["public"]["Enums"]["grace_type"]
+          id?: string
+          installment_period?: Database["public"]["Enums"]["installment_period"]
+          installments_count: number
+          interest_expense_account_id?: string | null
+          liability_account_id?: string | null
+          nominal_rate: number
+          notes?: string | null
+          opening_balance?: number | null
+          operation_type?: Database["public"]["Enums"]["loan_operation_type"]
+          payment_bank_account_id?: string | null
+          principal_amount: number
+          rate_index?: Database["public"]["Enums"]["rate_index"] | null
+          rate_period?: Database["public"]["Enums"]["rate_period"]
+          rate_type?: Database["public"]["Enums"]["rate_type"]
+          status?: Database["public"]["Enums"]["loan_contract_status"]
+          updated_at?: string
+        }
+        Update: {
+          allow_recalculate?: boolean
+          amortization_system?: Database["public"]["Enums"]["amortization_system"]
+          ap_series?: string | null
+          ap_title_type?: string
+          bank_id?: string
+          company_bank_account_id?: string
+          company_id?: string
+          contract_date?: string
+          contract_number?: string
+          contract_type_id?: string | null
+          cost_center_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          creditor_partner_id?: string
+          currency?: string
+          description_template?: string | null
+          disbursement_date?: string
+          first_due_date?: string
+          grace_periods?: number
+          grace_type?: Database["public"]["Enums"]["grace_type"]
+          id?: string
+          installment_period?: Database["public"]["Enums"]["installment_period"]
+          installments_count?: number
+          interest_expense_account_id?: string | null
+          liability_account_id?: string | null
+          nominal_rate?: number
+          notes?: string | null
+          opening_balance?: number | null
+          operation_type?: Database["public"]["Enums"]["loan_operation_type"]
+          payment_bank_account_id?: string | null
+          principal_amount?: number
+          rate_index?: Database["public"]["Enums"]["rate_index"] | null
+          rate_period?: Database["public"]["Enums"]["rate_period"]
+          rate_type?: Database["public"]["Enums"]["rate_type"]
+          status?: Database["public"]["Enums"]["loan_contract_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "loan_contracts_bank_id_fkey"
+            columns: ["bank_id"]
+            isOneToOne: false
+            referencedRelation: "banks_reference"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loan_contracts_company_bank_account_id_fkey"
+            columns: ["company_bank_account_id"]
+            isOneToOne: false
+            referencedRelation: "bank_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loan_contracts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loan_contracts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "loan_contracts_contract_type_id_fkey"
+            columns: ["contract_type_id"]
+            isOneToOne: false
+            referencedRelation: "loan_contract_types"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loan_contracts_cost_center_id_fkey"
+            columns: ["cost_center_id"]
+            isOneToOne: false
+            referencedRelation: "cost_centers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loan_contracts_cost_center_id_fkey"
+            columns: ["cost_center_id"]
+            isOneToOne: false
+            referencedRelation: "v_cost_center_tree"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loan_contracts_creditor_partner_id_fkey"
+            columns: ["creditor_partner_id"]
+            isOneToOne: false
+            referencedRelation: "counterparties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loan_contracts_interest_expense_account_id_fkey"
+            columns: ["interest_expense_account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loan_contracts_interest_expense_account_id_fkey"
+            columns: ["interest_expense_account_id"]
+            isOneToOne: false
+            referencedRelation: "v_rc_flow_by_account"
+            referencedColumns: ["account_id"]
+          },
+          {
+            foreignKeyName: "loan_contracts_interest_expense_account_id_fkey"
+            columns: ["interest_expense_account_id"]
+            isOneToOne: false
+            referencedRelation: "v_trial_balance"
+            referencedColumns: ["account_id"]
+          },
+          {
+            foreignKeyName: "loan_contracts_liability_account_id_fkey"
+            columns: ["liability_account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loan_contracts_liability_account_id_fkey"
+            columns: ["liability_account_id"]
+            isOneToOne: false
+            referencedRelation: "v_rc_flow_by_account"
+            referencedColumns: ["account_id"]
+          },
+          {
+            foreignKeyName: "loan_contracts_liability_account_id_fkey"
+            columns: ["liability_account_id"]
+            isOneToOne: false
+            referencedRelation: "v_trial_balance"
+            referencedColumns: ["account_id"]
+          },
+          {
+            foreignKeyName: "loan_contracts_payment_bank_account_id_fkey"
+            columns: ["payment_bank_account_id"]
+            isOneToOne: false
+            referencedRelation: "bank_accounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      loan_generation_runs: {
+        Row: {
+          company_id: string
+          contract_id: string
+          created_at: string
+          created_by: string | null
+          error_message: string | null
+          id: string
+          idempotency_key: string
+          params_json: Json | null
+          run_type: Database["public"]["Enums"]["loan_run_type"]
+          status: Database["public"]["Enums"]["loan_run_status"]
+        }
+        Insert: {
+          company_id: string
+          contract_id: string
+          created_at?: string
+          created_by?: string | null
+          error_message?: string | null
+          id?: string
+          idempotency_key: string
+          params_json?: Json | null
+          run_type: Database["public"]["Enums"]["loan_run_type"]
+          status?: Database["public"]["Enums"]["loan_run_status"]
+        }
+        Update: {
+          company_id?: string
+          contract_id?: string
+          created_at?: string
+          created_by?: string | null
+          error_message?: string | null
+          id?: string
+          idempotency_key?: string
+          params_json?: Json | null
+          run_type?: Database["public"]["Enums"]["loan_run_type"]
+          status?: Database["public"]["Enums"]["loan_run_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "loan_generation_runs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loan_generation_runs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "loan_generation_runs_contract_id_fkey"
+            columns: ["contract_id"]
+            isOneToOne: false
+            referencedRelation: "loan_contracts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      loan_installments: {
+        Row: {
+          amortization_amount: number
+          ap_transaction_id: string | null
+          company_id: string
+          contract_id: string
+          created_at: string
+          due_date: string
+          generated_at: string | null
+          id: string
+          installment_amount: number
+          installment_no: number
+          interest_amount: number
+          remaining_balance: number
+          status: Database["public"]["Enums"]["loan_installment_status"]
+          updated_at: string
+        }
+        Insert: {
+          amortization_amount: number
+          ap_transaction_id?: string | null
+          company_id: string
+          contract_id: string
+          created_at?: string
+          due_date: string
+          generated_at?: string | null
+          id?: string
+          installment_amount: number
+          installment_no: number
+          interest_amount: number
+          remaining_balance: number
+          status?: Database["public"]["Enums"]["loan_installment_status"]
+          updated_at?: string
+        }
+        Update: {
+          amortization_amount?: number
+          ap_transaction_id?: string | null
+          company_id?: string
+          contract_id?: string
+          created_at?: string
+          due_date?: string
+          generated_at?: string | null
+          id?: string
+          installment_amount?: number
+          installment_no?: number
+          interest_amount?: number
+          remaining_balance?: number
+          status?: Database["public"]["Enums"]["loan_installment_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "loan_installments_ap_transaction_id_fkey"
+            columns: ["ap_transaction_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loan_installments_ap_transaction_id_fkey"
+            columns: ["ap_transaction_id"]
+            isOneToOne: false
+            referencedRelation: "v_ap_open"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loan_installments_ap_transaction_id_fkey"
+            columns: ["ap_transaction_id"]
+            isOneToOne: false
+            referencedRelation: "v_ar_open"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loan_installments_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loan_installments_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "loan_installments_contract_id_fkey"
+            columns: ["contract_id"]
+            isOneToOne: false
+            referencedRelation: "loan_contracts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       login_attempts: {
         Row: {
           created_at: string
@@ -10882,6 +11370,9 @@ export type Database = {
           interest_amount: number | null
           is_recurring: boolean | null
           notes: string | null
+          origin_contract_id: string | null
+          origin_installment_id: string | null
+          origin_type: string | null
           original_amount: number
           paid_date: string | null
           payment_method_id: string | null
@@ -10917,6 +11408,9 @@ export type Database = {
           interest_amount?: number | null
           is_recurring?: boolean | null
           notes?: string | null
+          origin_contract_id?: string | null
+          origin_installment_id?: string | null
+          origin_type?: string | null
           original_amount: number
           paid_date?: string | null
           payment_method_id?: string | null
@@ -10952,6 +11446,9 @@ export type Database = {
           interest_amount?: number | null
           is_recurring?: boolean | null
           notes?: string | null
+          origin_contract_id?: string | null
+          origin_installment_id?: string | null
+          origin_type?: string | null
           original_amount?: number
           paid_date?: string | null
           payment_method_id?: string | null
@@ -11047,6 +11544,20 @@ export type Database = {
             columns: ["document_type_id"]
             isOneToOne: false
             referencedRelation: "document_types"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_origin_contract_id_fkey"
+            columns: ["origin_contract_id"]
+            isOneToOne: false
+            referencedRelation: "loan_contracts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_origin_installment_id_fkey"
+            columns: ["origin_installment_id"]
+            isOneToOne: false
+            referencedRelation: "loan_installments"
             referencedColumns: ["id"]
           },
           {
@@ -13505,6 +14016,7 @@ export type Database = {
         | "receita"
         | "custo"
         | "despesa"
+      amortization_system: "SAC" | "PRICE"
       app_role: "admin" | "gestor" | "operador" | "visualizador" | "auditor"
       contra_mode: "reduce_parent" | "reduce_classification"
       counterparty_type: "cliente" | "fornecedor" | "ambos"
@@ -13518,6 +14030,7 @@ export type Database = {
         | "ajuste"
         | "outros"
       document_type: "nf" | "nfe" | "fatura" | "recibo" | "boleto" | "outro"
+      grace_type: "SEM_CARENCIA" | "SO_JUROS" | "TOTAL"
       import_batch_status: "processing" | "success" | "partial" | "error"
       import_entity_type:
         | "accounts"
@@ -13538,6 +14051,7 @@ export type Database = {
         | "duplicate"
         | "skipped"
       import_source_type: "manual_upload" | "scheduled_sync" | "webhook"
+      installment_period: "MENSAL" | "BIMESTRAL" | "TRIMESTRAL" | "ANUAL"
       integration_auth_type: "file" | "oauth" | "api_key" | "webhook"
       integration_provider:
         | "ofx"
@@ -13552,9 +14066,26 @@ export type Database = {
         | "openfinance"
         | "other"
       integration_status: "disconnected" | "connected" | "error" | "disabled"
+      loan_contract_status: "EDICAO" | "ATIVO" | "ENCERRADO" | "CANCELADO"
+      loan_installment_status:
+        | "PREVISTA"
+        | "GERADA"
+        | "BAIXADA"
+        | "RENEGOCIADA"
+        | "CANCELADA"
+      loan_operation_type:
+        | "EMPRESTIMO"
+        | "FINANCIAMENTO"
+        | "CONTA_GARANTIDA"
+        | "OUTRO"
+      loan_run_status: "OK" | "FAILED"
+      loan_run_type: "CALCULO" | "GERACAO_AP" | "RECALCULO"
       match_type: "exact" | "fuzzy" | "manual"
       normal_balance: "debit" | "credit"
       posting_policy: "leaf_only" | "allows_posting_flag" | "leaf_or_flag"
+      rate_index: "CDI" | "IPCA" | "SELIC" | "OUTRO"
+      rate_period: "MES" | "ANO" | "DIA"
+      rate_type: "FIXA" | "INDEXADA"
       reconciliation_action: "mark_paid" | "create" | "ignore" | "pending"
       system_tier:
         | "FINANCEIRO_ESSENCIAL"
@@ -13699,6 +14230,7 @@ export const Constants = {
         "custo",
         "despesa",
       ],
+      amortization_system: ["SAC", "PRICE"],
       app_role: ["admin", "gestor", "operador", "visualizador", "auditor"],
       contra_mode: ["reduce_parent", "reduce_classification"],
       counterparty_type: ["cliente", "fornecedor", "ambos"],
@@ -13713,6 +14245,7 @@ export const Constants = {
         "outros",
       ],
       document_type: ["nf", "nfe", "fatura", "recibo", "boleto", "outro"],
+      grace_type: ["SEM_CARENCIA", "SO_JUROS", "TOTAL"],
       import_batch_status: ["processing", "success", "partial", "error"],
       import_entity_type: [
         "accounts",
@@ -13735,6 +14268,7 @@ export const Constants = {
         "skipped",
       ],
       import_source_type: ["manual_upload", "scheduled_sync", "webhook"],
+      installment_period: ["MENSAL", "BIMESTRAL", "TRIMESTRAL", "ANUAL"],
       integration_auth_type: ["file", "oauth", "api_key", "webhook"],
       integration_provider: [
         "ofx",
@@ -13750,9 +14284,28 @@ export const Constants = {
         "other",
       ],
       integration_status: ["disconnected", "connected", "error", "disabled"],
+      loan_contract_status: ["EDICAO", "ATIVO", "ENCERRADO", "CANCELADO"],
+      loan_installment_status: [
+        "PREVISTA",
+        "GERADA",
+        "BAIXADA",
+        "RENEGOCIADA",
+        "CANCELADA",
+      ],
+      loan_operation_type: [
+        "EMPRESTIMO",
+        "FINANCIAMENTO",
+        "CONTA_GARANTIDA",
+        "OUTRO",
+      ],
+      loan_run_status: ["OK", "FAILED"],
+      loan_run_type: ["CALCULO", "GERACAO_AP", "RECALCULO"],
       match_type: ["exact", "fuzzy", "manual"],
       normal_balance: ["debit", "credit"],
       posting_policy: ["leaf_only", "allows_posting_flag", "leaf_or_flag"],
+      rate_index: ["CDI", "IPCA", "SELIC", "OUTRO"],
+      rate_period: ["MES", "ANO", "DIA"],
+      rate_type: ["FIXA", "INDEXADA"],
       reconciliation_action: ["mark_paid", "create", "ignore", "pending"],
       system_tier: [
         "FINANCEIRO_ESSENCIAL",
