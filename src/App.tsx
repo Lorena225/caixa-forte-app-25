@@ -109,6 +109,7 @@ import TesourariaCards from "./pages/tesouraria/CardsManagement";
 import TesourariaContratos from "./pages/tesouraria/Contratos";
 import TesourariaContratoDetalhe from "./pages/tesouraria/ContratoDetalhe";
 import TesourariaContratoNovo from "./pages/tesouraria/ContratoNovo";
+import ConciliacaoIndex from "./pages/conciliacao/Index";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -186,6 +187,9 @@ const App = () => (
                 <Route path="/tesouraria/contratos" element={<TesourariaContratos />} />
                 <Route path="/tesouraria/contratos/novo" element={<TesourariaContratoNovo />} />
                 <Route path="/tesouraria/contratos/:id" element={<TesourariaContratoDetalhe />} />
+                
+                {/* Conciliação Bancária */}
+                <Route path="/conciliacao" element={<ConciliacaoIndex />} />
                 
                 {/* AP/AR Index */}
                 <Route path="/ap" element={<APIndex />} />
