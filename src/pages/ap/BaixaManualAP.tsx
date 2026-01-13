@@ -6,6 +6,8 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import {
   Select,
   SelectContent,
@@ -42,7 +44,7 @@ import {
 import { formatCurrency, formatDate } from '@/lib/formatters';
 import { 
   Search, ArrowRight, ArrowLeft, Check, AlertCircle, 
-  XCircle, CheckCircle2, AlertTriangle, Loader2, ExternalLink
+  XCircle, CheckCircle2, AlertTriangle, Loader2, ExternalLink, Ban
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -85,6 +87,8 @@ export default function BaixaManualAP() {
   const processSettlement = useProcessSettlement();
   const validateSettlement = useValidateSettlement();
 
+  const bankWallets = wallets.filter((w) => w.type === 'banco');
+
   const { data: openTitles = [], isLoading } = useOpenTitles({
     title_type: 'PAGAR',
     counterparty_id: counterpartyId || undefined,
@@ -103,7 +107,14 @@ export default function BaixaManualAP() {
     );
   }, [openTitles, searchTerm]);
 
+  const canSelectTitle = (title: typeof openTitles[0]) => {
+    return title.balance_amount > 0;
+  };
+
   const handleToggleSelect = (id: string) => {
+    const title = openTitles.find((t) => t.id === id);
+    if (title && !canSelectTitle(title)) return;
+    
     const newSet = new Set(selectedIds);
     if (newSet.has(id)) {
       newSet.delete(id);
@@ -114,10 +125,11 @@ export default function BaixaManualAP() {
   };
 
   const handleSelectAll = () => {
-    if (selectedIds.size === filteredTitles.length) {
+    const selectableTitles = filteredTitles.filter(canSelectTitle);
+    if (selectedIds.size === selectableTitles.length) {
       setSelectedIds(new Set());
     } else {
-      setSelectedIds(new Set(filteredTitles.map((t) => t.id)));
+      setSelectedIds(new Set(selectableTitles.map((t) => t.id)));
     }
   };
 
@@ -126,9 +138,9 @@ export default function BaixaManualAP() {
     setSelectedIds(new Set());
   };
 
-  const handleGoToSettlement = () => {
+  const handleGoToSettlementWithTitles = (titleIds: string[]) => {
     const titles = openTitles
-      .filter((t) => selectedIds.has(t.id))
+      .filter((t) => titleIds.includes(t.id) && canSelectTitle(t))
       .map((t) => ({
         ...t,
         amount_to_settle: t.balance_amount,
@@ -140,6 +152,14 @@ export default function BaixaManualAP() {
     setSettlementType('PAGAMENTO');
     setValidationResult(null);
     setStep('settlement');
+  };
+
+  const handleGoToSettlement = () => {
+    handleGoToSettlementWithTitles(Array.from(selectedIds));
+  };
+
+  const handleSettleSingleTitle = (id: string) => {
+    handleGoToSettlementWithTitles([id]);
   };
 
   const handleBack = () => {
@@ -182,6 +202,47 @@ export default function BaixaManualAP() {
 
   const handleValidate = async () => {
     const requiresBankAccount = ['PAGAMENTO', 'RECEBIMENTO'].includes(settlementType);
+    
+    // Frontend validation
+    if (!settlementDate) {
+      setValidationResult({
+        is_valid: false,
+        global_errors: [{ code: 'MISSING_DATE', message: 'A data da baixa é obrigatória.' }],
+        item_results: [],
+        summary: { total_titles: 0, total_amount: 0, bank_account_id: '', settlement_date: '', settlement_type: '', mode: '' },
+      });
+      return;
+    }
+    
+    if (requiresBankAccount && !bankAccountId) {
+      setValidationResult({
+        is_valid: false,
+        global_errors: [{ code: 'MISSING_BANK', message: 'Selecione uma conta bancária.' }],
+        item_results: [],
+        summary: { total_titles: 0, total_amount: 0, bank_account_id: '', settlement_date: '', settlement_type: '', mode: '' },
+      });
+      return;
+    }
+    
+    if (selectedTitles.length === 0) {
+      setValidationResult({
+        is_valid: false,
+        global_errors: [{ code: 'NO_TITLES', message: 'Selecione pelo menos um título.' }],
+        item_results: [],
+        summary: { total_titles: 0, total_amount: 0, bank_account_id: '', settlement_date: '', settlement_type: '', mode: '' },
+      });
+      return;
+    }
+    
+    if (totalToSettle <= 0) {
+      setValidationResult({
+        is_valid: false,
+        global_errors: [{ code: 'ZERO_AMOUNT', message: 'O valor total deve ser maior que zero.' }],
+        item_results: [],
+        summary: { total_titles: 0, total_amount: 0, bank_account_id: '', settlement_date: '', settlement_type: '', mode: '' },
+      });
+      return;
+    }
     
     try {
       const result = await validateSettlement.mutateAsync({
@@ -250,6 +311,7 @@ export default function BaixaManualAP() {
   const validItemsCount = validationResult?.item_results.filter((r) => r.ok).length || 0;
   const invalidItemsCount = validationResult?.item_results.filter((r) => !r.ok).length || 0;
   const hasWarnings = validationResult?.item_results.some((r) => r.warnings.length > 0);
+  const selectableCount = filteredTitles.filter(canSelectTitle).length;
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -367,7 +429,7 @@ export default function BaixaManualAP() {
               <div>
                 <CardTitle>Selecionar Títulos</CardTitle>
                 <CardDescription>
-                  Marque os títulos que deseja baixar
+                  Marque os títulos que deseja baixar ou clique no ícone para baixar individualmente
                 </CardDescription>
               </div>
               <div className="relative w-64">
@@ -388,7 +450,7 @@ export default function BaixaManualAP() {
                   <TableRow>
                     <TableHead className="w-12">
                       <Checkbox
-                        checked={selectedIds.size === filteredTitles.length && filteredTitles.length > 0}
+                        checked={selectedIds.size === selectableCount && selectableCount > 0}
                         onCheckedChange={handleSelectAll}
                       />
                     </TableHead>
@@ -397,29 +459,78 @@ export default function BaixaManualAP() {
                     <TableHead>Documento</TableHead>
                     <TableHead>Vencimento</TableHead>
                     <TableHead className="text-right">Saldo</TableHead>
+                    <TableHead className="w-14 text-center">Baixar</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredTitles.map((title) => (
-                    <TableRow key={title.id} className="cursor-pointer" onClick={() => handleToggleSelect(title.id)}>
-                      <TableCell>
-                        <Checkbox
-                          checked={selectedIds.has(title.id)}
-                          onCheckedChange={() => handleToggleSelect(title.id)}
-                        />
-                      </TableCell>
-                      <TableCell className="font-medium">{title.description}</TableCell>
-                      <TableCell>{title.counterparty_name || '-'}</TableCell>
-                      <TableCell>{title.document_number || '-'}</TableCell>
-                      <TableCell>{formatDate(title.due_date)}</TableCell>
-                      <TableCell className="text-right font-semibold">
-                        {formatCurrency(title.balance_amount)}
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                  {filteredTitles.map((title) => {
+                    const isSelectable = canSelectTitle(title);
+                    return (
+                      <TableRow 
+                        key={title.id} 
+                        className={`${isSelectable ? 'cursor-pointer hover:bg-muted/50' : 'opacity-60'}`}
+                        onClick={() => isSelectable && handleToggleSelect(title.id)}
+                      >
+                        <TableCell>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div>
+                                  <Checkbox
+                                    checked={selectedIds.has(title.id)}
+                                    onCheckedChange={() => handleToggleSelect(title.id)}
+                                    disabled={!isSelectable}
+                                  />
+                                </div>
+                              </TooltipTrigger>
+                              {!isSelectable && (
+                                <TooltipContent>
+                                  <p>Título sem saldo disponível</p>
+                                </TooltipContent>
+                              )}
+                            </Tooltip>
+                          </TooltipProvider>
+                        </TableCell>
+                        <TableCell className="font-medium">{title.description}</TableCell>
+                        <TableCell>{title.counterparty_name || '-'}</TableCell>
+                        <TableCell>{title.document_number || '-'}</TableCell>
+                        <TableCell>{formatDate(title.due_date)}</TableCell>
+                        <TableCell className="text-right font-semibold">
+                          {formatCurrency(title.balance_amount)}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-8 w-8"
+                                  disabled={!isSelectable}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleSettleSingleTitle(title.id);
+                                  }}
+                                >
+                                  {isSelectable ? (
+                                    <Check className="h-4 w-4 text-success" />
+                                  ) : (
+                                    <Ban className="h-4 w-4 text-muted-foreground" />
+                                  )}
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>{isSelectable ? 'Baixar este título' : 'Título sem saldo'}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
                   {filteredTitles.length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                      <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
                         Nenhum título encontrado
                       </TableCell>
                     </TableRow>
@@ -428,23 +539,33 @@ export default function BaixaManualAP() {
               </Table>
             </div>
 
-            <div className="flex items-center justify-between pt-4 border-t mt-4">
-              <div className="flex items-center gap-4">
-                <Button variant="outline" onClick={handleBack}>
-                  <ArrowLeft className="mr-2 h-4 w-4" /> Voltar
-                </Button>
-                <div className="text-sm">
-                  <Badge variant="secondary" className="mr-2">
-                    {selectedCount} selecionados
+            {/* Fixed Selection Bar */}
+            {selectedCount > 0 && (
+              <div className="sticky bottom-0 left-0 right-0 mt-4 p-4 bg-primary/10 border border-primary/20 rounded-lg flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <Badge variant="default" className="text-sm px-3 py-1">
+                    {selectedCount} título{selectedCount > 1 ? 's' : ''} selecionado{selectedCount > 1 ? 's' : ''}
                   </Badge>
-                  <span className="text-muted-foreground">
-                    Total: <strong>{formatCurrency(selectedTotal)}</strong>
+                  <span className="text-sm font-medium">
+                    Total: <span className="text-primary font-bold">{formatCurrency(selectedTotal)}</span>
                   </span>
                 </div>
+                <Button onClick={handleGoToSettlement}>
+                  <Check className="mr-2 h-4 w-4" />
+                  Baixar selecionados
+                </Button>
               </div>
-              <Button onClick={handleGoToSettlement} disabled={selectedCount === 0}>
-                Continuar <ArrowRight className="ml-2 h-4 w-4" />
+            )}
+
+            <div className="flex items-center justify-between pt-4 border-t mt-4">
+              <Button variant="outline" onClick={handleBack}>
+                <ArrowLeft className="mr-2 h-4 w-4" /> Voltar
               </Button>
+              {selectedCount === 0 && (
+                <p className="text-sm text-muted-foreground">
+                  Selecione títulos ou clique no ícone de baixa individual
+                </p>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -457,7 +578,9 @@ export default function BaixaManualAP() {
             <Card>
               <CardHeader>
                 <CardTitle>Itens da Baixa</CardTitle>
-                <CardDescription>Ajuste os valores de cada título se necessário</CardDescription>
+                <CardDescription>
+                  {selectedTitles.length} título{selectedTitles.length > 1 ? 's' : ''} selecionado{selectedTitles.length > 1 ? 's' : ''} - Ajuste os valores se necessário
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="border rounded-lg overflow-hidden">
@@ -465,12 +588,11 @@ export default function BaixaManualAP() {
                     <TableHeader>
                       <TableRow>
                         <TableHead>Descrição</TableHead>
-                        <TableHead className="text-right">Saldo</TableHead>
-                        <TableHead className="text-right w-28">Valor</TableHead>
+                        <TableHead className="text-right w-28">Saldo</TableHead>
+                        <TableHead className="text-right w-28">Valor Baixa</TableHead>
                         <TableHead className="text-right w-24">Juros</TableHead>
                         <TableHead className="text-right w-24">Multa</TableHead>
                         <TableHead className="text-right w-24">Desconto</TableHead>
-                        {validationResult && <TableHead className="w-12">Status</TableHead>}
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -478,17 +600,34 @@ export default function BaixaManualAP() {
                         const itemResult = validationResult?.item_results.find(
                           (r) => r.transaction_id === title.id
                         );
+                        const hasError = itemResult && !itemResult.ok;
+                        const hasWarning = itemResult?.warnings && itemResult.warnings.length > 0;
+                        
                         return (
-                          <TableRow key={title.id}>
+                          <TableRow 
+                            key={title.id}
+                            className={hasError ? 'bg-destructive/10' : hasWarning ? 'bg-yellow-50 dark:bg-yellow-950/20' : ''}
+                          >
                             <TableCell>
-                              <div>
-                                <p className="font-medium">{title.description}</p>
-                                <p className="text-xs text-muted-foreground">
-                                  {title.counterparty_name || 'Sem fornecedor'} • Venc: {formatDate(title.due_date)}
-                                </p>
+                              <div className="flex items-start gap-2">
+                                {hasError && <XCircle className="h-4 w-4 text-destructive mt-0.5 flex-shrink-0" />}
+                                {!hasError && hasWarning && <AlertTriangle className="h-4 w-4 text-yellow-600 mt-0.5 flex-shrink-0" />}
+                                {itemResult?.ok && !hasWarning && <CheckCircle2 className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />}
+                                <div>
+                                  <p className="font-medium">{title.description}</p>
+                                  <p className="text-xs text-muted-foreground">
+                                    {title.counterparty_name || 'Sem fornecedor'} • Venc: {formatDate(title.due_date)}
+                                  </p>
+                                  {hasError && itemResult?.errors.map((err, i) => (
+                                    <p key={i} className="text-xs text-destructive mt-1">{err.message}</p>
+                                  ))}
+                                  {hasWarning && itemResult?.warnings.map((warn, i) => (
+                                    <p key={i} className="text-xs text-yellow-700 dark:text-yellow-400 mt-1">{warn.message}</p>
+                                  ))}
+                                </div>
                               </div>
                             </TableCell>
-                            <TableCell className="text-right text-muted-foreground">
+                            <TableCell className="text-right font-mono">
                               {formatCurrency(title.balance_amount)}
                             </TableCell>
                             <TableCell>
@@ -501,7 +640,7 @@ export default function BaixaManualAP() {
                                 onChange={(e) =>
                                   handleUpdateSettlementItem(title.id, 'amount_to_settle', parseFloat(e.target.value) || 0)
                                 }
-                                className="w-full text-right"
+                                className="w-28 text-right"
                               />
                             </TableCell>
                             <TableCell>
@@ -513,7 +652,7 @@ export default function BaixaManualAP() {
                                 onChange={(e) =>
                                   handleUpdateSettlementItem(title.id, 'interest', parseFloat(e.target.value) || 0)
                                 }
-                                className="w-full text-right"
+                                className="w-24 text-right"
                               />
                             </TableCell>
                             <TableCell>
@@ -525,7 +664,7 @@ export default function BaixaManualAP() {
                                 onChange={(e) =>
                                   handleUpdateSettlementItem(title.id, 'penalty', parseFloat(e.target.value) || 0)
                                 }
-                                className="w-full text-right"
+                                className="w-24 text-right"
                               />
                             </TableCell>
                             <TableCell>
@@ -537,69 +676,95 @@ export default function BaixaManualAP() {
                                 onChange={(e) =>
                                   handleUpdateSettlementItem(title.id, 'discount', parseFloat(e.target.value) || 0)
                                 }
-                                className="w-full text-right"
+                                className="w-24 text-right"
                               />
                             </TableCell>
-                            {validationResult && (
-                              <TableCell>
-                                {itemResult?.ok ? (
-                                  <CheckCircle2 className="h-5 w-5 text-success" />
-                                ) : (
-                                  <div className="flex items-center gap-1">
-                                    <XCircle className="h-5 w-5 text-destructive" />
-                                  </div>
-                                )}
-                              </TableCell>
-                            )}
                           </TableRow>
                         );
                       })}
                     </TableBody>
                   </Table>
                 </div>
-
-                {/* Validation errors panel */}
-                {validationResult && !validationResult.is_valid && (
-                  <Alert variant="destructive" className="mt-4">
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertTitle>Erros de validação encontrados</AlertTitle>
-                    <AlertDescription>
-                      <ul className="list-disc list-inside mt-2 space-y-1">
-                        {validationResult.global_errors.map((err, i) => (
-                          <li key={i}>{err.message}</li>
-                        ))}
-                        {validationResult.item_results
-                          .filter((r) => !r.ok)
-                          .map((r) =>
-                            r.errors.map((err, i) => (
-                              <li key={`${r.transaction_id}-${i}`}>
-                                {selectedTitles.find((t) => t.id === r.transaction_id)?.description}: {err.message}
-                              </li>
-                            ))
-                          )}
-                      </ul>
-                    </AlertDescription>
-                  </Alert>
-                )}
               </CardContent>
             </Card>
+
+            {/* Validation Errors Panel */}
+            {validationResult && (validationResult.global_errors.length > 0 || invalidItemsCount > 0) && (
+              <Card className="border-destructive">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-destructive">
+                    <AlertCircle className="h-5 w-5" />
+                    Erros de Validação
+                  </CardTitle>
+                  <CardDescription>
+                    Corrija os erros abaixo antes de confirmar a baixa
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ScrollArea className="max-h-60">
+                    <div className="space-y-3">
+                      {validationResult.global_errors.map((error, i) => (
+                        <Alert key={`global-${i}`} variant="destructive">
+                          <AlertCircle className="h-4 w-4" />
+                          <AlertDescription>{error.message}</AlertDescription>
+                        </Alert>
+                      ))}
+                      
+                      {validationResult.item_results
+                        .filter((r) => !r.ok)
+                        .map((item) => (
+                          <div key={item.transaction_id} className="p-3 bg-destructive/10 rounded-lg">
+                            <div className="flex items-center gap-2 mb-1">
+                              <XCircle className="h-4 w-4 text-destructive" />
+                              <span className="font-medium text-sm">
+                                {item.document_number || item.description.slice(0, 30)}
+                              </span>
+                              {item.counterparty_name && (
+                                <span className="text-xs text-muted-foreground">
+                                  • {item.counterparty_name}
+                                </span>
+                              )}
+                            </div>
+                            {item.errors.map((err, i) => (
+                              <p key={i} className="text-sm text-destructive ml-6">{err.message}</p>
+                            ))}
+                          </div>
+                        ))}
+                    </div>
+                  </ScrollArea>
+                  
+                  {validationMode === 'PARTIAL_OK' && validItemsCount > 0 && invalidItemsCount > 0 && (
+                    <Alert className="mt-4">
+                      <AlertTriangle className="h-4 w-4" />
+                      <AlertDescription>
+                        <strong>{validItemsCount}</strong> de {selectedTitles.length} títulos estão válidos. 
+                        Você pode prosseguir para baixar apenas os válidos ou corrigir os erros.
+                      </AlertDescription>
+                    </Alert>
+                  )}
+                </CardContent>
+              </Card>
+            )}
           </div>
 
-          {/* Settlement config sidebar */}
           <div className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Configuração da Baixa</CardTitle>
+                <CardTitle>Dados da Baixa</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <Label>Tipo de Baixa</Label>
-                  <Select value={settlementType} onValueChange={(v) => setSettlementType(v as SettlementType)}>
+                  <Select value={settlementType} onValueChange={(v) => {
+                    setSettlementType(v as SettlementType);
+                    setValidationResult(null);
+                  }}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="PAGAMENTO">Pagamento</SelectItem>
+                      <SelectItem value="CANCELAMENTO">Cancelamento</SelectItem>
                       <SelectItem value="ABATIMENTO">Abatimento</SelectItem>
                       <SelectItem value="COMPENSACAO">Compensação</SelectItem>
                     </SelectContent>
@@ -607,124 +772,189 @@ export default function BaixaManualAP() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Data da Baixa</Label>
+                  <Label>Data da Baixa *</Label>
                   <Input
                     type="date"
                     value={settlementDate}
-                    onChange={(e) => setSettlementDate(e.target.value)}
+                    onChange={(e) => {
+                      setSettlementDate(e.target.value);
+                      setValidationResult(null);
+                    }}
                   />
+                  {validationResult?.global_errors.some((e) => e.code === 'MISSING_DATE') && (
+                    <p className="text-xs text-destructive">A data da baixa é obrigatória.</p>
+                  )}
                 </div>
 
                 {requiresBankAccount && (
                   <div className="space-y-2">
                     <Label>Conta Bancária *</Label>
-                    <Select value={bankAccountId || '__none__'} onValueChange={(v) => setBankAccountId(v === '__none__' ? '' : v)}>
+                    <Select value={bankAccountId || '__none__'} onValueChange={(v) => {
+                      setBankAccountId(v === '__none__' ? '' : v);
+                      setValidationResult(null);
+                    }}>
                       <SelectTrigger>
                         <SelectValue placeholder="Selecione..." />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="__none__">Selecione...</SelectItem>
-                        {wallets.map((w) => (
+                        {bankWallets.map((w) => (
                           <SelectItem key={w.id} value={w.id}>
                             {w.name}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
+                    {validationResult?.global_errors.some((e) => e.code === 'MISSING_BANK') && (
+                      <p className="text-xs text-destructive">Selecione uma conta bancária.</p>
+                    )}
                   </div>
                 )}
 
                 <div className="space-y-2">
+                  <Label>Observação</Label>
+                  <Input
+                    value={notes}
+                    onChange={(e) => setNotes(e.target.value)}
+                    placeholder="Opcional"
+                  />
+                </div>
+
+                <div className="space-y-2">
                   <Label>Modo de Validação</Label>
-                  <Select value={validationMode} onValueChange={(v) => setValidationMode(v as 'ALL_OR_NOTHING' | 'PARTIAL_OK')}>
+                  <Select value={validationMode} onValueChange={(v) => {
+                    setValidationMode(v as 'ALL_OR_NOTHING' | 'PARTIAL_OK');
+                    setValidationResult(null);
+                  }}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="PARTIAL_OK">Permitir parcial</SelectItem>
-                      <SelectItem value="ALL_OR_NOTHING">Tudo ou nada</SelectItem>
+                      <SelectItem value="PARTIAL_OK">Permitir parcial (baixar apenas válidos)</SelectItem>
+                      <SelectItem value="ALL_OR_NOTHING">Tudo ou nada (abortar se houver erro)</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
-                <div className="space-y-2">
-                  <Label>Observações</Label>
-                  <Input
-                    value={notes}
-                    onChange={(e) => setNotes(e.target.value)}
-                    placeholder="Opcional..."
-                  />
-                </div>
-
                 <div className="pt-4 border-t space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span>Títulos selecionados:</span>
-                    <span className="font-medium">{selectedTitles.length}</span>
+                    <span className="text-muted-foreground">Títulos:</span>
+                    <span>{selectedTitles.length}</span>
                   </div>
-                  <div className="flex justify-between text-lg font-bold">
-                    <span>Total a baixar:</span>
-                    <span className="text-primary">{formatCurrency(totalToSettle)}</span>
+                  <div className="flex justify-between text-lg font-semibold">
+                    <span>Total:</span>
+                    <span>{formatCurrency(totalToSettle)}</span>
                   </div>
+                  {validationResult && (
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">Válidos:</span>
+                      <span className={validItemsCount === selectedTitles.length ? 'text-green-600' : 'text-yellow-600'}>
+                        {validItemsCount} / {selectedTitles.length}
+                      </span>
+                    </div>
+                  )}
                 </div>
-
-                {validationResult && (
-                  <div className="pt-2 border-t space-y-1">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-success">Válidos:</span>
-                      <span className="font-medium text-success">{validItemsCount}</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-destructive">Inválidos:</span>
-                      <span className="font-medium text-destructive">{invalidItemsCount}</span>
-                    </div>
-                  </div>
-                )}
 
                 <div className="flex gap-2 pt-4">
                   <Button variant="outline" onClick={handleBack} className="flex-1">
                     <ArrowLeft className="mr-2 h-4 w-4" /> Voltar
                   </Button>
-                  <Button 
-                    onClick={handleValidate} 
+                  <Button
+                    onClick={handleValidate}
                     disabled={!canValidate || validateSettlement.isPending}
                     className="flex-1"
                   >
                     {validateSettlement.isPending ? (
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Validando...
+                      </>
                     ) : (
-                      <Check className="mr-2 h-4 w-4" />
+                      <>
+                        <Check className="mr-2 h-4 w-4" /> Validar e Confirmar
+                      </>
                     )}
-                    Validar e Confirmar
                   </Button>
                 </div>
               </CardContent>
             </Card>
+
+            {/* Validation Summary */}
+            {validationResult && validationResult.is_valid && (
+              <Alert className="border-green-500 bg-green-50 dark:bg-green-950/30">
+                <CheckCircle2 className="h-4 w-4 text-green-600" />
+                <AlertTitle className="text-green-700 dark:text-green-400">Validação OK</AlertTitle>
+                <AlertDescription>
+                  {validItemsCount} título(s) validado(s) com sucesso. 
+                  {hasWarnings && ' Verifique os avisos na tabela.'}
+                </AlertDescription>
+              </Alert>
+            )}
           </div>
         </div>
       )}
 
       {/* Confirmation Dialog */}
       <Dialog open={confirmDialogOpen} onOpenChange={setConfirmDialogOpen}>
-        <DialogContent>
+        <DialogContent className="max-w-lg">
           <DialogHeader>
             <DialogTitle>Confirmar Baixa</DialogTitle>
             <DialogDescription>
-              Você está prestes a processar a baixa de{' '}
-              <strong>{validationMode === 'PARTIAL_OK' ? validItemsCount : selectedTitles.length}</strong> título(s)
-              no valor total de <strong>{formatCurrency(totalToSettle)}</strong>.
+              Revise os dados antes de confirmar a operação.
             </DialogDescription>
           </DialogHeader>
+          
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <span className="text-muted-foreground">Tipo:</span>
+                <p className="font-medium">{SETTLEMENT_TYPE_LABELS[settlementType]}</p>
+              </div>
+              <div>
+                <span className="text-muted-foreground">Data:</span>
+                <p className="font-medium">{formatDate(settlementDate)}</p>
+              </div>
+              <div>
+                <span className="text-muted-foreground">Títulos:</span>
+                <p className="font-medium">{validItemsCount}</p>
+              </div>
+              <div>
+                <span className="text-muted-foreground">Total:</span>
+                <p className="font-medium text-lg">{formatCurrency(totalToSettle)}</p>
+              </div>
+            </div>
+            
+            {notes && (
+              <div className="text-sm">
+                <span className="text-muted-foreground">Observação:</span>
+                <p className="font-medium">{notes}</p>
+              </div>
+            )}
+
+            <Alert>
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                Esta operação irá atualizar o saldo e status dos títulos selecionados.
+              </AlertDescription>
+            </Alert>
+          </div>
+
           <DialogFooter>
             <Button variant="outline" onClick={() => setConfirmDialogOpen(false)}>
               Cancelar
             </Button>
-            <Button onClick={handleConfirmSettlement} disabled={processSettlement.isPending}>
+            <Button 
+              onClick={handleConfirmSettlement}
+              disabled={processSettlement.isPending}
+            >
               {processSettlement.isPending ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Processando...
+                </>
               ) : (
-                <Check className="mr-2 h-4 w-4" />
+                <>
+                  <Check className="mr-2 h-4 w-4" /> Confirmar Baixa
+                </>
               )}
-              Confirmar Baixa
             </Button>
           </DialogFooter>
         </DialogContent>
