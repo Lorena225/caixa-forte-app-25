@@ -25,11 +25,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '@/hooks/use-toast';
 import { formatCurrency, formatDate } from '@/lib/formatters';
-import { Pencil, Trash2, Check, ArrowDownCircle, FileText, Download, History, CheckCircle } from 'lucide-react';
+import { Pencil, Trash2, Check, ArrowDownCircle, FileText, Download, History, CheckCircle, Eye, Ban } from 'lucide-react';
+import { QuickSettlementDialog } from '@/components/settlements/QuickSettlementDialog';
 import BaixaManualAR from '@/pages/ar/BaixaManualAR';
 import BaixaAutomaticaAR from '@/pages/ar/BaixaAutomaticaAR';
+
+interface TitleForSettlement {
+  id: string;
+  description: string;
+  counterparty_name?: string | null;
+  due_date: string;
+  balance_amount: number;
+  updated_at?: string;
+}
 
 export default function ContasReceber() {
   const { currentCompany } = useAuth();
@@ -45,6 +56,10 @@ export default function ContasReceber() {
     year: currentYear,
     status: '',
   });
+  
+  // Quick settlement dialog state
+  const [quickSettlementOpen, setQuickSettlementOpen] = useState(false);
+  const [selectedTitle, setSelectedTitle] = useState<TitleForSettlement | null>(null);
   
   const { data: transactions = [], isLoading } = useTransactions({
     direction: 'entrada',
@@ -106,20 +121,6 @@ export default function ContasReceber() {
     },
   });
 
-  const markAsPaidMutation = useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase
-        .from('transactions')
-        .update({ status: 'pago' as const, paid_date: new Date().toISOString().split('T')[0] })
-        .eq('id', id);
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['transactions'] });
-      toast({ title: 'Marcado como recebido!' });
-    },
-  });
-
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from('transactions').delete().eq('id', id);
@@ -167,6 +168,18 @@ export default function ContasReceber() {
     setDialogOpen(true);
   };
 
+  const handleQuickSettlement = (item: any) => {
+    setSelectedTitle({
+      id: item.id,
+      description: item.description,
+      counterparty_name: item.counterparties?.name || null,
+      due_date: item.due_date,
+      balance_amount: Number(item.balance_amount || item.total_amount),
+      updated_at: item.updated_at,
+    });
+    setQuickSettlementOpen(true);
+  };
+
   const today = new Date().toISOString().split('T')[0];
   
   const totals = transactions.reduce(
@@ -184,6 +197,35 @@ export default function ContasReceber() {
     },
     { received: 0, pending: 0, overdue: 0, total: 0 }
   );
+
+  // Determine status and settlement action based on business rules
+  const getSettlementAction = (item: any) => {
+    const balance = Number(item.balance_amount || item.total_amount);
+    const isPaid = item.status === 'pago' || balance <= 0;
+    const isCancelled = item.status === 'cancelado';
+
+    if (isCancelled) {
+      return {
+        disabled: true,
+        tooltip: 'Título cancelado',
+        icon: <Ban className="h-4 w-4 text-muted-foreground" />,
+      };
+    }
+
+    if (isPaid) {
+      return {
+        disabled: true,
+        tooltip: 'Título já baixado',
+        icon: <Eye className="h-4 w-4 text-muted-foreground" />,
+      };
+    }
+
+    return {
+      disabled: false,
+      tooltip: 'Registrar baixa deste título',
+      icon: <Check className="h-4 w-4 text-success" />,
+    };
+  };
 
   const columns = [
     { 
@@ -215,34 +257,54 @@ export default function ContasReceber() {
       key: 'status',
       header: 'Status',
       render: (item: any) => {
-        const isOverdue = item.due_date < today && item.status !== 'pago';
-        return <StatusBadge status={item.status} isOverdue={isOverdue} />;
+        // Status derived from balance and dates
+        const balance = Number(item.balance_amount || item.total_amount);
+        const isPaid = item.status === 'pago' || balance <= 0;
+        const isOverdue = !isPaid && item.due_date < today;
+        return <StatusBadge status={isPaid ? 'pago' : item.status} isOverdue={isOverdue} />;
       },
       className: 'w-28',
     },
     {
       key: 'actions',
       header: '',
-      render: (item: any) => (
-        <div className="flex gap-1">
-          {item.status !== 'pago' && (
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              onClick={(e) => { e.stopPropagation(); markAsPaidMutation.mutate(item.id); }}
-              title="Marcar como recebido"
-            >
-              <Check className="h-4 w-4 text-success" />
-            </Button>
-          )}
-          <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); handleEdit(item); }}>
-            <Pencil className="h-4 w-4" />
-          </Button>
-          <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); deleteMutation.mutate(item.id); }}>
-            <Trash2 className="h-4 w-4 text-destructive" />
-          </Button>
-        </div>
-      ),
+      render: (item: any) => {
+        const settlementAction = getSettlementAction(item);
+        
+        return (
+          <TooltipProvider>
+            <div className="flex gap-1">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    onClick={(e) => { 
+                      e.stopPropagation(); 
+                      if (!settlementAction.disabled) {
+                        handleQuickSettlement(item);
+                      }
+                    }}
+                    disabled={settlementAction.disabled}
+                    className={settlementAction.disabled ? 'opacity-50 cursor-not-allowed' : ''}
+                  >
+                    {settlementAction.icon}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{settlementAction.tooltip}</p>
+                </TooltipContent>
+              </Tooltip>
+              <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); handleEdit(item); }}>
+                <Pencil className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); deleteMutation.mutate(item.id); }}>
+                <Trash2 className="h-4 w-4 text-destructive" />
+              </Button>
+            </div>
+          </TooltipProvider>
+        );
+      },
       className: 'w-32',
     },
   ];
@@ -496,22 +558,38 @@ export default function ContasReceber() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Plano de Contas</Label>
-                  <Select value={formData.account_id} onValueChange={(v) => setFormData({ ...formData, account_id: v })}>
-                    <SelectTrigger><SelectValue placeholder="Selecione..." /></SelectTrigger>
+                  <Select 
+                    value={formData.account_id} 
+                    onValueChange={(v) => setFormData({ ...formData, account_id: v })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione..." />
+                    </SelectTrigger>
                     <SelectContent>
-                      {accounts.filter(a => a.category_type === 'receita').map((a) => (
-                        <SelectItem key={a.id} value={a.id}>{a.code} - {a.name}</SelectItem>
-                      ))}
+                      {accounts
+                        .filter((a) => a.category_type === 'receita')
+                        .map((a) => (
+                          <SelectItem key={a.id} value={a.id}>
+                            {a.code} - {a.name}
+                          </SelectItem>
+                        ))}
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-2">
                   <Label>Conta/Carteira</Label>
-                  <Select value={formData.wallet_id} onValueChange={(v) => setFormData({ ...formData, wallet_id: v })}>
-                    <SelectTrigger><SelectValue placeholder="Selecione..." /></SelectTrigger>
+                  <Select 
+                    value={formData.wallet_id} 
+                    onValueChange={(v) => setFormData({ ...formData, wallet_id: v })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione..." />
+                    </SelectTrigger>
                     <SelectContent>
                       {wallets.map((w) => (
-                        <SelectItem key={w.id} value={w.id}>{w.name}</SelectItem>
+                        <SelectItem key={w.id} value={w.id}>
+                          {w.name}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -521,24 +599,40 @@ export default function ContasReceber() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Cliente (opcional)</Label>
-                  <Select value={formData.counterparty_id || "__none__"} onValueChange={(v) => setFormData({ ...formData, counterparty_id: v === "__none__" ? "" : v })}>
-                    <SelectTrigger><SelectValue placeholder="Selecione..." /></SelectTrigger>
+                  <Select 
+                    value={formData.counterparty_id || "__none__"} 
+                    onValueChange={(v) => setFormData({ ...formData, counterparty_id: v === "__none__" ? "" : v })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione..." />
+                    </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="__none__">Nenhum</SelectItem>
-                      {counterparties.filter(c => c.type !== 'fornecedor').map((c) => (
-                        <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
-                      ))}
+                      {counterparties
+                        .filter((c) => c.type !== 'fornecedor')
+                        .map((c) => (
+                          <SelectItem key={c.id} value={c.id}>
+                            {c.name}
+                          </SelectItem>
+                        ))}
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-2">
                   <Label>Centro de Custo (opcional)</Label>
-                  <Select value={formData.cost_center_id || "__none__"} onValueChange={(v) => setFormData({ ...formData, cost_center_id: v === "__none__" ? "" : v })}>
-                    <SelectTrigger><SelectValue placeholder="Selecione..." /></SelectTrigger>
+                  <Select 
+                    value={formData.cost_center_id || "__none__"} 
+                    onValueChange={(v) => setFormData({ ...formData, cost_center_id: v === "__none__" ? "" : v })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione..." />
+                    </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="__none__">Nenhum</SelectItem>
                       {costCenters.map((cc) => (
-                        <SelectItem key={cc.id} value={cc.id}>{cc.code} - {cc.name}</SelectItem>
+                        <SelectItem key={cc.id} value={cc.id}>
+                          {cc.code} - {cc.name}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -546,7 +640,9 @@ export default function ContasReceber() {
               </div>
 
               <div className="flex justify-end gap-2 pt-4">
-                <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>Cancelar</Button>
+                <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
+                  Cancelar
+                </Button>
                 <Button type="submit" disabled={saveMutation.isPending}>
                   {saveMutation.isPending ? 'Salvando...' : 'Salvar'}
                 </Button>
@@ -554,6 +650,17 @@ export default function ContasReceber() {
             </form>
           </DialogContent>
         </Dialog>
+
+        {/* Quick Settlement Dialog */}
+        <QuickSettlementDialog
+          open={quickSettlementOpen}
+          onOpenChange={setQuickSettlementOpen}
+          title={selectedTitle}
+          titleType="RECEBER"
+          onSuccess={() => {
+            queryClient.invalidateQueries({ queryKey: ['transactions'] });
+          }}
+        />
       </div>
     </MainLayout>
   );
