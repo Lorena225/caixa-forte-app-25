@@ -29,19 +29,22 @@ import {
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Plus, FileText, Clock, AlertTriangle, CheckCircle, Send } from 'lucide-react';
+import { Plus, FileText, Clock, AlertTriangle, CheckCircle, Send, Download, History } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { formatCurrency } from '@/lib/formatters';
+import BaixaManualAR from './BaixaManualAR';
+import BaixaAutomaticaAR from './BaixaAutomaticaAR';
 
 export default function ARIndex() {
   const { currentCompany } = useAuth();
   const queryClient = useQueryClient();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('pending');
+  const [mainTab, setMainTab] = useState('titulos');
   
   const [formData, setFormData] = useState({
     counterparty_id: '',
@@ -215,7 +218,7 @@ export default function ARIndex() {
     return <Badge variant="outline" className={styles[status]}>{labels[status]}</Badge>;
   };
 
-  if (isLoading) {
+  if (isLoading && mainTab === 'titulos') {
     return (
       <MainLayout>
         <div className="flex items-center justify-center h-64">
@@ -230,7 +233,7 @@ export default function ARIndex() {
       <div className="space-y-6">
         <PageHeader
           title="Contas a Receber (AR)"
-          description="Gestão de faturas e recebimentos de clientes"
+          description="Gestão de faturas, recebimentos e baixas de clientes"
         >
           <div className="flex gap-2">
             <Button variant="outline">
@@ -345,119 +348,172 @@ export default function ARIndex() {
           </div>
         </PageHeader>
 
-        {/* Aging Summary */}
-        <div className="grid gap-4 md:grid-cols-5">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                <CheckCircle className="h-4 w-4 text-success" />
-                A Vencer
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-xl font-bold text-success">{formatCurrency(agingSummary?.a_vencer || 0)}</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">1-30 dias</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-xl font-bold text-warning">{formatCurrency(agingSummary?.['1_30'] || 0)}</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">31-60 dias</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-xl font-bold text-warning">{formatCurrency(agingSummary?.['31_60'] || 0)}</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">61-90 dias</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-xl font-bold text-destructive">{formatCurrency(agingSummary?.['61_90'] || 0)}</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                <AlertTriangle className="h-4 w-4 text-destructive" />
-                +90 dias
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-xl font-bold text-destructive">{formatCurrency(agingSummary?.['90_plus'] || 0)}</p>
-            </CardContent>
-          </Card>
-        </div>
+        {/* Main Tabs */}
+        <Tabs value={mainTab} onValueChange={setMainTab}>
+          <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-flex">
+            <TabsTrigger value="titulos" className="gap-2">
+              <FileText className="h-4 w-4" />
+              Títulos
+            </TabsTrigger>
+            <TabsTrigger value="baixa-manual" className="gap-2">
+              <CheckCircle className="h-4 w-4" />
+              Baixa Manual
+            </TabsTrigger>
+            <TabsTrigger value="baixa-automatica" className="gap-2">
+              <Download className="h-4 w-4" />
+              Baixa Automática
+            </TabsTrigger>
+            <TabsTrigger value="historico" className="gap-2">
+              <History className="h-4 w-4" />
+              Histórico
+            </TabsTrigger>
+          </TabsList>
 
-        <Card>
-          <CardHeader>
-            <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList>
-                <TabsTrigger value="pending" className="gap-2">
-                  <Clock className="h-4 w-4" />
-                  Pendentes
-                </TabsTrigger>
-                <TabsTrigger value="overdue" className="gap-2">
-                  <AlertTriangle className="h-4 w-4" />
-                  Vencidos
-                </TabsTrigger>
-                <TabsTrigger value="paid" className="gap-2">
-                  <CheckCircle className="h-4 w-4" />
-                  Recebidos
-                </TabsTrigger>
-                <TabsTrigger value="all" className="gap-2">
-                  <FileText className="h-4 w-4" />
-                  Todos
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
-          </CardHeader>
-          <CardContent>
-            {invoices && invoices.length > 0 ? (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Documento</TableHead>
-                    <TableHead>Cliente</TableHead>
-                    <TableHead>Vencimento</TableHead>
-                    <TableHead className="text-right">Valor</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Cobrança</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {invoices.map((invoice) => (
-                    <TableRow key={invoice.id}>
-                      <TableCell>
-                        <div>
-                          <span className="font-mono">{invoice.document_number}</span>
-                          <p className="text-xs text-muted-foreground uppercase">{invoice.document_type}</p>
-                        </div>
-                      </TableCell>
-                      <TableCell>{invoice.counterparty?.name}</TableCell>
-                      <TableCell>{format(new Date(invoice.due_date), 'dd/MM/yyyy')}</TableCell>
-                      <TableCell className="text-right font-medium">
-                        {formatCurrency(invoice.net_amount)}
-                      </TableCell>
-                      <TableCell>{getStatusBadge(invoice.status)}</TableCell>
-                      <TableCell>{getCollectionBadge(invoice.collection_status)}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            ) : (
-              <div className="text-center py-8 text-muted-foreground">
-                Nenhuma fatura encontrada
-              </div>
-            )}
-          </CardContent>
-        </Card>
+          {/* Títulos Tab */}
+          <TabsContent value="titulos" className="space-y-6">
+            {/* Aging Summary */}
+            <div className="grid gap-4 md:grid-cols-5">
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                    <CheckCircle className="h-4 w-4 text-success" />
+                    A Vencer
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-xl font-bold text-success">{formatCurrency(agingSummary?.a_vencer || 0)}</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">1-30 dias</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-xl font-bold text-warning">{formatCurrency(agingSummary?.['1_30'] || 0)}</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">31-60 dias</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-xl font-bold text-warning">{formatCurrency(agingSummary?.['31_60'] || 0)}</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">61-90 dias</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-xl font-bold text-destructive">{formatCurrency(agingSummary?.['61_90'] || 0)}</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                    <AlertTriangle className="h-4 w-4 text-destructive" />
+                    +90 dias
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-xl font-bold text-destructive">{formatCurrency(agingSummary?.['90_plus'] || 0)}</p>
+                </CardContent>
+              </Card>
+            </div>
+
+            <Card>
+              <CardHeader>
+                <Tabs value={activeTab} onValueChange={setActiveTab}>
+                  <TabsList>
+                    <TabsTrigger value="pending" className="gap-2">
+                      <Clock className="h-4 w-4" />
+                      Pendentes
+                    </TabsTrigger>
+                    <TabsTrigger value="overdue" className="gap-2">
+                      <AlertTriangle className="h-4 w-4" />
+                      Vencidos
+                    </TabsTrigger>
+                    <TabsTrigger value="paid" className="gap-2">
+                      <CheckCircle className="h-4 w-4" />
+                      Recebidos
+                    </TabsTrigger>
+                    <TabsTrigger value="all" className="gap-2">
+                      <FileText className="h-4 w-4" />
+                      Todos
+                    </TabsTrigger>
+                  </TabsList>
+                </Tabs>
+              </CardHeader>
+              <CardContent>
+                {invoices && invoices.length > 0 ? (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Documento</TableHead>
+                        <TableHead>Cliente</TableHead>
+                        <TableHead>Vencimento</TableHead>
+                        <TableHead className="text-right">Valor</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Cobrança</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {invoices.map((invoice) => (
+                        <TableRow key={invoice.id}>
+                          <TableCell>
+                            <div>
+                              <span className="font-mono">{invoice.document_number}</span>
+                              <p className="text-xs text-muted-foreground uppercase">{invoice.document_type}</p>
+                            </div>
+                          </TableCell>
+                          <TableCell>{invoice.counterparty?.name}</TableCell>
+                          <TableCell>{format(new Date(invoice.due_date), 'dd/MM/yyyy')}</TableCell>
+                          <TableCell className="text-right font-medium">
+                            {formatCurrency(invoice.net_amount)}
+                          </TableCell>
+                          <TableCell>{getStatusBadge(invoice.status)}</TableCell>
+                          <TableCell>{getCollectionBadge(invoice.collection_status)}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                ) : (
+                  <div className="text-center py-8 text-muted-foreground">
+                    Nenhuma fatura encontrada
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Baixa Manual Tab */}
+          <TabsContent value="baixa-manual">
+            <BaixaManualAR />
+          </TabsContent>
+
+          {/* Baixa Automática Tab */}
+          <TabsContent value="baixa-automatica">
+            <BaixaAutomaticaAR />
+          </TabsContent>
+
+          {/* Histórico Tab */}
+          <TabsContent value="historico">
+            <Card>
+              <CardHeader>
+                <CardTitle>Histórico de Baixas</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-8 text-muted-foreground">
+                  <History className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p>Consulte o histórico completo em</p>
+                  <Button variant="link" asChild>
+                    <a href="/tesouraria/historico-baixas">Tesouraria → Histórico de Baixas</a>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
     </MainLayout>
   );
