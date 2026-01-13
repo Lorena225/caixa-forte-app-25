@@ -11721,6 +11721,10 @@ export type Database = {
           retry_after_seconds: number
         }[]
       }
+      check_rbac_action: {
+        Args: { p_action: string; p_company_id: string; p_user_id: string }
+        Returns: boolean
+      }
       check_sod_violation: {
         Args: { p_action: string; p_company_id: string; p_user_id: string }
         Returns: {
