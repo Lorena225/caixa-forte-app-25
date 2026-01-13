@@ -44,6 +44,8 @@ import ContabilidadeBalanco from "./pages/contabilidade/Balanco";
 import ContabilidadeDREContabil from "./pages/contabilidade/DREContabil";
 import ContabilidadeFechamento from "./pages/contabilidade/Fechamento";
 import FiscalIndex from "./pages/fiscal/Index";
+import FiscalDocumentos from "./pages/fiscal/Documentos";
+import FiscalSPED from "./pages/fiscal/SPED";
 import TesourariaIndex from "./pages/tesouraria/Index";
 import TesourariaPosicao from "./pages/tesouraria/Posicao";
 import TesourariaConciliacao from "./pages/tesouraria/Conciliacao";
@@ -58,6 +60,7 @@ import CashFlowDashboard from "./pages/dashboards/CashFlowDashboard";
 import ARDashboard from "./pages/dashboards/ARDashboard";
 import APDashboard from "./pages/dashboards/APDashboard";
 import BudgetDashboard from "./pages/dashboards/BudgetDashboard";
+import BudgetByAccountDashboard from "./pages/dashboards/BudgetByAccountDashboard";
 // Reports
 import ReportsIndex from "./pages/reports/Index";
 import DrilldownPage from "./pages/reports/DrilldownPage";
@@ -113,6 +116,8 @@ const App = () => (
             <Route path="/contabilidade/dre" element={<ContabilidadeDREContabil />} />
             <Route path="/contabilidade/fechamento" element={<ContabilidadeFechamento />} />
             <Route path="/fiscal" element={<FiscalIndex />} />
+            <Route path="/fiscal/documentos" element={<FiscalDocumentos />} />
+            <Route path="/fiscal/sped" element={<FiscalSPED />} />
             <Route path="/tesouraria" element={<TesourariaIndex />} />
             <Route path="/tesouraria/posicao" element={<TesourariaPosicao />} />
             <Route path="/tesouraria/conciliacao" element={<TesourariaConciliacao />} />
@@ -127,6 +132,7 @@ const App = () => (
             <Route path="/dashboards/ar" element={<ARDashboard />} />
             <Route path="/dashboards/ap" element={<APDashboard />} />
             <Route path="/dashboards/budget" element={<BudgetDashboard />} />
+            <Route path="/dashboards/budget-accounts" element={<BudgetByAccountDashboard />} />
             {/* Reports */}
             <Route path="/reports" element={<ReportsIndex />} />
             <Route path="/reports/drilldown" element={<DrilldownPage />} />
