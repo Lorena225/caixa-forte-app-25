@@ -97,7 +97,8 @@ export function useUserAmountLimits() {
         .from("user_amount_limits")
         .select("*")
         .eq("company_id", currentCompany.id)
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: false })
+        .limit(200);
       if (error) throw error;
       return data as UserAmountLimit[];
     },

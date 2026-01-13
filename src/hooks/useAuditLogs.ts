@@ -71,7 +71,8 @@ export function useAuditLogTables() {
       const { data, error } = await supabase
         .from("audit_logs")
         .select("table_name")
-        .eq("company_id", companyId!);
+        .eq("company_id", companyId!)
+        .limit(1000);
       
       if (error) throw error;
       

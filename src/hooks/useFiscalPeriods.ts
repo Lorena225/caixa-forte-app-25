@@ -40,7 +40,8 @@ export function useFiscalPeriods() {
         .select("*")
         .eq("company_id", currentCompany.id)
         .order("period_year", { ascending: false })
-        .order("period_month", { ascending: false });
+        .order("period_month", { ascending: false })
+        .limit(120);
       if (error) throw error;
       return data as FiscalPeriod[];
     },
