@@ -1,26 +1,19 @@
 import { ReactNode } from 'react';
-import { NavigationProvider, useNavigation } from '@/contexts/NavigationContext';
 import { SidebarPro } from '@/components/navigation/SidebarPro';
 import { CommandPalette } from '@/components/navigation/CommandPalette';
-import { cn } from '@/lib/utils';
+import { NavigationProvider } from '@/contexts/NavigationContext';
+import { useSidebar } from '@/components/ui/sidebar';
 
 interface MainLayoutProps {
   children: ReactNode;
 }
 
-function MainLayoutContent({ children }: MainLayoutProps) {
-  const { collapsed } = useNavigation();
-
+function MainLayoutInner({ children }: MainLayoutProps) {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex">
       <SidebarPro />
       <CommandPalette />
-      <main
-        className={cn(
-          'min-h-screen p-6 transition-all duration-300',
-          collapsed ? 'ml-16' : 'ml-64'
-        )}
-      >
+      <main className="flex-1 min-h-screen p-6 transition-all duration-300">
         {children}
       </main>
     </div>
@@ -30,7 +23,7 @@ function MainLayoutContent({ children }: MainLayoutProps) {
 export function MainLayout({ children }: MainLayoutProps) {
   return (
     <NavigationProvider>
-      <MainLayoutContent>{children}</MainLayoutContent>
+      <MainLayoutInner>{children}</MainLayoutInner>
     </NavigationProvider>
   );
 }
