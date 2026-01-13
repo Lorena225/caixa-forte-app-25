@@ -9968,6 +9968,74 @@ export type Database = {
           },
         ]
       }
+      v_jobs_status: {
+        Row: {
+          attempts: number | null
+          company_id: string | null
+          computed_status: string | null
+          created_at: string | null
+          dlq_id: string | null
+          duration_seconds: number | null
+          error_json: Json | null
+          finished_at: string | null
+          id: string | null
+          idempotency_key: string | null
+          job_type: string | null
+          max_attempts: number | null
+          payload_json: Json | null
+          result_json: Json | null
+          scheduled_at: string | null
+          started_at: string | null
+          status: string | null
+        }
+        Insert: {
+          attempts?: number | null
+          company_id?: string | null
+          computed_status?: never
+          created_at?: string | null
+          dlq_id?: string | null
+          duration_seconds?: never
+          error_json?: Json | null
+          finished_at?: string | null
+          id?: string | null
+          idempotency_key?: string | null
+          job_type?: string | null
+          max_attempts?: number | null
+          payload_json?: Json | null
+          result_json?: Json | null
+          scheduled_at?: string | null
+          started_at?: string | null
+          status?: string | null
+        }
+        Update: {
+          attempts?: number | null
+          company_id?: string | null
+          computed_status?: never
+          created_at?: string | null
+          dlq_id?: string | null
+          duration_seconds?: never
+          error_json?: Json | null
+          finished_at?: string | null
+          id?: string | null
+          idempotency_key?: string | null
+          job_type?: string | null
+          max_attempts?: number | null
+          payload_json?: Json | null
+          result_json?: Json | null
+          scheduled_at?: string | null
+          started_at?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "jobs_queue_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       v_ledger: {
         Row: {
           account_code: string | null
@@ -10117,6 +10185,25 @@ export type Database = {
           },
         ]
       }
+      v_system_metrics: {
+        Row: {
+          avg_job_duration_1h: number | null
+          company_id: string | null
+          jobs_completed_1h: number | null
+          jobs_failed_1h: number | null
+          jobs_pending: number | null
+          jobs_running: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "jobs_queue_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       v_top_creditors: {
         Row: {
           company_id: string | null
@@ -10215,10 +10302,31 @@ export type Database = {
       }
     }
     Functions: {
+      check_sod_violation: {
+        Args: { p_action: string; p_company_id: string; p_user_id: string }
+        Returns: {
+          conflicting_actions: string[]
+          is_violation: boolean
+          violation_reason: string
+        }[]
+      }
+      cleanup_old_data: {
+        Args: {
+          p_company_id: string
+          p_days_audit?: number
+          p_days_logs?: number
+        }
+        Returns: Json
+      }
       get_user_role: {
         Args: { p_company_id: string }
         Returns: Database["public"]["Enums"]["user_role"]
       }
+      has_any_role: {
+        Args: { _roles: string[]; _user_id: string }
+        Returns: boolean
+      }
+      has_role: { Args: { _role: string; _user_id: string }; Returns: boolean }
       refresh_dashboard_cache: { Args: never; Returns: undefined }
       user_can_write: { Args: { p_company_id: string }; Returns: boolean }
       user_has_company_access: {

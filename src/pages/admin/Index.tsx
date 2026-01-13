@@ -12,6 +12,8 @@ import {
   FileCheck,
   Key,
   FileText,
+  Activity,
+  ClipboardList,
 } from "lucide-react";
 
 const adminModules = [
@@ -86,6 +88,18 @@ const adminModules = [
     description: "Limites de transação por usuário",
     icon: Key,
     href: "/admin/limites",
+  },
+  {
+    title: "Monitor de Jobs",
+    description: "Status de tarefas assíncronas",
+    icon: Activity,
+    href: "/admin/jobs",
+  },
+  {
+    title: "Logs de Auditoria",
+    description: "Histórico de alterações",
+    icon: ClipboardList,
+    href: "/admin/auditoria",
   },
 ];
 
