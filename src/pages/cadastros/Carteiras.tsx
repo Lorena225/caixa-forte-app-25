@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWallets } from '@/hooks/useCompanyData';
-import { useBanksReference } from '@/hooks/useBanksReference';
+import { useBanksReference, type BankReference } from '@/hooks/useBanksReference';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { PageHeader } from '@/components/common/PageHeader';
 import { DataTable } from '@/components/common/DataTable';
@@ -16,6 +16,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from '@/components/ui/dialog';
 import {
   Select,
@@ -24,26 +25,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from '@/components/ui/command';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 import { formatCurrency } from '@/lib/formatters';
-import { Pencil, Trash2, Wallet, CreditCard, Banknote, Check, ChevronsUpDown } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { BankSelect } from '@/components/cadastros/BankSelect';
+import { Pencil, Trash2, Wallet, CreditCard, Banknote, Plus } from 'lucide-react';
 
-const typeLabels: Record<string, { label: string; icon: any; color: string }> = {
+const typeLabels: Record<string, { label: string; icon: React.ElementType; color: string }> = {
   caixa: { label: 'Caixa', icon: Banknote, color: 'bg-success/10 text-success' },
   banco: { label: 'Banco', icon: Wallet, color: 'bg-primary/10 text-primary' },
   cartao: { label: 'Cartão', icon: CreditCard, color: 'bg-warning/10 text-warning' },
@@ -57,7 +45,7 @@ export default function Carteiras() {
   const { toast } = useToast();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<any>(null);
-  const [bankOpen, setBankOpen] = useState(false);
+  const [selectedBank, setSelectedBank] = useState<BankReference | null>(null);
   const [formData, setFormData] = useState({
     name: '',
     type: 'banco' as 'caixa' | 'banco' | 'cartao',
@@ -65,22 +53,24 @@ export default function Carteiras() {
     closing_day: '',
     due_day: '',
     is_active: true,
-    bank_id: '' as string,
   });
 
-  const selectedBank = banks.find((b) => b.id === formData.bank_id);
+  // Mapa de bancos por ID para lookup rápido
+  const banksMap = useMemo(() => {
+    return new Map(banks.map(b => [b.id, b]));
+  }, [banks]);
 
   const saveMutation = useMutation({
-    mutationFn: async (data: typeof formData) => {
+    mutationFn: async (data: { formData: typeof formData; bank: BankReference | null }) => {
       const payload = {
-        name: data.name,
-        type: data.type,
-        opening_balance: data.opening_balance,
-        is_active: data.is_active,
+        name: data.formData.name,
+        type: data.formData.type,
+        opening_balance: data.formData.opening_balance,
+        is_active: data.formData.is_active,
         company_id: currentCompany?.id,
-        closing_day: data.closing_day ? parseInt(data.closing_day) : null,
-        due_day: data.due_day ? parseInt(data.due_day) : null,
-        bank_id: data.type === 'banco' && data.bank_id ? data.bank_id : null,
+        closing_day: data.formData.closing_day ? parseInt(data.formData.closing_day) : null,
+        due_day: data.formData.due_day ? parseInt(data.formData.due_day) : null,
+        bank_id: data.formData.type === 'banco' && data.bank ? data.bank.id : null,
       };
       if (editingItem) {
         const { error } = await supabase.from('wallets').update(payload).eq('id', editingItem.id);
@@ -117,7 +107,15 @@ export default function Carteiras() {
   });
 
   const resetForm = () => {
-    setFormData({ name: '', type: 'banco', opening_balance: 0, closing_day: '', due_day: '', is_active: true, bank_id: '' });
+    setFormData({ 
+      name: '', 
+      type: 'banco', 
+      opening_balance: 0, 
+      closing_day: '', 
+      due_day: '', 
+      is_active: true 
+    });
+    setSelectedBank(null);
   };
 
   const handleEdit = (item: any) => {
@@ -129,8 +127,14 @@ export default function Carteiras() {
       closing_day: item.closing_day?.toString() || '',
       due_day: item.due_day?.toString() || '',
       is_active: item.is_active,
-      bank_id: item.bank_id || '',
     });
+    // Buscar banco se existir
+    if (item.bank_id) {
+      const bank = banksMap.get(item.bank_id);
+      setSelectedBank(bank || null);
+    } else {
+      setSelectedBank(null);
+    }
     setDialogOpen(true);
   };
 
@@ -140,12 +144,24 @@ export default function Carteiras() {
     setDialogOpen(true);
   };
 
+  const handleDelete = (id: string) => {
+    if (confirm('Tem certeza que deseja excluir esta carteira?')) {
+      deleteMutation.mutate(id);
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    saveMutation.mutate({ formData, bank: selectedBank });
+  };
+
   const columns = [
     {
       key: 'type',
       header: 'Tipo',
       render: (item: any) => {
         const config = typeLabels[item.type];
+        if (!config) return item.type;
         const Icon = config.icon;
         return (
           <div className="flex items-center gap-2">
@@ -164,8 +180,14 @@ export default function Carteiras() {
       header: 'Banco',
       render: (item: any) => {
         if (item.type !== 'banco' || !item.bank_id) return '-';
-        const bank = banks.find((b) => b.id === item.bank_id);
-        return bank ? bank.display_name : '-';
+        const bank = banksMap.get(item.bank_id);
+        if (!bank) return '-';
+        return (
+          <span className="text-sm">
+            <span className="font-mono font-medium">{bank.compe_code}</span>
+            <span className="text-muted-foreground ml-1">– {bank.display_name.split(' - ')[1] || bank.name}</span>
+          </span>
+        );
       },
     },
     {
@@ -208,7 +230,7 @@ export default function Carteiras() {
           <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); handleEdit(item); }}>
             <Pencil className="h-4 w-4" />
           </Button>
-          <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); deleteMutation.mutate(item.id); }}>
+          <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); handleDelete(item.id); }}>
             <Trash2 className="h-4 w-4 text-destructive" />
           </Button>
         </div>
@@ -223,7 +245,11 @@ export default function Carteiras() {
         <PageHeader
           title="Contas e Cartões"
           description="Gerencie suas contas bancárias, caixa e cartões"
-          action={{ label: 'Nova Carteira', onClick: handleNew }}
+          action={{ 
+            label: 'Nova Carteira', 
+            onClick: handleNew,
+            icon: <Plus className="h-4 w-4" />
+          }}
         />
 
         <DataTable
@@ -234,19 +260,33 @@ export default function Carteiras() {
         />
 
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogContent>
+          <DialogContent className="max-w-lg">
             <DialogHeader>
               <DialogTitle>{editingItem ? 'Editar Carteira' : 'Nova Carteira'}</DialogTitle>
+              <DialogDescription>
+                Configure os dados da conta bancária, caixa ou cartão.
+              </DialogDescription>
             </DialogHeader>
-            <form onSubmit={(e) => { e.preventDefault(); saveMutation.mutate(formData); }} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>Nome</Label>
-                  <Input value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} placeholder="Conta Corrente" required />
+                  <Label>Nome *</Label>
+                  <Input 
+                    value={formData.name} 
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })} 
+                    placeholder="Conta Corrente" 
+                    required 
+                  />
                 </div>
                 <div className="space-y-2">
-                  <Label>Tipo</Label>
-                  <Select value={formData.type} onValueChange={(v) => setFormData({ ...formData, type: v as 'caixa' | 'banco' | 'cartao', bank_id: '' })}>
+                  <Label>Tipo *</Label>
+                  <Select 
+                    value={formData.type} 
+                    onValueChange={(v) => {
+                      setFormData({ ...formData, type: v as 'caixa' | 'banco' | 'cartao' });
+                      if (v !== 'banco') setSelectedBank(null);
+                    }}
+                  >
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
                       {Object.entries(typeLabels).map(([value, { label }]) => (
@@ -260,50 +300,14 @@ export default function Carteiras() {
               {formData.type === 'banco' && (
                 <div className="space-y-2">
                   <Label>Banco</Label>
-                  <Popover open={bankOpen} onOpenChange={setBankOpen}>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        role="combobox"
-                        aria-expanded={bankOpen}
-                        className="w-full justify-between font-normal"
-                      >
-                        {selectedBank ? selectedBank.display_name : 'Selecione o banco...'}
-                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-[400px] p-0" align="start">
-                      <Command>
-                        <CommandInput placeholder="Buscar banco..." />
-                        <CommandList>
-                          <CommandEmpty>Nenhum banco encontrado.</CommandEmpty>
-                          <CommandGroup>
-                            {banks.filter(b => b.is_active).map((bank) => (
-                              <CommandItem
-                                key={bank.id}
-                                value={bank.display_name}
-                                onSelect={() => {
-                                  setFormData({ ...formData, bank_id: bank.id });
-                                  setBankOpen(false);
-                                }}
-                              >
-                                <Check
-                                  className={cn(
-                                    "mr-2 h-4 w-4",
-                                    formData.bank_id === bank.id ? "opacity-100" : "opacity-0"
-                                  )}
-                                />
-                                {bank.display_name}
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
+                  <BankSelect
+                    value={selectedBank}
+                    onChange={setSelectedBank}
+                    placeholder="Selecione o banco"
+                  />
                   {selectedBank && (
                     <p className="text-xs text-muted-foreground">
-                      Código COMPE: {selectedBank.compe_code}
+                      Código COMPE: <span className="font-mono font-semibold">{selectedBank.compe_code}</span>
                     </p>
                   )}
                 </div>
@@ -347,13 +351,20 @@ export default function Carteiras() {
               )}
 
               <div className="flex items-center gap-2">
-                <Switch checked={formData.is_active} onCheckedChange={(v) => setFormData({ ...formData, is_active: v })} />
+                <Switch 
+                  checked={formData.is_active} 
+                  onCheckedChange={(v) => setFormData({ ...formData, is_active: v })} 
+                />
                 <Label>Ativa</Label>
               </div>
               
-              <div className="flex justify-end gap-2">
-                <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>Cancelar</Button>
-                <Button type="submit" disabled={saveMutation.isPending}>{saveMutation.isPending ? 'Salvando...' : 'Salvar'}</Button>
+              <div className="flex justify-end gap-2 pt-2 border-t">
+                <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
+                  Cancelar
+                </Button>
+                <Button type="submit" disabled={saveMutation.isPending}>
+                  {saveMutation.isPending ? 'Salvando...' : 'Salvar'}
+                </Button>
               </div>
             </form>
           </DialogContent>
