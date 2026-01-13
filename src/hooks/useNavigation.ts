@@ -75,7 +75,6 @@ export function useUserNavPreferences() {
         sidebar_collapsed: false,
         collapsed_groups: [],
         favorite_keys: [],
-        recent_keys: [],
         active_profile_key: 'PROFILE_ADMIN',
       } as UserNavPreferences;
     },
@@ -138,12 +137,6 @@ export function useUserNavPreferences() {
     updatePreferences.mutate({ favorite_keys: newFavorites });
   };
 
-  const addRecent = (itemKey: string) => {
-    const recents = query.data?.recent_keys || [];
-    const newRecents = [itemKey, ...recents.filter(k => k !== itemKey)].slice(0, 5);
-    updatePreferences.mutate({ recent_keys: newRecents });
-  };
-
   const setActiveProfile = (profileKey: string) => {
     updatePreferences.mutate({ active_profile_key: profileKey });
   };
@@ -154,7 +147,6 @@ export function useUserNavPreferences() {
     toggleSidebar,
     toggleGroup,
     toggleFavorite,
-    addRecent,
     setActiveProfile,
     updatePreferences: updatePreferences.mutate,
   };
@@ -178,14 +170,13 @@ export function useResolvedNavigation() {
   
   // If still loading or no items, return empty
   if (itemsLoading || !items || items.length === 0) {
-    return { groups: [], favorites: [], recents: [], isLoading: true };
+    return { groups: [], favorites: [], isLoading: true };
   }
   
   // Default to showing all items if no profile
   const labelOverrides = activeProfile?.label_overrides || {};
   const visibleKeys = activeProfile?.visible_keys_ordered || [];
   const favoriteKeys = preferences?.favorite_keys || [];
-  const recentKeys = preferences?.recent_keys || [];
   const isAdminProfile = !activeProfile || activeProfile.profile_key === 'PROFILE_ADMIN';
   // Build item map with resolved labels
   const itemMap = new Map(items.map(item => [
@@ -224,7 +215,6 @@ export function useResolvedNavigation() {
         route: item.route || '',
         icon: item.icon,
         isFavorite: favoriteKeys.includes(item.key),
-        isRecent: recentKeys.includes(item.key),
         children: visibleItems
           .filter(child => child.parent_key === item.key)
           .map(child => ({
@@ -233,7 +223,6 @@ export function useResolvedNavigation() {
             route: child.route || '',
             icon: child.icon,
             isFavorite: favoriteKeys.includes(child.key),
-            isRecent: recentKeys.includes(child.key),
           })),
       })),
   })).filter(group => group.items.length > 0);
@@ -248,23 +237,7 @@ export function useResolvedNavigation() {
       route: item!.route || '',
       icon: item!.icon,
       isFavorite: true,
-      isRecent: false,
     }));
   
-  // Build recents list
-  const recents = recentKeys
-    .map(key => itemMap.get(key))
-    .filter(Boolean)
-    .filter(item => !favoriteKeys.includes(item!.key))
-    .slice(0, 3)
-    .map(item => ({
-      key: item!.key,
-      label: labelOverrides[item!.key] || item!.label_default,
-      route: item!.route || '',
-      icon: item!.icon,
-      isFavorite: false,
-      isRecent: true,
-    }));
-  
-  return { groups, favorites, recents, isLoading: false };
+  return { groups, favorites, isLoading: false };
 }
