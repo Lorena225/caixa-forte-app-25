@@ -127,7 +127,9 @@ const App = () => (
             <Route path="/ar" element={<ARIndex />} />
             {/* Dashboards */}
             <Route path="/dashboards" element={<DashboardsIndex />} />
+            <Route path="/dashboards/executivo" element={<ExecutiveDashboard />} />
             <Route path="/dashboards/executive" element={<ExecutiveDashboard />} />
+            <Route path="/dashboards/fluxo-caixa" element={<CashFlowDashboard />} />
             <Route path="/dashboards/cash" element={<CashFlowDashboard />} />
             <Route path="/dashboards/ar" element={<ARDashboard />} />
             <Route path="/dashboards/ap" element={<APDashboard />} />
@@ -138,12 +140,16 @@ const App = () => (
             <Route path="/reports/drilldown" element={<DrilldownPage />} />
             {/* Autopilot */}
             <Route path="/autopilot/whatsapp" element={<WhatsAppConfig />} />
+            <Route path="/autopilot/whatsapp-config" element={<WhatsAppConfig />} />
             <Route path="/autopilot/regras" element={<AutomationRules />} />
+            <Route path="/autopilot/rules" element={<AutomationRules />} />
             <Route path="/autopilot/pendencias" element={<PendingCenter />} />
+            <Route path="/autopilot/pending" element={<PendingCenter />} />
             <Route path="/autopilot/inbox" element={<Inbox />} />
             {/* Integrations */}
             <Route path="/integracoes" element={<IntegracoesIndex />} />
             <Route path="/integracoes/ia" element={<IAConfig />} />
+            <Route path="/integracoes/ia-config" element={<IAConfig />} />
             <Route path="/integracoes/ia/testar" element={<IATest />} />
             <Route path="/integracoes/connections" element={<IntegracoesConnections />} />
             <Route path="/integracoes/jobs" element={<IntegracoesJobs />} />
