@@ -1,10 +1,10 @@
 import { memo } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { useNavigation } from '@/contexts/NavigationContext';
 import { 
   ChevronLeft, ChevronRight, ChevronDown, ChevronUp, 
-  Star, Clock, Command,
+  Star, Command,
   LayoutDashboard, ReceiptText, ArrowDownToLine, ArrowUpFromLine,
   Wallet, TrendingUp, Target, CreditCard, BookOpen, Landmark,
   FileCheck2, BarChart3, Gauge, LineChart, ChartColumn, PieChart,
@@ -38,7 +38,6 @@ export const SidebarPro = memo(function SidebarPro() {
     groups,
     toggleGroup,
     favorites,
-    recents,
     toggleFavorite,
     navigateTo,
     setCommandPaletteOpen,
@@ -115,29 +114,6 @@ export const SidebarPro = memo(function SidebarPro() {
                       onNavigate={() => navigateTo(item.route, item.key)}
                       onToggleFavorite={() => toggleFavorite(item.key)}
                       showFavorite
-                    />
-                  ))}
-                </div>
-                <Separator className="my-3" />
-              </div>
-            )}
-
-            {/* Recents Section */}
-            {recents.length > 0 && !collapsed && (
-              <div className="mb-4">
-                <div className="mb-2 flex items-center gap-2 text-xs font-medium text-muted-foreground">
-                  <Clock className="h-3 w-3" />
-                  Recentes
-                </div>
-                <div className="space-y-1">
-                  {recents.map((item) => (
-                    <SidebarItem
-                      key={item.key}
-                      item={item}
-                      collapsed={collapsed}
-                      isActive={location.pathname === item.route}
-                      onNavigate={() => navigateTo(item.route, item.key)}
-                      onToggleFavorite={() => toggleFavorite(item.key)}
                     />
                   ))}
                 </div>
