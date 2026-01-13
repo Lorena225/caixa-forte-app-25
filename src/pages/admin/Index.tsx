@@ -14,9 +14,18 @@ import {
   FileText,
   Activity,
   ClipboardList,
+  Sparkles,
+  Gauge,
 } from "lucide-react";
 
 const adminModules = [
+  {
+    title: "Nível do Sistema",
+    description: "Financeiro, Contábil e/ou Fiscal",
+    icon: Gauge,
+    href: "/admin/nivel-sistema",
+    highlight: true,
+  },
   {
     title: "Branding",
     description: "Logo, cores e identidade visual da empresa",
@@ -115,10 +124,16 @@ export default function AdminIndex() {
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {adminModules.map((module) => (
             <Link key={module.href} to={module.href}>
-              <Card className="h-full transition-all hover:shadow-md hover:border-primary/50 cursor-pointer group">
+              <Card className={`h-full transition-all hover:shadow-md hover:border-primary/50 cursor-pointer group ${
+                (module as typeof adminModules[0] & { highlight?: boolean }).highlight ? 'border-primary bg-primary/5' : ''
+              }`}>
                 <CardHeader className="pb-3">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                    <div className={`p-2 rounded-lg transition-colors ${
+                      (module as typeof adminModules[0] & { highlight?: boolean }).highlight 
+                        ? 'bg-primary text-primary-foreground' 
+                        : 'bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground'
+                    }`}>
                       <module.icon className="h-5 w-5" />
                     </div>
                     <CardTitle className="text-base">{module.title}</CardTitle>

@@ -3433,6 +3433,195 @@ export type Database = {
           },
         ]
       }
+      company_feature_flags: {
+        Row: {
+          company_id: string
+          config_json: Json | null
+          created_at: string
+          enabled: boolean
+          feature_key: string
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          company_id: string
+          config_json?: Json | null
+          created_at?: string
+          enabled?: boolean
+          feature_key: string
+          id?: string
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string
+          config_json?: Json | null
+          created_at?: string
+          enabled?: boolean
+          feature_key?: string
+          id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_feature_flags_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_feature_flags_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      company_module_templates: {
+        Row: {
+          created_at: string
+          description: string | null
+          flags_json: Json
+          id: string
+          nav_profile_key: string | null
+          template_key: Database["public"]["Enums"]["system_tier"]
+          template_version: number
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          flags_json: Json
+          id?: string
+          nav_profile_key?: string | null
+          template_key: Database["public"]["Enums"]["system_tier"]
+          template_version?: number
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          flags_json?: Json
+          id?: string
+          nav_profile_key?: string | null
+          template_key?: Database["public"]["Enums"]["system_tier"]
+          template_version?: number
+        }
+        Relationships: []
+      }
+      company_tier_history: {
+        Row: {
+          accounting_start_date: string | null
+          change_reason: string | null
+          changed_by: string | null
+          company_id: string
+          created_at: string
+          fiscal_start_date: string | null
+          from_tier: Database["public"]["Enums"]["system_tier"] | null
+          id: string
+          job_id: string | null
+          retroactive_processing: boolean | null
+          to_tier: Database["public"]["Enums"]["system_tier"]
+        }
+        Insert: {
+          accounting_start_date?: string | null
+          change_reason?: string | null
+          changed_by?: string | null
+          company_id: string
+          created_at?: string
+          fiscal_start_date?: string | null
+          from_tier?: Database["public"]["Enums"]["system_tier"] | null
+          id?: string
+          job_id?: string | null
+          retroactive_processing?: boolean | null
+          to_tier: Database["public"]["Enums"]["system_tier"]
+        }
+        Update: {
+          accounting_start_date?: string | null
+          change_reason?: string | null
+          changed_by?: string | null
+          company_id?: string
+          created_at?: string
+          fiscal_start_date?: string | null
+          from_tier?: Database["public"]["Enums"]["system_tier"] | null
+          id?: string
+          job_id?: string | null
+          retroactive_processing?: boolean | null
+          to_tier?: Database["public"]["Enums"]["system_tier"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_tier_history_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_tier_history_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      company_tier_settings: {
+        Row: {
+          accounting_enabled: boolean | null
+          accounting_start_date: string | null
+          company_id: string
+          created_at: string
+          fiscal_enabled: boolean | null
+          fiscal_start_date: string | null
+          previous_tier: Database["public"]["Enums"]["system_tier"] | null
+          system_tier: Database["public"]["Enums"]["system_tier"]
+          tier_changed_at: string | null
+          tier_changed_by: string | null
+          updated_at: string
+        }
+        Insert: {
+          accounting_enabled?: boolean | null
+          accounting_start_date?: string | null
+          company_id: string
+          created_at?: string
+          fiscal_enabled?: boolean | null
+          fiscal_start_date?: string | null
+          previous_tier?: Database["public"]["Enums"]["system_tier"] | null
+          system_tier?: Database["public"]["Enums"]["system_tier"]
+          tier_changed_at?: string | null
+          tier_changed_by?: string | null
+          updated_at?: string
+        }
+        Update: {
+          accounting_enabled?: boolean | null
+          accounting_start_date?: string | null
+          company_id?: string
+          created_at?: string
+          fiscal_enabled?: boolean | null
+          fiscal_start_date?: string | null
+          previous_tier?: Database["public"]["Enums"]["system_tier"] | null
+          system_tier?: Database["public"]["Enums"]["system_tier"]
+          tier_changed_at?: string | null
+          tier_changed_by?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_tier_settings_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_tier_settings_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
       company_users: {
         Row: {
           company_id: string
@@ -12910,6 +13099,15 @@ export type Database = {
       }
     }
     Functions: {
+      apply_tier_template: {
+        Args: {
+          p_accounting_start_date?: string
+          p_company_id: string
+          p_fiscal_start_date?: string
+          p_tier: Database["public"]["Enums"]["system_tier"]
+        }
+        Returns: undefined
+      }
       audit_sensitive_action: {
         Args: {
           p_action: string
@@ -12970,6 +13168,10 @@ export type Database = {
         Args: { p_days_login_attempts?: number; p_days_rate_limit?: number }
         Returns: Json
       }
+      get_company_tier: {
+        Args: { p_company_id: string }
+        Returns: Database["public"]["Enums"]["system_tier"]
+      }
       get_user_role: {
         Args: { p_company_id: string }
         Returns: Database["public"]["Enums"]["user_role"]
@@ -12979,6 +13181,10 @@ export type Database = {
         Returns: boolean
       }
       has_role: { Args: { _role: string; _user_id: string }; Returns: boolean }
+      is_feature_enabled: {
+        Args: { p_company_id: string; p_feature_key: string }
+        Returns: boolean
+      }
       record_login_attempt: {
         Args: {
           p_email: string
@@ -13064,6 +13270,10 @@ export type Database = {
       normal_balance: "debit" | "credit"
       posting_policy: "leaf_only" | "allows_posting_flag" | "leaf_or_flag"
       reconciliation_action: "mark_paid" | "create" | "ignore" | "pending"
+      system_tier:
+        | "FINANCEIRO_ESSENCIAL"
+        | "FINANCEIRO_CONTABIL"
+        | "FINANCEIRO_CONTABIL_FISCAL"
       transaction_direction: "entrada" | "saida"
       transaction_status: "rascunho" | "lancado" | "pago" | "cancelado"
       user_role: "admin" | "gestor" | "visualizador"
@@ -13258,6 +13468,11 @@ export const Constants = {
       normal_balance: ["debit", "credit"],
       posting_policy: ["leaf_only", "allows_posting_flag", "leaf_or_flag"],
       reconciliation_action: ["mark_paid", "create", "ignore", "pending"],
+      system_tier: [
+        "FINANCEIRO_ESSENCIAL",
+        "FINANCEIRO_CONTABIL",
+        "FINANCEIRO_CONTABIL_FISCAL",
+      ],
       transaction_direction: ["entrada", "saida"],
       transaction_status: ["rascunho", "lancado", "pago", "cancelado"],
       user_role: ["admin", "gestor", "visualizador"],
