@@ -34,6 +34,8 @@ export interface CompanyBankAccount {
   bank_id: string;
   branch_id: string | null;
   wallet_id: string | null;
+  agency_number: string;
+  agency_digit: string | null;
   account_number: string;
   account_digit: string | null;
   account_type: string;
