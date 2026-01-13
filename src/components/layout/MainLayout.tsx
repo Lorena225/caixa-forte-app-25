@@ -1,14 +1,12 @@
 import { ReactNode } from 'react';
 import { SidebarPro } from '@/components/navigation/SidebarPro';
 import { CommandPalette } from '@/components/navigation/CommandPalette';
-import { NavigationProvider } from '@/contexts/NavigationContext';
-import { useSidebar } from '@/components/ui/sidebar';
 
 interface MainLayoutProps {
   children: ReactNode;
 }
 
-function MainLayoutInner({ children }: MainLayoutProps) {
+export function MainLayout({ children }: MainLayoutProps) {
   return (
     <div className="min-h-screen bg-background flex">
       <SidebarPro />
@@ -17,13 +15,5 @@ function MainLayoutInner({ children }: MainLayoutProps) {
         {children}
       </main>
     </div>
-  );
-}
-
-export function MainLayout({ children }: MainLayoutProps) {
-  return (
-    <NavigationProvider>
-      <MainLayoutInner>{children}</MainLayoutInner>
-    </NavigationProvider>
   );
 }
