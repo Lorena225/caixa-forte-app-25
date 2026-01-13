@@ -3541,6 +3541,8 @@ export type Database = {
           account_digit: string | null
           account_number: string
           account_type: string
+          agency_digit: string | null
+          agency_number: string
           bank_id: string
           branch_id: string | null
           cnab_agreement: string | null
@@ -3562,6 +3564,8 @@ export type Database = {
           account_digit?: string | null
           account_number: string
           account_type?: string
+          agency_digit?: string | null
+          agency_number: string
           bank_id: string
           branch_id?: string | null
           cnab_agreement?: string | null
@@ -3583,6 +3587,8 @@ export type Database = {
           account_digit?: string | null
           account_number?: string
           account_type?: string
+          agency_digit?: string | null
+          agency_number?: string
           bank_id?: string
           branch_id?: string | null
           cnab_agreement?: string | null
