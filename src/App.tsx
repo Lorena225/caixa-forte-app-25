@@ -89,6 +89,7 @@ import AdminAuditLogs from "./pages/admin/AuditLogs";
 import AdminSecurityDashboard from "./pages/admin/SecurityDashboard";
 import AdminSystemHealth from "./pages/admin/SystemHealth";
 import AdminGoLiveChecklist from "./pages/admin/GoLiveChecklist";
+import AdminSystemTier from "./pages/admin/SystemTier";
 import TesourariaCNAB from "./pages/tesouraria/CNAB";
 import TesourariaBoletos from "./pages/tesouraria/Boletos";
 import TesourariaCards from "./pages/tesouraria/CardsManagement";
@@ -197,6 +198,8 @@ const App = () => (
               <Route path="/admin/health" element={<AdminSystemHealth />} />
               <Route path="/admin/go-live" element={<AdminGoLiveChecklist />} />
               <Route path="/admin/checklist" element={<AdminGoLiveChecklist />} />
+              <Route path="/admin/nivel-sistema" element={<AdminSystemTier />} />
+              <Route path="/admin/system-tier" element={<AdminSystemTier />} />
               <Route path="/tesouraria/cnab" element={<TesourariaCNAB />} />
               <Route path="/tesouraria/boletos" element={<TesourariaBoletos />} />
               <Route path="/tesouraria/cartoes" element={<TesourariaCards />} />
