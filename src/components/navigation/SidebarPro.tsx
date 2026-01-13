@@ -47,11 +47,12 @@ export const SidebarPro = memo(function SidebarPro() {
     setMobileMenuOpen,
   } = useNavigation();
 
-  // Close mobile menu on route change
+  // Close mobile menu on route change (only on mobile)
   useEffect(() => {
-    if (mobileMenuOpen) {
+    if (isMobile && mobileMenuOpen) {
       setMobileMenuOpen(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
 
   const sidebarContent = (
