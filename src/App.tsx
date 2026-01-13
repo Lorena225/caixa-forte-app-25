@@ -13,6 +13,9 @@ import PlanoContas from "./pages/cadastros/PlanoContas";
 import CentrosCusto from "./pages/cadastros/CentrosCusto";
 import ClientesFornecedores from "./pages/cadastros/ClientesFornecedores";
 import Carteiras from "./pages/cadastros/Carteiras";
+import BancosReferencia from "./pages/cadastros/BancosReferencia";
+import Agencias from "./pages/cadastros/Agencias";
+import ContasBancarias from "./pages/cadastros/ContasBancarias";
 import Dimensoes from "./pages/cadastros/Dimensoes";
 import ContasReceber from "./pages/ContasReceber";
 import ContasPagar from "./pages/ContasPagar";
@@ -203,6 +206,9 @@ const App = () => (
                 <Route path="/cadastros/clientes-fornecedores" element={<ClientesFornecedores />} />
                 <Route path="/cadastros/carteiras" element={<Carteiras />} />
                 <Route path="/cadastros/dimensoes" element={<Dimensoes />} />
+                <Route path="/cadastros/bancos" element={<BancosReferencia />} />
+                <Route path="/cadastros/agencias" element={<Agencias />} />
+                <Route path="/cadastros/contas-bancarias" element={<ContasBancarias />} />
                 
                 {/* ============ INTEGRAÇÕES ============ */}
                 <Route path="/integracoes" element={<IntegracoesIndex />} />

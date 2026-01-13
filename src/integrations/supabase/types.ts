@@ -1391,6 +1391,70 @@ export type Database = {
           },
         ]
       }
+      bank_requests: {
+        Row: {
+          admin_notes: string | null
+          approved_bank_id: string | null
+          cnpj_ispb: string | null
+          company_id: string
+          created_at: string
+          id: string
+          requested_by_user_id: string
+          requested_name: string
+          status: string
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          approved_bank_id?: string | null
+          cnpj_ispb?: string | null
+          company_id: string
+          created_at?: string
+          id?: string
+          requested_by_user_id: string
+          requested_name: string
+          status?: string
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          approved_bank_id?: string | null
+          cnpj_ispb?: string | null
+          company_id?: string
+          created_at?: string
+          id?: string
+          requested_by_user_id?: string
+          requested_name?: string
+          status?: string
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bank_requests_approved_bank_id_fkey"
+            columns: ["approved_bank_id"]
+            isOneToOne: false
+            referencedRelation: "banks_reference"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bank_requests_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bank_requests_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
       bank_statement_imports: {
         Row: {
           closing_balance: number | null
@@ -1607,6 +1671,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      banks_reference: {
+        Row: {
+          bank_type: string
+          compe_code: string
+          created_at: string
+          display_name: string
+          id: string
+          is_active: boolean
+          ispb: string | null
+          name: string
+          source: string
+          updated_at: string
+        }
+        Insert: {
+          bank_type?: string
+          compe_code: string
+          created_at?: string
+          display_name: string
+          id?: string
+          is_active?: boolean
+          ispb?: string | null
+          name: string
+          source?: string
+          updated_at?: string
+        }
+        Update: {
+          bank_type?: string
+          compe_code?: string
+          created_at?: string
+          display_name?: string
+          id?: string
+          is_active?: boolean
+          ispb?: string | null
+          name?: string
+          source?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       boleto_events: {
         Row: {
@@ -3426,6 +3529,173 @@ export type Database = {
           },
           {
             foreignKeyName: "company_ai_keys_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      company_bank_accounts: {
+        Row: {
+          account_digit: string | null
+          account_number: string
+          account_type: string
+          bank_id: string
+          branch_id: string | null
+          cnab_agreement: string | null
+          cnab_layout: string | null
+          cnab_wallet: string | null
+          company_id: string
+          created_at: string
+          holder_document: string | null
+          holder_name: string | null
+          id: string
+          is_active: boolean
+          is_default_payments: boolean
+          is_default_receipts: boolean
+          nickname: string | null
+          updated_at: string
+          wallet_id: string | null
+        }
+        Insert: {
+          account_digit?: string | null
+          account_number: string
+          account_type?: string
+          bank_id: string
+          branch_id?: string | null
+          cnab_agreement?: string | null
+          cnab_layout?: string | null
+          cnab_wallet?: string | null
+          company_id: string
+          created_at?: string
+          holder_document?: string | null
+          holder_name?: string | null
+          id?: string
+          is_active?: boolean
+          is_default_payments?: boolean
+          is_default_receipts?: boolean
+          nickname?: string | null
+          updated_at?: string
+          wallet_id?: string | null
+        }
+        Update: {
+          account_digit?: string | null
+          account_number?: string
+          account_type?: string
+          bank_id?: string
+          branch_id?: string | null
+          cnab_agreement?: string | null
+          cnab_layout?: string | null
+          cnab_wallet?: string | null
+          company_id?: string
+          created_at?: string
+          holder_document?: string | null
+          holder_name?: string | null
+          id?: string
+          is_active?: boolean
+          is_default_payments?: boolean
+          is_default_receipts?: boolean
+          nickname?: string | null
+          updated_at?: string
+          wallet_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_bank_accounts_bank_id_fkey"
+            columns: ["bank_id"]
+            isOneToOne: false
+            referencedRelation: "banks_reference"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_bank_accounts_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "company_bank_branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_bank_accounts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_bank_accounts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "company_bank_accounts_wallet_id_fkey"
+            columns: ["wallet_id"]
+            isOneToOne: false
+            referencedRelation: "v_cash_position_daily"
+            referencedColumns: ["wallet_id"]
+          },
+          {
+            foreignKeyName: "company_bank_accounts_wallet_id_fkey"
+            columns: ["wallet_id"]
+            isOneToOne: false
+            referencedRelation: "wallets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      company_bank_branches: {
+        Row: {
+          agency_digit: string | null
+          agency_name: string | null
+          agency_number: string
+          bank_id: string
+          company_id: string
+          created_at: string
+          id: string
+          is_active: boolean
+          updated_at: string
+        }
+        Insert: {
+          agency_digit?: string | null
+          agency_name?: string | null
+          agency_number: string
+          bank_id: string
+          company_id: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          updated_at?: string
+        }
+        Update: {
+          agency_digit?: string | null
+          agency_name?: string | null
+          agency_number?: string
+          bank_id?: string
+          company_id?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_bank_branches_bank_id_fkey"
+            columns: ["bank_id"]
+            isOneToOne: false
+            referencedRelation: "banks_reference"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_bank_branches_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_bank_branches_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "v_security_status"
