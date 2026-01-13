@@ -6341,6 +6341,142 @@ export type Database = {
           },
         ]
       }
+      navigation_audit_log: {
+        Row: {
+          action: string
+          company_id: string
+          created_at: string | null
+          entity_id: string | null
+          entity_type: string
+          id: string
+          new_value: Json | null
+          old_value: Json | null
+          user_id: string
+        }
+        Insert: {
+          action: string
+          company_id: string
+          created_at?: string | null
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          new_value?: Json | null
+          old_value?: Json | null
+          user_id: string
+        }
+        Update: {
+          action?: string
+          company_id?: string
+          created_at?: string | null
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          new_value?: Json | null
+          old_value?: Json | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "navigation_audit_log_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      navigation_items: {
+        Row: {
+          created_at: string | null
+          feature_flag_key: string | null
+          hidden_by_default: boolean | null
+          icon: string
+          id: string
+          key: string
+          label_default: string
+          parent_key: string | null
+          permission_key: string | null
+          route: string | null
+          sort_order: number
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          feature_flag_key?: string | null
+          hidden_by_default?: boolean | null
+          icon: string
+          id?: string
+          key: string
+          label_default: string
+          parent_key?: string | null
+          permission_key?: string | null
+          route?: string | null
+          sort_order?: number
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          feature_flag_key?: string | null
+          hidden_by_default?: boolean | null
+          icon?: string
+          id?: string
+          key?: string
+          label_default?: string
+          parent_key?: string | null
+          permission_key?: string | null
+          route?: string | null
+          sort_order?: number
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "navigation_items_parent_key_fkey"
+            columns: ["parent_key"]
+            isOneToOne: false
+            referencedRelation: "navigation_items"
+            referencedColumns: ["key"]
+          },
+        ]
+      }
+      navigation_profiles: {
+        Row: {
+          created_at: string | null
+          dashboard_layout: Json
+          default_route_key: string
+          id: string
+          label_overrides: Json
+          name: string
+          profile_key: string
+          quick_actions: Json
+          updated_at: string | null
+          visible_keys_ordered: string[]
+        }
+        Insert: {
+          created_at?: string | null
+          dashboard_layout?: Json
+          default_route_key: string
+          id?: string
+          label_overrides?: Json
+          name: string
+          profile_key: string
+          quick_actions?: Json
+          updated_at?: string | null
+          visible_keys_ordered?: string[]
+        }
+        Update: {
+          created_at?: string | null
+          dashboard_layout?: Json
+          default_route_key?: string
+          id?: string
+          label_overrides?: Json
+          name?: string
+          profile_key?: string
+          quick_actions?: Json
+          updated_at?: string | null
+          visible_keys_ordered?: string[]
+        }
+        Relationships: []
+      }
       payment_methods: {
         Row: {
           company_id: string
@@ -8440,6 +8576,53 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "user_limits_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_nav_preferences: {
+        Row: {
+          active_profile_key: string | null
+          collapsed_groups: string[] | null
+          company_id: string
+          created_at: string | null
+          favorite_keys: string[] | null
+          id: string
+          recent_keys: string[] | null
+          sidebar_collapsed: boolean | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          active_profile_key?: string | null
+          collapsed_groups?: string[] | null
+          company_id: string
+          created_at?: string | null
+          favorite_keys?: string[] | null
+          id?: string
+          recent_keys?: string[] | null
+          sidebar_collapsed?: boolean | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          active_profile_key?: string | null
+          collapsed_groups?: string[] | null
+          company_id?: string
+          created_at?: string | null
+          favorite_keys?: string[] | null
+          id?: string
+          recent_keys?: string[] | null
+          sidebar_collapsed?: boolean | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_nav_preferences_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
