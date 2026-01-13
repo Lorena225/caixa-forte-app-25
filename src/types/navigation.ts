@@ -45,7 +45,6 @@ export interface UserNavPreferences {
   sidebar_collapsed: boolean;
   collapsed_groups: string[];
   favorite_keys: string[];
-  recent_keys: string[];
   active_profile_key: string;
 }
 
@@ -63,7 +62,6 @@ export interface NavigationMenuItem {
   route: string;
   icon: string;
   isFavorite: boolean;
-  isRecent: boolean;
   children?: NavigationMenuItem[];
 }
 

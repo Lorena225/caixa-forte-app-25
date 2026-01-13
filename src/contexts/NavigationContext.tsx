@@ -17,11 +17,9 @@ interface NavigationContextType {
   groups: NavigationGroup[];
   toggleGroup: (groupKey: string) => void;
   
-  // Favorites & Recents
+  // Favorites
   favorites: NavigationMenuItem[];
-  recents: NavigationMenuItem[];
   toggleFavorite: (itemKey: string) => void;
-  addRecent: (itemKey: string) => void;
   
   // Profile
   activeProfile: NavigationProfile | undefined;
@@ -51,12 +49,11 @@ export function NavigationProvider({ children }: { children: ReactNode }) {
     toggleSidebar,
     toggleGroup,
     toggleFavorite,
-    addRecent,
     setActiveProfile,
   } = useUserNavPreferences();
   
   const activeProfile = useActiveProfile();
-  const { groups, favorites, recents } = useResolvedNavigation();
+  const { groups, favorites } = useResolvedNavigation();
   
   // Keyboard shortcut for command palette
   useEffect(() => {
@@ -75,12 +72,9 @@ export function NavigationProvider({ children }: { children: ReactNode }) {
   }, []);
   
   const navigateTo = useCallback((route: string, itemKey?: string) => {
-    if (itemKey) {
-      addRecent(itemKey);
-    }
     navigate(route);
     setCommandPaletteOpen(false);
-  }, [navigate, addRecent]);
+  }, [navigate]);
   
   const value: NavigationContextType = {
     collapsed: preferences?.sidebar_collapsed || false,
@@ -88,9 +82,7 @@ export function NavigationProvider({ children }: { children: ReactNode }) {
     groups,
     toggleGroup,
     favorites,
-    recents,
     toggleFavorite,
-    addRecent,
     activeProfile,
     setActiveProfile,
     quickActions: activeProfile?.quick_actions || [],
