@@ -29,7 +29,7 @@ import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 import { formatCurrency } from '@/lib/formatters';
 import { BankSelect } from '@/components/cadastros/BankSelect';
-import { Pencil, Trash2, Wallet, CreditCard, Banknote, Plus } from 'lucide-react';
+import { Pencil, Trash2, Wallet, CreditCard, Banknote, Plus, AlertCircle } from 'lucide-react';
 
 const typeLabels: Record<string, { label: string; icon: React.ElementType; color: string }> = {
   caixa: { label: 'Caixa', icon: Banknote, color: 'bg-success/10 text-success' },
@@ -53,7 +53,13 @@ export default function Carteiras() {
     closing_day: '',
     due_day: '',
     is_active: true,
+    agency_number: '',
+    agency_digit: '',
+    account_number: '',
+    account_digit: '',
+    account_type: 'corrente',
   });
+  const [errors, setErrors] = useState<{bank?: string; agency_number?: string; account_number?: string}>({});
 
   // Mapa de bancos por ID para lookup rápido
   const banksMap = useMemo(() => {
@@ -113,9 +119,15 @@ export default function Carteiras() {
       opening_balance: 0, 
       closing_day: '', 
       due_day: '', 
-      is_active: true 
+      is_active: true,
+      agency_number: '',
+      agency_digit: '',
+      account_number: '',
+      account_digit: '',
+      account_type: 'corrente',
     });
     setSelectedBank(null);
+    setErrors({});
   };
 
   const handleEdit = (item: any) => {
@@ -127,7 +139,13 @@ export default function Carteiras() {
       closing_day: item.closing_day?.toString() || '',
       due_day: item.due_day?.toString() || '',
       is_active: item.is_active,
+      agency_number: item.agency_number || '',
+      agency_digit: item.agency_digit || '',
+      account_number: item.account_number || '',
+      account_digit: item.account_digit || '',
+      account_type: item.account_type || 'corrente',
     });
+    setErrors({});
     // Buscar banco se existir
     if (item.bank_id) {
       const bank = banksMap.get(item.bank_id);
@@ -152,6 +170,21 @@ export default function Carteiras() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validação para tipo banco
+    if (formData.type === 'banco') {
+      const newErrors: typeof errors = {};
+      if (!selectedBank) newErrors.bank = 'Banco é obrigatório';
+      if (!formData.agency_number.trim()) newErrors.agency_number = 'Agência é obrigatória';
+      if (!formData.account_number.trim()) newErrors.account_number = 'Número da conta é obrigatório';
+      
+      if (Object.keys(newErrors).length > 0) {
+        setErrors(newErrors);
+        toast({ title: 'Erro', description: 'Preencha os campos obrigatórios', variant: 'destructive' });
+        return;
+      }
+    }
+    
     saveMutation.mutate({ formData, bank: selectedBank });
   };
 
@@ -298,18 +331,116 @@ export default function Carteiras() {
               </div>
 
               {formData.type === 'banco' && (
-                <div className="space-y-2">
-                  <Label>Banco</Label>
-                  <BankSelect
-                    value={selectedBank}
-                    onChange={setSelectedBank}
-                    placeholder="Selecione o banco"
-                  />
-                  {selectedBank && (
-                    <p className="text-xs text-muted-foreground">
-                      Código COMPE: <span className="font-mono font-semibold">{selectedBank.compe_code}</span>
-                    </p>
-                  )}
+                <div className="space-y-4">
+                  {/* Banco */}
+                  <div className="space-y-2">
+                    <Label>Banco <span className="text-destructive">*</span></Label>
+                    <BankSelect
+                      value={selectedBank}
+                      onChange={(bank) => {
+                        setSelectedBank(bank);
+                        if (bank) setErrors(prev => ({ ...prev, bank: undefined }));
+                      }}
+                      placeholder="Selecione o banco"
+                      error={!!errors.bank}
+                    />
+                    {selectedBank && (
+                      <p className="text-xs text-muted-foreground">
+                        Código COMPE: <span className="font-mono font-semibold">{selectedBank.compe_code}</span>
+                      </p>
+                    )}
+                    {errors.bank && (
+                      <p className="text-xs text-destructive flex items-center gap-1">
+                        <AlertCircle className="h-3 w-3" />{errors.bank}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Agência */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Agência <span className="text-destructive">*</span></Label>
+                      <Input
+                        value={formData.agency_number}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/\D/g, '');
+                          setFormData({ ...formData, agency_number: value });
+                          if (value.trim()) setErrors(prev => ({ ...prev, agency_number: undefined }));
+                        }}
+                        placeholder="0001"
+                        maxLength={10}
+                        className={errors.agency_number ? 'border-destructive' : ''}
+                      />
+                      {errors.agency_number && (
+                        <p className="text-xs text-destructive flex items-center gap-1">
+                          <AlertCircle className="h-3 w-3" />{errors.agency_number}
+                        </p>
+                      )}
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Dígito Agência</Label>
+                      <Input
+                        value={formData.agency_digit}
+                        onChange={(e) => setFormData({ ...formData, agency_digit: e.target.value.replace(/\D/g, '').slice(0, 2) })}
+                        placeholder="0"
+                        maxLength={2}
+                        className="w-20"
+                      />
+                      <p className="text-xs text-muted-foreground">Opcional</p>
+                    </div>
+                  </div>
+
+                  {/* Tipo de Conta */}
+                  <div className="space-y-2">
+                    <Label>Tipo de Conta <span className="text-destructive">*</span></Label>
+                    <Select
+                      value={formData.account_type}
+                      onValueChange={(value) => setFormData({ ...formData, account_type: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecione o tipo" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="corrente">Conta Corrente</SelectItem>
+                        <SelectItem value="poupanca">Conta Poupança</SelectItem>
+                        <SelectItem value="universitaria">Conta Universitária</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Número da Conta */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Número da Conta <span className="text-destructive">*</span></Label>
+                      <Input
+                        value={formData.account_number}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/\D/g, '');
+                          setFormData({ ...formData, account_number: value });
+                          if (value.trim()) setErrors(prev => ({ ...prev, account_number: undefined }));
+                        }}
+                        placeholder="12345678"
+                        maxLength={20}
+                        className={errors.account_number ? 'border-destructive' : ''}
+                      />
+                      {errors.account_number && (
+                        <p className="text-xs text-destructive flex items-center gap-1">
+                          <AlertCircle className="h-3 w-3" />{errors.account_number}
+                        </p>
+                      )}
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Dígito Conta</Label>
+                      <Input
+                        value={formData.account_digit}
+                        onChange={(e) => setFormData({ ...formData, account_digit: e.target.value.replace(/\D/g, '').slice(0, 3) })}
+                        placeholder="0"
+                        maxLength={3}
+                        className="w-20"
+                      />
+                      <p className="text-xs text-muted-foreground">Opcional</p>
+                    </div>
+                  </div>
                 </div>
               )}
               
