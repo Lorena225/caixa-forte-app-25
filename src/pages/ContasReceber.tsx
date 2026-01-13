@@ -1,17 +1,17 @@
-import { useState } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTransactions, useAccounts, useWallets, useCounterparties, useCostCenters } from '@/hooks/useCompanyData';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { PageHeader } from '@/components/common/PageHeader';
-import { DataTable } from '@/components/common/DataTable';
 import { StatusBadge } from '@/components/common/StatusBadge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Dialog,
   DialogContent,
@@ -25,13 +25,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '@/hooks/use-toast';
 import { formatCurrency, formatDate } from '@/lib/formatters';
-import { Pencil, Trash2, Check, ArrowDownCircle, FileText, Download, History, CheckCircle, Eye, Ban } from 'lucide-react';
+import { Pencil, Trash2, Check, ArrowDownCircle, FileText, Download, History, CheckCircle, Eye, Ban, Calendar, FolderKanban, FileSpreadsheet, XCircle } from 'lucide-react';
 import { QuickSettlementDialog } from '@/components/settlements/QuickSettlementDialog';
+import { BulkActionsBar, BulkEditModal, BulkSelectionCheckbox } from '@/components/bulk';
+import { useBulkSelection } from '@/hooks/useBulkSelection';
+import { useBulkActions } from '@/hooks/useBulkActions';
 import BaixaManualAR from '@/pages/ar/BaixaManualAR';
 import BaixaAutomaticaAR from '@/pages/ar/BaixaAutomaticaAR';
+import { cn } from '@/lib/utils';
 
 interface TitleForSettlement {
   id: string;
@@ -60,6 +72,12 @@ export default function ContasReceber() {
   // Quick settlement dialog state
   const [quickSettlementOpen, setQuickSettlementOpen] = useState(false);
   const [selectedTitle, setSelectedTitle] = useState<TitleForSettlement | null>(null);
+
+  // Bulk edit modal state
+  const [bulkEditModal, setBulkEditModal] = useState<{
+    open: boolean;
+    type: 'due_date' | 'cost_center' | 'account' | 'notes' | 'cancel' | 'delete' | null;
+  }>({ open: false, type: null });
   
   const { data: transactions = [], isLoading } = useTransactions({
     direction: 'entrada',
@@ -72,6 +90,25 @@ export default function ContasReceber() {
   const { data: wallets = [] } = useWallets();
   const { data: counterparties = [] } = useCounterparties();
   const { data: costCenters = [] } = useCostCenters();
+
+  // Bulk selection
+  const canSelectItem = useCallback((item: any) => {
+    const balance = Number(item.balance_amount || item.total_amount);
+    return item.status !== 'pago' && item.status !== 'cancelado' && balance > 0;
+  }, []);
+
+  const bulkSelection = useBulkSelection({
+    data: transactions,
+    canSelect: canSelectItem,
+  });
+
+  const bulkActions = useBulkActions({
+    tableName: 'transactions',
+    queryKey: ['transactions'],
+    onSuccess: () => {
+      bulkSelection.deselectAll();
+    },
+  });
   
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<any>(null);
@@ -180,6 +217,109 @@ export default function ContasReceber() {
     setQuickSettlementOpen(true);
   };
 
+  // Bulk action handlers
+  const handleBulkAction = async (type: typeof bulkEditModal.type, value: string) => {
+    const ids = Array.from(bulkSelection.selectedIds);
+    
+    try {
+      switch (type) {
+        case 'due_date':
+          await bulkActions.bulkUpdate(ids, { due_date: value });
+          break;
+        case 'cost_center':
+          await bulkActions.bulkUpdate(ids, { cost_center_id: value || null });
+          break;
+        case 'account':
+          await bulkActions.bulkUpdate(ids, { account_id: value });
+          break;
+        case 'notes':
+          // For notes, we append instead of replace
+          for (const item of bulkSelection.selectedItems) {
+            const currentNotes = (item as any).notes || '';
+            await supabase.from('transactions').update({ 
+              notes: currentNotes ? `${currentNotes}\n${value}` : value 
+            }).eq('id', item.id);
+          }
+          queryClient.invalidateQueries({ queryKey: ['transactions'] });
+          toast({ title: `${ids.length} itens atualizados com sucesso` });
+          bulkSelection.deselectAll();
+          break;
+        case 'cancel':
+          await bulkActions.bulkUpdate(ids, { status: 'cancelado' });
+          break;
+        case 'delete':
+          await bulkActions.bulkDelete(ids);
+          break;
+      }
+      setBulkEditModal({ open: false, type: null });
+    } catch (error) {
+      console.error('Bulk action error:', error);
+    }
+  };
+
+  const handleBulkExport = () => {
+    const exportData = bulkSelection.selectedItems.map((item: any) => ({
+      description: item.description,
+      due_date: item.due_date,
+      counterparty: item.counterparties?.name || '-',
+      total_amount: item.total_amount,
+      status: item.status,
+    }));
+
+    bulkActions.bulkExport(
+      exportData,
+      [
+        { key: 'description', header: 'Descrição' },
+        { key: 'due_date', header: 'Vencimento', formatter: formatDate },
+        { key: 'counterparty', header: 'Cliente' },
+        { key: 'total_amount', header: 'Valor', formatter: (v: number) => formatCurrency(v) },
+        { key: 'status', header: 'Status' },
+      ],
+      `ContasReceber_Selecionados_${new Date().toISOString().split('T')[0]}`
+    );
+  };
+
+  const bulkActionsList = useMemo(() => [
+    {
+      id: 'settle',
+      label: 'Baixar em lote',
+      icon: <CheckCircle className="h-4 w-4" />,
+      onClick: () => setMainTab('baixa-manual'),
+    },
+    {
+      id: 'due_date',
+      label: 'Alterar vencimento',
+      icon: <Calendar className="h-4 w-4" />,
+      onClick: () => setBulkEditModal({ open: true, type: 'due_date' }),
+    },
+    {
+      id: 'cost_center',
+      label: 'Alterar centro de custo',
+      icon: <FolderKanban className="h-4 w-4" />,
+      onClick: () => setBulkEditModal({ open: true, type: 'cost_center' }),
+    },
+    {
+      id: 'export',
+      label: 'Exportar selecionados',
+      icon: <FileSpreadsheet className="h-4 w-4" />,
+      onClick: handleBulkExport,
+    },
+    {
+      id: 'cancel',
+      label: 'Cancelar títulos',
+      icon: <XCircle className="h-4 w-4" />,
+      onClick: () => setBulkEditModal({ open: true, type: 'cancel' }),
+      variant: 'destructive' as const,
+    },
+    {
+      id: 'delete',
+      label: 'Excluir títulos',
+      icon: <Trash2 className="h-4 w-4" />,
+      onClick: () => setBulkEditModal({ open: true, type: 'delete' }),
+      variant: 'destructive' as const,
+    },
+  ], []);
+
   const today = new Date().toISOString().split('T')[0];
   
   const totals = transactions.reduce(
@@ -197,6 +337,10 @@ export default function ContasReceber() {
     },
     { received: 0, pending: 0, overdue: 0, total: 0 }
   );
+
+  const selectedTotal = useMemo(() => {
+    return bulkSelection.selectedItems.reduce((sum, item: any) => sum + Number(item.total_amount || 0), 0);
+  }, [bulkSelection.selectedItems]);
 
   // Determine status and settlement action based on business rules
   const getSettlementAction = (item: any) => {
@@ -227,88 +371,6 @@ export default function ContasReceber() {
     };
   };
 
-  const columns = [
-    { 
-      key: 'due_date', 
-      header: 'Vencimento', 
-      render: (item: any) => formatDate(item.due_date),
-      className: 'w-28'
-    },
-    { key: 'description', header: 'Descrição' },
-    { 
-      key: 'counterparty', 
-      header: 'Cliente', 
-      render: (item: any) => item.counterparties?.name || '-',
-    },
-    { 
-      key: 'account', 
-      header: 'Conta', 
-      render: (item: any) => item.accounts?.name || '-',
-    },
-    { 
-      key: 'total_amount', 
-      header: 'Valor', 
-      render: (item: any) => (
-        <span className="value-positive font-semibold">{formatCurrency(item.total_amount)}</span>
-      ),
-      className: 'text-right w-32'
-    },
-    {
-      key: 'status',
-      header: 'Status',
-      render: (item: any) => {
-        // Status derived from balance and dates
-        const balance = Number(item.balance_amount || item.total_amount);
-        const isPaid = item.status === 'pago' || balance <= 0;
-        const isOverdue = !isPaid && item.due_date < today;
-        return <StatusBadge status={isPaid ? 'pago' : item.status} isOverdue={isOverdue} />;
-      },
-      className: 'w-28',
-    },
-    {
-      key: 'actions',
-      header: '',
-      render: (item: any) => {
-        const settlementAction = getSettlementAction(item);
-        
-        return (
-          <TooltipProvider>
-            <div className="flex gap-1">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    onClick={(e) => { 
-                      e.stopPropagation(); 
-                      if (!settlementAction.disabled) {
-                        handleQuickSettlement(item);
-                      }
-                    }}
-                    disabled={settlementAction.disabled}
-                    className={settlementAction.disabled ? 'opacity-50 cursor-not-allowed' : ''}
-                  >
-                    {settlementAction.icon}
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>{settlementAction.tooltip}</p>
-                </TooltipContent>
-              </Tooltip>
-              <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); handleEdit(item); }}>
-                <Pencil className="h-4 w-4" />
-              </Button>
-              <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); deleteMutation.mutate(item.id); }}>
-                <Trash2 className="h-4 w-4 text-destructive" />
-              </Button>
-            </div>
-          </TooltipProvider>
-        );
-      },
-      className: 'w-32',
-    },
-  ];
-
   const months = [
     { value: 1, label: 'Janeiro' },
     { value: 2, label: 'Fevereiro' },
@@ -323,6 +385,14 @@ export default function ContasReceber() {
     { value: 11, label: 'Novembro' },
     { value: 12, label: 'Dezembro' },
   ];
+
+  // Build bulk edit modal items
+  const bulkEditItems = bulkSelection.selectedItems.map((item: any) => ({
+    id: item.id,
+    label: item.description,
+    sublabel: item.counterparties?.name,
+    currentValue: bulkEditModal.type === 'due_date' ? formatDate(item.due_date) : undefined,
+  }));
 
   return (
     <MainLayout>
@@ -455,11 +525,127 @@ export default function ContasReceber() {
               </Card>
             </div>
 
-            <DataTable
-              columns={columns}
-              data={transactions}
-              loading={isLoading}
-              emptyMessage="Nenhuma conta a receber neste período."
+            {/* Table with bulk selection */}
+            <div className="rounded-lg border bg-card">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-12">
+                      <BulkSelectionCheckbox
+                        checked={bulkSelection.isAllSelected}
+                        indeterminate={bulkSelection.isPartialSelected}
+                        onChange={bulkSelection.toggleAll}
+                        isHeader
+                      />
+                    </TableHead>
+                    <TableHead className="w-28">Vencimento</TableHead>
+                    <TableHead>Descrição</TableHead>
+                    <TableHead>Cliente</TableHead>
+                    <TableHead>Conta</TableHead>
+                    <TableHead className="text-right w-32">Valor</TableHead>
+                    <TableHead className="w-28">Status</TableHead>
+                    <TableHead className="w-32"></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {isLoading ? (
+                    <TableRow>
+                      <TableCell colSpan={8} className="h-24 text-center">
+                        <div className="flex items-center justify-center">
+                          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary" />
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ) : transactions.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={8} className="h-24 text-center text-muted-foreground">
+                        Nenhuma conta a receber neste período.
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    transactions.map((item) => {
+                      const settlementAction = getSettlementAction(item);
+                      const isSelectable = canSelectItem(item);
+                      const isSelected = bulkSelection.isSelected(item.id);
+                      const balance = Number(item.balance_amount || item.total_amount);
+                      const isPaid = item.status === 'pago' || balance <= 0;
+                      const isOverdue = !isPaid && item.due_date < today;
+
+                      return (
+                        <TableRow 
+                          key={item.id}
+                          className={cn(
+                            isSelected && 'bg-primary/5',
+                            'hover:bg-muted/50'
+                          )}
+                        >
+                          <TableCell>
+                            <BulkSelectionCheckbox
+                              checked={isSelected}
+                              onChange={() => bulkSelection.toggleItem(item.id)}
+                              disabled={!isSelectable}
+                              tooltip={!isSelectable ? (item.status === 'pago' ? 'Título já baixado' : 'Título cancelado') : undefined}
+                            />
+                          </TableCell>
+                          <TableCell>{formatDate(item.due_date)}</TableCell>
+                          <TableCell>{item.description}</TableCell>
+                          <TableCell>{item.counterparties?.name || '-'}</TableCell>
+                          <TableCell>{item.accounts?.name || '-'}</TableCell>
+                          <TableCell className="text-right">
+                            <span className="value-positive font-semibold">{formatCurrency(item.total_amount)}</span>
+                          </TableCell>
+                          <TableCell>
+                            <StatusBadge status={isPaid ? 'pago' : item.status} isOverdue={isOverdue} />
+                          </TableCell>
+                          <TableCell>
+                            <TooltipProvider>
+                              <div className="flex gap-1">
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Button 
+                                      variant="ghost" 
+                                      size="icon" 
+                                      onClick={(e) => { 
+                                        e.stopPropagation(); 
+                                        if (!settlementAction.disabled) {
+                                          handleQuickSettlement(item);
+                                        }
+                                      }}
+                                      disabled={settlementAction.disabled}
+                                      className={settlementAction.disabled ? 'opacity-50 cursor-not-allowed' : ''}
+                                    >
+                                      {settlementAction.icon}
+                                    </Button>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>{settlementAction.tooltip}</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                                <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); handleEdit(item); }}>
+                                  <Pencil className="h-4 w-4" />
+                                </Button>
+                                <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); deleteMutation.mutate(item.id); }}>
+                                  <Trash2 className="h-4 w-4 text-destructive" />
+                                </Button>
+                              </div>
+                            </TooltipProvider>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+
+            {/* Bulk Actions Bar */}
+            <BulkActionsBar
+              selectedCount={bulkSelection.count}
+              onClearSelection={bulkSelection.deselectAll}
+              actions={bulkActionsList}
+              totalAmount={selectedTotal}
+              isProcessing={bulkActions.isProcessing}
+              progress={bulkActions.progress}
             />
           </TabsContent>
 
@@ -661,6 +847,62 @@ export default function ContasReceber() {
             queryClient.invalidateQueries({ queryKey: ['transactions'] });
           }}
         />
+
+        {/* Bulk Edit Modals */}
+        {bulkEditModal.type === 'due_date' && (
+          <BulkEditModal
+            open={bulkEditModal.open}
+            onOpenChange={(open) => setBulkEditModal({ open, type: open ? 'due_date' : null })}
+            title={`Alterar Vencimento de ${bulkSelection.count} títulos`}
+            items={bulkEditItems}
+            inputType="date"
+            inputLabel="Nova data de vencimento"
+            onConfirm={(value) => handleBulkAction('due_date', value)}
+            isLoading={bulkActions.isPending}
+          />
+        )}
+
+        {bulkEditModal.type === 'cost_center' && (
+          <BulkEditModal
+            open={bulkEditModal.open}
+            onOpenChange={(open) => setBulkEditModal({ open, type: open ? 'cost_center' : null })}
+            title={`Alterar Centro de Custo de ${bulkSelection.count} títulos`}
+            items={bulkEditItems}
+            inputType="select"
+            inputLabel="Novo centro de custo"
+            options={costCenters.map((cc) => ({ value: cc.id, label: `${cc.code} - ${cc.name}` }))}
+            onConfirm={(value) => handleBulkAction('cost_center', value)}
+            isLoading={bulkActions.isPending}
+          />
+        )}
+
+        {bulkEditModal.type === 'cancel' && (
+          <BulkEditModal
+            open={bulkEditModal.open}
+            onOpenChange={(open) => setBulkEditModal({ open, type: open ? 'cancel' : null })}
+            title={`Cancelar ${bulkSelection.count} títulos`}
+            items={bulkEditItems}
+            inputType="confirm"
+            confirmMessage={`Tem certeza que deseja cancelar ${bulkSelection.count} títulos? Esta ação não pode ser desfeita.`}
+            onConfirm={() => handleBulkAction('cancel', '')}
+            isLoading={bulkActions.isPending}
+            isDestructive
+          />
+        )}
+
+        {bulkEditModal.type === 'delete' && (
+          <BulkEditModal
+            open={bulkEditModal.open}
+            onOpenChange={(open) => setBulkEditModal({ open, type: open ? 'delete' : null })}
+            title={`Excluir ${bulkSelection.count} títulos`}
+            items={bulkEditItems}
+            inputType="confirm"
+            confirmMessage={`Tem certeza que deseja EXCLUIR PERMANENTEMENTE ${bulkSelection.count} títulos? Esta ação não pode ser desfeita.`}
+            onConfirm={() => handleBulkAction('delete', '')}
+            isLoading={bulkActions.isPending}
+            isDestructive
+          />
+        )}
       </div>
     </MainLayout>
   );
