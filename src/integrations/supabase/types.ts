@@ -11630,6 +11630,7 @@ export type Database = {
       }
       wallets: {
         Row: {
+          bank_id: string | null
           closing_day: number | null
           company_id: string
           created_at: string | null
@@ -11642,6 +11643,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          bank_id?: string | null
           closing_day?: number | null
           company_id: string
           created_at?: string | null
@@ -11654,6 +11656,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          bank_id?: string | null
           closing_day?: number | null
           company_id?: string
           created_at?: string | null
@@ -11666,6 +11669,13 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "wallets_bank_id_fkey"
+            columns: ["bank_id"]
+            isOneToOne: false
+            referencedRelation: "banks_reference"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "wallets_company_id_fkey"
             columns: ["company_id"]
