@@ -2670,6 +2670,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "categorization_rules_counterparty_id_fkey"
+            columns: ["counterparty_id"]
+            isOneToOne: false
+            referencedRelation: "counterparties_safe"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "categorization_rules_integration_id_fkey"
             columns: ["integration_id"]
             isOneToOne: false
@@ -4524,6 +4531,13 @@ export type Database = {
             referencedRelation: "counterparties"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "counterparty_bank_accounts_counterparty_id_fkey"
+            columns: ["counterparty_id"]
+            isOneToOne: false
+            referencedRelation: "counterparties_safe"
+            referencedColumns: ["id"]
+          },
         ]
       }
       custom_roles: {
@@ -4836,6 +4850,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "customer_invoices_counterparty_id_fkey"
+            columns: ["counterparty_id"]
+            isOneToOne: false
+            referencedRelation: "counterparties_safe"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "customer_invoices_payment_method_id_fkey"
             columns: ["payment_method_id"]
             isOneToOne: false
@@ -5145,6 +5166,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "documents_counterparty_id_fkey"
+            columns: ["counterparty_id"]
+            isOneToOne: false
+            referencedRelation: "counterparties_safe"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "documents_document_type_id_fkey"
             columns: ["document_type_id"]
             isOneToOne: false
@@ -5360,6 +5388,13 @@ export type Database = {
             referencedRelation: "counterparties"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "fact_ap_aging_counterparty_id_fkey"
+            columns: ["counterparty_id"]
+            isOneToOne: false
+            referencedRelation: "counterparties_safe"
+            referencedColumns: ["id"]
+          },
         ]
       }
       fact_ar_aging: {
@@ -5438,6 +5473,13 @@ export type Database = {
             columns: ["counterparty_id"]
             isOneToOne: false
             referencedRelation: "counterparties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fact_ar_aging_counterparty_id_fkey"
+            columns: ["counterparty_id"]
+            isOneToOne: false
+            referencedRelation: "counterparties_safe"
             referencedColumns: ["id"]
           },
         ]
@@ -6183,6 +6225,13 @@ export type Database = {
             columns: ["counterparty_id"]
             isOneToOne: false
             referencedRelation: "counterparties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fiscal_documents_counterparty_id_fkey"
+            columns: ["counterparty_id"]
+            isOneToOne: false
+            referencedRelation: "counterparties_safe"
             referencedColumns: ["id"]
           },
         ]
@@ -7063,6 +7112,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "installment_plans_counterparty_id_fkey"
+            columns: ["counterparty_id"]
+            isOneToOne: false
+            referencedRelation: "counterparties_safe"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "installment_plans_wallet_id_fkey"
             columns: ["wallet_id"]
             isOneToOne: false
@@ -7863,6 +7919,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "journal_lines_counterparty_id_fkey"
+            columns: ["counterparty_id"]
+            isOneToOne: false
+            referencedRelation: "counterparties_safe"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "journal_lines_journal_entry_id_fkey"
             columns: ["journal_entry_id"]
             isOneToOne: false
@@ -8169,6 +8232,13 @@ export type Database = {
             columns: ["creditor_partner_id"]
             isOneToOne: false
             referencedRelation: "counterparties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loan_contracts_creditor_partner_id_fkey"
+            columns: ["creditor_partner_id"]
+            isOneToOne: false
+            referencedRelation: "counterparties_safe"
             referencedColumns: ["id"]
           },
           {
@@ -8751,6 +8821,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "nfe_invoices_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "counterparties_safe"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "nfe_invoices_provider_id_fkey"
             columns: ["provider_id"]
             isOneToOne: false
@@ -9058,6 +9135,13 @@ export type Database = {
             columns: ["customer_id"]
             isOneToOne: false
             referencedRelation: "counterparties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "nfse_invoices_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "counterparties_safe"
             referencedColumns: ["id"]
           },
           {
@@ -11916,6 +12000,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "transactions_counterparty_id_fkey"
+            columns: ["counterparty_id"]
+            isOneToOne: false
+            referencedRelation: "counterparties_safe"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "transactions_document_id_fkey"
             columns: ["document_id"]
             isOneToOne: false
@@ -12506,6 +12597,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "vendor_bills_counterparty_id_fkey"
+            columns: ["counterparty_id"]
+            isOneToOne: false
+            referencedRelation: "counterparties_safe"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "vendor_bills_payment_method_id_fkey"
             columns: ["payment_method_id"]
             isOneToOne: false
@@ -12964,6 +13062,210 @@ export type Database = {
       }
     }
     Views: {
+      counterparties_safe: {
+        Row: {
+          address_city: string | null
+          address_complement: string | null
+          address_neighborhood: string | null
+          address_number: string | null
+          address_state: string | null
+          address_street: string | null
+          address_zip: string | null
+          bank_account_masked: string | null
+          bank_name_display: string | null
+          client_notes: string | null
+          collection_ready: boolean | null
+          company_id: string | null
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
+          created_at: string | null
+          credit_limit: number | null
+          delivery_address_city: string | null
+          delivery_address_complement: string | null
+          delivery_address_neighborhood: string | null
+          delivery_address_number: string | null
+          delivery_address_state: string | null
+          delivery_address_street: string | null
+          delivery_address_zip: string | null
+          delivery_same_as_billing: boolean | null
+          document: string | null
+          email: string | null
+          finance_contact_email: string | null
+          finance_contact_name: string | null
+          finance_contact_phone: string | null
+          fiscal_ready: boolean | null
+          has_bank_info: boolean | null
+          has_pix_key: boolean | null
+          id: string | null
+          ie: string | null
+          ie_is_exempt: boolean | null
+          im: string | null
+          is_active: boolean | null
+          is_client: boolean | null
+          is_supplier: boolean | null
+          legal_name: string | null
+          missing_fields_json: Json | null
+          municipal_registration: string | null
+          name: string | null
+          nf_email: string | null
+          operation_nature: string | null
+          payment_ready: boolean | null
+          payment_terms_payable: number | null
+          payment_terms_receivable: number | null
+          person_type: string | null
+          phone: string | null
+          pix_key_masked: string | null
+          state_registration: string | null
+          state_registration_exempt: boolean | null
+          suframa: string | null
+          supplier_notes: string | null
+          tax_regime: string | null
+          trade_name: string | null
+          type: Database["public"]["Enums"]["counterparty_type"] | null
+          updated_at: string | null
+        }
+        Insert: {
+          address_city?: string | null
+          address_complement?: string | null
+          address_neighborhood?: string | null
+          address_number?: string | null
+          address_state?: string | null
+          address_street?: string | null
+          address_zip?: string | null
+          bank_account_masked?: never
+          bank_name_display?: string | null
+          client_notes?: string | null
+          collection_ready?: boolean | null
+          company_id?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string | null
+          credit_limit?: number | null
+          delivery_address_city?: string | null
+          delivery_address_complement?: string | null
+          delivery_address_neighborhood?: string | null
+          delivery_address_number?: string | null
+          delivery_address_state?: string | null
+          delivery_address_street?: string | null
+          delivery_address_zip?: string | null
+          delivery_same_as_billing?: boolean | null
+          document?: string | null
+          email?: string | null
+          finance_contact_email?: string | null
+          finance_contact_name?: string | null
+          finance_contact_phone?: string | null
+          fiscal_ready?: boolean | null
+          has_bank_info?: never
+          has_pix_key?: never
+          id?: string | null
+          ie?: string | null
+          ie_is_exempt?: boolean | null
+          im?: string | null
+          is_active?: boolean | null
+          is_client?: boolean | null
+          is_supplier?: boolean | null
+          legal_name?: string | null
+          missing_fields_json?: Json | null
+          municipal_registration?: string | null
+          name?: string | null
+          nf_email?: string | null
+          operation_nature?: string | null
+          payment_ready?: boolean | null
+          payment_terms_payable?: number | null
+          payment_terms_receivable?: number | null
+          person_type?: string | null
+          phone?: string | null
+          pix_key_masked?: never
+          state_registration?: string | null
+          state_registration_exempt?: boolean | null
+          suframa?: string | null
+          supplier_notes?: string | null
+          tax_regime?: string | null
+          trade_name?: string | null
+          type?: Database["public"]["Enums"]["counterparty_type"] | null
+          updated_at?: string | null
+        }
+        Update: {
+          address_city?: string | null
+          address_complement?: string | null
+          address_neighborhood?: string | null
+          address_number?: string | null
+          address_state?: string | null
+          address_street?: string | null
+          address_zip?: string | null
+          bank_account_masked?: never
+          bank_name_display?: string | null
+          client_notes?: string | null
+          collection_ready?: boolean | null
+          company_id?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string | null
+          credit_limit?: number | null
+          delivery_address_city?: string | null
+          delivery_address_complement?: string | null
+          delivery_address_neighborhood?: string | null
+          delivery_address_number?: string | null
+          delivery_address_state?: string | null
+          delivery_address_street?: string | null
+          delivery_address_zip?: string | null
+          delivery_same_as_billing?: boolean | null
+          document?: string | null
+          email?: string | null
+          finance_contact_email?: string | null
+          finance_contact_name?: string | null
+          finance_contact_phone?: string | null
+          fiscal_ready?: boolean | null
+          has_bank_info?: never
+          has_pix_key?: never
+          id?: string | null
+          ie?: string | null
+          ie_is_exempt?: boolean | null
+          im?: string | null
+          is_active?: boolean | null
+          is_client?: boolean | null
+          is_supplier?: boolean | null
+          legal_name?: string | null
+          missing_fields_json?: Json | null
+          municipal_registration?: string | null
+          name?: string | null
+          nf_email?: string | null
+          operation_nature?: string | null
+          payment_ready?: boolean | null
+          payment_terms_payable?: number | null
+          payment_terms_receivable?: number | null
+          person_type?: string | null
+          phone?: string | null
+          pix_key_masked?: never
+          state_registration?: string | null
+          state_registration_exempt?: boolean | null
+          suframa?: string | null
+          supplier_notes?: string | null
+          tax_regime?: string | null
+          trade_name?: string | null
+          type?: Database["public"]["Enums"]["counterparty_type"] | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "counterparties_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "counterparties_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
       v_ap_aging: {
         Row: {
           aging_bucket: string | null
@@ -13132,6 +13434,13 @@ export type Database = {
             columns: ["counterparty_id"]
             isOneToOne: false
             referencedRelation: "counterparties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_counterparty_id_fkey"
+            columns: ["counterparty_id"]
+            isOneToOne: false
+            referencedRelation: "counterparties_safe"
             referencedColumns: ["id"]
           },
           {
@@ -13325,6 +13634,13 @@ export type Database = {
             columns: ["counterparty_id"]
             isOneToOne: false
             referencedRelation: "counterparties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_counterparty_id_fkey"
+            columns: ["counterparty_id"]
+            isOneToOne: false
+            referencedRelation: "counterparties_safe"
             referencedColumns: ["id"]
           },
           {
@@ -14193,6 +14509,13 @@ export type Database = {
             referencedRelation: "counterparties"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "transactions_counterparty_id_fkey"
+            columns: ["counterparty_id"]
+            isOneToOne: false
+            referencedRelation: "counterparties_safe"
+            referencedColumns: ["id"]
+          },
         ]
       }
       v_top_debtors: {
@@ -14226,6 +14549,13 @@ export type Database = {
             columns: ["counterparty_id"]
             isOneToOne: false
             referencedRelation: "counterparties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_counterparty_id_fkey"
+            columns: ["counterparty_id"]
+            isOneToOne: false
+            referencedRelation: "counterparties_safe"
             referencedColumns: ["id"]
           },
         ]
