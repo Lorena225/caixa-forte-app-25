@@ -103,6 +103,9 @@ import AdminNavigationSettings from "./pages/admin/NavigationSettings";
 import TesourariaCNAB from "./pages/tesouraria/CNAB";
 import TesourariaBoletos from "./pages/tesouraria/Boletos";
 import TesourariaCards from "./pages/tesouraria/CardsManagement";
+import TesourariaContratos from "./pages/tesouraria/Contratos";
+import TesourariaContratoDetalhe from "./pages/tesouraria/ContratoDetalhe";
+import TesourariaContratoNovo from "./pages/tesouraria/ContratoNovo";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -174,6 +177,9 @@ const App = () => (
                 <Route path="/tesouraria/cnab" element={<TesourariaCNAB />} />
                 <Route path="/tesouraria/boletos" element={<TesourariaBoletos />} />
                 <Route path="/tesouraria/cartoes" element={<TesourariaCards />} />
+                <Route path="/tesouraria/contratos" element={<TesourariaContratos />} />
+                <Route path="/tesouraria/contratos/novo" element={<TesourariaContratoNovo />} />
+                <Route path="/tesouraria/contratos/:id" element={<TesourariaContratoDetalhe />} />
                 
                 {/* AP/AR Index */}
                 <Route path="/ap" element={<APIndex />} />

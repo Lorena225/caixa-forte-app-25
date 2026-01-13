@@ -234,10 +234,14 @@ export function useGenerateAPTitles() {
     mutationFn: async ({ contract_id, max_installment, max_date }: GenerateAPParams) => {
       if (!currentCompany?.id) throw new Error('Empresa não selecionada');
       
-      // Fetch contract
+      // Fetch contract with bank account info for wallet_id
       const { data: contract, error: contractError } = await supabase
         .from('loan_contracts')
-        .select('*, bank:banks_reference!bank_id(name)')
+        .select(`
+          *,
+          bank:banks_reference!bank_id(name),
+          company_bank_account:bank_accounts!company_bank_account_id(wallet_id)
+        `)
         .eq('id', contract_id)
         .eq('company_id', currentCompany.id)
         .single();
@@ -285,6 +289,12 @@ export function useGenerateAPTitles() {
       }
       
       const bankName = (contract.bank as any)?.name || 'Banco';
+      const walletId = (contract.company_bank_account as any)?.wallet_id;
+      
+      if (!walletId) {
+        throw new Error('A conta bancária do contrato não possui carteira (wallet) vinculada');
+      }
+      
       const createdTransactions: string[] = [];
       
       // Create AP transactions for each installment
@@ -299,25 +309,32 @@ export function useGenerateAPTitles() {
           .replace('{k}', String(installment.installment_no))
           .replace('{n}', String(contract.installments_count));
         
-        // Create AP transaction
+        // Create AP transaction - need to get a default account_id for payables
+        // We'll use the liability_account_id from contract if available, or need a default
+        const accountId = contract.liability_account_id;
+        
+        if (!accountId) {
+          throw new Error('O contrato precisa de uma conta contábil (liability_account_id) para gerar títulos AP');
+        }
+        
         const { data: transaction, error: txError } = await supabase
           .from('transactions')
           .insert({
             company_id: currentCompany.id,
-            type: 'payable',
+            account_id: accountId,
+            wallet_id: walletId,
             direction: 'saida' as const,
             counterparty_id: contract.creditor_partner_id,
             description,
-            amount: installment.installment_amount,
-            issue_date: contract.contract_date,
+            original_amount: installment.installment_amount,
+            total_amount: installment.installment_amount,
+            transaction_date: contract.contract_date,
             due_date: installment.due_date,
             document_number: `${contract.contract_number}-${installment.installment_no}`,
             origin_type: 'CONTRATO_EMPRESTIMO',
             origin_contract_id: contract.id,
             origin_installment_id: installment.id,
-            cost_center_id: contract.cost_center_id
-              ? undefined // Will need to lookup wallet from bank account
-              : undefined,
+            cost_center_id: contract.cost_center_id || null,
           })
           .select('id')
           .single();

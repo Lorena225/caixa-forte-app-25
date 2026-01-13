@@ -20,6 +20,7 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { BankSelect } from '@/components/cadastros/BankSelect';
+import type { BankReference } from '@/hooks/useBanksReference';
 import { calculateInstallments, formatCurrency, validateCalculationParams } from '@/lib/loanCalculations';
 import type { 
   LoanContractFormData, 
@@ -91,6 +92,7 @@ export default function ContratoNovoPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [preview, setPreview] = useState<CalculatedInstallment[]>([]);
   const [showPreview, setShowPreview] = useState(false);
+  const [selectedBank, setSelectedBank] = useState<BankReference | null>(null);
 
   // Fetch counterparties (creditors)
   const { data: counterparties } = useQuery({
@@ -297,9 +299,12 @@ export default function ContratoNovoPage() {
             <div className="space-y-2">
               <Label>Banco *</Label>
               <BankSelect
-                value={formData.bank_id || null}
-                onChange={(v) => updateField('bank_id', v)}
-                hasError={!!errors.bank_id}
+                value={selectedBank}
+                onChange={(bank) => {
+                  setSelectedBank(bank);
+                  updateField('bank_id', bank?.id || '');
+                }}
+                error={!!errors.bank_id}
               />
               {errors.bank_id && <p className="text-sm text-destructive">{errors.bank_id}</p>}
             </div>

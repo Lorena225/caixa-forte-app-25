@@ -111,17 +111,14 @@ export default function ContratosPage() {
             </div>
           ) : filteredContracts.length === 0 ? (
             <EmptyState
-              icon={FileText}
+              icon={<FileText className="h-8 w-8 text-muted-foreground" />}
               title="Nenhum contrato encontrado"
               description={searchTerm 
                 ? "Nenhum contrato corresponde à busca" 
                 : "Crie seu primeiro contrato de empréstimo ou financiamento"}
-              actionLabel={!searchTerm ? "Novo Contrato" : undefined}
-              onAction={!searchTerm ? () => navigate('/tesouraria/contratos/novo') : undefined
-                    Novo Contrato
-                  </Button>
-                )
-              }
+              actions={!searchTerm ? [
+                { label: "Novo Contrato", route: "/tesouraria/contratos/novo", icon: "Plus" as const }
+              ] : []}
             />
           ) : (
             <div className="overflow-x-auto">
