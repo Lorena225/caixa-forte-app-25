@@ -60,6 +60,7 @@ import TesourariaIndex from "./pages/tesouraria/Index";
 import TesourariaPosicao from "./pages/tesouraria/Posicao";
 import TesourariaConciliacao from "./pages/tesouraria/Conciliacao";
 import TesourariaBordero from "./pages/tesouraria/Bordero";
+import TesourariaCompensacao from "./pages/tesouraria/Compensacao";
 import TesourariaExtratos from "./pages/tesouraria/Extratos";
 import APIndex from "./pages/ap/Index";
 import ARIndex from "./pages/ar/Index";
@@ -175,6 +176,7 @@ const App = () => (
                 <Route path="/tesouraria/posicao" element={<TesourariaPosicao />} />
                 <Route path="/tesouraria/conciliacao" element={<TesourariaConciliacao />} />
                 <Route path="/tesouraria/bordero" element={<TesourariaBordero />} />
+                <Route path="/tesouraria/compensacao" element={<TesourariaCompensacao />} />
                 <Route path="/tesouraria/extratos" element={<TesourariaExtratos />} />
                 <Route path="/tesouraria/cnab" element={<TesourariaCNAB />} />
                 <Route path="/tesouraria/cnab-remessa" element={<TesourariaCNABRemessa />} />
