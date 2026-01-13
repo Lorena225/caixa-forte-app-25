@@ -69,6 +69,14 @@ export interface LoanContract {
   allow_recalculate: boolean;
   notes?: string;
   
+  // NEW: Control flags for validation
+  needs_recalc: boolean;
+  recalc_reason?: string;
+  has_generated_titles: boolean;
+  installments_calculated_at?: string;
+  activated_at?: string;
+  activated_by?: string;
+  
   created_at: string;
   updated_at: string;
   created_by?: string;

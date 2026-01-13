@@ -6,10 +6,17 @@ import type {
   LoanContract, 
   LoanInstallment, 
   LoanContractFormData,
-  CalculatedInstallment,
   GenerateAPParams 
 } from '@/types/loans';
 import { calculateInstallments } from '@/lib/loanCalculations';
+import { 
+  validateLoanFormData, 
+  canCalculateInstallments, 
+  canGenerateAPTitles, 
+  canActivateContract,
+  LOAN_ERROR_MESSAGES,
+  formatValidationErrors 
+} from './useLoanValidation';
 
 // Fetch all loan contracts for current company
 export function useLoanContracts() {
@@ -26,14 +33,13 @@ export function useLoanContracts() {
           *,
           creditor:counterparties!creditor_partner_id(id, name, document),
           bank:banks_reference!bank_id(id, name, compe_code),
-          bank_account:bank_accounts!company_bank_account_id(id, account_number, agency_number)
+          bank_account:bank_accounts!company_bank_account_id(id, account_number, agency)
         `)
         .eq('company_id', currentCompany.id)
         .order('created_at', { ascending: false });
       
       if (error) throw error;
       
-      // Cast and return
       return (data || []) as unknown as LoanContract[];
     },
     enabled: !!currentCompany?.id,
@@ -55,7 +61,7 @@ export function useLoanContract(contractId: string | undefined) {
           *,
           creditor:counterparties!creditor_partner_id(id, name, document),
           bank:banks_reference!bank_id(id, name, compe_code),
-          bank_account:bank_accounts!company_bank_account_id(id, account_number, agency_number)
+          bank_account:bank_accounts!company_bank_account_id(id, account_number, agency)
         `)
         .eq('id', contractId)
         .eq('company_id', currentCompany.id)
@@ -93,7 +99,7 @@ export function useLoanInstallments(contractId: string | undefined) {
   });
 }
 
-// Create loan contract
+// Create loan contract with validation
 export function useCreateLoanContract() {
   const { currentCompany, user } = useAuth();
   const queryClient = useQueryClient();
@@ -102,18 +108,34 @@ export function useCreateLoanContract() {
     mutationFn: async (formData: LoanContractFormData) => {
       if (!currentCompany?.id) throw new Error('Empresa não selecionada');
       
+      // Validate form data
+      const errors = validateLoanFormData(formData);
+      if (Object.keys(errors).length > 0) {
+        throw new Error(formatValidationErrors(errors));
+      }
+      
       const { data, error } = await supabase
         .from('loan_contracts')
         .insert({
           company_id: currentCompany.id,
           ...formData,
           status: 'EDICAO',
+          currency: 'BRL',
+          allow_recalculate: true,
+          needs_recalc: false,
+          has_generated_titles: false,
           created_by: user?.id,
         })
         .select()
         .single();
       
-      if (error) throw error;
+      if (error) {
+        // Handle unique constraint violation
+        if (error.code === '23505') {
+          throw new Error('Já existe um contrato com este número. Use outro número.');
+        }
+        throw error;
+      }
       return data;
     },
     onSuccess: () => {
@@ -126,7 +148,7 @@ export function useCreateLoanContract() {
   });
 }
 
-// Update loan contract
+// Update loan contract with validation
 export function useUpdateLoanContract() {
   const { currentCompany } = useAuth();
   const queryClient = useQueryClient();
@@ -134,6 +156,12 @@ export function useUpdateLoanContract() {
   return useMutation({
     mutationFn: async ({ id, ...formData }: Partial<LoanContractFormData> & { id: string }) => {
       if (!currentCompany?.id) throw new Error('Empresa não selecionada');
+      
+      // Validate form data
+      const errors = validateLoanFormData(formData as Partial<LoanContractFormData>);
+      if (Object.keys(errors).length > 0) {
+        throw new Error(formatValidationErrors(errors));
+      }
       
       const { data, error } = await supabase
         .from('loan_contracts')
@@ -143,7 +171,13 @@ export function useUpdateLoanContract() {
         .select()
         .single();
       
-      if (error) throw error;
+      if (error) {
+        // Handle database-level validation errors
+        if (error.message.includes('Não é possível alterar')) {
+          throw new Error(error.message);
+        }
+        throw error;
+      }
       return data;
     },
     onSuccess: (data) => {
@@ -157,7 +191,7 @@ export function useUpdateLoanContract() {
   });
 }
 
-// Calculate and save installments
+// Calculate and save installments with validation
 export function useCalculateInstallments() {
   const { currentCompany } = useAuth();
   const queryClient = useQueryClient();
@@ -165,6 +199,23 @@ export function useCalculateInstallments() {
   return useMutation({
     mutationFn: async (contract: LoanContract) => {
       if (!currentCompany?.id) throw new Error('Empresa não selecionada');
+      
+      // Validate contract can be calculated
+      const checkResult = canCalculateInstallments(contract);
+      if (!checkResult.canCalculate) {
+        throw new Error(checkResult.reason);
+      }
+      
+      // Validate required fields
+      if (!contract.principal_amount || contract.principal_amount <= 0) {
+        throw new Error(LOAN_ERROR_MESSAGES.PRINCIPAL_POSITIVE);
+      }
+      if (!contract.installments_count || contract.installments_count <= 0) {
+        throw new Error(LOAN_ERROR_MESSAGES.INSTALLMENTS_POSITIVE);
+      }
+      if (contract.grace_periods > contract.installments_count) {
+        throw new Error(LOAN_ERROR_MESSAGES.GRACE_EXCEEDS_INSTALLMENTS);
+      }
       
       // Calculate installments
       const calculated = calculateInstallments({
@@ -179,13 +230,14 @@ export function useCalculateInstallments() {
         firstDueDate: new Date(contract.first_due_date),
       });
       
-      // Delete existing installments (only PREVISTA status)
+      // Delete existing PREVISTA installments (not generated ones)
       const { error: deleteError } = await supabase
         .from('loan_installments')
         .delete()
         .eq('contract_id', contract.id)
         .eq('company_id', currentCompany.id)
-        .eq('status', 'PREVISTA');
+        .eq('status', 'PREVISTA')
+        .is('ap_transaction_id', null);
       
       if (deleteError) throw deleteError;
       
@@ -209,7 +261,12 @@ export function useCalculateInstallments() {
         contract_id: contract.id,
         run_type: 'CALCULO',
         idempotency_key: `CALC:${contract.id}:${Date.now()}`,
-        params_json: { installments_count: calculated.length },
+        params_json: { 
+          installments_count: calculated.length,
+          principal: contract.principal_amount,
+          rate: contract.nominal_rate,
+          system: contract.amortization_system,
+        },
         status: 'OK',
       });
       
@@ -217,6 +274,7 @@ export function useCalculateInstallments() {
     },
     onSuccess: (_, contract) => {
       queryClient.invalidateQueries({ queryKey: ['loan-installments', contract.id] });
+      queryClient.invalidateQueries({ queryKey: ['loan-contract', contract.id] });
       toast.success('Parcelas calculadas com sucesso');
     },
     onError: (error: Error) => {
@@ -225,7 +283,7 @@ export function useCalculateInstallments() {
   });
 }
 
-// Generate AP titles from installments
+// Generate AP titles from installments with validation
 export function useGenerateAPTitles() {
   const { currentCompany, user } = useAuth();
   const queryClient = useQueryClient();
@@ -247,6 +305,11 @@ export function useGenerateAPTitles() {
         .single();
       
       if (contractError) throw contractError;
+      
+      // Validate contract state
+      if ((contract as any).needs_recalc) {
+        throw new Error(LOAN_ERROR_MESSAGES.NEEDS_RECALC);
+      }
       
       // Fetch installments to generate (PREVISTA only, without ap_transaction_id)
       let query = supabase
@@ -270,35 +333,35 @@ export function useGenerateAPTitles() {
       
       if (installmentsError) throw installmentsError;
       if (!installments || installments.length === 0) {
-        throw new Error('Não há parcelas pendentes para gerar lançamentos');
+        throw new Error(LOAN_ERROR_MESSAGES.NO_INSTALLMENTS_TO_GENERATE);
       }
       
       // Generate idempotency key
-      const idempotencyKey = `APGEN:${contract_id}:${max_installment || 'all'}:${max_date || 'all'}`;
-      
-      // Check if already run
-      const { data: existingRun } = await supabase
-        .from('loan_generation_runs')
-        .select('id')
-        .eq('company_id', currentCompany.id)
-        .eq('idempotency_key', idempotencyKey)
-        .single();
-      
-      if (existingRun) {
-        throw new Error('Esta operação já foi executada. Use parâmetros diferentes.');
-      }
+      const idempotencyKey = `APGEN:${contract_id}:${max_installment || 'all'}:${max_date || 'all'}:${Date.now()}`;
       
       const bankName = (contract.bank as any)?.name || 'Banco';
       const walletId = (contract.company_bank_account as any)?.wallet_id;
       
       if (!walletId) {
-        throw new Error('A conta bancária do contrato não possui carteira (wallet) vinculada');
+        throw new Error(LOAN_ERROR_MESSAGES.WALLET_REQUIRED);
+      }
+      
+      const accountId = contract.liability_account_id;
+      if (!accountId) {
+        throw new Error(LOAN_ERROR_MESSAGES.LIABILITY_ACCOUNT_REQUIRED);
       }
       
       const createdTransactions: string[] = [];
+      const skippedInstallments: number[] = [];
       
       // Create AP transactions for each installment
       for (const installment of installments) {
+        // Double-check idempotency at installment level
+        if (installment.ap_transaction_id) {
+          skippedInstallments.push(installment.installment_no);
+          continue;
+        }
+        
         // Build description from template
         let description = contract.description_template || 
           'Empréstimo {bank} – Contrato {contract} – Parcela {k}/{n}';
@@ -308,14 +371,6 @@ export function useGenerateAPTitles() {
           .replace('{contract}', contract.contract_number)
           .replace('{k}', String(installment.installment_no))
           .replace('{n}', String(contract.installments_count));
-        
-        // Create AP transaction - need to get a default account_id for payables
-        // We'll use the liability_account_id from contract if available, or need a default
-        const accountId = contract.liability_account_id;
-        
-        if (!accountId) {
-          throw new Error('O contrato precisa de uma conta contábil (liability_account_id) para gerar títulos AP');
-        }
         
         const { data: transaction, error: txError } = await supabase
           .from('transactions')
@@ -366,18 +421,29 @@ export function useGenerateAPTitles() {
           max_installment, 
           max_date,
           generated_count: createdTransactions.length,
+          skipped_count: skippedInstallments.length,
           transaction_ids: createdTransactions,
         },
         status: 'OK',
         created_by: user?.id,
       });
       
-      return { count: createdTransactions.length, transactionIds: createdTransactions };
+      return { 
+        count: createdTransactions.length, 
+        skipped: skippedInstallments.length,
+        transactionIds: createdTransactions 
+      };
     },
     onSuccess: (result, params) => {
       queryClient.invalidateQueries({ queryKey: ['loan-installments', params.contract_id] });
+      queryClient.invalidateQueries({ queryKey: ['loan-contract', params.contract_id] });
       queryClient.invalidateQueries({ queryKey: ['transactions'] });
-      toast.success(`${result.count} título(s) AP gerado(s) com sucesso`);
+      
+      let message = `${result.count} título(s) AP gerado(s) com sucesso`;
+      if (result.skipped > 0) {
+        message += `. ${result.skipped} já estava(m) gerado(s).`;
+      }
+      toast.success(message);
     },
     onError: (error: Error) => {
       toast.error(`Erro ao gerar lançamentos: ${error.message}`);
@@ -385,14 +451,24 @@ export function useGenerateAPTitles() {
   });
 }
 
-// Activate contract
+// Activate contract with validation
 export function useActivateLoanContract() {
-  const { currentCompany } = useAuth();
+  const { currentCompany, user } = useAuth();
   const queryClient = useQueryClient();
   
   return useMutation({
     mutationFn: async (contractId: string) => {
       if (!currentCompany?.id) throw new Error('Empresa não selecionada');
+      
+      // Fetch contract to validate
+      const { data: contract, error: fetchError } = await supabase
+        .from('loan_contracts')
+        .select('*')
+        .eq('id', contractId)
+        .eq('company_id', currentCompany.id)
+        .single();
+      
+      if (fetchError) throw fetchError;
       
       // Check if has installments
       const { data: installments, error: checkError } = await supabase
@@ -403,13 +479,23 @@ export function useActivateLoanContract() {
         .limit(1);
       
       if (checkError) throw checkError;
-      if (!installments || installments.length === 0) {
-        throw new Error('Calcule as parcelas antes de ativar o contrato');
+      
+      const hasInstallments = installments && installments.length > 0;
+      
+      // Validate contract can be activated
+      const checkResult = canActivateContract(contract as any, hasInstallments);
+      if (!checkResult.canActivate) {
+        throw new Error(checkResult.reason);
       }
       
       const { error } = await supabase
         .from('loan_contracts')
-        .update({ status: 'ATIVO', allow_recalculate: false })
+        .update({ 
+          status: 'ATIVO', 
+          allow_recalculate: false,
+          activated_at: new Date().toISOString(),
+          activated_by: user?.id,
+        })
         .eq('id', contractId)
         .eq('company_id', currentCompany.id);
       

@@ -7983,6 +7983,8 @@ export type Database = {
       }
       loan_contracts: {
         Row: {
+          activated_at: string | null
+          activated_by: string | null
           allow_recalculate: boolean
           amortization_system: Database["public"]["Enums"]["amortization_system"]
           ap_series: string | null
@@ -8003,11 +8005,14 @@ export type Database = {
           first_due_date: string
           grace_periods: number
           grace_type: Database["public"]["Enums"]["grace_type"]
+          has_generated_titles: boolean | null
           id: string
           installment_period: Database["public"]["Enums"]["installment_period"]
+          installments_calculated_at: string | null
           installments_count: number
           interest_expense_account_id: string | null
           liability_account_id: string | null
+          needs_recalc: boolean | null
           nominal_rate: number
           notes: string | null
           opening_balance: number | null
@@ -8017,10 +8022,13 @@ export type Database = {
           rate_index: Database["public"]["Enums"]["rate_index"] | null
           rate_period: Database["public"]["Enums"]["rate_period"]
           rate_type: Database["public"]["Enums"]["rate_type"]
+          recalc_reason: string | null
           status: Database["public"]["Enums"]["loan_contract_status"]
           updated_at: string
         }
         Insert: {
+          activated_at?: string | null
+          activated_by?: string | null
           allow_recalculate?: boolean
           amortization_system?: Database["public"]["Enums"]["amortization_system"]
           ap_series?: string | null
@@ -8041,11 +8049,14 @@ export type Database = {
           first_due_date: string
           grace_periods?: number
           grace_type?: Database["public"]["Enums"]["grace_type"]
+          has_generated_titles?: boolean | null
           id?: string
           installment_period?: Database["public"]["Enums"]["installment_period"]
+          installments_calculated_at?: string | null
           installments_count: number
           interest_expense_account_id?: string | null
           liability_account_id?: string | null
+          needs_recalc?: boolean | null
           nominal_rate: number
           notes?: string | null
           opening_balance?: number | null
@@ -8055,10 +8066,13 @@ export type Database = {
           rate_index?: Database["public"]["Enums"]["rate_index"] | null
           rate_period?: Database["public"]["Enums"]["rate_period"]
           rate_type?: Database["public"]["Enums"]["rate_type"]
+          recalc_reason?: string | null
           status?: Database["public"]["Enums"]["loan_contract_status"]
           updated_at?: string
         }
         Update: {
+          activated_at?: string | null
+          activated_by?: string | null
           allow_recalculate?: boolean
           amortization_system?: Database["public"]["Enums"]["amortization_system"]
           ap_series?: string | null
@@ -8079,11 +8093,14 @@ export type Database = {
           first_due_date?: string
           grace_periods?: number
           grace_type?: Database["public"]["Enums"]["grace_type"]
+          has_generated_titles?: boolean | null
           id?: string
           installment_period?: Database["public"]["Enums"]["installment_period"]
+          installments_calculated_at?: string | null
           installments_count?: number
           interest_expense_account_id?: string | null
           liability_account_id?: string | null
+          needs_recalc?: boolean | null
           nominal_rate?: number
           notes?: string | null
           opening_balance?: number | null
@@ -8093,6 +8110,7 @@ export type Database = {
           rate_index?: Database["public"]["Enums"]["rate_index"] | null
           rate_period?: Database["public"]["Enums"]["rate_period"]
           rate_type?: Database["public"]["Enums"]["rate_type"]
+          recalc_reason?: string | null
           status?: Database["public"]["Enums"]["loan_contract_status"]
           updated_at?: string
         }
