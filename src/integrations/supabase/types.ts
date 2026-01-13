@@ -2843,6 +2843,39 @@ export type Database = {
           },
         ]
       }
+      cnab_occurrence_map: {
+        Row: {
+          action: string | null
+          bank_code: string
+          created_at: string
+          id: string
+          is_final: boolean | null
+          meaning: string
+          occurrence_code: string
+          occurrence_type: string
+        }
+        Insert: {
+          action?: string | null
+          bank_code: string
+          created_at?: string
+          id?: string
+          is_final?: boolean | null
+          meaning: string
+          occurrence_code: string
+          occurrence_type: string
+        }
+        Update: {
+          action?: string | null
+          bank_code?: string
+          created_at?: string
+          id?: string
+          is_final?: boolean | null
+          meaning?: string
+          occurrence_code?: string
+          occurrence_type?: string
+        }
+        Relationships: []
+      }
       cnab_occurrences: {
         Row: {
           amount: number | null
@@ -3778,8 +3811,10 @@ export type Database = {
           is_supplier: boolean
           legal_name: string | null
           missing_fields_json: Json | null
+          municipal_registration: string | null
           name: string
           nf_email: string | null
+          operation_nature: string | null
           payment_ready: boolean | null
           payment_terms_payable: number | null
           payment_terms_receivable: number | null
@@ -3787,7 +3822,11 @@ export type Database = {
           phone: string | null
           pix_key: string | null
           pix_key_type: string | null
+          state_registration: string | null
+          state_registration_exempt: boolean | null
+          suframa: string | null
           supplier_notes: string | null
+          tax_regime: string | null
           trade_name: string | null
           type: Database["public"]["Enums"]["counterparty_type"]
           updated_at: string | null
@@ -3839,8 +3878,10 @@ export type Database = {
           is_supplier?: boolean
           legal_name?: string | null
           missing_fields_json?: Json | null
+          municipal_registration?: string | null
           name: string
           nf_email?: string | null
+          operation_nature?: string | null
           payment_ready?: boolean | null
           payment_terms_payable?: number | null
           payment_terms_receivable?: number | null
@@ -3848,7 +3889,11 @@ export type Database = {
           phone?: string | null
           pix_key?: string | null
           pix_key_type?: string | null
+          state_registration?: string | null
+          state_registration_exempt?: boolean | null
+          suframa?: string | null
           supplier_notes?: string | null
+          tax_regime?: string | null
           trade_name?: string | null
           type?: Database["public"]["Enums"]["counterparty_type"]
           updated_at?: string | null
@@ -3900,8 +3945,10 @@ export type Database = {
           is_supplier?: boolean
           legal_name?: string | null
           missing_fields_json?: Json | null
+          municipal_registration?: string | null
           name?: string
           nf_email?: string | null
+          operation_nature?: string | null
           payment_ready?: boolean | null
           payment_terms_payable?: number | null
           payment_terms_receivable?: number | null
@@ -3909,7 +3956,11 @@ export type Database = {
           phone?: string | null
           pix_key?: string | null
           pix_key_type?: string | null
+          state_registration?: string | null
+          state_registration_exempt?: boolean | null
+          suframa?: string | null
           supplier_notes?: string | null
+          tax_regime?: string | null
           trade_name?: string | null
           type?: Database["public"]["Enums"]["counterparty_type"]
           updated_at?: string | null
@@ -5283,6 +5334,51 @@ export type Database = {
           },
         ]
       }
+      feature_flags: {
+        Row: {
+          company_id: string
+          config_json: Json | null
+          enabled: boolean
+          feature_key: string
+          id: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          company_id: string
+          config_json?: Json | null
+          enabled?: boolean
+          feature_key: string
+          id?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          company_id?: string
+          config_json?: Json | null
+          enabled?: boolean
+          feature_key?: string
+          id?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feature_flags_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "feature_flags_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
       field_visibility_policies: {
         Row: {
           company_id: string
@@ -5330,6 +5426,69 @@ export type Database = {
             referencedColumns: ["company_id"]
           },
         ]
+      }
+      fiscal_cfop: {
+        Row: {
+          code: string
+          created_at: string
+          description: string
+          generates_credit: boolean | null
+          id: string
+          is_active: boolean
+          is_interstate: boolean | null
+          operation_type: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          description: string
+          generates_credit?: boolean | null
+          id?: string
+          is_active?: boolean
+          is_interstate?: boolean | null
+          operation_type?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          description?: string
+          generates_credit?: boolean | null
+          id?: string
+          is_active?: boolean
+          is_interstate?: boolean | null
+          operation_type?: string | null
+        }
+        Relationships: []
+      }
+      fiscal_cst_csosn: {
+        Row: {
+          code: string
+          created_at: string
+          description: string
+          id: string
+          is_active: boolean
+          is_simples_nacional: boolean | null
+          tax_type: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          description: string
+          id?: string
+          is_active?: boolean
+          is_simples_nacional?: boolean | null
+          tax_type: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          description?: string
+          id?: string
+          is_active?: boolean
+          is_simples_nacional?: boolean | null
+          tax_type?: string
+        }
+        Relationships: []
       }
       fiscal_document_lines: {
         Row: {
@@ -5563,6 +5722,36 @@ export type Database = {
           },
         ]
       }
+      fiscal_ncm: {
+        Row: {
+          code: string
+          created_at: string
+          description: string
+          id: string
+          ipi_rate: number | null
+          is_active: boolean
+          unit: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          description: string
+          id?: string
+          ipi_rate?: number | null
+          is_active?: boolean
+          unit?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          description?: string
+          id?: string
+          ipi_rate?: number | null
+          is_active?: boolean
+          unit?: string | null
+        }
+        Relationships: []
+      }
       fiscal_periods: {
         Row: {
           closed_at: string | null
@@ -5619,6 +5808,210 @@ export type Database = {
           },
           {
             foreignKeyName: "fiscal_periods_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      fiscal_provider_config: {
+        Row: {
+          certificate_a1_path: string | null
+          certificate_expires_at: string | null
+          certificate_password_encrypted: string | null
+          company_id: string
+          config_json: Json | null
+          created_at: string
+          credentials_encrypted: string | null
+          document_types: string[] | null
+          environment: string | null
+          id: string
+          is_enabled: boolean
+          provider_key: string
+          provider_name: string | null
+          updated_at: string
+        }
+        Insert: {
+          certificate_a1_path?: string | null
+          certificate_expires_at?: string | null
+          certificate_password_encrypted?: string | null
+          company_id: string
+          config_json?: Json | null
+          created_at?: string
+          credentials_encrypted?: string | null
+          document_types?: string[] | null
+          environment?: string | null
+          id?: string
+          is_enabled?: boolean
+          provider_key: string
+          provider_name?: string | null
+          updated_at?: string
+        }
+        Update: {
+          certificate_a1_path?: string | null
+          certificate_expires_at?: string | null
+          certificate_password_encrypted?: string | null
+          company_id?: string
+          config_json?: Json | null
+          created_at?: string
+          credentials_encrypted?: string | null
+          document_types?: string[] | null
+          environment?: string | null
+          id?: string
+          is_enabled?: boolean
+          provider_key?: string
+          provider_name?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fiscal_provider_config_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fiscal_provider_config_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      fiscal_tax_regimes: {
+        Row: {
+          company_id: string
+          config_json: Json | null
+          created_at: string
+          crt: string
+          id: string
+          is_active: boolean
+          regime_code: string
+          regime_name: string
+          updated_at: string
+          valid_from: string | null
+          valid_until: string | null
+        }
+        Insert: {
+          company_id: string
+          config_json?: Json | null
+          created_at?: string
+          crt: string
+          id?: string
+          is_active?: boolean
+          regime_code: string
+          regime_name: string
+          updated_at?: string
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Update: {
+          company_id?: string
+          config_json?: Json | null
+          created_at?: string
+          crt?: string
+          id?: string
+          is_active?: boolean
+          regime_code?: string
+          regime_name?: string
+          updated_at?: string
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fiscal_tax_regimes_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fiscal_tax_regimes_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      fiscal_tax_rules: {
+        Row: {
+          base_reduction_percent: number | null
+          cfop_codes: string[] | null
+          company_id: string
+          conditions_json: Json | null
+          created_at: string
+          cst_code: string | null
+          destination_state: string | null
+          id: string
+          is_active: boolean
+          is_exempt: boolean | null
+          is_retained: boolean | null
+          name: string
+          ncm_codes: string[] | null
+          operation_type: string | null
+          origin_state: string | null
+          priority: number | null
+          rate: number
+          tax_type: string
+          updated_at: string
+        }
+        Insert: {
+          base_reduction_percent?: number | null
+          cfop_codes?: string[] | null
+          company_id: string
+          conditions_json?: Json | null
+          created_at?: string
+          cst_code?: string | null
+          destination_state?: string | null
+          id?: string
+          is_active?: boolean
+          is_exempt?: boolean | null
+          is_retained?: boolean | null
+          name: string
+          ncm_codes?: string[] | null
+          operation_type?: string | null
+          origin_state?: string | null
+          priority?: number | null
+          rate: number
+          tax_type: string
+          updated_at?: string
+        }
+        Update: {
+          base_reduction_percent?: number | null
+          cfop_codes?: string[] | null
+          company_id?: string
+          conditions_json?: Json | null
+          created_at?: string
+          cst_code?: string | null
+          destination_state?: string | null
+          id?: string
+          is_active?: boolean
+          is_exempt?: boolean | null
+          is_retained?: boolean | null
+          name?: string
+          ncm_codes?: string[] | null
+          operation_type?: string | null
+          origin_state?: string | null
+          priority?: number | null
+          rate?: number
+          tax_type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fiscal_tax_rules_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fiscal_tax_rules_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "v_security_status"
@@ -7189,6 +7582,522 @@ export type Database = {
         }
         Relationships: []
       }
+      nfe_events: {
+        Row: {
+          correction_text: string | null
+          created_at: string
+          event_date: string
+          event_sequence: number | null
+          event_type: string
+          id: string
+          invoice_id: string
+          justification: string | null
+          payload_json: Json | null
+          protocol: string | null
+          response_json: Json | null
+          status: string | null
+        }
+        Insert: {
+          correction_text?: string | null
+          created_at?: string
+          event_date?: string
+          event_sequence?: number | null
+          event_type: string
+          id?: string
+          invoice_id: string
+          justification?: string | null
+          payload_json?: Json | null
+          protocol?: string | null
+          response_json?: Json | null
+          status?: string | null
+        }
+        Update: {
+          correction_text?: string | null
+          created_at?: string
+          event_date?: string
+          event_sequence?: number | null
+          event_type?: string
+          id?: string
+          invoice_id?: string
+          justification?: string | null
+          payload_json?: Json | null
+          protocol?: string | null
+          response_json?: Json | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nfe_events_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "nfe_invoices"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      nfe_invoices: {
+        Row: {
+          access_key: string | null
+          additional_info: string | null
+          authorized_at: string | null
+          branch_id: string | null
+          canceled_at: string | null
+          cfop: string | null
+          company_id: string
+          created_at: string
+          created_by: string | null
+          customer_data_json: Json | null
+          customer_id: string | null
+          danfe_pdf_path: string | null
+          exit_date: string | null
+          id: string
+          issue_date: string
+          number: number | null
+          operation_nature: string | null
+          operation_type: string | null
+          payment_type: string | null
+          provider_id: string | null
+          provider_id_external: string | null
+          sefaz_message: string | null
+          sefaz_protocol: string | null
+          sefaz_receipt: string | null
+          series: number | null
+          status: string
+          taxes_json: Json | null
+          total_discounts: number | null
+          total_freight: number | null
+          total_insurance: number | null
+          total_nf: number | null
+          total_other: number | null
+          total_products: number | null
+          total_taxes: number | null
+          updated_at: string
+          xml_path: string | null
+        }
+        Insert: {
+          access_key?: string | null
+          additional_info?: string | null
+          authorized_at?: string | null
+          branch_id?: string | null
+          canceled_at?: string | null
+          cfop?: string | null
+          company_id: string
+          created_at?: string
+          created_by?: string | null
+          customer_data_json?: Json | null
+          customer_id?: string | null
+          danfe_pdf_path?: string | null
+          exit_date?: string | null
+          id?: string
+          issue_date?: string
+          number?: number | null
+          operation_nature?: string | null
+          operation_type?: string | null
+          payment_type?: string | null
+          provider_id?: string | null
+          provider_id_external?: string | null
+          sefaz_message?: string | null
+          sefaz_protocol?: string | null
+          sefaz_receipt?: string | null
+          series?: number | null
+          status?: string
+          taxes_json?: Json | null
+          total_discounts?: number | null
+          total_freight?: number | null
+          total_insurance?: number | null
+          total_nf?: number | null
+          total_other?: number | null
+          total_products?: number | null
+          total_taxes?: number | null
+          updated_at?: string
+          xml_path?: string | null
+        }
+        Update: {
+          access_key?: string | null
+          additional_info?: string | null
+          authorized_at?: string | null
+          branch_id?: string | null
+          canceled_at?: string | null
+          cfop?: string | null
+          company_id?: string
+          created_at?: string
+          created_by?: string | null
+          customer_data_json?: Json | null
+          customer_id?: string | null
+          danfe_pdf_path?: string | null
+          exit_date?: string | null
+          id?: string
+          issue_date?: string
+          number?: number | null
+          operation_nature?: string | null
+          operation_type?: string | null
+          payment_type?: string | null
+          provider_id?: string | null
+          provider_id_external?: string | null
+          sefaz_message?: string | null
+          sefaz_protocol?: string | null
+          sefaz_receipt?: string | null
+          series?: number | null
+          status?: string
+          taxes_json?: Json | null
+          total_discounts?: number | null
+          total_freight?: number | null
+          total_insurance?: number | null
+          total_nf?: number | null
+          total_other?: number | null
+          total_products?: number | null
+          total_taxes?: number | null
+          updated_at?: string
+          xml_path?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nfe_invoices_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "nfe_invoices_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "nfe_invoices_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "nfe_invoices_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "counterparties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "nfe_invoices_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "fiscal_provider_config"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      nfe_items: {
+        Row: {
+          cest: string | null
+          cfop: string
+          cofins_cst: string | null
+          cofins_rate: number | null
+          cofins_value: number | null
+          created_at: string
+          csosn: string | null
+          cst_icms: string | null
+          discount: number | null
+          icms_base: number | null
+          icms_rate: number | null
+          icms_value: number | null
+          id: string
+          invoice_id: string
+          ipi_cst: string | null
+          ipi_rate: number | null
+          ipi_value: number | null
+          item_number: number
+          ncm: string | null
+          pis_cst: string | null
+          pis_rate: number | null
+          pis_value: number | null
+          product_code: string | null
+          product_description: string
+          quantity: number
+          total_price: number
+          unit: string
+          unit_price: number
+        }
+        Insert: {
+          cest?: string | null
+          cfop: string
+          cofins_cst?: string | null
+          cofins_rate?: number | null
+          cofins_value?: number | null
+          created_at?: string
+          csosn?: string | null
+          cst_icms?: string | null
+          discount?: number | null
+          icms_base?: number | null
+          icms_rate?: number | null
+          icms_value?: number | null
+          id?: string
+          invoice_id: string
+          ipi_cst?: string | null
+          ipi_rate?: number | null
+          ipi_value?: number | null
+          item_number: number
+          ncm?: string | null
+          pis_cst?: string | null
+          pis_rate?: number | null
+          pis_value?: number | null
+          product_code?: string | null
+          product_description: string
+          quantity: number
+          total_price: number
+          unit?: string
+          unit_price: number
+        }
+        Update: {
+          cest?: string | null
+          cfop?: string
+          cofins_cst?: string | null
+          cofins_rate?: number | null
+          cofins_value?: number | null
+          created_at?: string
+          csosn?: string | null
+          cst_icms?: string | null
+          discount?: number | null
+          icms_base?: number | null
+          icms_rate?: number | null
+          icms_value?: number | null
+          id?: string
+          invoice_id?: string
+          ipi_cst?: string | null
+          ipi_rate?: number | null
+          ipi_value?: number | null
+          item_number?: number
+          ncm?: string | null
+          pis_cst?: string | null
+          pis_rate?: number | null
+          pis_value?: number | null
+          product_code?: string | null
+          product_description?: string
+          quantity?: number
+          total_price?: number
+          unit?: string
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nfe_items_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "nfe_invoices"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      nfse_events: {
+        Row: {
+          created_at: string
+          event_date: string
+          event_type: string
+          id: string
+          invoice_id: string
+          justification: string | null
+          payload_json: Json | null
+          protocol: string | null
+          response_json: Json | null
+          status: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_date?: string
+          event_type: string
+          id?: string
+          invoice_id: string
+          justification?: string | null
+          payload_json?: Json | null
+          protocol?: string | null
+          response_json?: Json | null
+          status?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_date?: string
+          event_type?: string
+          id?: string
+          invoice_id?: string
+          justification?: string | null
+          payload_json?: Json | null
+          protocol?: string | null
+          response_json?: Json | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nfse_events_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "nfse_invoices"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      nfse_invoices: {
+        Row: {
+          additional_info: string | null
+          authorized_at: string | null
+          branch_id: string | null
+          calculation_base: number | null
+          canceled_at: string | null
+          cnae: string | null
+          cofins_value: number | null
+          company_id: string
+          competence_date: string | null
+          created_at: string
+          created_by: string | null
+          csll_value: number | null
+          customer_data_json: Json | null
+          customer_id: string | null
+          deductions: number | null
+          id: string
+          inss_value: number | null
+          ir_value: number | null
+          iss_rate: number | null
+          iss_retained: boolean | null
+          iss_value: number | null
+          issue_date: string
+          municipality_code: string | null
+          net_value: number | null
+          number: number | null
+          pdf_path: string | null
+          pis_value: number | null
+          protocol: string | null
+          provider_id: string | null
+          provider_id_external: string | null
+          rps_number: number | null
+          rps_series: string | null
+          service_code: string | null
+          service_description: string
+          status: string
+          total_services: number
+          updated_at: string
+          verification_code: string | null
+          xml_path: string | null
+        }
+        Insert: {
+          additional_info?: string | null
+          authorized_at?: string | null
+          branch_id?: string | null
+          calculation_base?: number | null
+          canceled_at?: string | null
+          cnae?: string | null
+          cofins_value?: number | null
+          company_id: string
+          competence_date?: string | null
+          created_at?: string
+          created_by?: string | null
+          csll_value?: number | null
+          customer_data_json?: Json | null
+          customer_id?: string | null
+          deductions?: number | null
+          id?: string
+          inss_value?: number | null
+          ir_value?: number | null
+          iss_rate?: number | null
+          iss_retained?: boolean | null
+          iss_value?: number | null
+          issue_date?: string
+          municipality_code?: string | null
+          net_value?: number | null
+          number?: number | null
+          pdf_path?: string | null
+          pis_value?: number | null
+          protocol?: string | null
+          provider_id?: string | null
+          provider_id_external?: string | null
+          rps_number?: number | null
+          rps_series?: string | null
+          service_code?: string | null
+          service_description: string
+          status?: string
+          total_services: number
+          updated_at?: string
+          verification_code?: string | null
+          xml_path?: string | null
+        }
+        Update: {
+          additional_info?: string | null
+          authorized_at?: string | null
+          branch_id?: string | null
+          calculation_base?: number | null
+          canceled_at?: string | null
+          cnae?: string | null
+          cofins_value?: number | null
+          company_id?: string
+          competence_date?: string | null
+          created_at?: string
+          created_by?: string | null
+          csll_value?: number | null
+          customer_data_json?: Json | null
+          customer_id?: string | null
+          deductions?: number | null
+          id?: string
+          inss_value?: number | null
+          ir_value?: number | null
+          iss_rate?: number | null
+          iss_retained?: boolean | null
+          iss_value?: number | null
+          issue_date?: string
+          municipality_code?: string | null
+          net_value?: number | null
+          number?: number | null
+          pdf_path?: string | null
+          pis_value?: number | null
+          protocol?: string | null
+          provider_id?: string | null
+          provider_id_external?: string | null
+          rps_number?: number | null
+          rps_series?: string | null
+          service_code?: string | null
+          service_description?: string
+          status?: string
+          total_services?: number
+          updated_at?: string
+          verification_code?: string | null
+          xml_path?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nfse_invoices_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "nfse_invoices_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "nfse_invoices_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "nfse_invoices_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "counterparties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "nfse_invoices_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "fiscal_provider_config"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       payment_methods: {
         Row: {
           company_id: string
@@ -7646,6 +8555,241 @@ export type Database = {
         }
         Relationships: []
       }
+      pix_charges: {
+        Row: {
+          amount: number
+          brcode: string | null
+          company_id: string
+          created_at: string
+          description: string | null
+          end_to_end_id: string | null
+          expiration_seconds: number | null
+          expires_at: string | null
+          id: string
+          paid_amount: number | null
+          paid_at: string | null
+          payer_bank: string | null
+          payer_document: string | null
+          payer_name: string | null
+          provider_id: string | null
+          qrcode_image_path: string | null
+          status: string
+          transaction_id: string | null
+          txid: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          brcode?: string | null
+          company_id: string
+          created_at?: string
+          description?: string | null
+          end_to_end_id?: string | null
+          expiration_seconds?: number | null
+          expires_at?: string | null
+          id?: string
+          paid_amount?: number | null
+          paid_at?: string | null
+          payer_bank?: string | null
+          payer_document?: string | null
+          payer_name?: string | null
+          provider_id?: string | null
+          qrcode_image_path?: string | null
+          status?: string
+          transaction_id?: string | null
+          txid: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          brcode?: string | null
+          company_id?: string
+          created_at?: string
+          description?: string | null
+          end_to_end_id?: string | null
+          expiration_seconds?: number | null
+          expires_at?: string | null
+          id?: string
+          paid_amount?: number | null
+          paid_at?: string | null
+          payer_bank?: string | null
+          payer_document?: string | null
+          payer_name?: string | null
+          provider_id?: string | null
+          qrcode_image_path?: string | null
+          status?: string
+          transaction_id?: string | null
+          txid?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pix_charges_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pix_charges_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "pix_charges_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "pix_providers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pix_charges_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pix_charges_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "v_ap_open"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pix_charges_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "v_ar_open"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pix_events: {
+        Row: {
+          amount: number | null
+          company_id: string
+          created_at: string
+          end_to_end_id: string | null
+          error_message: string | null
+          event_id: string | null
+          event_type: string | null
+          id: string
+          is_duplicate: boolean | null
+          processed_at: string | null
+          provider_key: string
+          raw_json_sanitized: Json | null
+          signature_valid: boolean | null
+          status: string | null
+          txid: string | null
+        }
+        Insert: {
+          amount?: number | null
+          company_id: string
+          created_at?: string
+          end_to_end_id?: string | null
+          error_message?: string | null
+          event_id?: string | null
+          event_type?: string | null
+          id?: string
+          is_duplicate?: boolean | null
+          processed_at?: string | null
+          provider_key: string
+          raw_json_sanitized?: Json | null
+          signature_valid?: boolean | null
+          status?: string | null
+          txid?: string | null
+        }
+        Update: {
+          amount?: number | null
+          company_id?: string
+          created_at?: string
+          end_to_end_id?: string | null
+          error_message?: string | null
+          event_id?: string | null
+          event_type?: string | null
+          id?: string
+          is_duplicate?: boolean | null
+          processed_at?: string | null
+          provider_key?: string
+          raw_json_sanitized?: Json | null
+          signature_valid?: boolean | null
+          status?: string | null
+          txid?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pix_events_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pix_events_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      pix_providers: {
+        Row: {
+          company_id: string
+          config_json: Json | null
+          created_at: string
+          credentials_encrypted: string | null
+          id: string
+          is_enabled: boolean
+          provider_key: string
+          provider_name: string | null
+          updated_at: string
+          webhook_secret_encrypted: string | null
+        }
+        Insert: {
+          company_id: string
+          config_json?: Json | null
+          created_at?: string
+          credentials_encrypted?: string | null
+          id?: string
+          is_enabled?: boolean
+          provider_key: string
+          provider_name?: string | null
+          updated_at?: string
+          webhook_secret_encrypted?: string | null
+        }
+        Update: {
+          company_id?: string
+          config_json?: Json | null
+          created_at?: string
+          credentials_encrypted?: string | null
+          id?: string
+          is_enabled?: boolean
+          provider_key?: string
+          provider_name?: string | null
+          updated_at?: string
+          webhook_secret_encrypted?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pix_providers_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pix_providers_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
       posting_rules: {
         Row: {
           company_id: string
@@ -7789,6 +8933,87 @@ export type Database = {
           },
           {
             foreignKeyName: "privacy_requests_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      product_fiscal_data: {
+        Row: {
+          cest: string | null
+          cofins_rate: number | null
+          company_id: string
+          created_at: string
+          default_cfop_entrada: string | null
+          default_cfop_saida: string | null
+          default_cst_cofins: string | null
+          default_cst_icms: string | null
+          default_cst_pis: string | null
+          icms_rate: number | null
+          id: string
+          is_active: boolean
+          ncm: string | null
+          origin: string | null
+          pis_rate: number | null
+          product_code: string
+          product_name: string | null
+          unit: string | null
+          updated_at: string
+        }
+        Insert: {
+          cest?: string | null
+          cofins_rate?: number | null
+          company_id: string
+          created_at?: string
+          default_cfop_entrada?: string | null
+          default_cfop_saida?: string | null
+          default_cst_cofins?: string | null
+          default_cst_icms?: string | null
+          default_cst_pis?: string | null
+          icms_rate?: number | null
+          id?: string
+          is_active?: boolean
+          ncm?: string | null
+          origin?: string | null
+          pis_rate?: number | null
+          product_code: string
+          product_name?: string | null
+          unit?: string | null
+          updated_at?: string
+        }
+        Update: {
+          cest?: string | null
+          cofins_rate?: number | null
+          company_id?: string
+          created_at?: string
+          default_cfop_entrada?: string | null
+          default_cfop_saida?: string | null
+          default_cst_cofins?: string | null
+          default_cst_icms?: string | null
+          default_cst_pis?: string | null
+          icms_rate?: number | null
+          id?: string
+          is_active?: boolean
+          ncm?: string | null
+          origin?: string | null
+          pis_rate?: number | null
+          product_code?: string
+          product_name?: string | null
+          unit?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_fiscal_data_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_fiscal_data_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "v_security_status"
