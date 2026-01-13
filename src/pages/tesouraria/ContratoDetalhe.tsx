@@ -39,6 +39,8 @@ import {
   CheckCircle2,
   Clock,
   AlertCircle,
+  Lock,
+  Edit,
 } from 'lucide-react';
 import { 
   useLoanContract, 
@@ -47,6 +49,14 @@ import {
   useGenerateAPTitles,
   useActivateLoanContract,
 } from '@/hooks/useLoanContracts';
+import { 
+  canCalculateInstallments,
+  canGenerateAPTitles,
+  canActivateContract,
+  needsRecalculation,
+} from '@/hooks/useLoanValidation';
+import { NeedsRecalcBanner } from '@/components/loans/NeedsRecalcBanner';
+import { ConfirmationDialog } from '@/components/loans/ConfirmationDialog';
 import { formatCurrency, formatRate } from '@/lib/loanCalculations';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -90,6 +100,8 @@ export default function ContratoDetalhePage() {
   
   const [activeTab, setActiveTab] = useState(initialTab);
   const [showGenerateDialog, setShowGenerateDialog] = useState(false);
+  const [showActivateDialog, setShowActivateDialog] = useState(false);
+  const [showRecalcDialog, setShowRecalcDialog] = useState(false);
   const [generateMode, setGenerateMode] = useState<'all' | 'number' | 'date'>('all');
   const [generateValue, setGenerateValue] = useState('');
   
@@ -100,9 +112,31 @@ export default function ContratoDetalhePage() {
   const generateAPMutation = useGenerateAPTitles();
   const activateMutation = useActivateLoanContract();
 
+  const hasInstallments = installments && installments.length > 0;
+  const pendingInstallments = installments?.filter(i => i.status === 'PREVISTA' && !i.ap_transaction_id) || [];
+  const generatedInstallments = installments?.filter(i => i.status !== 'PREVISTA') || [];
+
+  // Validation checks
+  const canCalculate = contract ? canCalculateInstallments(contract) : { canCalculate: false };
+  const canGenerate = contract ? canGenerateAPTitles(contract, pendingInstallments.length) : { canGenerate: false };
+  const canActivate = contract ? canActivateContract(contract, !!hasInstallments) : { canActivate: false };
+  const needsRecalc = contract ? needsRecalculation(contract) : false;
+
   const handleCalculate = () => {
     if (contract) {
-      calculateMutation.mutate(contract);
+      if (hasInstallments) {
+        setShowRecalcDialog(true);
+      } else {
+        calculateMutation.mutate(contract);
+      }
+    }
+  };
+
+  const confirmRecalculate = () => {
+    if (contract) {
+      calculateMutation.mutate(contract, {
+        onSuccess: () => setShowRecalcDialog(false),
+      });
     }
   };
 
@@ -127,12 +161,11 @@ export default function ContratoDetalhePage() {
 
   const handleActivate = () => {
     if (contract) {
-      activateMutation.mutate(contract.id);
+      activateMutation.mutate(contract.id, {
+        onSuccess: () => setShowActivateDialog(false),
+      });
     }
   };
-
-  const pendingInstallments = installments?.filter(i => i.status === 'PREVISTA' && !i.ap_transaction_id) || [];
-  const generatedInstallments = installments?.filter(i => i.status !== 'PREVISTA') || [];
 
   if (contractLoading) {
     return (
@@ -169,6 +202,8 @@ export default function ContratoDetalhePage() {
     );
   }
 
+  const isReadOnly = contract.status !== 'EDICAO';
+
   return (
     <div className="container mx-auto py-6 space-y-6">
       {/* Header */}
@@ -183,6 +218,9 @@ export default function ContratoDetalhePage() {
               <Badge variant={statusVariants[contract.status]}>
                 {statusLabels[contract.status]}
               </Badge>
+              {isReadOnly && (
+                <Lock className="h-4 w-4 text-muted-foreground" />
+              )}
             </h1>
             <p className="text-muted-foreground">
               {contract.creditor?.name} • {contract.bank?.name}
@@ -193,10 +231,11 @@ export default function ContratoDetalhePage() {
         <div className="flex flex-wrap gap-2">
           {contract.status === 'EDICAO' && (
             <>
-              {(!installments || installments.length === 0) ? (
+              {!hasInstallments ? (
                 <Button 
                   onClick={handleCalculate}
-                  disabled={calculateMutation.isPending}
+                  disabled={calculateMutation.isPending || !canCalculate.canCalculate}
+                  title={canCalculate.reason}
                 >
                   <Calculator className="h-4 w-4 mr-2" />
                   {calculateMutation.isPending ? 'Calculando...' : 'Calcular Parcelas'}
@@ -216,14 +255,19 @@ export default function ContratoDetalhePage() {
                   <Button 
                     variant="outline"
                     onClick={() => setShowGenerateDialog(true)}
-                    disabled={pendingInstallments.length === 0}
+                    disabled={!canGenerate.canGenerate}
+                    title={canGenerate.reason}
                   >
                     <FileText className="h-4 w-4 mr-2" />
                     Gerar Lançamentos
                   </Button>
-                  <Button onClick={handleActivate} disabled={activateMutation.isPending}>
+                  <Button 
+                    onClick={() => setShowActivateDialog(true)} 
+                    disabled={!canActivate.canActivate}
+                    title={canActivate.reason}
+                  >
                     <Play className="h-4 w-4 mr-2" />
-                    {activateMutation.isPending ? 'Ativando...' : 'Ativar Contrato'}
+                    Ativar Contrato
                   </Button>
                 </>
               )}
@@ -231,13 +275,26 @@ export default function ContratoDetalhePage() {
           )}
           
           {contract.status === 'ATIVO' && pendingInstallments.length > 0 && (
-            <Button onClick={() => setShowGenerateDialog(true)}>
+            <Button 
+              onClick={() => setShowGenerateDialog(true)}
+              disabled={!canGenerate.canGenerate}
+              title={canGenerate.reason}
+            >
               <FileText className="h-4 w-4 mr-2" />
               Gerar Lançamentos ({pendingInstallments.length})
             </Button>
           )}
         </div>
       </div>
+
+      {/* Needs Recalc Banner */}
+      {needsRecalc && (
+        <NeedsRecalcBanner
+          reason={contract.recalc_reason}
+          onRecalculate={handleCalculate}
+          isRecalculating={calculateMutation.isPending}
+        />
+      )}
 
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -401,7 +458,10 @@ export default function ContratoDetalhePage() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
-                <span>Grade de Parcelas</span>
+                <div className="flex items-center gap-2">
+                  <span>Grade de Parcelas</span>
+                  <Lock className="h-4 w-4 text-muted-foreground" />
+                </div>
                 {installments && installments.length > 0 && (
                   <div className="flex gap-2 text-sm font-normal">
                     <Badge variant="outline">
@@ -414,7 +474,7 @@ export default function ContratoDetalhePage() {
                 )}
               </CardTitle>
               <CardDescription>
-                Parcelas calculadas automaticamente. Não é possível editar valores manualmente.
+                Parcelas calculadas automaticamente. Não é possível editar valores manualmente (MVP).
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -518,7 +578,7 @@ export default function ContratoDetalhePage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label className="text-muted-foreground">Tipo de Título</Label>
-                  <p className="font-medium">{contract.ap_title_type}</p>
+                  <p className="font-medium">{contract.ap_title_type || 'Padrão'}</p>
                 </div>
                 <div>
                   <Label className="text-muted-foreground">Série</Label>
@@ -528,7 +588,15 @@ export default function ContratoDetalhePage() {
               <div>
                 <Label className="text-muted-foreground">Template de Descrição</Label>
                 <p className="font-medium font-mono text-sm bg-muted p-2 rounded">
-                  {contract.description_template}
+                  {contract.description_template || 'Empréstimo {bank} – Contrato {contract} – Parcela {k}/{n}'}
+                </p>
+              </div>
+              <div>
+                <Label className="text-muted-foreground">Conta Contábil (Passivo)</Label>
+                <p className="font-medium">
+                  {contract.liability_account_id || (
+                    <span className="text-destructive">Não configurada - configure antes de gerar títulos</span>
+                  )}
                 </p>
               </div>
             </CardContent>
@@ -542,7 +610,7 @@ export default function ContratoDetalhePage() {
           <DialogHeader>
             <DialogTitle>Gerar Lançamentos AP</DialogTitle>
             <DialogDescription>
-              Selecione quais parcelas deseja gerar como títulos em Contas a Pagar.
+              Você está prestes a gerar {pendingInstallments.length} lançamentos financeiros.
               Parcelas já geradas não serão duplicadas.
             </DialogDescription>
           </DialogHeader>
@@ -591,11 +659,35 @@ export default function ContratoDetalhePage() {
               onClick={handleGenerateAP}
               disabled={generateAPMutation.isPending}
             >
-              {generateAPMutation.isPending ? 'Gerando...' : 'Gerar Lançamentos'}
+              {generateAPMutation.isPending ? 'Gerando...' : 'Confirmar Geração'}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Dialog: Confirmar Ativação */}
+      <ConfirmationDialog
+        open={showActivateDialog}
+        onOpenChange={setShowActivateDialog}
+        title="Ativar Contrato"
+        description={`Você está prestes a ativar o contrato ${contract.contract_number}. Após a ativação, os campos estruturais (valor, taxa, parcelas, sistema) não poderão ser alterados. Deseja continuar?`}
+        confirmLabel="Ativar Contrato"
+        type="warning"
+        onConfirm={handleActivate}
+        isPending={activateMutation.isPending}
+      />
+
+      {/* Dialog: Confirmar Recálculo */}
+      <ConfirmationDialog
+        open={showRecalcDialog}
+        onOpenChange={setShowRecalcDialog}
+        title="Recalcular Parcelas"
+        description="Recalcular irá substituir TODAS as parcelas previstas (não geradas). Parcelas já geradas como títulos AP serão mantidas. Deseja continuar?"
+        confirmLabel="Recalcular"
+        type="warning"
+        onConfirm={confirmRecalculate}
+        isPending={calculateMutation.isPending}
+      />
     </div>
   );
 }

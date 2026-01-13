@@ -14,14 +14,16 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import { ArrowLeft, Save, Calculator, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Save, Calculator, AlertCircle, Info } from 'lucide-react';
 import { useCreateLoanContract } from '@/hooks/useLoanContracts';
+import { validateLoanFormData, LOAN_ERROR_MESSAGES } from '@/hooks/useLoanValidation';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { BankSelect } from '@/components/cadastros/BankSelect';
 import type { BankReference } from '@/hooks/useBanksReference';
 import { calculateInstallments, formatCurrency, validateCalculationParams } from '@/lib/loanCalculations';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import type { 
   LoanContractFormData, 
   LoanOperationType, 
@@ -133,6 +135,10 @@ export default function ContratoNovoPage() {
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
     }
+    // Hide preview when structural fields change
+    if (['principal_amount', 'nominal_rate', 'installments_count', 'amortization_system', 'first_due_date', 'grace_periods', 'grace_type'].includes(field)) {
+      setShowPreview(false);
+    }
   };
 
   const handlePreview = () => {
@@ -171,33 +177,7 @@ export default function ContratoNovoPage() {
   };
 
   const validate = (): boolean => {
-    const newErrors: Record<string, string> = {};
-    
-    if (!formData.contract_number?.trim()) {
-      newErrors.contract_number = 'Número do contrato é obrigatório';
-    }
-    if (!formData.creditor_partner_id) {
-      newErrors.creditor_partner_id = 'Selecione o credor';
-    }
-    if (!formData.bank_id) {
-      newErrors.bank_id = 'Selecione o banco';
-    }
-    if (!formData.company_bank_account_id) {
-      newErrors.company_bank_account_id = 'Selecione a conta bancária';
-    }
-    if (!formData.principal_amount || formData.principal_amount <= 0) {
-      newErrors.principal_amount = 'Valor principal deve ser maior que zero';
-    }
-    if (!formData.contract_date) {
-      newErrors.contract_date = 'Data do contrato é obrigatória';
-    }
-    if (!formData.disbursement_date) {
-      newErrors.disbursement_date = 'Data do desembolso é obrigatória';
-    }
-    if (!formData.first_due_date) {
-      newErrors.first_due_date = 'Data do primeiro vencimento é obrigatória';
-    }
-    
+    const newErrors = validateLoanFormData(formData);
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -226,6 +206,15 @@ export default function ContratoNovoPage() {
         />
       </div>
 
+      {/* Info Alert */}
+      <Alert>
+        <Info className="h-4 w-4" />
+        <AlertDescription>
+          Campos marcados com <span className="text-destructive">*</span> são obrigatórios. 
+          Após salvar, você poderá calcular as parcelas e gerar os títulos no Contas a Pagar.
+        </AlertDescription>
+      </Alert>
+
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Identificação */}
         <Card>
@@ -234,7 +223,7 @@ export default function ContratoNovoPage() {
           </CardHeader>
           <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="contract_number">Número do Contrato *</Label>
+              <Label htmlFor="contract_number">Número do Contrato <span className="text-destructive">*</span></Label>
               <Input
                 id="contract_number"
                 value={formData.contract_number}
@@ -248,7 +237,7 @@ export default function ContratoNovoPage() {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="operation_type">Tipo de Operação *</Label>
+              <Label htmlFor="operation_type">Tipo de Operação <span className="text-destructive">*</span></Label>
               <Select
                 value={formData.operation_type}
                 onValueChange={(v) => updateField('operation_type', v)}
@@ -267,7 +256,7 @@ export default function ContratoNovoPage() {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="creditor_partner_id">Credor (Fornecedor) *</Label>
+              <Label htmlFor="creditor_partner_id">Credor (Fornecedor) <span className="text-destructive">*</span></Label>
               <Select
                 value={formData.creditor_partner_id}
                 onValueChange={(v) => updateField('creditor_partner_id', v)}
@@ -297,7 +286,7 @@ export default function ContratoNovoPage() {
           </CardHeader>
           <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Banco *</Label>
+              <Label>Banco <span className="text-destructive">*</span></Label>
               <BankSelect
                 value={selectedBank}
                 onChange={(bank) => {
@@ -310,7 +299,7 @@ export default function ContratoNovoPage() {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="company_bank_account_id">Conta Bancária da Empresa *</Label>
+              <Label htmlFor="company_bank_account_id">Conta Bancária da Empresa <span className="text-destructive">*</span></Label>
               <Select
                 value={formData.company_bank_account_id}
                 onValueChange={(v) => updateField('company_bank_account_id', v)}
@@ -341,12 +330,12 @@ export default function ContratoNovoPage() {
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="principal_amount">Valor Principal (R$) *</Label>
+                <Label htmlFor="principal_amount">Valor Principal (R$) <span className="text-destructive">*</span></Label>
                 <Input
                   id="principal_amount"
                   type="number"
                   step="0.01"
-                  min="0"
+                  min="0.01"
                   value={formData.principal_amount || ''}
                   onChange={(e) => updateField('principal_amount', parseFloat(e.target.value) || 0)}
                   placeholder="0,00"
@@ -358,7 +347,7 @@ export default function ContratoNovoPage() {
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="installments_count">Número de Parcelas *</Label>
+                <Label htmlFor="installments_count">Número de Parcelas <span className="text-destructive">*</span></Label>
                 <Input
                   id="installments_count"
                   type="number"
@@ -366,11 +355,15 @@ export default function ContratoNovoPage() {
                   max="360"
                   value={formData.installments_count || ''}
                   onChange={(e) => updateField('installments_count', parseInt(e.target.value) || 0)}
+                  className={errors.installments_count ? 'border-destructive' : ''}
                 />
+                {errors.installments_count && (
+                  <p className="text-sm text-destructive">{errors.installments_count}</p>
+                )}
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="installment_period">Periodicidade *</Label>
+                <Label htmlFor="installment_period">Periodicidade <span className="text-destructive">*</span></Label>
                 <Select
                   value={formData.installment_period}
                   onValueChange={(v) => updateField('installment_period', v)}
@@ -393,7 +386,7 @@ export default function ContratoNovoPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="amortization_system">Sistema de Amortização *</Label>
+                <Label htmlFor="amortization_system">Sistema de Amortização <span className="text-destructive">*</span></Label>
                 <Select
                   value={formData.amortization_system}
                   onValueChange={(v) => updateField('amortization_system', v)}
@@ -417,7 +410,7 @@ export default function ContratoNovoPage() {
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="nominal_rate">Taxa Nominal (%) *</Label>
+                <Label htmlFor="nominal_rate">Taxa Nominal (%) <span className="text-destructive">*</span></Label>
                 <Input
                   id="nominal_rate"
                   type="number"
@@ -426,11 +419,15 @@ export default function ContratoNovoPage() {
                   value={formData.nominal_rate ? (formData.nominal_rate * 100).toFixed(4) : ''}
                   onChange={(e) => updateField('nominal_rate', (parseFloat(e.target.value) || 0) / 100)}
                   placeholder="Ex: 1.5"
+                  className={errors.nominal_rate ? 'border-destructive' : ''}
                 />
+                {errors.nominal_rate && (
+                  <p className="text-sm text-destructive">{errors.nominal_rate}</p>
+                )}
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="rate_period">Período da Taxa *</Label>
+                <Label htmlFor="rate_period">Período da Taxa <span className="text-destructive">*</span></Label>
                 <Select
                   value={formData.rate_period}
                   onValueChange={(v) => updateField('rate_period', v)}
@@ -457,13 +454,17 @@ export default function ContratoNovoPage() {
                   value={formData.grace_periods || ''}
                   onChange={(e) => updateField('grace_periods', parseInt(e.target.value) || 0)}
                   placeholder="0"
+                  className={errors.grace_periods ? 'border-destructive' : ''}
                 />
+                {errors.grace_periods && (
+                  <p className="text-sm text-destructive">{errors.grace_periods}</p>
+                )}
               </div>
             </div>
 
             {formData.grace_periods && formData.grace_periods > 0 && (
               <div className="space-y-2">
-                <Label htmlFor="grace_type">Tipo de Carência *</Label>
+                <Label htmlFor="grace_type">Tipo de Carência <span className="text-destructive">*</span></Label>
                 <Select
                   value={formData.grace_type}
                   onValueChange={(v) => updateField('grace_type', v)}
@@ -491,7 +492,7 @@ export default function ContratoNovoPage() {
           </CardHeader>
           <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="contract_date">Data do Contrato *</Label>
+              <Label htmlFor="contract_date">Data do Contrato <span className="text-destructive">*</span></Label>
               <Input
                 id="contract_date"
                 type="date"
@@ -505,11 +506,12 @@ export default function ContratoNovoPage() {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="disbursement_date">Data do Desembolso *</Label>
+              <Label htmlFor="disbursement_date">Data do Desembolso <span className="text-destructive">*</span></Label>
               <Input
                 id="disbursement_date"
                 type="date"
                 value={formData.disbursement_date}
+                min={formData.contract_date}
                 onChange={(e) => updateField('disbursement_date', e.target.value)}
                 className={errors.disbursement_date ? 'border-destructive' : ''}
               />
@@ -519,11 +521,12 @@ export default function ContratoNovoPage() {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="first_due_date">Primeiro Vencimento *</Label>
+              <Label htmlFor="first_due_date">Primeiro Vencimento <span className="text-destructive">*</span></Label>
               <Input
                 id="first_due_date"
                 type="date"
                 value={formData.first_due_date}
+                min={formData.contract_date}
                 onChange={(e) => updateField('first_due_date', e.target.value)}
                 className={errors.first_due_date ? 'border-destructive' : ''}
               />
