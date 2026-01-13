@@ -10,8 +10,8 @@ import { StatusBadge } from '@/components/common/StatusBadge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Dialog,
   DialogContent,
@@ -27,11 +27,11 @@ import {
 } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { formatCurrency, formatDate } from '@/lib/formatters';
-import { Pencil, Trash2, Check, ArrowDownCircle, ArrowUpCircle, Filter } from 'lucide-react';
+import { Pencil, Trash2, Check, ArrowDownCircle, FileText, Download, History, CheckCircle } from 'lucide-react';
+import BaixaManualAR from '@/pages/ar/BaixaManualAR';
+import BaixaAutomaticaAR from '@/pages/ar/BaixaAutomaticaAR';
 
-interface ContasReceberProps {}
-
-export default function ContasReceber({}: ContasReceberProps) {
+export default function ContasReceber() {
   const { currentCompany } = useAuth();
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -39,6 +39,7 @@ export default function ContasReceber({}: ContasReceberProps) {
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth() + 1;
   
+  const [mainTab, setMainTab] = useState('titulos');
   const [filters, setFilters] = useState({
     month: currentMonth,
     year: currentYear,
@@ -80,6 +81,7 @@ export default function ContasReceber({}: ContasReceberProps) {
         direction: 'entrada' as const,
         status: 'lancado' as const,
         total_amount: total,
+        balance_amount: total,
         counterparty_id: data.counterparty_id || null,
         cost_center_id: data.cost_center_id || null,
       };
@@ -265,115 +267,171 @@ export default function ContasReceber({}: ContasReceberProps) {
       <div className="space-y-6 animate-fade-in">
         <PageHeader
           title="Contas a Receber"
-          description="Gerencie suas receitas e recebimentos"
-          action={{ label: 'Nova Receita', onClick: handleNew }}
-        >
-          <div className="flex items-center gap-2">
-            <Select 
-              value={filters.month.toString()} 
-              onValueChange={(v) => setFilters({ ...filters, month: parseInt(v) })}
-            >
-              <SelectTrigger className="w-32">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {months.map((m) => (
-                  <SelectItem key={m.value} value={m.value.toString()}>{m.label}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select 
-              value={filters.year.toString()} 
-              onValueChange={(v) => setFilters({ ...filters, year: parseInt(v) })}
-            >
-              <SelectTrigger className="w-24">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {[currentYear - 1, currentYear, currentYear + 1].map((y) => (
-                  <SelectItem key={y} value={y.toString()}>{y}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select 
-              value={filters.status || "__all__"} 
-              onValueChange={(v) => setFilters({ ...filters, status: v === "__all__" ? "" : v })}
-            >
-              <SelectTrigger className="w-32">
-                <SelectValue placeholder="Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="__all__">Todos</SelectItem>
-                <SelectItem value="lancado">Pendente</SelectItem>
-                <SelectItem value="pago">Recebido</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </PageHeader>
-
-        {/* Summary Cards */}
-        <div className="grid gap-4 md:grid-cols-4">
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="rounded-full p-2 bg-success/10">
-                  <ArrowDownCircle className="h-5 w-5 text-success" />
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground">Recebido</p>
-                  <p className="text-lg font-semibold value-positive">{formatCurrency(totals.received)}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="rounded-full p-2 bg-warning/10">
-                  <ArrowDownCircle className="h-5 w-5 text-warning" />
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground">A Receber</p>
-                  <p className="text-lg font-semibold text-warning">{formatCurrency(totals.pending)}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="rounded-full p-2 bg-destructive/10">
-                  <ArrowDownCircle className="h-5 w-5 text-destructive" />
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground">Atrasado</p>
-                  <p className="text-lg font-semibold value-negative">{formatCurrency(totals.overdue)}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="rounded-full p-2 bg-primary/10">
-                  <ArrowDownCircle className="h-5 w-5 text-primary" />
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground">Total</p>
-                  <p className="text-lg font-semibold">{formatCurrency(totals.total)}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        <DataTable
-          columns={columns}
-          data={transactions}
-          loading={isLoading}
-          emptyMessage="Nenhuma conta a receber neste período."
+          description="Gerencie suas receitas, recebimentos e baixas"
+          action={mainTab === 'titulos' ? { label: 'Nova Receita', onClick: handleNew } : undefined}
         />
 
+        {/* Main Tabs */}
+        <Tabs value={mainTab} onValueChange={setMainTab}>
+          <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-flex">
+            <TabsTrigger value="titulos" className="gap-2">
+              <FileText className="h-4 w-4" />
+              Títulos
+            </TabsTrigger>
+            <TabsTrigger value="baixa-manual" className="gap-2">
+              <CheckCircle className="h-4 w-4" />
+              Baixa Manual
+            </TabsTrigger>
+            <TabsTrigger value="baixa-automatica" className="gap-2">
+              <Download className="h-4 w-4" />
+              Baixa Automática
+            </TabsTrigger>
+            <TabsTrigger value="historico" className="gap-2">
+              <History className="h-4 w-4" />
+              Histórico
+            </TabsTrigger>
+          </TabsList>
+
+          {/* Títulos Tab */}
+          <TabsContent value="titulos" className="space-y-6">
+            {/* Filters */}
+            <div className="flex flex-wrap items-center gap-2">
+              <Select 
+                value={filters.month.toString()} 
+                onValueChange={(v) => setFilters({ ...filters, month: parseInt(v) })}
+              >
+                <SelectTrigger className="w-32">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {months.map((m) => (
+                    <SelectItem key={m.value} value={m.value.toString()}>{m.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select 
+                value={filters.year.toString()} 
+                onValueChange={(v) => setFilters({ ...filters, year: parseInt(v) })}
+              >
+                <SelectTrigger className="w-24">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {[currentYear - 1, currentYear, currentYear + 1].map((y) => (
+                    <SelectItem key={y} value={y.toString()}>{y}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select 
+                value={filters.status || "__all__"} 
+                onValueChange={(v) => setFilters({ ...filters, status: v === "__all__" ? "" : v })}
+              >
+                <SelectTrigger className="w-32">
+                  <SelectValue placeholder="Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="__all__">Todos</SelectItem>
+                  <SelectItem value="lancado">Pendente</SelectItem>
+                  <SelectItem value="pago">Recebido</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Summary Cards */}
+            <div className="grid gap-4 md:grid-cols-4">
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="rounded-full p-2 bg-success/10">
+                      <ArrowDownCircle className="h-5 w-5 text-success" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">Recebido</p>
+                      <p className="text-lg font-semibold value-positive">{formatCurrency(totals.received)}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="rounded-full p-2 bg-warning/10">
+                      <ArrowDownCircle className="h-5 w-5 text-warning" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">A Receber</p>
+                      <p className="text-lg font-semibold text-warning">{formatCurrency(totals.pending)}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="rounded-full p-2 bg-destructive/10">
+                      <ArrowDownCircle className="h-5 w-5 text-destructive" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">Atrasado</p>
+                      <p className="text-lg font-semibold value-negative">{formatCurrency(totals.overdue)}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="rounded-full p-2 bg-primary/10">
+                      <ArrowDownCircle className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">Total</p>
+                      <p className="text-lg font-semibold">{formatCurrency(totals.total)}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            <DataTable
+              columns={columns}
+              data={transactions}
+              loading={isLoading}
+              emptyMessage="Nenhuma conta a receber neste período."
+            />
+          </TabsContent>
+
+          {/* Baixa Manual Tab */}
+          <TabsContent value="baixa-manual">
+            <BaixaManualAR />
+          </TabsContent>
+
+          {/* Baixa Automática Tab */}
+          <TabsContent value="baixa-automatica">
+            <BaixaAutomaticaAR />
+          </TabsContent>
+
+          {/* Histórico Tab */}
+          <TabsContent value="historico">
+            <Card>
+              <CardHeader>
+                <CardTitle>Histórico de Baixas</CardTitle>
+                <CardDescription>Consulte o histórico completo de baixas realizadas</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-8 text-muted-foreground">
+                  <History className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p>Consulte o histórico completo em</p>
+                  <Button variant="link" asChild>
+                    <a href="/tesouraria/historico-baixas">Tesouraria → Histórico de Baixas</a>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+
+        {/* Dialog for new/edit transaction */}
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogContent className="max-w-lg">
             <DialogHeader>
