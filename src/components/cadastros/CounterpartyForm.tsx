@@ -28,6 +28,9 @@ import {
   FileText,
   Wallet,
 } from 'lucide-react';
+import { CPFInput, isValidCPF } from '@/components/common/CPFInput';
+import { CNPJInput, isValidCNPJ } from '@/components/common/CNPJInput';
+import { toast } from 'sonner';
 
 export interface CounterpartyFormData {
   // Básico
@@ -209,15 +212,40 @@ export function CounterpartyForm({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validação mínima
+    // Validação de nome
     if (!formData.name.trim()) {
+      toast.error('Nome é obrigatório');
       return;
     }
+    
+    // Validação de papel
     if (!formData.is_client && !formData.is_supplier) {
+      toast.error('Selecione pelo menos Cliente ou Fornecedor');
       return;
     }
+    
+    // Validação de telefone
     if (!formData.phone.trim()) {
+      toast.error('Telefone é obrigatório');
       return;
+    }
+
+    // Validação de documento
+    const docSanitized = formData.document.replace(/\D/g, '');
+    if (formData.person_type === 'pf') {
+      if (!docSanitized || !isValidCPF(docSanitized)) {
+        toast.error('CPF inválido ou não preenchido');
+        return;
+      }
+    } else {
+      if (!docSanitized || !isValidCNPJ(docSanitized)) {
+        toast.error('CNPJ inválido ou não preenchido');
+        return;
+      }
+      if (!formData.legal_name.trim()) {
+        toast.error('Razão Social é obrigatória para PJ');
+        return;
+      }
     }
 
     onSubmit(formData);
@@ -380,10 +408,9 @@ export function CounterpartyForm({
                     </div>
                     <div className="space-y-2">
                       <Label>CPF *</Label>
-                      <Input
+                      <CPFInput
                         value={formData.document}
-                        onChange={(e) => updateField('document', e.target.value)}
-                        placeholder="000.000.000-00"
+                        onChange={(sanitized) => updateField('document', sanitized)}
                       />
                     </div>
                   </>
@@ -411,10 +438,9 @@ export function CounterpartyForm({
                     </div>
                     <div className="space-y-2">
                       <Label>CNPJ *</Label>
-                      <Input
+                      <CNPJInput
                         value={formData.document}
-                        onChange={(e) => updateField('document', e.target.value)}
-                        placeholder="00.000.000/0000-00"
+                        onChange={(sanitized) => updateField('document', sanitized)}
                       />
                     </div>
                     <div className="space-y-2">
