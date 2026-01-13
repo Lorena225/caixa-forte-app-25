@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
+import { MainLayout } from '@/components/layout/MainLayout';
 import { PageHeader } from '@/components/common/PageHeader';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -169,44 +170,49 @@ export default function ContratoDetalhePage() {
 
   if (contractLoading) {
     return (
-      <div className="container mx-auto py-6 space-y-6">
-        <div className="flex items-center gap-4">
-          <Skeleton className="h-10 w-10" />
-          <div className="space-y-2">
-            <Skeleton className="h-8 w-64" />
-            <Skeleton className="h-4 w-48" />
+      <MainLayout>
+        <div className="space-y-6">
+          <div className="flex items-center gap-4">
+            <Skeleton className="h-10 w-10" />
+            <div className="space-y-2">
+              <Skeleton className="h-8 w-64" />
+              <Skeleton className="h-4 w-48" />
+            </div>
           </div>
+          <Skeleton className="h-96 w-full" />
         </div>
-        <Skeleton className="h-96 w-full" />
-      </div>
+      </MainLayout>
     );
   }
 
   if (!contract) {
     return (
-      <div className="container mx-auto py-6">
-        <Card>
-          <CardContent className="py-12 text-center">
-            <AlertCircle className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <h2 className="text-xl font-semibold mb-2">Contrato não encontrado</h2>
-            <p className="text-muted-foreground mb-4">
-              O contrato solicitado não existe ou você não tem permissão para visualizá-lo.
-            </p>
-            <Button onClick={() => navigate('/tesouraria/contratos')}>
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Voltar para Contratos
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
+      <MainLayout>
+        <div className="space-y-6">
+          <Card>
+            <CardContent className="py-12 text-center">
+              <AlertCircle className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+              <h2 className="text-xl font-semibold mb-2">Contrato não encontrado</h2>
+              <p className="text-muted-foreground mb-4">
+                O contrato solicitado não existe ou você não tem permissão para visualizá-lo.
+              </p>
+              <Button onClick={() => navigate('/tesouraria/contratos')}>
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Voltar para Contratos
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </MainLayout>
     );
   }
 
   const isReadOnly = contract.status !== 'EDICAO';
 
   return (
-    <div className="container mx-auto py-6 space-y-6">
-      {/* Header */}
+    <MainLayout>
+      <div className="space-y-6">
+        {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="icon" onClick={() => navigate('/tesouraria/contratos')}>
@@ -688,6 +694,7 @@ export default function ContratoDetalhePage() {
         onConfirm={confirmRecalculate}
         isPending={calculateMutation.isPending}
       />
-    </div>
+      </div>
+    </MainLayout>
   );
 }

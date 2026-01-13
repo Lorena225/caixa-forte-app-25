@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { MainLayout } from '@/components/layout/MainLayout';
 import { PageHeader } from '@/components/common/PageHeader';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -195,8 +196,9 @@ export default function ContratoNovoPage() {
   };
 
   return (
-    <div className="container mx-auto py-6 space-y-6">
-      <div className="flex items-center gap-4">
+    <MainLayout>
+      <div className="space-y-6">
+        <div className="flex items-center gap-4">
         <Button variant="ghost" size="icon" onClick={() => navigate('/tesouraria/contratos')}>
           <ArrowLeft className="h-5 w-5" />
         </Button>
@@ -624,6 +626,7 @@ export default function ContratoNovoPage() {
           </Button>
         </div>
       </form>
-    </div>
+      </div>
+    </MainLayout>
   );
 }
