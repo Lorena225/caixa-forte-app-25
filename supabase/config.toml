@@ -56,3 +56,6 @@ verify_jwt = true
 
 [functions.ai-execute-plan]
 verify_jwt = true
+
+[functions.webhook-receive]
+verify_jwt = false
