@@ -87,6 +87,8 @@ import AdminUserLimits from "./pages/admin/UserLimits";
 import AdminJobsMonitor from "./pages/admin/JobsMonitor";
 import AdminAuditLogs from "./pages/admin/AuditLogs";
 import AdminSecurityDashboard from "./pages/admin/SecurityDashboard";
+import AdminSystemHealth from "./pages/admin/SystemHealth";
+import AdminGoLiveChecklist from "./pages/admin/GoLiveChecklist";
 import TesourariaCNAB from "./pages/tesouraria/CNAB";
 import TesourariaBoletos from "./pages/tesouraria/Boletos";
 import TesourariaCards from "./pages/tesouraria/CardsManagement";
@@ -190,7 +192,11 @@ const App = () => (
               <Route path="/admin/limites" element={<AdminUserLimits />} />
               <Route path="/admin/jobs" element={<AdminJobsMonitor />} />
               <Route path="/admin/auditoria" element={<AdminAuditLogs />} />
-              <Route path="/admin/seguranca" element={<AdminSecurityDashboard />} />
+              <Route path="/admin/security" element={<AdminSecurityDashboard />} />
+              <Route path="/admin/saude" element={<AdminSystemHealth />} />
+              <Route path="/admin/health" element={<AdminSystemHealth />} />
+              <Route path="/admin/go-live" element={<AdminGoLiveChecklist />} />
+              <Route path="/admin/checklist" element={<AdminGoLiveChecklist />} />
               <Route path="/tesouraria/cnab" element={<TesourariaCNAB />} />
               <Route path="/tesouraria/boletos" element={<TesourariaBoletos />} />
               <Route path="/tesouraria/cartoes" element={<TesourariaCards />} />
