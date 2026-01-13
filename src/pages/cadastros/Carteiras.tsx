@@ -3,6 +3,7 @@ import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWallets } from '@/hooks/useCompanyData';
+import { useBanksReference } from '@/hooks/useBanksReference';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { PageHeader } from '@/components/common/PageHeader';
 import { DataTable } from '@/components/common/DataTable';
@@ -23,10 +24,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 import { formatCurrency } from '@/lib/formatters';
-import { Pencil, Trash2, Wallet, CreditCard, Banknote } from 'lucide-react';
+import { Pencil, Trash2, Wallet, CreditCard, Banknote, Check, ChevronsUpDown } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const typeLabels: Record<string, { label: string; icon: any; color: string }> = {
   caixa: { label: 'Caixa', icon: Banknote, color: 'bg-success/10 text-success' },
@@ -37,10 +52,12 @@ const typeLabels: Record<string, { label: string; icon: any; color: string }> = 
 export default function Carteiras() {
   const { currentCompany } = useAuth();
   const { data: wallets = [], isLoading } = useWallets();
+  const { data: banks = [] } = useBanksReference();
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<any>(null);
+  const [bankOpen, setBankOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     type: 'banco' as 'caixa' | 'banco' | 'cartao',
@@ -48,15 +65,22 @@ export default function Carteiras() {
     closing_day: '',
     due_day: '',
     is_active: true,
+    bank_id: '' as string,
   });
+
+  const selectedBank = banks.find((b) => b.id === formData.bank_id);
 
   const saveMutation = useMutation({
     mutationFn: async (data: typeof formData) => {
       const payload = {
-        ...data,
+        name: data.name,
+        type: data.type,
+        opening_balance: data.opening_balance,
+        is_active: data.is_active,
         company_id: currentCompany?.id,
         closing_day: data.closing_day ? parseInt(data.closing_day) : null,
         due_day: data.due_day ? parseInt(data.due_day) : null,
+        bank_id: data.type === 'banco' && data.bank_id ? data.bank_id : null,
       };
       if (editingItem) {
         const { error } = await supabase.from('wallets').update(payload).eq('id', editingItem.id);
@@ -93,7 +117,7 @@ export default function Carteiras() {
   });
 
   const resetForm = () => {
-    setFormData({ name: '', type: 'banco', opening_balance: 0, closing_day: '', due_day: '', is_active: true });
+    setFormData({ name: '', type: 'banco', opening_balance: 0, closing_day: '', due_day: '', is_active: true, bank_id: '' });
   };
 
   const handleEdit = (item: any) => {
@@ -105,6 +129,7 @@ export default function Carteiras() {
       closing_day: item.closing_day?.toString() || '',
       due_day: item.due_day?.toString() || '',
       is_active: item.is_active,
+      bank_id: item.bank_id || '',
     });
     setDialogOpen(true);
   };
@@ -134,6 +159,15 @@ export default function Carteiras() {
       className: 'w-32',
     },
     { key: 'name', header: 'Nome' },
+    {
+      key: 'bank',
+      header: 'Banco',
+      render: (item: any) => {
+        if (item.type !== 'banco' || !item.bank_id) return '-';
+        const bank = banks.find((b) => b.id === item.bank_id);
+        return bank ? bank.display_name : '-';
+      },
+    },
     {
       key: 'opening_balance',
       header: 'Saldo Inicial',
@@ -212,7 +246,7 @@ export default function Carteiras() {
                 </div>
                 <div className="space-y-2">
                   <Label>Tipo</Label>
-                  <Select value={formData.type} onValueChange={(v) => setFormData({ ...formData, type: v as 'caixa' | 'banco' | 'cartao' })}>
+                  <Select value={formData.type} onValueChange={(v) => setFormData({ ...formData, type: v as 'caixa' | 'banco' | 'cartao', bank_id: '' })}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
                       {Object.entries(typeLabels).map(([value, { label }]) => (
@@ -222,6 +256,58 @@ export default function Carteiras() {
                   </Select>
                 </div>
               </div>
+
+              {formData.type === 'banco' && (
+                <div className="space-y-2">
+                  <Label>Banco</Label>
+                  <Popover open={bankOpen} onOpenChange={setBankOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={bankOpen}
+                        className="w-full justify-between font-normal"
+                      >
+                        {selectedBank ? selectedBank.display_name : 'Selecione o banco...'}
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[400px] p-0" align="start">
+                      <Command>
+                        <CommandInput placeholder="Buscar banco..." />
+                        <CommandList>
+                          <CommandEmpty>Nenhum banco encontrado.</CommandEmpty>
+                          <CommandGroup>
+                            {banks.filter(b => b.is_active).map((bank) => (
+                              <CommandItem
+                                key={bank.id}
+                                value={bank.display_name}
+                                onSelect={() => {
+                                  setFormData({ ...formData, bank_id: bank.id });
+                                  setBankOpen(false);
+                                }}
+                              >
+                                <Check
+                                  className={cn(
+                                    "mr-2 h-4 w-4",
+                                    formData.bank_id === bank.id ? "opacity-100" : "opacity-0"
+                                  )}
+                                />
+                                {bank.display_name}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                  {selectedBank && (
+                    <p className="text-xs text-muted-foreground">
+                      Código COMPE: {selectedBank.compe_code}
+                    </p>
+                  )}
+                </div>
+              )}
               
               <div className="space-y-2">
                 <Label>Saldo Inicial (R$)</Label>
