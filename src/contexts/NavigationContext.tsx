@@ -105,8 +105,11 @@ export function NavigationProvider({ children }: { children: ReactNode }) {
   const navigateTo = useCallback((route: string, itemKey?: string) => {
     navigate(route);
     setCommandPaletteOpen(false);
-    setMobileMenuOpen(false);
-  }, [navigate]);
+    // Only close mobile menu on mobile devices
+    if (isMobile) {
+      setMobileMenuOpen(false);
+    }
+  }, [navigate, isMobile]);
   
   const value: NavigationContextType = {
     collapsed: preferences?.sidebar_collapsed || false,
