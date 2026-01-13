@@ -145,9 +145,9 @@ export function useBulkActions({ tableName, queryKey, onSuccess }: UseBulkAction
     return deleteMutation.mutateAsync(ids);
   }, [deleteMutation]);
 
-  const bulkExport = useCallback(<T extends Record<string, unknown>>(
-    items: T[],
-    columns: { key: string; header: string; formatter?: (value: any) => string }[],
+  const bulkExport = useCallback((
+    items: Record<string, unknown>[],
+    columns: { key: string; header: string; formatter?: (value: unknown) => string }[],
     filename: string
   ) => {
     try {

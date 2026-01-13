@@ -323,14 +323,14 @@ export default function ClientesFornecedores() {
       icon: <Download className="h-4 w-4" />,
       onClick: () => {
         const selectedItems = filteredData.filter(item => selectedIds.has(item.id));
-        bulkExport(selectedItems, [
+        bulkExport(selectedItems as unknown as Record<string, unknown>[], [
           { key: 'name', header: 'Nome' },
           { key: 'document', header: 'CPF/CNPJ' },
           { key: 'email', header: 'E-mail' },
           { key: 'phone', header: 'Telefone' },
-          { key: 'is_client', header: 'Cliente', formatter: (v: boolean) => v ? 'Sim' : 'Não' },
-          { key: 'is_supplier', header: 'Fornecedor', formatter: (v: boolean) => v ? 'Sim' : 'Não' },
-          { key: 'is_active', header: 'Ativo', formatter: (v: boolean) => v ? 'Sim' : 'Não' },
+          { key: 'is_client', header: 'Cliente', formatter: (v: unknown) => v ? 'Sim' : 'Não' },
+          { key: 'is_supplier', header: 'Fornecedor', formatter: (v: unknown) => v ? 'Sim' : 'Não' },
+          { key: 'is_active', header: 'Ativo', formatter: (v: unknown) => v ? 'Sim' : 'Não' },
         ], 'Parceiros_Selecionados');
       },
     },
@@ -374,16 +374,13 @@ export default function ClientesFornecedores() {
     {
       key: 'select',
       header: '',
-      render: (item: Counterparty, index: number, allData: Counterparty[]) => {
-        // Render header checkbox for first item in a special way
-        return (
-          <BulkSelectionCheckbox
-            checked={isSelected(item.id)}
-            onChange={() => toggleItem(item.id)}
-            aria-label={`Selecionar ${item.name}`}
-          />
-        );
-      },
+      render: (item: Counterparty) => (
+        <BulkSelectionCheckbox
+          checked={isSelected(item.id)}
+          onChange={() => toggleItem(item.id)}
+          aria-label={`Selecionar ${item.name}`}
+        />
+      ),
       className: 'w-10',
     },
     { key: 'name', header: 'Nome' },
