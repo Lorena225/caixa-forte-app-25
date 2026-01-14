@@ -10,7 +10,8 @@ import {
   FileCheck2, BarChart3, Gauge, LineChart, ChartColumn, PieChart,
   FileBarChart, CalendarClock, Calculator, Sparkles, Inbox,
   MessageCircle, Bot, Wand2, Database, ListTree, Network, Users,
-  Layers, Plug, ArrowLeftRight, Settings, PanelLeft, Search, Blocks
+  Layers, Plug, ArrowLeftRight, Settings, PanelLeft, Search, Blocks,
+  ShoppingCart, Plus, FileText, ClipboardList
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
@@ -27,6 +28,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   FileBarChart, CalendarClock, Calculator, Sparkles, Inbox,
   MessageCircle, Bot, Wand2, Database, ListTree, Network, Users,
   Layers, Plug, ArrowLeftRight, Settings, PanelLeft, Search, Blocks,
+  ShoppingCart, Plus, FileText, ClipboardList,
 };
 
 const getIcon = (iconName: string) => iconMap[iconName] || LayoutDashboard;
