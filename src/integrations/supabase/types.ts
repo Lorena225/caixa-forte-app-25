@@ -5589,6 +5589,110 @@ export type Database = {
           },
         ]
       }
+      credit_protection_requests: {
+        Row: {
+          amount: number
+          company_id: string
+          counterparty_id: string | null
+          created_at: string
+          customer_document: string
+          customer_name: string
+          days_overdue: number
+          id: string
+          notes: string | null
+          registered_at: string | null
+          removed_at: string | null
+          sent_at: string | null
+          status: string
+          transaction_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          company_id: string
+          counterparty_id?: string | null
+          created_at?: string
+          customer_document: string
+          customer_name: string
+          days_overdue?: number
+          id?: string
+          notes?: string | null
+          registered_at?: string | null
+          removed_at?: string | null
+          sent_at?: string | null
+          status?: string
+          transaction_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          company_id?: string
+          counterparty_id?: string | null
+          created_at?: string
+          customer_document?: string
+          customer_name?: string
+          days_overdue?: number
+          id?: string
+          notes?: string | null
+          registered_at?: string | null
+          removed_at?: string | null
+          sent_at?: string | null
+          status?: string
+          transaction_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "credit_protection_requests_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "credit_protection_requests_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "credit_protection_requests_counterparty_id_fkey"
+            columns: ["counterparty_id"]
+            isOneToOne: false
+            referencedRelation: "counterparties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "credit_protection_requests_counterparty_id_fkey"
+            columns: ["counterparty_id"]
+            isOneToOne: false
+            referencedRelation: "counterparties_safe"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "credit_protection_requests_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "credit_protection_requests_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "v_ap_open"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "credit_protection_requests_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "v_ar_open"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       custom_roles: {
         Row: {
           base_role: Database["public"]["Enums"]["app_role"] | null

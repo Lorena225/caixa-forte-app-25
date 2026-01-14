@@ -8,76 +8,98 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Search, AlertOctagon, CheckCircle, Clock, XCircle, AlertTriangle, Upload } from 'lucide-react';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Search, AlertOctagon, CheckCircle, Clock, AlertTriangle, Upload } from 'lucide-react';
+import { useCreditProtectionRequests, useSendToNegativation, useRemoveNegativation, useBulkNegativation } from '@/hooks/useCreditProtection';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
 const statusConfig: Record<string, { label: string; color: string }> = {
-  pendente: { label: 'Pendente', color: 'bg-yellow-100 text-yellow-800' },
-  negativado: { label: 'Negativado', color: 'bg-red-100 text-red-800' },
-  baixado: { label: 'Baixado', color: 'bg-green-100 text-green-800' },
-  erro: { label: 'Erro', color: 'bg-orange-100 text-orange-800' },
+  pending: { label: 'Pendente', color: 'bg-yellow-100 text-yellow-800' },
+  sent: { label: 'Enviado', color: 'bg-blue-100 text-blue-800' },
+  registered: { label: 'Negativado', color: 'bg-red-100 text-red-800' },
+  removed: { label: 'Baixado', color: 'bg-green-100 text-green-800' },
+  cancelled: { label: 'Cancelado', color: 'bg-gray-100 text-gray-800' },
 };
-
-// Mock data
-const mockNegativacoes = [
-  { id: '1', cliente: 'João Silva', documento: '123.456.789-00', valor: 1500, vencimento: '2025-11-15', data_negativacao: '2025-12-15', bureau: 'SPC', status: 'negativado' },
-  { id: '2', cliente: 'Maria Santos', documento: '987.654.321-00', valor: 3200, vencimento: '2025-12-01', data_negativacao: null, bureau: 'Serasa', status: 'pendente' },
-  { id: '3', cliente: 'Carlos Oliveira', documento: '456.789.123-00', valor: 850, vencimento: '2025-10-20', data_negativacao: '2025-11-20', bureau: 'SPC', status: 'baixado' },
-  { id: '4', cliente: 'Ana Costa', documento: '12.345.678/0001-90', valor: 5600, vencimento: '2025-11-30', data_negativacao: null, bureau: 'Serasa', status: 'erro' },
-];
 
 export default function Negativacao() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [negativacoes] = useState(mockNegativacoes);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
 
-  const filteredNegativacoes = negativacoes.filter(neg => {
-    const matchesSearch = neg.cliente.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      neg.documento.includes(searchTerm);
-    const matchesStatus = statusFilter === 'all' || neg.status === statusFilter;
-    return matchesSearch && matchesStatus;
+  const { data: requests = [], isLoading } = useCreditProtectionRequests({ status: statusFilter });
+  const sendToNegativation = useSendToNegativation();
+  const removeNegativation = useRemoveNegativation();
+  const bulkNegativation = useBulkNegativation();
+
+  const filteredRequests = requests.filter(req => {
+    const matchesSearch = req.customer_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      req.customer_document.includes(searchTerm);
+    return matchesSearch;
   });
+
+  const toggleSelection = (id: string) => {
+    setSelectedIds(prev => 
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    );
+  };
+
+  const handleBulkNegativation = async () => {
+    await bulkNegativation.mutateAsync(selectedIds);
+    setSelectedIds([]);
+    setConfirmDialogOpen(false);
+  };
 
   const columns = [
     {
-      key: 'cliente',
+      key: 'select',
+      header: '',
+      cell: (row: any) => row.status === 'pending' && (
+        <Checkbox 
+          checked={selectedIds.includes(row.id)}
+          onCheckedChange={() => toggleSelection(row.id)}
+        />
+      ),
+    },
+    {
+      key: 'customer',
       header: 'Cliente',
       cell: (row: any) => (
         <div>
-          <div className="font-medium">{row.cliente}</div>
-          <div className="text-xs text-muted-foreground">{row.documento}</div>
+          <div className="font-medium">{row.customer_name}</div>
+          <div className="text-xs text-muted-foreground">{row.customer_document}</div>
         </div>
       ),
     },
     {
-      key: 'valor',
+      key: 'amount',
       header: 'Valor',
-      cell: (row: any) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(row.valor),
+      cell: (row: any) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(row.amount),
     },
     {
-      key: 'vencimento',
-      header: 'Vencimento',
-      cell: (row: any) => format(new Date(row.vencimento), 'dd/MM/yyyy', { locale: ptBR }),
+      key: 'days_overdue',
+      header: 'Dias em Atraso',
+      cell: (row: any) => (
+        <span className={row.days_overdue > 30 ? 'text-red-600 font-medium' : ''}>
+          {row.days_overdue} dias
+        </span>
+      ),
     },
     {
-      key: 'data_negativacao',
-      header: 'Data Negativação',
-      cell: (row: any) => row.data_negativacao 
-        ? format(new Date(row.data_negativacao), 'dd/MM/yyyy', { locale: ptBR })
+      key: 'sent_at',
+      header: 'Data Envio',
+      cell: (row: any) => row.sent_at 
+        ? format(new Date(row.sent_at), 'dd/MM/yyyy', { locale: ptBR })
         : '-',
-    },
-    {
-      key: 'bureau',
-      header: 'Bureau',
-      cell: (row: any) => <Badge variant="outline">{row.bureau}</Badge>,
     },
     {
       key: 'status',
       header: 'Status',
       cell: (row: any) => {
-        const status = statusConfig[row.status];
-        return <Badge className={status.color}>{status.label}</Badge>;
+        const config = statusConfig[row.status] || statusConfig.pending;
+        return <Badge className={config.color}>{config.label}</Badge>;
       },
     },
     {
@@ -85,19 +107,29 @@ export default function Negativacao() {
       header: 'Ações',
       cell: (row: any) => (
         <div className="flex gap-1">
-          {row.status === 'pendente' && (
-            <Button variant="outline" size="sm">
+          {row.status === 'pending' && (
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => sendToNegativation.mutate(row.id)}
+              disabled={sendToNegativation.isPending}
+            >
               Negativar
             </Button>
           )}
-          {row.status === 'negativado' && (
-            <Button variant="outline" size="sm">
+          {row.status === 'registered' && (
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => removeNegativation.mutate(row.id)}
+              disabled={removeNegativation.isPending}
+            >
               Baixar
             </Button>
           )}
-          {row.status === 'erro' && (
-            <Button variant="outline" size="sm">
-              Reenviar
+          {row.status === 'sent' && (
+            <Button variant="outline" size="sm" disabled>
+              Processando...
             </Button>
           )}
         </div>
@@ -106,8 +138,9 @@ export default function Negativacao() {
   ];
 
   // KPIs
-  const totalNegativado = negativacoes.filter(n => n.status === 'negativado').reduce((sum, n) => sum + n.valor, 0);
-  const totalPendente = negativacoes.filter(n => n.status === 'pendente').length;
+  const totalNegativado = requests.filter(n => n.status === 'registered').reduce((sum, n) => sum + n.amount, 0);
+  const totalPendente = requests.filter(n => n.status === 'pending').length;
+  const totalBaixado = requests.filter(n => n.status === 'removed').length;
 
   return (
     <MainLayout>
@@ -148,7 +181,7 @@ export default function Negativacao() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-red-600">
-                {negativacoes.filter(n => n.status === 'negativado').length}
+                {requests.filter(n => n.status === 'registered').length}
               </div>
             </CardContent>
           </Card>
@@ -166,13 +199,11 @@ export default function Negativacao() {
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                 <CheckCircle className="h-4 w-4" />
-                Baixados (Mês)
+                Baixados
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-green-600">
-                {negativacoes.filter(n => n.status === 'baixado').length}
-              </div>
+              <div className="text-2xl font-bold text-green-600">{totalBaixado}</div>
             </CardContent>
           </Card>
         </div>
@@ -194,27 +225,61 @@ export default function Negativacao() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Todos</SelectItem>
-              <SelectItem value="pendente">Pendente</SelectItem>
-              <SelectItem value="negativado">Negativado</SelectItem>
-              <SelectItem value="baixado">Baixado</SelectItem>
-              <SelectItem value="erro">Erro</SelectItem>
+              <SelectItem value="pending">Pendente</SelectItem>
+              <SelectItem value="sent">Enviado</SelectItem>
+              <SelectItem value="registered">Negativado</SelectItem>
+              <SelectItem value="removed">Baixado</SelectItem>
             </SelectContent>
           </Select>
           <Button variant="outline">
             <Upload className="h-4 w-4 mr-2" />
             Importar Lote
           </Button>
-          <Button>
-            Negativar Selecionados
+          <Button 
+            disabled={selectedIds.length === 0}
+            onClick={() => setConfirmDialogOpen(true)}
+          >
+            Negativar Selecionados ({selectedIds.length})
           </Button>
         </div>
 
         {/* Tabela */}
         <DataTable
           columns={columns}
-          data={filteredNegativacoes}
-          loading={false}
+          data={filteredRequests}
+          loading={isLoading}
         />
+
+        {/* Dialog de confirmação */}
+        <Dialog open={confirmDialogOpen} onOpenChange={setConfirmDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Confirmar Negativação</DialogTitle>
+              <DialogDescription>
+                Você está prestes a enviar {selectedIds.length} registro(s) para negativação.
+                Esta ação é irreversível e pode afetar o crédito dos clientes.
+              </DialogDescription>
+            </DialogHeader>
+            <Alert variant="destructive">
+              <AlertOctagon className="h-4 w-4" />
+              <AlertTitle>Atenção!</AlertTitle>
+              <AlertDescription>
+                Certifique-se de que todos os procedimentos de cobrança foram esgotados antes de negativar.
+                O cliente deve ser notificado previamente conforme legislação vigente.
+              </AlertDescription>
+            </Alert>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setConfirmDialogOpen(false)}>Cancelar</Button>
+              <Button 
+                variant="destructive" 
+                onClick={handleBulkNegativation}
+                disabled={bulkNegativation.isPending}
+              >
+                {bulkNegativation.isPending ? 'Enviando...' : 'Confirmar Negativação'}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </MainLayout>
   );
