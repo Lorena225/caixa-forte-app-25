@@ -5763,6 +5763,107 @@ export type Database = {
         }
         Relationships: []
       }
+      estoque: {
+        Row: {
+          corredor: string | null
+          custo_medio: number
+          custo_ultima_compra: number | null
+          data_fabricacao: string | null
+          data_validade: string | null
+          deposito: string | null
+          empresa_id: string
+          estoque_maximo: number | null
+          estoque_minimo: number | null
+          id: string
+          localizacao: string | null
+          lote: string | null
+          prateleira: string | null
+          produto_id: string
+          produto_variacao_id: string | null
+          quantidade_atual: number
+          quantidade_disponivel: number | null
+          quantidade_reservada: number
+          quantidade_transito: number
+          updated_at: string
+          valor_total_estoque: number | null
+        }
+        Insert: {
+          corredor?: string | null
+          custo_medio?: number
+          custo_ultima_compra?: number | null
+          data_fabricacao?: string | null
+          data_validade?: string | null
+          deposito?: string | null
+          empresa_id: string
+          estoque_maximo?: number | null
+          estoque_minimo?: number | null
+          id?: string
+          localizacao?: string | null
+          lote?: string | null
+          prateleira?: string | null
+          produto_id: string
+          produto_variacao_id?: string | null
+          quantidade_atual?: number
+          quantidade_disponivel?: number | null
+          quantidade_reservada?: number
+          quantidade_transito?: number
+          updated_at?: string
+          valor_total_estoque?: number | null
+        }
+        Update: {
+          corredor?: string | null
+          custo_medio?: number
+          custo_ultima_compra?: number | null
+          data_fabricacao?: string | null
+          data_validade?: string | null
+          deposito?: string | null
+          empresa_id?: string
+          estoque_maximo?: number | null
+          estoque_minimo?: number | null
+          id?: string
+          localizacao?: string | null
+          lote?: string | null
+          prateleira?: string | null
+          produto_id?: string
+          produto_variacao_id?: string | null
+          quantidade_atual?: number
+          quantidade_disponivel?: number | null
+          quantidade_reservada?: number
+          quantidade_transito?: number
+          updated_at?: string
+          valor_total_estoque?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "estoque_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "estoque_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "estoque_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "estoque_produto_variacao_id_fkey"
+            columns: ["produto_variacao_id"]
+            isOneToOne: false
+            referencedRelation: "produtos_variacoes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       export_profiles: {
         Row: {
           columns_json: Json
@@ -8581,6 +8682,175 @@ export type Database = {
           },
         ]
       }
+      inventarios: {
+        Row: {
+          categoria_id: string | null
+          codigo: string | null
+          created_at: string
+          created_by: string | null
+          data_inventario: string
+          descricao: string | null
+          empresa_id: string
+          hora_fim: string | null
+          hora_inicio: string | null
+          id: string
+          status: string
+          tipo: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          categoria_id?: string | null
+          codigo?: string | null
+          created_at?: string
+          created_by?: string | null
+          data_inventario: string
+          descricao?: string | null
+          empresa_id: string
+          hora_fim?: string | null
+          hora_inicio?: string | null
+          id?: string
+          status?: string
+          tipo?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          categoria_id?: string | null
+          codigo?: string | null
+          created_at?: string
+          created_by?: string | null
+          data_inventario?: string
+          descricao?: string | null
+          empresa_id?: string
+          hora_fim?: string | null
+          hora_inicio?: string | null
+          id?: string
+          status?: string
+          tipo?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventarios_categoria_id_fkey"
+            columns: ["categoria_id"]
+            isOneToOne: false
+            referencedRelation: "categorias_produto"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventarios_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventarios_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      inventarios_itens: {
+        Row: {
+          ajuste_aplicado: boolean
+          contado_por: string | null
+          custo_unitario: number | null
+          data_contagem: string | null
+          diferenca: number | null
+          empresa_id: string
+          id: string
+          inventario_id: string
+          movimentacao_id: string | null
+          observacoes: string | null
+          percentual_diferenca: number | null
+          produto_id: string
+          produto_variacao_id: string | null
+          quantidade_contada: number | null
+          quantidade_sistema: number
+          status: string
+          valor_diferenca: number | null
+        }
+        Insert: {
+          ajuste_aplicado?: boolean
+          contado_por?: string | null
+          custo_unitario?: number | null
+          data_contagem?: string | null
+          diferenca?: number | null
+          empresa_id: string
+          id?: string
+          inventario_id: string
+          movimentacao_id?: string | null
+          observacoes?: string | null
+          percentual_diferenca?: number | null
+          produto_id: string
+          produto_variacao_id?: string | null
+          quantidade_contada?: number | null
+          quantidade_sistema: number
+          status?: string
+          valor_diferenca?: number | null
+        }
+        Update: {
+          ajuste_aplicado?: boolean
+          contado_por?: string | null
+          custo_unitario?: number | null
+          data_contagem?: string | null
+          diferenca?: number | null
+          empresa_id?: string
+          id?: string
+          inventario_id?: string
+          movimentacao_id?: string | null
+          observacoes?: string | null
+          percentual_diferenca?: number | null
+          produto_id?: string
+          produto_variacao_id?: string | null
+          quantidade_contada?: number | null
+          quantidade_sistema?: number
+          status?: string
+          valor_diferenca?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventarios_itens_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventarios_itens_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "inventarios_itens_inventario_id_fkey"
+            columns: ["inventario_id"]
+            isOneToOne: false
+            referencedRelation: "inventarios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventarios_itens_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventarios_itens_produto_variacao_id_fkey"
+            columns: ["produto_variacao_id"]
+            isOneToOne: false
+            referencedRelation: "produtos_variacoes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       jobs_queue: {
         Row: {
           attempts: number | null
@@ -9407,6 +9677,99 @@ export type Database = {
         }
         Relationships: []
       }
+      lotes: {
+        Row: {
+          created_at: string
+          custo_unitario: number | null
+          data_entrada: string
+          data_fabricacao: string | null
+          data_validade: string | null
+          empresa_id: string
+          fornecedor_id: string | null
+          id: string
+          nota_fiscal: string | null
+          numero_lote: string
+          observacoes: string | null
+          produto_id: string
+          quantidade_atual: number
+          quantidade_inicial: number
+          status: string
+          valor_total: number | null
+        }
+        Insert: {
+          created_at?: string
+          custo_unitario?: number | null
+          data_entrada?: string
+          data_fabricacao?: string | null
+          data_validade?: string | null
+          empresa_id: string
+          fornecedor_id?: string | null
+          id?: string
+          nota_fiscal?: string | null
+          numero_lote: string
+          observacoes?: string | null
+          produto_id: string
+          quantidade_atual: number
+          quantidade_inicial: number
+          status?: string
+          valor_total?: number | null
+        }
+        Update: {
+          created_at?: string
+          custo_unitario?: number | null
+          data_entrada?: string
+          data_fabricacao?: string | null
+          data_validade?: string | null
+          empresa_id?: string
+          fornecedor_id?: string | null
+          id?: string
+          nota_fiscal?: string | null
+          numero_lote?: string
+          observacoes?: string | null
+          produto_id?: string
+          quantidade_atual?: number
+          quantidade_inicial?: number
+          status?: string
+          valor_total?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lotes_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lotes_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "lotes_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "counterparties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lotes_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "counterparties_safe"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lotes_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       marcas: {
         Row: {
           codigo: string
@@ -9452,6 +9815,137 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_security_status"
             referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      movimentacoes_estoque: {
+        Row: {
+          cfop: string | null
+          codigo: string | null
+          created_at: string
+          created_by: string | null
+          custo_medio_anterior: number | null
+          custo_medio_novo: number | null
+          custo_unitario: number | null
+          data_fabricacao: string | null
+          data_movimentacao: string
+          data_validade: string | null
+          deposito_destino: string | null
+          deposito_origem: string | null
+          descricao: string | null
+          documento_id: string | null
+          documento_numero: string | null
+          documento_tipo: string | null
+          empresa_id: string
+          hora_movimentacao: string
+          id: string
+          localizacao: string | null
+          motivo: string | null
+          nfe_chave: string | null
+          numero_lote: string | null
+          observacoes: string | null
+          produto_id: string
+          produto_variacao_id: string | null
+          quantidade: number
+          quantidade_anterior: number | null
+          quantidade_nova: number | null
+          tipo_movimentacao: string
+          valor_total: number | null
+        }
+        Insert: {
+          cfop?: string | null
+          codigo?: string | null
+          created_at?: string
+          created_by?: string | null
+          custo_medio_anterior?: number | null
+          custo_medio_novo?: number | null
+          custo_unitario?: number | null
+          data_fabricacao?: string | null
+          data_movimentacao?: string
+          data_validade?: string | null
+          deposito_destino?: string | null
+          deposito_origem?: string | null
+          descricao?: string | null
+          documento_id?: string | null
+          documento_numero?: string | null
+          documento_tipo?: string | null
+          empresa_id: string
+          hora_movimentacao?: string
+          id?: string
+          localizacao?: string | null
+          motivo?: string | null
+          nfe_chave?: string | null
+          numero_lote?: string | null
+          observacoes?: string | null
+          produto_id: string
+          produto_variacao_id?: string | null
+          quantidade: number
+          quantidade_anterior?: number | null
+          quantidade_nova?: number | null
+          tipo_movimentacao: string
+          valor_total?: number | null
+        }
+        Update: {
+          cfop?: string | null
+          codigo?: string | null
+          created_at?: string
+          created_by?: string | null
+          custo_medio_anterior?: number | null
+          custo_medio_novo?: number | null
+          custo_unitario?: number | null
+          data_fabricacao?: string | null
+          data_movimentacao?: string
+          data_validade?: string | null
+          deposito_destino?: string | null
+          deposito_origem?: string | null
+          descricao?: string | null
+          documento_id?: string | null
+          documento_numero?: string | null
+          documento_tipo?: string | null
+          empresa_id?: string
+          hora_movimentacao?: string
+          id?: string
+          localizacao?: string | null
+          motivo?: string | null
+          nfe_chave?: string | null
+          numero_lote?: string | null
+          observacoes?: string | null
+          produto_id?: string
+          produto_variacao_id?: string | null
+          quantidade?: number
+          quantidade_anterior?: number | null
+          quantidade_nova?: number | null
+          tipo_movimentacao?: string
+          valor_total?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "movimentacoes_estoque_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "movimentacoes_estoque_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "movimentacoes_estoque_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "movimentacoes_estoque_produto_variacao_id_fkey"
+            columns: ["produto_variacao_id"]
+            isOneToOne: false
+            referencedRelation: "produtos_variacoes"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -16489,6 +16983,121 @@ export type Database = {
           },
         ]
       }
+      v_produtos_curva_abc: {
+        Row: {
+          codigo: string | null
+          curva: string | null
+          empresa_id: string | null
+          percentual_acumulado: number | null
+          produto_id: string | null
+          produto_nome: string | null
+          quantidade_atual: number | null
+          valor_total_estoque: number | null
+          valor_total_movimentado: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "movimentacoes_estoque_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "movimentacoes_estoque_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "movimentacoes_estoque_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_produtos_estoque_minimo: {
+        Row: {
+          codigo: string | null
+          custo_medio: number | null
+          deposito: string | null
+          empresa_id: string | null
+          estoque_maximo: number | null
+          estoque_minimo: number | null
+          id: string | null
+          produto_id: string | null
+          produto_nome: string | null
+          quantidade_atual: number | null
+          quantidade_disponivel: number | null
+          quantidade_repor: number | null
+          valor_reposicao: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "estoque_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "estoque_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "estoque_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_produtos_giro_estoque: {
+        Row: {
+          cobertura_meses: number | null
+          codigo: string | null
+          custo_medio: number | null
+          empresa_id: string | null
+          giro_estoque: number | null
+          produto_id: string | null
+          produto_nome: string | null
+          qtd_movimentacoes: number | null
+          quantidade_atual: number | null
+          total_entradas_12m: number | null
+          total_saidas_12m: number | null
+          valor_total_estoque: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "estoque_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "estoque_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "estoque_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       v_rc_flow_by_account: {
         Row: {
           account_code: string | null
@@ -16886,6 +17495,17 @@ export type Database = {
         }
         Returns: undefined
       }
+      atualizar_saldo_estoque: {
+        Args: {
+          p_custo_unitario?: number
+          p_empresa_id: string
+          p_produto_id: string
+          p_quantidade: number
+          p_tipo: string
+          p_variacao_id: string
+        }
+        Returns: Json
+      }
       atualizar_status_nfe_sefaz: {
         Args: {
           p_motivo?: string
@@ -17004,6 +17624,15 @@ export type Database = {
         Args: { p_company_id: string; p_feature_key: string }
         Returns: boolean
       }
+      liberar_estoque: {
+        Args: {
+          p_empresa_id: string
+          p_produto_id: string
+          p_quantidade: number
+          p_variacao_id: string
+        }
+        Returns: boolean
+      }
       process_settlement: {
         Args: {
           p_bank_account_id: string
@@ -17030,6 +17659,15 @@ export type Database = {
         Returns: undefined
       }
       refresh_dashboard_cache: { Args: never; Returns: undefined }
+      reservar_estoque: {
+        Args: {
+          p_empresa_id: string
+          p_produto_id: string
+          p_quantidade: number
+          p_variacao_id: string
+        }
+        Returns: boolean
+      }
       reverse_settlement: {
         Args: { p_notes?: string; p_settlement_id: string; p_user_id: string }
         Returns: string
@@ -17047,6 +17685,15 @@ export type Database = {
           p_user_id: string
         }
         Returns: boolean
+      }
+      validar_estoque_disponivel: {
+        Args: {
+          p_empresa_id: string
+          p_produto_id: string
+          p_quantidade: number
+          p_variacao_id: string
+        }
+        Returns: Json
       }
       validar_xml_nfe: { Args: { p_xml: string }; Returns: Json }
       validate_manual_settlement: {
