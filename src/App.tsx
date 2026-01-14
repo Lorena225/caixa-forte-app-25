@@ -41,6 +41,11 @@ import ImportExportIndex from "./pages/importar-exportar/Index";
 import ImportWizard from "./pages/importar-exportar/ImportWizard";
 import ImportHistory from "./pages/importar-exportar/ImportHistory";
 import ExportData from "./pages/importar-exportar/ExportData";
+// Vendas Module
+import VendasIndex from "./pages/vendas/Index";
+import VendasNova from "./pages/vendas/NovaVenda";
+import VendasPedidos from "./pages/vendas/Pedidos";
+import VendasOrcamentos from "./pages/vendas/Orcamentos";
 // ERP Modules
 import ContabilidadeIndex from "./pages/contabilidade/Index";
 import ContabilidadeLancamentos from "./pages/contabilidade/Lancamentos";
@@ -192,6 +197,12 @@ const App = () => (
                 
                 {/* Conciliação Bancária */}
                 <Route path="/conciliacao" element={<ConciliacaoIndex />} />
+                
+                {/* ============ VENDAS ============ */}
+                <Route path="/vendas" element={<VendasIndex />} />
+                <Route path="/vendas/nova" element={<VendasNova />} />
+                <Route path="/vendas/pedidos" element={<VendasPedidos />} />
+                <Route path="/vendas/orcamentos" element={<VendasOrcamentos />} />
                 
                 {/* AP/AR Index */}
                 <Route path="/ap" element={<APIndex />} />
