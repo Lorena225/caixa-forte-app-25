@@ -19,12 +19,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Search, Plus, MoreHorizontal, Eye, FileEdit, ArrowRight, Trash2, FileText, Clock, CheckCircle, XCircle } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Search, Plus, MoreHorizontal, Eye, FileEdit, ArrowRight, Trash2, FileText, Clock, CheckCircle } from "lucide-react";
 import { useVendas, SITUACAO_VENDA_LABELS } from "@/hooks/useVendas";
 import { format, startOfMonth, endOfMonth } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { toast } from "sonner";
+import { PedidoFormModal } from "@/components/vendas/PedidoFormModal";
 
 const SITUACAO_BADGE_VARIANT: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
   A: "secondary",   // Aberto
@@ -34,8 +34,8 @@ const SITUACAO_BADGE_VARIANT: Record<string, "default" | "secondary" | "destruct
 };
 
 export default function Orcamentos() {
-  const navigate = useNavigate();
   const hoje = new Date();
+  const [showModal, setShowModal] = useState(false);
 
   // Filtros
   const [search, setSearch] = useState("");
@@ -158,10 +158,12 @@ export default function Orcamentos() {
           title="Orçamentos" 
           description="Propostas comerciais e cotações"
         >
-          <Button onClick={() => navigate("/vendas/nova")}>
+          <Button onClick={() => setShowModal(true)}>
             <Plus className="mr-2 h-4 w-4" /> Novo Orçamento
           </Button>
         </PageHeader>
+
+        <PedidoFormModal open={showModal} onOpenChange={setShowModal} tipo="O" />
 
         {/* KPI Cards */}
         <div className="grid gap-4 md:grid-cols-4">
