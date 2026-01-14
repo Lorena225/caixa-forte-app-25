@@ -246,7 +246,7 @@ const App = () => (
                 <Route path="/financeiro/analise-custos" element={<AnaliseCustos />} />
                 <Route path="/financeiro/orcamento-real" element={<OrcamentoReal />} />
                 <Route path="/financeiro/investimentos" element={<Investimentos />} />
-                <Route path="/admin/moedas" element={<Moedas />} />
+                <Route path="/configuracoes/moedas" element={<Moedas />} />
                 
                 {/* ============ VENDAS ============ */}
                 <Route path="/vendas" element={<VendasIndex />} />
