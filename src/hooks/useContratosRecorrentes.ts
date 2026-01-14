@@ -88,19 +88,21 @@ export function useCreateContratoRecorrente() {
   const { currentCompany } = useAuth();
 
   return useMutation({
-    mutationFn: async (contrato: { cliente_id: string; descricao: string; data_inicio: string; dia_vencimento?: number; data_fim?: string }) => {
+    mutationFn: async (contrato: { cliente_id: string; descricao: string; data_inicio: string; valor_mensal: number; dia_vencimento?: number; data_fim?: string; periodicidade?: string }) => {
       if (!currentCompany?.id) throw new Error("Empresa não selecionada");
       
       const { data, error } = await supabase
         .from("contratos_recorrentes")
-        .insert({
+        .insert([{
           empresa_id: currentCompany.id,
           cliente_id: contrato.cliente_id,
           descricao: contrato.descricao,
           data_inicio: contrato.data_inicio,
+          valor_mensal: contrato.valor_mensal,
           dia_vencimento: contrato.dia_vencimento || 1,
           data_fim: contrato.data_fim,
-        })
+          periodicidade: contrato.periodicidade || 'mensal',
+        }])
         .select()
         .single();
       
