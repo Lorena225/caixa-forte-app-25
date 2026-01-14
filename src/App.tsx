@@ -66,6 +66,11 @@ import FiscalEmpresa from "./pages/fiscal/Empresa";
 import FiscalNFe from "./pages/fiscal/NFe";
 import FiscalNFSe from "./pages/fiscal/NFSe";
 import FiscalCertificados from "./pages/fiscal/Certificados";
+import FiscalSpedFiscal from "./pages/fiscal/SpedFiscal";
+import FiscalSpedContabil from "./pages/fiscal/SpedContabil";
+import FiscalApuracaoImpostos from "./pages/fiscal/ApuracaoImpostos";
+import FiscalLivrosFiscais from "./pages/fiscal/LivrosFiscais";
+import FiscalObrigacoesAcessorias from "./pages/fiscal/ObrigacoesAcessorias";
 // Estoque
 import EstoqueIndex from "./pages/estoque/Index";
 import EstoqueMovimentacoes from "./pages/estoque/Movimentacoes";
@@ -204,6 +209,11 @@ const App = () => (
                 <Route path="/fiscal/regras" element={<FiscalRegras />} />
                 <Route path="/fiscal/obrigacoes" element={<FiscalObrigacoes />} />
                 <Route path="/fiscal/empresa" element={<FiscalEmpresa />} />
+                <Route path="/fiscal/sped-fiscal" element={<FiscalSpedFiscal />} />
+                <Route path="/fiscal/sped-contabil" element={<FiscalSpedContabil />} />
+                <Route path="/fiscal/apuracao-impostos" element={<FiscalApuracaoImpostos />} />
+                <Route path="/fiscal/livros-fiscais" element={<FiscalLivrosFiscais />} />
+                <Route path="/fiscal/obrigacoes-acessorias" element={<FiscalObrigacoesAcessorias />} />
                 
                 {/* ============ ESTOQUE ============ */}
                 <Route path="/estoque" element={<EstoqueIndex />} />

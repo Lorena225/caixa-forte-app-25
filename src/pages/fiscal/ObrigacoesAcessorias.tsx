@@ -13,7 +13,6 @@ import { Label } from '@/components/ui/label';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { PageHeader } from '@/components/common/PageHeader';
-import { KPICard } from '@/components/dashboard/KPICard';
 import { useTaxObligations, usePendingObligations, useOverdueObligations, useCreateTaxObligation, useTransmitObligation, OBLIGATION_TYPES } from '@/hooks/useTaxObligations';
 import { cn } from '@/lib/utils';
 
