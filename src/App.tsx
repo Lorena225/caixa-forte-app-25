@@ -115,6 +115,13 @@ import AnaliseCustos from "./pages/financeiro/AnaliseCustos";
 import OrcamentoReal from "./pages/financeiro/OrcamentoReal";
 import Investimentos from "./pages/financeiro/Investimentos";
 import Moedas from "./pages/configuracoes/Moedas";
+// CRM
+import CRMIndex from "./pages/crm/Index";
+import CRMPipeline from "./pages/crm/Pipeline";
+import CRMLeads from "./pages/crm/Leads";
+import CRMVendedores from "./pages/crm/Vendedores";
+import CRMComissoes from "./pages/crm/Comissoes";
+import CRMMetas from "./pages/crm/Metas";
 // Admin
 import AdminIndex from "./pages/admin/Index";
 import AdminBranding from "./pages/admin/Branding";
@@ -373,6 +380,14 @@ const App = () => (
                 <Route path="/admin/system-health" element={<Navigate to="/admin/saude-sistema" replace />} />
                 <Route path="/admin/jobs-monitor" element={<Navigate to="/admin/monitor-jobs" replace />} />
                 <Route path="/admin/navigation" element={<Navigate to="/admin/navegacao" replace />} />
+                
+                {/* ============ CRM ============ */}
+                <Route path="/crm" element={<CRMIndex />} />
+                <Route path="/crm/pipeline" element={<CRMPipeline />} />
+                <Route path="/crm/leads" element={<CRMLeads />} />
+                <Route path="/crm/vendedores" element={<CRMVendedores />} />
+                <Route path="/crm/comissoes" element={<CRMComissoes />} />
+                <Route path="/crm/metas" element={<CRMMetas />} />
                 
                 {/* ============ AUTOPILOTO (PT-BR) ============ */}
                 <Route path="/autopiloto/caixa-entrada" element={<Inbox />} />
