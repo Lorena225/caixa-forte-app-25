@@ -4091,6 +4091,205 @@ export type Database = {
           },
         ]
       }
+      commission_rules: {
+        Row: {
+          applies_to: string | null
+          base_percent: number | null
+          category_id: string | null
+          company_id: string
+          created_at: string
+          description: string | null
+          fixed_amount: number | null
+          goal_percent_bonus: number | null
+          id: string
+          is_active: boolean | null
+          max_amount: number | null
+          min_amount: number | null
+          name: string
+          priority: number | null
+          product_id: string | null
+          rule_type: string | null
+          seller_id: string | null
+          tiers_json: Json | null
+          updated_at: string
+          valid_from: string | null
+          valid_to: string | null
+        }
+        Insert: {
+          applies_to?: string | null
+          base_percent?: number | null
+          category_id?: string | null
+          company_id: string
+          created_at?: string
+          description?: string | null
+          fixed_amount?: number | null
+          goal_percent_bonus?: number | null
+          id?: string
+          is_active?: boolean | null
+          max_amount?: number | null
+          min_amount?: number | null
+          name: string
+          priority?: number | null
+          product_id?: string | null
+          rule_type?: string | null
+          seller_id?: string | null
+          tiers_json?: Json | null
+          updated_at?: string
+          valid_from?: string | null
+          valid_to?: string | null
+        }
+        Update: {
+          applies_to?: string | null
+          base_percent?: number | null
+          category_id?: string | null
+          company_id?: string
+          created_at?: string
+          description?: string | null
+          fixed_amount?: number | null
+          goal_percent_bonus?: number | null
+          id?: string
+          is_active?: boolean | null
+          max_amount?: number | null
+          min_amount?: number | null
+          name?: string
+          priority?: number | null
+          product_id?: string | null
+          rule_type?: string | null
+          seller_id?: string | null
+          tiers_json?: Json | null
+          updated_at?: string
+          valid_from?: string | null
+          valid_to?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "commission_rules_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "commission_rules_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "commission_rules_seller_id_fkey"
+            columns: ["seller_id"]
+            isOneToOne: false
+            referencedRelation: "sellers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      commissions: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          bonus_amount: number | null
+          commission_amount: number
+          commission_percent: number | null
+          company_id: string
+          created_at: string
+          id: string
+          notes: string | null
+          opportunity_id: string | null
+          paid_at: string | null
+          payment_reference: string | null
+          reference_period: string | null
+          rule_id: string | null
+          sale_amount: number
+          seller_id: string
+          status: string | null
+          total_amount: number
+          updated_at: string
+          venda_id: string | null
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          bonus_amount?: number | null
+          commission_amount: number
+          commission_percent?: number | null
+          company_id: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          opportunity_id?: string | null
+          paid_at?: string | null
+          payment_reference?: string | null
+          reference_period?: string | null
+          rule_id?: string | null
+          sale_amount: number
+          seller_id: string
+          status?: string | null
+          total_amount: number
+          updated_at?: string
+          venda_id?: string | null
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          bonus_amount?: number | null
+          commission_amount?: number
+          commission_percent?: number | null
+          company_id?: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          opportunity_id?: string | null
+          paid_at?: string | null
+          payment_reference?: string | null
+          reference_period?: string | null
+          rule_id?: string | null
+          sale_amount?: number
+          seller_id?: string
+          status?: string | null
+          total_amount?: number
+          updated_at?: string
+          venda_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "commissions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "commissions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "commissions_opportunity_id_fkey"
+            columns: ["opportunity_id"]
+            isOneToOne: false
+            referencedRelation: "opportunities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "commissions_rule_id_fkey"
+            columns: ["rule_id"]
+            isOneToOne: false
+            referencedRelation: "commission_rules"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "commissions_seller_id_fkey"
+            columns: ["seller_id"]
+            isOneToOne: false
+            referencedRelation: "sellers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       companies: {
         Row: {
           cnpj: string | null
@@ -5921,6 +6120,119 @@ export type Database = {
             columns: ["transaction_id"]
             isOneToOne: false
             referencedRelation: "v_ar_open"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      crm_activities: {
+        Row: {
+          activity_type: string
+          company_id: string
+          completed_at: string | null
+          counterparty_id: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          duration_minutes: number | null
+          id: string
+          is_completed: boolean | null
+          lead_id: string | null
+          next_action: string | null
+          opportunity_id: string | null
+          outcome: string | null
+          scheduled_at: string | null
+          seller_id: string | null
+          subject: string
+          updated_at: string
+        }
+        Insert: {
+          activity_type: string
+          company_id: string
+          completed_at?: string | null
+          counterparty_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string
+          is_completed?: boolean | null
+          lead_id?: string | null
+          next_action?: string | null
+          opportunity_id?: string | null
+          outcome?: string | null
+          scheduled_at?: string | null
+          seller_id?: string | null
+          subject: string
+          updated_at?: string
+        }
+        Update: {
+          activity_type?: string
+          company_id?: string
+          completed_at?: string | null
+          counterparty_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string
+          is_completed?: boolean | null
+          lead_id?: string | null
+          next_action?: string | null
+          opportunity_id?: string | null
+          outcome?: string | null
+          scheduled_at?: string | null
+          seller_id?: string | null
+          subject?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_activities_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "crm_activities_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "crm_activities_counterparty_id_fkey"
+            columns: ["counterparty_id"]
+            isOneToOne: false
+            referencedRelation: "counterparties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "crm_activities_counterparty_id_fkey"
+            columns: ["counterparty_id"]
+            isOneToOne: false
+            referencedRelation: "counterparties_safe"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "crm_activities_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "crm_activities_opportunity_id_fkey"
+            columns: ["opportunity_id"]
+            isOneToOne: false
+            referencedRelation: "opportunities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "crm_activities_seller_id_fkey"
+            columns: ["seller_id"]
+            isOneToOne: false
+            referencedRelation: "sellers"
             referencedColumns: ["id"]
           },
         ]
@@ -10201,6 +10513,106 @@ export type Database = {
           },
         ]
       }
+      leads: {
+        Row: {
+          code: string | null
+          company_id: string
+          company_name: string | null
+          converted_at: string | null
+          converted_to_counterparty_id: string | null
+          converted_to_opportunity_id: string | null
+          created_at: string
+          custom_fields: Json | null
+          email: string | null
+          id: string
+          last_contact_at: string | null
+          name: string
+          next_follow_up_at: string | null
+          notes: string | null
+          phone: string | null
+          position: string | null
+          seller_id: string | null
+          source: string | null
+          source_detail: string | null
+          status: string | null
+          tags: string[] | null
+          temperature: string | null
+          updated_at: string
+        }
+        Insert: {
+          code?: string | null
+          company_id: string
+          company_name?: string | null
+          converted_at?: string | null
+          converted_to_counterparty_id?: string | null
+          converted_to_opportunity_id?: string | null
+          created_at?: string
+          custom_fields?: Json | null
+          email?: string | null
+          id?: string
+          last_contact_at?: string | null
+          name: string
+          next_follow_up_at?: string | null
+          notes?: string | null
+          phone?: string | null
+          position?: string | null
+          seller_id?: string | null
+          source?: string | null
+          source_detail?: string | null
+          status?: string | null
+          tags?: string[] | null
+          temperature?: string | null
+          updated_at?: string
+        }
+        Update: {
+          code?: string | null
+          company_id?: string
+          company_name?: string | null
+          converted_at?: string | null
+          converted_to_counterparty_id?: string | null
+          converted_to_opportunity_id?: string | null
+          created_at?: string
+          custom_fields?: Json | null
+          email?: string | null
+          id?: string
+          last_contact_at?: string | null
+          name?: string
+          next_follow_up_at?: string | null
+          notes?: string | null
+          phone?: string | null
+          position?: string | null
+          seller_id?: string | null
+          source?: string | null
+          source_detail?: string | null
+          status?: string | null
+          tags?: string[] | null
+          temperature?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leads_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "leads_seller_id_fkey"
+            columns: ["seller_id"]
+            isOneToOne: false
+            referencedRelation: "sellers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       loan_contract_types: {
         Row: {
           company_id: string
@@ -12141,6 +12553,143 @@ export type Database = {
           },
         ]
       }
+      opportunities: {
+        Row: {
+          actual_close_date: string | null
+          amount: number | null
+          code: string | null
+          company_id: string
+          counterparty_id: string | null
+          created_at: string
+          custom_fields: Json | null
+          description: string | null
+          expected_close_date: string | null
+          id: string
+          last_activity_at: string | null
+          lead_id: string | null
+          loss_notes: string | null
+          loss_reason: string | null
+          next_step: string | null
+          next_step_date: string | null
+          priority: string | null
+          probability: number | null
+          seller_id: string | null
+          source: string | null
+          stage_id: string
+          status: string | null
+          tags: string[] | null
+          title: string
+          updated_at: string
+          won_venda_id: string | null
+        }
+        Insert: {
+          actual_close_date?: string | null
+          amount?: number | null
+          code?: string | null
+          company_id: string
+          counterparty_id?: string | null
+          created_at?: string
+          custom_fields?: Json | null
+          description?: string | null
+          expected_close_date?: string | null
+          id?: string
+          last_activity_at?: string | null
+          lead_id?: string | null
+          loss_notes?: string | null
+          loss_reason?: string | null
+          next_step?: string | null
+          next_step_date?: string | null
+          priority?: string | null
+          probability?: number | null
+          seller_id?: string | null
+          source?: string | null
+          stage_id: string
+          status?: string | null
+          tags?: string[] | null
+          title: string
+          updated_at?: string
+          won_venda_id?: string | null
+        }
+        Update: {
+          actual_close_date?: string | null
+          amount?: number | null
+          code?: string | null
+          company_id?: string
+          counterparty_id?: string | null
+          created_at?: string
+          custom_fields?: Json | null
+          description?: string | null
+          expected_close_date?: string | null
+          id?: string
+          last_activity_at?: string | null
+          lead_id?: string | null
+          loss_notes?: string | null
+          loss_reason?: string | null
+          next_step?: string | null
+          next_step_date?: string | null
+          priority?: string | null
+          probability?: number | null
+          seller_id?: string | null
+          source?: string | null
+          stage_id?: string
+          status?: string | null
+          tags?: string[] | null
+          title?: string
+          updated_at?: string
+          won_venda_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "opportunities_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "opportunities_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "opportunities_counterparty_id_fkey"
+            columns: ["counterparty_id"]
+            isOneToOne: false
+            referencedRelation: "counterparties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "opportunities_counterparty_id_fkey"
+            columns: ["counterparty_id"]
+            isOneToOne: false
+            referencedRelation: "counterparties_safe"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "opportunities_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "opportunities_seller_id_fkey"
+            columns: ["seller_id"]
+            isOneToOne: false
+            referencedRelation: "sellers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "opportunities_stage_id_fkey"
+            columns: ["stage_id"]
+            isOneToOne: false
+            referencedRelation: "pipeline_stages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       parametros_fiscais: {
         Row: {
           ambiente: number | null
@@ -12902,6 +13451,66 @@ export type Database = {
           name?: string
         }
         Relationships: []
+      }
+      pipeline_stages: {
+        Row: {
+          color: string | null
+          company_id: string
+          created_at: string
+          days_expected: number | null
+          id: string
+          is_active: boolean | null
+          is_lost: boolean | null
+          is_won: boolean | null
+          name: string
+          position: number
+          probability: number | null
+          updated_at: string
+        }
+        Insert: {
+          color?: string | null
+          company_id: string
+          created_at?: string
+          days_expected?: number | null
+          id?: string
+          is_active?: boolean | null
+          is_lost?: boolean | null
+          is_won?: boolean | null
+          name: string
+          position?: number
+          probability?: number | null
+          updated_at?: string
+        }
+        Update: {
+          color?: string | null
+          company_id?: string
+          created_at?: string
+          days_expected?: number | null
+          id?: string
+          is_active?: boolean | null
+          is_lost?: boolean | null
+          is_won?: boolean | null
+          name?: string
+          position?: number
+          probability?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pipeline_stages_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pipeline_stages_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
       }
       pix_charges: {
         Row: {
@@ -14822,6 +15431,85 @@ export type Database = {
           },
         ]
       }
+      sales_goals: {
+        Row: {
+          achieved_amount: number | null
+          achievement_percent: number | null
+          company_id: string
+          created_at: string
+          goal_type: string | null
+          id: string
+          notes: string | null
+          period_month: number | null
+          period_quarter: number | null
+          period_type: string | null
+          period_year: number
+          seller_id: string | null
+          status: string | null
+          target_amount: number
+          team_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          achieved_amount?: number | null
+          achievement_percent?: number | null
+          company_id: string
+          created_at?: string
+          goal_type?: string | null
+          id?: string
+          notes?: string | null
+          period_month?: number | null
+          period_quarter?: number | null
+          period_type?: string | null
+          period_year: number
+          seller_id?: string | null
+          status?: string | null
+          target_amount: number
+          team_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          achieved_amount?: number | null
+          achievement_percent?: number | null
+          company_id?: string
+          created_at?: string
+          goal_type?: string | null
+          id?: string
+          notes?: string | null
+          period_month?: number | null
+          period_quarter?: number | null
+          period_type?: string | null
+          period_year?: number
+          seller_id?: string | null
+          status?: string | null
+          target_amount?: number
+          team_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_goals_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_goals_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "sales_goals_seller_id_fkey"
+            columns: ["seller_id"]
+            isOneToOne: false
+            referencedRelation: "sellers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       saved_filters: {
         Row: {
           company_id: string
@@ -14876,6 +15564,94 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_security_status"
             referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      sellers: {
+        Row: {
+          base_commission_percent: number | null
+          code: string
+          commission_type: string | null
+          company_id: string
+          cpf: string | null
+          created_at: string
+          email: string | null
+          goal_monthly: number | null
+          hire_date: string | null
+          id: string
+          is_active: boolean | null
+          manager_id: string | null
+          name: string
+          notes: string | null
+          phone: string | null
+          team_id: string | null
+          termination_date: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          base_commission_percent?: number | null
+          code: string
+          commission_type?: string | null
+          company_id: string
+          cpf?: string | null
+          created_at?: string
+          email?: string | null
+          goal_monthly?: number | null
+          hire_date?: string | null
+          id?: string
+          is_active?: boolean | null
+          manager_id?: string | null
+          name: string
+          notes?: string | null
+          phone?: string | null
+          team_id?: string | null
+          termination_date?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          base_commission_percent?: number | null
+          code?: string
+          commission_type?: string | null
+          company_id?: string
+          cpf?: string | null
+          created_at?: string
+          email?: string | null
+          goal_monthly?: number | null
+          hire_date?: string | null
+          id?: string
+          is_active?: boolean | null
+          manager_id?: string | null
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          team_id?: string | null
+          termination_date?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sellers_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sellers_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "sellers_manager_id_fkey"
+            columns: ["manager_id"]
+            isOneToOne: false
+            referencedRelation: "sellers"
+            referencedColumns: ["id"]
           },
         ]
       }
