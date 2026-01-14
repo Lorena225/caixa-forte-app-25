@@ -17,6 +17,8 @@ import BancosReferencia from "./pages/cadastros/BancosReferencia";
 import Agencias from "./pages/cadastros/Agencias";
 import ContasBancarias from "./pages/cadastros/ContasBancarias";
 import Dimensoes from "./pages/cadastros/Dimensoes";
+import Produtos from "./pages/cadastros/Produtos";
+import Servicos from "./pages/cadastros/Servicos";
 import ContasReceber from "./pages/ContasReceber";
 import ContasPagar from "./pages/ContasPagar";
 import FluxoCaixa from "./pages/FluxoCaixa";
@@ -225,6 +227,8 @@ const App = () => (
                 <Route path="/cadastros/bancos" element={<BancosReferencia />} />
                 <Route path="/cadastros/agencias" element={<Agencias />} />
                 <Route path="/cadastros/contas-bancarias" element={<ContasBancarias />} />
+                <Route path="/cadastros/produtos" element={<Produtos />} />
+                <Route path="/cadastros/servicos" element={<Servicos />} />
                 
                 {/* ============ INTEGRAÇÕES ============ */}
                 <Route path="/integracoes" element={<IntegracoesIndex />} />
