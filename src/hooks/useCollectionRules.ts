@@ -3,22 +3,16 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
-export interface CollectionStep {
-  days: number;
-  action: 'email' | 'whatsapp' | 'sms' | 'telefone';
-  template: string;
-  message: string;
-}
-
 export interface CollectionRule {
   id: string;
   company_id: string;
   name: string;
-  description: string | null;
+  days_before_due: number | null;
+  days_after_due: number | null;
+  channel: string;
+  template_id: string | null;
   is_active: boolean;
-  steps: CollectionStep[];
   created_at: string;
-  updated_at: string;
 }
 
 export function useCollectionRules() {
@@ -34,10 +28,7 @@ export function useCollectionRules() {
         .eq("company_id", currentCompany.id)
         .order("name", { ascending: true });
       if (error) throw error;
-      return (data || []).map(rule => ({
-        ...rule,
-        steps: (rule.steps as unknown as CollectionStep[]) || []
-      })) as CollectionRule[];
+      return (data || []) as CollectionRule[];
     },
     enabled: !!currentCompany?.id,
   });
@@ -48,15 +39,23 @@ export function useCreateCollectionRule() {
   const { currentCompany } = useAuth();
 
   return useMutation({
-    mutationFn: async (data: { name: string; description?: string; steps: CollectionStep[] }) => {
+    mutationFn: async (data: { 
+      name: string; 
+      channel: string;
+      days_before_due?: number | null;
+      days_after_due?: number | null;
+      template_id?: string | null;
+    }) => {
       if (!currentCompany?.id) throw new Error("Empresa não selecionada");
       const { data: rule, error } = await supabase
         .from("collection_rules")
         .insert({
           company_id: currentCompany.id,
           name: data.name,
-          description: data.description || null,
-          steps: data.steps as unknown as any,
+          channel: data.channel,
+          days_before_due: data.days_before_due ?? null,
+          days_after_due: data.days_after_due ?? null,
+          template_id: data.template_id ?? null,
           is_active: true,
         })
         .select()
@@ -78,11 +77,21 @@ export function useUpdateCollectionRule() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ id, ...data }: { id: string; name?: string; description?: string; steps?: CollectionStep[]; is_active?: boolean }) => {
-      const updateData: any = {};
+    mutationFn: async ({ id, ...data }: { 
+      id: string; 
+      name?: string; 
+      channel?: string;
+      days_before_due?: number | null;
+      days_after_due?: number | null;
+      template_id?: string | null;
+      is_active?: boolean;
+    }) => {
+      const updateData: Record<string, any> = {};
       if (data.name !== undefined) updateData.name = data.name;
-      if (data.description !== undefined) updateData.description = data.description;
-      if (data.steps !== undefined) updateData.steps = data.steps as unknown as any;
+      if (data.channel !== undefined) updateData.channel = data.channel;
+      if (data.days_before_due !== undefined) updateData.days_before_due = data.days_before_due;
+      if (data.days_after_due !== undefined) updateData.days_after_due = data.days_after_due;
+      if (data.template_id !== undefined) updateData.template_id = data.template_id;
       if (data.is_active !== undefined) updateData.is_active = data.is_active;
 
       const { error } = await supabase
