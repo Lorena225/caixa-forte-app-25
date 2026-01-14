@@ -30,8 +30,8 @@ const statusLabels: Record<string, string> = {
 };
 
 export default function BoletosPage() {
-  const [statusFilter, setStatusFilter] = useState<string>("");
-  const { data: boletos, isLoading, refetch } = useBoletos({ status: statusFilter || undefined });
+  const [statusFilter, setStatusFilter] = useState<string>("__all__");
+  const { data: boletos, isLoading, refetch } = useBoletos({ status: statusFilter === "__all__" ? undefined : statusFilter });
   const cancelBoleto = useCancelBoleto();
   
   const [selectedBoleto, setSelectedBoleto] = useState<string | null>(null);
@@ -61,7 +61,7 @@ export default function BoletosPage() {
                 <SelectValue placeholder="Todos" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Todos</SelectItem>
+                <SelectItem value="__all__">Todos</SelectItem>
                 <SelectItem value="pending">Pendente</SelectItem>
                 <SelectItem value="registered">Registrado</SelectItem>
                 <SelectItem value="paid">Pago</SelectItem>

@@ -66,7 +66,7 @@ export default function Compensacao() {
   const [step, setStep] = useState<Step>('select');
   
   // Selection
-  const [counterpartyId, setCounterpartyId] = useState<string>('');
+  const [counterpartyId, setCounterpartyId] = useState<string>('__all__');
   const [selectedCredits, setSelectedCredits] = useState<string[]>([]);
   const [selectedDebits, setSelectedDebits] = useState<string[]>([]);
   
@@ -102,13 +102,13 @@ export default function Compensacao() {
   // Fetch credits (receivables) - filtered by counterparty
   const { data: credits = [], isLoading: creditsLoading } = useOpenTitles({
     title_type: 'RECEBER',
-    counterparty_id: counterpartyId || undefined,
+    counterparty_id: counterpartyId === '__all__' ? undefined : counterpartyId,
   });
 
   // Fetch debits (payables) - filtered by counterparty
   const { data: debits = [], isLoading: debitsLoading } = useOpenTitles({
     title_type: 'PAGAR',
-    counterparty_id: counterpartyId || undefined,
+    counterparty_id: counterpartyId === '__all__' ? undefined : counterpartyId,
   });
 
   // Selected data
@@ -336,7 +336,7 @@ export default function Compensacao() {
                       <SelectValue placeholder="Todos os parceiros" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Todos os parceiros</SelectItem>
+                      <SelectItem value="__all__">Todos os parceiros</SelectItem>
                       {counterparties.map(c => (
                         <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
                       ))}
