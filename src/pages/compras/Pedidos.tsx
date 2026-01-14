@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Plus, Search, Eye, Edit, XCircle, Truck, CheckCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { PedidoCompraModal } from '@/components/compras/PedidoCompraModal';
 
 const statusConfig: Record<string, { label: string; color: string }> = {
   rascunho: { label: 'Rascunho', color: 'bg-gray-100 text-gray-800' },
@@ -32,6 +33,7 @@ export default function PedidosCompra() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [pedidos] = useState(mockPedidos);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const filteredPedidos = pedidos.filter(pedido => {
     const matchesSearch = pedido.numero.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -187,11 +189,13 @@ export default function PedidosCompra() {
               <SelectItem value="cancelado">Cancelado</SelectItem>
             </SelectContent>
           </Select>
-          <Button>
+          <Button onClick={() => setModalOpen(true)}>
             <Plus className="h-4 w-4 mr-2" />
             Novo Pedido
           </Button>
         </div>
+
+        <PedidoCompraModal open={modalOpen} onOpenChange={setModalOpen} />
 
         {/* Tabela */}
         <DataTable

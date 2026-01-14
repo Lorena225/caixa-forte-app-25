@@ -11,6 +11,7 @@ import { Plus, Search, Send, Download, Eye, XCircle, RefreshCw } from 'lucide-re
 import { useFiscalDocuments } from '@/hooks/useFiscalDocuments';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { NFeEmissaoModal } from '@/components/fiscal/NFeEmissaoModal';
 
 const statusColors: Record<string, string> = {
   rascunho: 'bg-gray-100 text-gray-800',
@@ -33,6 +34,7 @@ const statusLabels: Record<string, string> = {
 export default function NFe() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [modalOpen, setModalOpen] = useState(false);
   const { data: allNotas = [], isLoading } = useFiscalDocuments();
 
   // Filter only NF-e documents (model 55)
@@ -198,11 +200,13 @@ export default function NFe() {
             <RefreshCw className="h-4 w-4 mr-2" />
             Consultar SEFAZ
           </Button>
-          <Button>
+          <Button onClick={() => setModalOpen(true)}>
             <Plus className="h-4 w-4 mr-2" />
             Nova NF-e
           </Button>
         </div>
+
+        <NFeEmissaoModal open={modalOpen} onOpenChange={setModalOpen} />
 
         {/* Tabela */}
         <DataTable

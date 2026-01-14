@@ -11,6 +11,7 @@ import { Plus, Search, Eye, Send, Download, XCircle, RefreshCw, Printer } from '
 import { useBoletos } from '@/hooks/useBoletos';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { BoletoModal } from '@/components/cobranca/BoletoModal';
 
 const statusColors: Record<string, string> = {
   rascunho: 'bg-gray-100 text-gray-800',
@@ -33,6 +34,7 @@ const statusLabels: Record<string, string> = {
 export default function BoletosPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [modalOpen, setModalOpen] = useState(false);
   const { data: boletos = [], isLoading } = useBoletos();
 
   const filteredBoletos = boletos.filter(boleto => {
@@ -204,11 +206,13 @@ export default function BoletosPage() {
             <RefreshCw className="h-4 w-4 mr-2" />
             Atualizar Status
           </Button>
-          <Button>
+          <Button onClick={() => setModalOpen(true)}>
             <Plus className="h-4 w-4 mr-2" />
             Novo Boleto
           </Button>
         </div>
+
+        <BoletoModal open={modalOpen} onOpenChange={setModalOpen} />
 
         {/* Tabela */}
         <DataTable
