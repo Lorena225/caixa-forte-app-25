@@ -21,13 +21,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { 
   Search, Plus, MoreHorizontal, Eye, FileEdit, X, Receipt, 
-  ShoppingCart, DollarSign, Clock, CheckCircle 
+  ShoppingCart, DollarSign, Clock, CheckCircle, FileText
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useVendas, useVendasStats, SITUACAO_VENDA_LABELS, TIPO_VENDA_LABELS, useFaturarVenda } from "@/hooks/useVendas";
 import { format, startOfMonth, endOfMonth, startOfDay, endOfDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { toast } from "sonner";
+import { PedidoFormModal } from "@/components/vendas/PedidoFormModal";
+import { NFeEmissaoModal } from "@/components/fiscal/NFeEmissaoModal";
 
 const SITUACAO_BADGE_VARIANT: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
   A: "secondary", // Aberto/Rascunho
@@ -40,6 +42,11 @@ const SITUACAO_BADGE_VARIANT: Record<string, "default" | "secondary" | "destruct
 export default function Pedidos() {
   const navigate = useNavigate();
   const hoje = new Date();
+
+  // Modals
+  const [showPedidoModal, setShowPedidoModal] = useState(false);
+  const [showNFeModal, setShowNFeModal] = useState(false);
+  const [selectedVendaId, setSelectedVendaId] = useState<string | undefined>();
 
   // Filtros
   const [search, setSearch] = useState("");
@@ -80,6 +87,11 @@ export default function Pedidos() {
 
   const handleCancelar = (vendaId: string) => {
     toast.info("Funcionalidade de cancelamento em desenvolvimento");
+  };
+
+  const handleEmitirNFe = (vendaId: string) => {
+    setSelectedVendaId(vendaId);
+    setShowNFeModal(true);
   };
 
   // Colunas da tabela
@@ -165,6 +177,11 @@ export default function Pedidos() {
             >
               <Receipt className="mr-2 h-4 w-4" /> Faturar
             </DropdownMenuItem>
+            {(row.situacao as string) === 'F' && (
+              <DropdownMenuItem onClick={() => handleEmitirNFe(row.id as string)}>
+                <FileText className="mr-2 h-4 w-4" /> Emitir NF-e
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem 
               onClick={() => handleCancelar(row.id as string)}
               className="text-destructive"
@@ -185,10 +202,22 @@ export default function Pedidos() {
           title="Pedidos de Venda" 
           description="Gerencie seus pedidos e vendas"
         >
-          <Button onClick={() => navigate("/vendas/nova")}>
-            <Plus className="mr-2 h-4 w-4" /> Nova Venda
+          <Button onClick={() => setShowPedidoModal(true)}>
+            <Plus className="mr-2 h-4 w-4" /> Novo Pedido
           </Button>
         </PageHeader>
+
+        {/* Modals */}
+        <PedidoFormModal 
+          open={showPedidoModal} 
+          onOpenChange={setShowPedidoModal}
+          tipo="P"
+        />
+        <NFeEmissaoModal
+          open={showNFeModal}
+          onOpenChange={setShowNFeModal}
+          vendaId={selectedVendaId}
+        />
 
         {/* KPI Cards */}
         <div className="grid gap-4 md:grid-cols-4">
