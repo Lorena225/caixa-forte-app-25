@@ -64,7 +64,7 @@ export default function Bordero() {
   
   // Step 1: Filters
   const [titleType, setTitleType] = useState<TitleType>('PAGAR');
-  const [counterpartyId, setCounterpartyId] = useState<string>('');
+  const [counterpartyId, setCounterpartyId] = useState<string>('__all__');
   const [dueDateFrom, setDueDateFrom] = useState('');
   const [dueDateTo, setDueDateTo] = useState('');
   
@@ -83,7 +83,7 @@ export default function Bordero() {
   // Fetch open titles
   const { data: openTitles = [], isLoading: titlesLoading } = useOpenTitles({
     title_type: titleType,
-    counterparty_id: counterpartyId || undefined,
+    counterparty_id: counterpartyId === '__all__' ? undefined : counterpartyId,
     due_date_from: dueDateFrom || undefined,
     due_date_to: dueDateTo || undefined,
   });
@@ -329,7 +329,7 @@ export default function Bordero() {
                       <SelectValue placeholder="Todos" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Todos</SelectItem>
+                      <SelectItem value="__all__">Todos</SelectItem>
                       {counterparties.map(c => (
                         <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
                       ))}
