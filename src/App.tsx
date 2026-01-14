@@ -104,6 +104,12 @@ import WhatsAppConfig from "./pages/autopilot/WhatsAppConfig";
 import AutomationRules from "./pages/autopilot/AutomationRules";
 import PendingCenter from "./pages/autopilot/PendingCenter";
 import Inbox from "./pages/autopilot/Inbox";
+// Financeiro Avançado
+import ConciliacaoBancaria from "./pages/financeiro/ConciliacaoBancaria";
+import AnaliseCustos from "./pages/financeiro/AnaliseCustos";
+import OrcamentoReal from "./pages/financeiro/OrcamentoReal";
+import Investimentos from "./pages/financeiro/Investimentos";
+import Moedas from "./pages/configuracoes/Moedas";
 // Admin
 import AdminIndex from "./pages/admin/Index";
 import AdminBranding from "./pages/admin/Branding";
@@ -234,6 +240,13 @@ const App = () => (
                 
                 {/* Conciliação Bancária */}
                 <Route path="/conciliacao" element={<ConciliacaoIndex />} />
+                
+                {/* ============ FINANCEIRO AVANÇADO ============ */}
+                <Route path="/financeiro/conciliacao-bancaria" element={<ConciliacaoBancaria />} />
+                <Route path="/financeiro/analise-custos" element={<AnaliseCustos />} />
+                <Route path="/financeiro/orcamento-real" element={<OrcamentoReal />} />
+                <Route path="/financeiro/investimentos" element={<Investimentos />} />
+                <Route path="/admin/moedas" element={<Moedas />} />
                 
                 {/* ============ VENDAS ============ */}
                 <Route path="/vendas" element={<VendasIndex />} />
