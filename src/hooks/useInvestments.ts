@@ -24,12 +24,14 @@ export interface Investment {
 }
 
 export function useInvestments(_status?: InvestmentStatus) {
-  const { companyId } = useAuth();
+  const { currentCompany } = useAuth();
+  const companyId = currentCompany?.id;
   
   return useQuery({
     queryKey: ['investments', companyId],
     queryFn: async () => {
       if (!companyId) return [];
+      // Tables created but types not synced yet
       return [] as Investment[];
     },
     enabled: !!companyId,
@@ -51,7 +53,8 @@ export function useCreateInvestment() {
 }
 
 export function useInvestmentsDashboard() {
-  const { companyId } = useAuth();
+  const { currentCompany } = useAuth();
+  const companyId = currentCompany?.id;
   
   return useQuery({
     queryKey: ['investments-dashboard', companyId],

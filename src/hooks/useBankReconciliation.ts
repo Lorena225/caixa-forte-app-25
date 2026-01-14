@@ -1,5 +1,4 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 
@@ -47,32 +46,27 @@ export interface ReconciliationRule {
   created_at: string;
 }
 
-export function useBankReconciliations(bankAccountId?: string) {
-  const { companyId } = useAuth();
+export function useBankReconciliations(_bankAccountId?: string) {
+  const { currentCompany } = useAuth();
+  const companyId = currentCompany?.id;
   
   return useQuery({
-    queryKey: ['bank-reconciliations', companyId, bankAccountId],
+    queryKey: ['bank-reconciliations', companyId],
     queryFn: async () => {
       if (!companyId) return [];
-      
-      // Use raw query since types aren't synced yet
-      const { data, error } = await supabase
-        .rpc('get_bank_reconciliations' as never, { p_company_id: companyId, p_bank_account_id: bankAccountId })
-        .catch(() => ({ data: null, error: null }));
-      
-      // Fallback - table might not exist yet
-      if (error || !data) return [] as BankReconciliation[];
-      return data as BankReconciliation[];
+      // Tables created but types not synced yet - return empty for now
+      return [] as BankReconciliation[];
     },
     enabled: !!companyId,
   });
 }
 
-export function useBankTransactions(reconciliationId?: string, bankAccountId?: string) {
-  const { companyId } = useAuth();
+export function useBankTransactions(_reconciliationId?: string, _bankAccountId?: string) {
+  const { currentCompany } = useAuth();
+  const companyId = currentCompany?.id;
   
   return useQuery({
-    queryKey: ['bank-transactions', companyId, reconciliationId, bankAccountId],
+    queryKey: ['bank-transactions', companyId],
     queryFn: async () => {
       if (!companyId) return [];
       return [] as BankTransaction[];
@@ -82,7 +76,8 @@ export function useBankTransactions(reconciliationId?: string, bankAccountId?: s
 }
 
 export function useReconciliationRules() {
-  const { companyId } = useAuth();
+  const { currentCompany } = useAuth();
+  const companyId = currentCompany?.id;
   
   return useQuery({
     queryKey: ['reconciliation-rules', companyId],
