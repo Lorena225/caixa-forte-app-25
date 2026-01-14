@@ -2749,6 +2749,69 @@ export type Database = {
           },
         ]
       }
+      certificados_digitais: {
+        Row: {
+          arquivo_pfx: string | null
+          caminho_arquivo: string | null
+          cpf_cnpj: string | null
+          created_at: string
+          empresa_id: string
+          id: string
+          nome_titular: string | null
+          senha_criptografada: string | null
+          status: string
+          tipo: string
+          updated_at: string
+          validade_fim: string | null
+          validade_inicio: string | null
+        }
+        Insert: {
+          arquivo_pfx?: string | null
+          caminho_arquivo?: string | null
+          cpf_cnpj?: string | null
+          created_at?: string
+          empresa_id: string
+          id?: string
+          nome_titular?: string | null
+          senha_criptografada?: string | null
+          status?: string
+          tipo: string
+          updated_at?: string
+          validade_fim?: string | null
+          validade_inicio?: string | null
+        }
+        Update: {
+          arquivo_pfx?: string | null
+          caminho_arquivo?: string | null
+          cpf_cnpj?: string | null
+          created_at?: string
+          empresa_id?: string
+          id?: string
+          nome_titular?: string | null
+          senha_criptografada?: string | null
+          status?: string
+          tipo?: string
+          updated_at?: string
+          validade_fim?: string | null
+          validade_inicio?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "certificados_digitais_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "certificados_digitais_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
       chart_of_accounts_settings: {
         Row: {
           company_id: string
@@ -7796,6 +7859,96 @@ export type Database = {
           },
         ]
       }
+      impostos_configuracao: {
+        Row: {
+          aliquota_cofins: number | null
+          aliquota_interestadual: number | null
+          aliquota_interna: number | null
+          aliquota_ipi: number | null
+          aliquota_iss: number | null
+          aliquota_pis: number | null
+          cfop: string | null
+          created_at: string
+          cst_cofins: string | null
+          cst_ipi: string | null
+          cst_pis: string | null
+          empresa_id: string
+          id: string
+          modalidade_bc: number | null
+          reducao_base: number | null
+          regime_tributario: number | null
+          retencao: boolean | null
+          tipo_operacao: string | null
+          uf_destino: string | null
+          uf_origem: string | null
+          vigencia_fim: string | null
+          vigencia_inicio: string | null
+        }
+        Insert: {
+          aliquota_cofins?: number | null
+          aliquota_interestadual?: number | null
+          aliquota_interna?: number | null
+          aliquota_ipi?: number | null
+          aliquota_iss?: number | null
+          aliquota_pis?: number | null
+          cfop?: string | null
+          created_at?: string
+          cst_cofins?: string | null
+          cst_ipi?: string | null
+          cst_pis?: string | null
+          empresa_id: string
+          id?: string
+          modalidade_bc?: number | null
+          reducao_base?: number | null
+          regime_tributario?: number | null
+          retencao?: boolean | null
+          tipo_operacao?: string | null
+          uf_destino?: string | null
+          uf_origem?: string | null
+          vigencia_fim?: string | null
+          vigencia_inicio?: string | null
+        }
+        Update: {
+          aliquota_cofins?: number | null
+          aliquota_interestadual?: number | null
+          aliquota_interna?: number | null
+          aliquota_ipi?: number | null
+          aliquota_iss?: number | null
+          aliquota_pis?: number | null
+          cfop?: string | null
+          created_at?: string
+          cst_cofins?: string | null
+          cst_ipi?: string | null
+          cst_pis?: string | null
+          empresa_id?: string
+          id?: string
+          modalidade_bc?: number | null
+          reducao_base?: number | null
+          regime_tributario?: number | null
+          retencao?: boolean | null
+          tipo_operacao?: string | null
+          uf_destino?: string | null
+          uf_origem?: string | null
+          vigencia_fim?: string | null
+          vigencia_inicio?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "impostos_configuracao_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "impostos_configuracao_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
       installment_plans: {
         Row: {
           account_id: string
@@ -9972,6 +10125,483 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "fiscal_provider_config"
             referencedColumns: ["id"]
+          },
+        ]
+      }
+      notas_fiscais: {
+        Row: {
+          cfop: string | null
+          chave_acesso: string | null
+          cliente_id: string | null
+          created_at: string
+          created_by: string | null
+          danfe_gerado: boolean | null
+          danfe_url: string | null
+          data_autorizacao: string | null
+          data_emissao: string | null
+          data_saida: string | null
+          destinatario_cpf_cnpj: string | null
+          destinatario_nome: string | null
+          empresa_id: string
+          finalidade: number | null
+          hora_emissao: string | null
+          hora_saida: string | null
+          id: string
+          informacoes_complementares: string | null
+          informacoes_fisco: string | null
+          modelo: string | null
+          motivo_rejeicao: string | null
+          natureza_operacao: string | null
+          numero: number
+          protocolo_autorizacao: string | null
+          serie: string
+          situacao: string
+          status_sefaz: string | null
+          tipo_nota: string
+          tipo_operacao: number | null
+          updated_at: string
+          valor_cofins: number | null
+          valor_desconto: number | null
+          valor_frete: number | null
+          valor_icms: number | null
+          valor_ipi: number | null
+          valor_iss: number | null
+          valor_outras: number | null
+          valor_pis: number | null
+          valor_produtos: number | null
+          valor_seguro: number | null
+          valor_total: number
+          venda_id: string | null
+          xml_autorizado: string | null
+          xml_cancelamento: string | null
+          xml_envio: string | null
+          xml_retorno: string | null
+        }
+        Insert: {
+          cfop?: string | null
+          chave_acesso?: string | null
+          cliente_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          danfe_gerado?: boolean | null
+          danfe_url?: string | null
+          data_autorizacao?: string | null
+          data_emissao?: string | null
+          data_saida?: string | null
+          destinatario_cpf_cnpj?: string | null
+          destinatario_nome?: string | null
+          empresa_id: string
+          finalidade?: number | null
+          hora_emissao?: string | null
+          hora_saida?: string | null
+          id?: string
+          informacoes_complementares?: string | null
+          informacoes_fisco?: string | null
+          modelo?: string | null
+          motivo_rejeicao?: string | null
+          natureza_operacao?: string | null
+          numero: number
+          protocolo_autorizacao?: string | null
+          serie: string
+          situacao?: string
+          status_sefaz?: string | null
+          tipo_nota: string
+          tipo_operacao?: number | null
+          updated_at?: string
+          valor_cofins?: number | null
+          valor_desconto?: number | null
+          valor_frete?: number | null
+          valor_icms?: number | null
+          valor_ipi?: number | null
+          valor_iss?: number | null
+          valor_outras?: number | null
+          valor_pis?: number | null
+          valor_produtos?: number | null
+          valor_seguro?: number | null
+          valor_total: number
+          venda_id?: string | null
+          xml_autorizado?: string | null
+          xml_cancelamento?: string | null
+          xml_envio?: string | null
+          xml_retorno?: string | null
+        }
+        Update: {
+          cfop?: string | null
+          chave_acesso?: string | null
+          cliente_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          danfe_gerado?: boolean | null
+          danfe_url?: string | null
+          data_autorizacao?: string | null
+          data_emissao?: string | null
+          data_saida?: string | null
+          destinatario_cpf_cnpj?: string | null
+          destinatario_nome?: string | null
+          empresa_id?: string
+          finalidade?: number | null
+          hora_emissao?: string | null
+          hora_saida?: string | null
+          id?: string
+          informacoes_complementares?: string | null
+          informacoes_fisco?: string | null
+          modelo?: string | null
+          motivo_rejeicao?: string | null
+          natureza_operacao?: string | null
+          numero?: number
+          protocolo_autorizacao?: string | null
+          serie?: string
+          situacao?: string
+          status_sefaz?: string | null
+          tipo_nota?: string
+          tipo_operacao?: number | null
+          updated_at?: string
+          valor_cofins?: number | null
+          valor_desconto?: number | null
+          valor_frete?: number | null
+          valor_icms?: number | null
+          valor_ipi?: number | null
+          valor_iss?: number | null
+          valor_outras?: number | null
+          valor_pis?: number | null
+          valor_produtos?: number | null
+          valor_seguro?: number | null
+          valor_total?: number
+          venda_id?: string | null
+          xml_autorizado?: string | null
+          xml_cancelamento?: string | null
+          xml_envio?: string | null
+          xml_retorno?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notas_fiscais_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "counterparties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notas_fiscais_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "counterparties_safe"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notas_fiscais_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notas_fiscais_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "notas_fiscais_venda_id_fkey"
+            columns: ["venda_id"]
+            isOneToOne: false
+            referencedRelation: "vendas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notas_fiscais_eventos: {
+        Row: {
+          correcao: string | null
+          created_at: string
+          created_by: string | null
+          data_evento: string
+          id: string
+          justificativa: string | null
+          nota_fiscal_id: string
+          protocolo: string | null
+          sequencial: number | null
+          status: string | null
+          tipo_evento: string
+          xml_evento: string | null
+          xml_retorno: string | null
+        }
+        Insert: {
+          correcao?: string | null
+          created_at?: string
+          created_by?: string | null
+          data_evento: string
+          id?: string
+          justificativa?: string | null
+          nota_fiscal_id: string
+          protocolo?: string | null
+          sequencial?: number | null
+          status?: string | null
+          tipo_evento: string
+          xml_evento?: string | null
+          xml_retorno?: string | null
+        }
+        Update: {
+          correcao?: string | null
+          created_at?: string
+          created_by?: string | null
+          data_evento?: string
+          id?: string
+          justificativa?: string | null
+          nota_fiscal_id?: string
+          protocolo?: string | null
+          sequencial?: number | null
+          status?: string | null
+          tipo_evento?: string
+          xml_evento?: string | null
+          xml_retorno?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notas_fiscais_eventos_nota_fiscal_id_fkey"
+            columns: ["nota_fiscal_id"]
+            isOneToOne: false
+            referencedRelation: "notas_fiscais"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notas_fiscais_itens: {
+        Row: {
+          aliquota_cofins: number | null
+          aliquota_icms: number | null
+          aliquota_ipi: number | null
+          aliquota_iss: number | null
+          aliquota_pis: number | null
+          base_calculo_cofins: number | null
+          base_calculo_icms: number | null
+          base_calculo_ipi: number | null
+          base_calculo_pis: number | null
+          cest: string | null
+          cfop: string | null
+          classe_enquadramento: string | null
+          codigo: string | null
+          codigo_enquadramento: string | null
+          codigo_servico: string | null
+          created_at: string
+          cst_cofins: string | null
+          cst_icms: string | null
+          cst_ipi: string | null
+          cst_pis: string | null
+          descricao: string
+          id: string
+          informacoes_adicionais: string | null
+          item_lista_servico: string | null
+          modalidade_bc: number | null
+          ncm: string | null
+          nota_fiscal_id: string
+          ordem: number
+          origem: number | null
+          produto_id: string | null
+          quantidade: number
+          reducao_bc: number | null
+          unidade: string | null
+          valor_cofins: number | null
+          valor_desconto: number | null
+          valor_icms: number | null
+          valor_ipi: number | null
+          valor_iss: number | null
+          valor_pis: number | null
+          valor_total: number
+          valor_unitario: number
+        }
+        Insert: {
+          aliquota_cofins?: number | null
+          aliquota_icms?: number | null
+          aliquota_ipi?: number | null
+          aliquota_iss?: number | null
+          aliquota_pis?: number | null
+          base_calculo_cofins?: number | null
+          base_calculo_icms?: number | null
+          base_calculo_ipi?: number | null
+          base_calculo_pis?: number | null
+          cest?: string | null
+          cfop?: string | null
+          classe_enquadramento?: string | null
+          codigo?: string | null
+          codigo_enquadramento?: string | null
+          codigo_servico?: string | null
+          created_at?: string
+          cst_cofins?: string | null
+          cst_icms?: string | null
+          cst_ipi?: string | null
+          cst_pis?: string | null
+          descricao: string
+          id?: string
+          informacoes_adicionais?: string | null
+          item_lista_servico?: string | null
+          modalidade_bc?: number | null
+          ncm?: string | null
+          nota_fiscal_id: string
+          ordem: number
+          origem?: number | null
+          produto_id?: string | null
+          quantidade: number
+          reducao_bc?: number | null
+          unidade?: string | null
+          valor_cofins?: number | null
+          valor_desconto?: number | null
+          valor_icms?: number | null
+          valor_ipi?: number | null
+          valor_iss?: number | null
+          valor_pis?: number | null
+          valor_total: number
+          valor_unitario: number
+        }
+        Update: {
+          aliquota_cofins?: number | null
+          aliquota_icms?: number | null
+          aliquota_ipi?: number | null
+          aliquota_iss?: number | null
+          aliquota_pis?: number | null
+          base_calculo_cofins?: number | null
+          base_calculo_icms?: number | null
+          base_calculo_ipi?: number | null
+          base_calculo_pis?: number | null
+          cest?: string | null
+          cfop?: string | null
+          classe_enquadramento?: string | null
+          codigo?: string | null
+          codigo_enquadramento?: string | null
+          codigo_servico?: string | null
+          created_at?: string
+          cst_cofins?: string | null
+          cst_icms?: string | null
+          cst_ipi?: string | null
+          cst_pis?: string | null
+          descricao?: string
+          id?: string
+          informacoes_adicionais?: string | null
+          item_lista_servico?: string | null
+          modalidade_bc?: number | null
+          ncm?: string | null
+          nota_fiscal_id?: string
+          ordem?: number
+          origem?: number | null
+          produto_id?: string | null
+          quantidade?: number
+          reducao_bc?: number | null
+          unidade?: string | null
+          valor_cofins?: number | null
+          valor_desconto?: number | null
+          valor_icms?: number | null
+          valor_ipi?: number | null
+          valor_iss?: number | null
+          valor_pis?: number | null
+          valor_total?: number
+          valor_unitario?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notas_fiscais_itens_nota_fiscal_id_fkey"
+            columns: ["nota_fiscal_id"]
+            isOneToOne: false
+            referencedRelation: "notas_fiscais"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notas_fiscais_itens_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      parametros_fiscais: {
+        Row: {
+          ambiente: number | null
+          certificado_digital_id: string | null
+          codigo_municipio: string | null
+          created_at: string
+          email_destinatario: string | null
+          empresa_id: string
+          id: string
+          id_csc: string | null
+          inscricao_municipal: string | null
+          senha_ws: string | null
+          serie_nfce: string | null
+          serie_nfe: string | null
+          serie_nfse: string | null
+          token_csc: string | null
+          uf: string
+          ultimo_numero_nfce: number | null
+          ultimo_numero_nfe: number | null
+          ultimo_numero_nfse: number | null
+          updated_at: string
+          usuario_ws: string | null
+        }
+        Insert: {
+          ambiente?: number | null
+          certificado_digital_id?: string | null
+          codigo_municipio?: string | null
+          created_at?: string
+          email_destinatario?: string | null
+          empresa_id: string
+          id?: string
+          id_csc?: string | null
+          inscricao_municipal?: string | null
+          senha_ws?: string | null
+          serie_nfce?: string | null
+          serie_nfe?: string | null
+          serie_nfse?: string | null
+          token_csc?: string | null
+          uf: string
+          ultimo_numero_nfce?: number | null
+          ultimo_numero_nfe?: number | null
+          ultimo_numero_nfse?: number | null
+          updated_at?: string
+          usuario_ws?: string | null
+        }
+        Update: {
+          ambiente?: number | null
+          certificado_digital_id?: string | null
+          codigo_municipio?: string | null
+          created_at?: string
+          email_destinatario?: string | null
+          empresa_id?: string
+          id?: string
+          id_csc?: string | null
+          inscricao_municipal?: string | null
+          senha_ws?: string | null
+          serie_nfce?: string | null
+          serie_nfe?: string | null
+          serie_nfse?: string | null
+          token_csc?: string | null
+          uf?: string
+          ultimo_numero_nfce?: number | null
+          ultimo_numero_nfe?: number | null
+          ultimo_numero_nfse?: number | null
+          updated_at?: string
+          usuario_ws?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "parametros_fiscais_certificado_digital_id_fkey"
+            columns: ["certificado_digital_id"]
+            isOneToOne: false
+            referencedRelation: "certificados_digitais"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "parametros_fiscais_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: true
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "parametros_fiscais_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: true
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
           },
         ]
       }
@@ -16256,6 +16886,16 @@ export type Database = {
         }
         Returns: undefined
       }
+      atualizar_status_nfe_sefaz: {
+        Args: {
+          p_motivo?: string
+          p_nota_id: string
+          p_protocolo: string
+          p_status_sefaz: string
+          p_xml_retorno?: string
+        }
+        Returns: undefined
+      }
       audit_sensitive_action: {
         Args: {
           p_action: string
@@ -16269,6 +16909,16 @@ export type Database = {
           p_user_agent?: string
         }
         Returns: string
+      }
+      calcular_impostos_nfe: {
+        Args: {
+          p_cfop: string
+          p_empresa_id: string
+          p_uf_destino: string
+          p_uf_origem: string
+          p_valor_base: number
+        }
+        Returns: Json
       }
       check_login_lockout: {
         Args: { p_email: string; p_ip_address?: unknown }
@@ -16319,6 +16969,23 @@ export type Database = {
       generate_sequential_code: {
         Args: { p_company_id?: string; p_prefix?: string; p_table_name: string }
         Returns: string
+      }
+      gerar_chave_acesso_nfe: {
+        Args: {
+          p_ano_mes: string
+          p_cnpj: string
+          p_codigo_numerico?: number
+          p_modelo: string
+          p_numero: number
+          p_serie: string
+          p_tipo_emissao?: number
+          p_uf: string
+        }
+        Returns: string
+      }
+      gerar_proximo_numero_nfe: {
+        Args: { p_empresa_id: string; p_serie: string; p_tipo_nota: string }
+        Returns: number
       }
       get_company_tier: {
         Args: { p_company_id: string }
@@ -16381,6 +17048,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      validar_xml_nfe: { Args: { p_xml: string }; Returns: Json }
       validate_manual_settlement: {
         Args: {
           p_bank_account_id?: string
