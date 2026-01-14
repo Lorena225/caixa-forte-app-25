@@ -4350,6 +4350,95 @@ export type Database = {
           },
         ]
       }
+      contratos_recorrentes: {
+        Row: {
+          cliente_id: string
+          created_at: string
+          data_fim: string | null
+          data_inicio: string
+          descricao: string
+          dia_vencimento: number | null
+          empresa_id: string
+          enviar_cobranca: boolean | null
+          gerar_automatico: boolean | null
+          id: string
+          proxima_geracao: string | null
+          situacao: string | null
+          ultima_geracao: string | null
+          updated_at: string
+          valor_anual: number | null
+          valor_mensal: number
+          venda_id: string | null
+        }
+        Insert: {
+          cliente_id: string
+          created_at?: string
+          data_fim?: string | null
+          data_inicio: string
+          descricao: string
+          dia_vencimento?: number | null
+          empresa_id: string
+          enviar_cobranca?: boolean | null
+          gerar_automatico?: boolean | null
+          id?: string
+          proxima_geracao?: string | null
+          situacao?: string | null
+          ultima_geracao?: string | null
+          updated_at?: string
+          valor_anual?: number | null
+          valor_mensal: number
+          venda_id?: string | null
+        }
+        Update: {
+          cliente_id?: string
+          created_at?: string
+          data_fim?: string | null
+          data_inicio?: string
+          descricao?: string
+          dia_vencimento?: number | null
+          empresa_id?: string
+          enviar_cobranca?: boolean | null
+          gerar_automatico?: boolean | null
+          id?: string
+          proxima_geracao?: string | null
+          situacao?: string | null
+          ultima_geracao?: string | null
+          updated_at?: string
+          valor_anual?: number | null
+          valor_mensal?: number
+          venda_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contratos_recorrentes_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contratos_recorrentes_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contratos_recorrentes_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "contratos_recorrentes_venda_id_fkey"
+            columns: ["venda_id"]
+            isOneToOne: false
+            referencedRelation: "vendas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cost_center_closure: {
         Row: {
           ancestor_id: string
@@ -13356,6 +13445,460 @@ export type Database = {
             columns: ["role_id"]
             isOneToOne: false
             referencedRelation: "custom_roles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vendas: {
+        Row: {
+          cfop: string | null
+          cliente_cpf_cnpj: string | null
+          cliente_endereco_id: string | null
+          cliente_id: string
+          cliente_nome: string | null
+          comissao_percentual: number | null
+          comissao_valor: number | null
+          condicao_pagamento_id: string | null
+          created_at: string
+          created_by: string | null
+          data_entrega: string | null
+          data_validade: string | null
+          data_venda: string
+          empresa_id: string
+          hora_venda: string | null
+          id: string
+          natureza_operacao: string | null
+          nfe_chave: string | null
+          nfe_id: string | null
+          numero: string
+          observacoes: string | null
+          observacoes_internas: string | null
+          observacoes_nf: string | null
+          percentual_desconto: number | null
+          serie: string | null
+          situacao: string
+          tipo: string
+          updated_at: string
+          updated_by: string | null
+          valor_desconto: number
+          valor_frete: number
+          valor_outras_despesas: number
+          valor_produtos: number
+          valor_seguro: number
+          valor_total: number
+          vendedor_id: string | null
+          vendedor_nome: string | null
+        }
+        Insert: {
+          cfop?: string | null
+          cliente_cpf_cnpj?: string | null
+          cliente_endereco_id?: string | null
+          cliente_id: string
+          cliente_nome?: string | null
+          comissao_percentual?: number | null
+          comissao_valor?: number | null
+          condicao_pagamento_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          data_entrega?: string | null
+          data_validade?: string | null
+          data_venda?: string
+          empresa_id: string
+          hora_venda?: string | null
+          id?: string
+          natureza_operacao?: string | null
+          nfe_chave?: string | null
+          nfe_id?: string | null
+          numero: string
+          observacoes?: string | null
+          observacoes_internas?: string | null
+          observacoes_nf?: string | null
+          percentual_desconto?: number | null
+          serie?: string | null
+          situacao?: string
+          tipo?: string
+          updated_at?: string
+          updated_by?: string | null
+          valor_desconto?: number
+          valor_frete?: number
+          valor_outras_despesas?: number
+          valor_produtos?: number
+          valor_seguro?: number
+          valor_total?: number
+          vendedor_id?: string | null
+          vendedor_nome?: string | null
+        }
+        Update: {
+          cfop?: string | null
+          cliente_cpf_cnpj?: string | null
+          cliente_endereco_id?: string | null
+          cliente_id?: string
+          cliente_nome?: string | null
+          comissao_percentual?: number | null
+          comissao_valor?: number | null
+          condicao_pagamento_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          data_entrega?: string | null
+          data_validade?: string | null
+          data_venda?: string
+          empresa_id?: string
+          hora_venda?: string | null
+          id?: string
+          natureza_operacao?: string | null
+          nfe_chave?: string | null
+          nfe_id?: string | null
+          numero?: string
+          observacoes?: string | null
+          observacoes_internas?: string | null
+          observacoes_nf?: string | null
+          percentual_desconto?: number | null
+          serie?: string | null
+          situacao?: string
+          tipo?: string
+          updated_at?: string
+          updated_by?: string | null
+          valor_desconto?: number
+          valor_frete?: number
+          valor_outras_despesas?: number
+          valor_produtos?: number
+          valor_seguro?: number
+          valor_total?: number
+          vendedor_id?: string | null
+          vendedor_nome?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendas_cliente_endereco_id_fkey"
+            columns: ["cliente_endereco_id"]
+            isOneToOne: false
+            referencedRelation: "clientes_enderecos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendas_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendas_condicao_pagamento_id_fkey"
+            columns: ["condicao_pagamento_id"]
+            isOneToOne: false
+            referencedRelation: "condicoes_pagamento"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendas_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendas_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      vendas_itens: {
+        Row: {
+          aliquota_cofins: number | null
+          aliquota_icms: number | null
+          aliquota_ipi: number | null
+          aliquota_pis: number | null
+          base_icms: number | null
+          cest: string | null
+          cfop: string | null
+          codigo: string | null
+          created_at: string
+          cst_cofins: string | null
+          cst_icms: string | null
+          cst_ipi: string | null
+          cst_pis: string | null
+          descricao: string
+          estoque_movimentado: boolean | null
+          id: string
+          movimenta_estoque: boolean | null
+          ncm: string | null
+          observacoes: string | null
+          ordem: number
+          origem: number | null
+          percentual_desconto: number | null
+          preco_custo: number | null
+          preco_unitario: number
+          produto_id: string | null
+          produto_variacao_id: string | null
+          quantidade: number
+          tipo_item: string
+          unidade: string | null
+          valor_cofins: number | null
+          valor_desconto: number | null
+          valor_icms: number | null
+          valor_ipi: number | null
+          valor_pis: number | null
+          valor_total: number
+          venda_id: string
+        }
+        Insert: {
+          aliquota_cofins?: number | null
+          aliquota_icms?: number | null
+          aliquota_ipi?: number | null
+          aliquota_pis?: number | null
+          base_icms?: number | null
+          cest?: string | null
+          cfop?: string | null
+          codigo?: string | null
+          created_at?: string
+          cst_cofins?: string | null
+          cst_icms?: string | null
+          cst_ipi?: string | null
+          cst_pis?: string | null
+          descricao: string
+          estoque_movimentado?: boolean | null
+          id?: string
+          movimenta_estoque?: boolean | null
+          ncm?: string | null
+          observacoes?: string | null
+          ordem: number
+          origem?: number | null
+          percentual_desconto?: number | null
+          preco_custo?: number | null
+          preco_unitario: number
+          produto_id?: string | null
+          produto_variacao_id?: string | null
+          quantidade: number
+          tipo_item?: string
+          unidade?: string | null
+          valor_cofins?: number | null
+          valor_desconto?: number | null
+          valor_icms?: number | null
+          valor_ipi?: number | null
+          valor_pis?: number | null
+          valor_total: number
+          venda_id: string
+        }
+        Update: {
+          aliquota_cofins?: number | null
+          aliquota_icms?: number | null
+          aliquota_ipi?: number | null
+          aliquota_pis?: number | null
+          base_icms?: number | null
+          cest?: string | null
+          cfop?: string | null
+          codigo?: string | null
+          created_at?: string
+          cst_cofins?: string | null
+          cst_icms?: string | null
+          cst_ipi?: string | null
+          cst_pis?: string | null
+          descricao?: string
+          estoque_movimentado?: boolean | null
+          id?: string
+          movimenta_estoque?: boolean | null
+          ncm?: string | null
+          observacoes?: string | null
+          ordem?: number
+          origem?: number | null
+          percentual_desconto?: number | null
+          preco_custo?: number | null
+          preco_unitario?: number
+          produto_id?: string | null
+          produto_variacao_id?: string | null
+          quantidade?: number
+          tipo_item?: string
+          unidade?: string | null
+          valor_cofins?: number | null
+          valor_desconto?: number | null
+          valor_icms?: number | null
+          valor_ipi?: number | null
+          valor_pis?: number | null
+          valor_total?: number
+          venda_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendas_itens_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendas_itens_produto_variacao_id_fkey"
+            columns: ["produto_variacao_id"]
+            isOneToOne: false
+            referencedRelation: "produtos_variacoes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendas_itens_venda_id_fkey"
+            columns: ["venda_id"]
+            isOneToOne: false
+            referencedRelation: "vendas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vendas_pagamentos: {
+        Row: {
+          codigo_barras: string | null
+          condicao_pagamento_id: string | null
+          created_at: string
+          data_emissao: string | null
+          data_pagamento: string | null
+          data_vencimento: string | null
+          forma_pagamento: string
+          id: string
+          linha_digitavel: string | null
+          nosso_numero: string | null
+          numero_parcelas: number | null
+          observacoes: string | null
+          percentual: number
+          qrcode: string | null
+          qrcode_base64: string | null
+          sequencia: number
+          status: string | null
+          taxa_cobranca: number | null
+          valor: number
+          valor_pago: number | null
+          venda_id: string
+        }
+        Insert: {
+          codigo_barras?: string | null
+          condicao_pagamento_id?: string | null
+          created_at?: string
+          data_emissao?: string | null
+          data_pagamento?: string | null
+          data_vencimento?: string | null
+          forma_pagamento: string
+          id?: string
+          linha_digitavel?: string | null
+          nosso_numero?: string | null
+          numero_parcelas?: number | null
+          observacoes?: string | null
+          percentual: number
+          qrcode?: string | null
+          qrcode_base64?: string | null
+          sequencia: number
+          status?: string | null
+          taxa_cobranca?: number | null
+          valor: number
+          valor_pago?: number | null
+          venda_id: string
+        }
+        Update: {
+          codigo_barras?: string | null
+          condicao_pagamento_id?: string | null
+          created_at?: string
+          data_emissao?: string | null
+          data_pagamento?: string | null
+          data_vencimento?: string | null
+          forma_pagamento?: string
+          id?: string
+          linha_digitavel?: string | null
+          nosso_numero?: string | null
+          numero_parcelas?: number | null
+          observacoes?: string | null
+          percentual?: number
+          qrcode?: string | null
+          qrcode_base64?: string | null
+          sequencia?: number
+          status?: string | null
+          taxa_cobranca?: number | null
+          valor?: number
+          valor_pago?: number | null
+          venda_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendas_pagamentos_condicao_pagamento_id_fkey"
+            columns: ["condicao_pagamento_id"]
+            isOneToOne: false
+            referencedRelation: "condicoes_pagamento"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendas_pagamentos_venda_id_fkey"
+            columns: ["venda_id"]
+            isOneToOne: false
+            referencedRelation: "vendas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vendas_parcelas: {
+        Row: {
+          conta_receber_id: string | null
+          created_at: string
+          data_pagamento: string | null
+          data_vencimento: string
+          forma_recebimento: string | null
+          id: string
+          numero_parcela: number
+          observacoes: string | null
+          status: string | null
+          valor_desconto: number | null
+          valor_juros: number | null
+          valor_multa: number | null
+          valor_original: number
+          valor_total: number
+          venda_id: string
+          venda_pagamento_id: string | null
+        }
+        Insert: {
+          conta_receber_id?: string | null
+          created_at?: string
+          data_pagamento?: string | null
+          data_vencimento: string
+          forma_recebimento?: string | null
+          id?: string
+          numero_parcela: number
+          observacoes?: string | null
+          status?: string | null
+          valor_desconto?: number | null
+          valor_juros?: number | null
+          valor_multa?: number | null
+          valor_original: number
+          valor_total: number
+          venda_id: string
+          venda_pagamento_id?: string | null
+        }
+        Update: {
+          conta_receber_id?: string | null
+          created_at?: string
+          data_pagamento?: string | null
+          data_vencimento?: string
+          forma_recebimento?: string | null
+          id?: string
+          numero_parcela?: number
+          observacoes?: string | null
+          status?: string | null
+          valor_desconto?: number | null
+          valor_juros?: number | null
+          valor_multa?: number | null
+          valor_original?: number
+          valor_total?: number
+          venda_id?: string
+          venda_pagamento_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendas_parcelas_venda_id_fkey"
+            columns: ["venda_id"]
+            isOneToOne: false
+            referencedRelation: "vendas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendas_parcelas_venda_pagamento_id_fkey"
+            columns: ["venda_pagamento_id"]
+            isOneToOne: false
+            referencedRelation: "vendas_pagamentos"
             referencedColumns: ["id"]
           },
         ]
