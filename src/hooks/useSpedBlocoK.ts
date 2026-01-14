@@ -167,7 +167,7 @@ export function useExportSpedBlocoKTxt() {
       
       const { data, error } = await supabase
         .from('sped_bloco_k')
-        .select('*, products(name, sku)')
+        .select('*, products(name, code)')
         .eq('company_id', currentCompany.id)
         .eq('periodo_referencia', periodoReferencia)
         .order('created_at');
