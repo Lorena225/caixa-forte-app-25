@@ -1,5 +1,4 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 
@@ -30,12 +29,14 @@ export interface BudgetItem {
 }
 
 export function useBudgets(_year?: number) {
-  const { companyId } = useAuth();
+  const { currentCompany } = useAuth();
+  const companyId = currentCompany?.id;
   
   return useQuery({
     queryKey: ['budgets-advanced', companyId],
     queryFn: async () => {
       if (!companyId) return [];
+      // Tables created but types not synced yet
       return [] as Budget[];
     },
     enabled: !!companyId,

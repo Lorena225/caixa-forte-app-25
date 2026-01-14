@@ -1,5 +1,4 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 
@@ -20,12 +19,14 @@ export interface CostClassification {
 }
 
 export function useCostClassifications() {
-  const { companyId } = useAuth();
+  const { currentCompany } = useAuth();
+  const companyId = currentCompany?.id;
   
   return useQuery({
     queryKey: ['cost-classifications', companyId],
     queryFn: async () => {
       if (!companyId) return [];
+      // Tables created but types not synced yet
       return [] as CostClassification[];
     },
     enabled: !!companyId,
@@ -52,7 +53,8 @@ export function useUpsertCostClassification() {
 }
 
 export function useCostAnalysis() {
-  const { companyId } = useAuth();
+  const { currentCompany } = useAuth();
+  const companyId = currentCompany?.id;
   
   return useQuery({
     queryKey: ['cost-analysis', companyId],
