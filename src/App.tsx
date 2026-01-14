@@ -63,6 +63,23 @@ import FiscalApuracao from "./pages/fiscal/Apuracao";
 import FiscalRegras from "./pages/fiscal/Regras";
 import FiscalObrigacoes from "./pages/fiscal/Obrigacoes";
 import FiscalEmpresa from "./pages/fiscal/Empresa";
+import FiscalNFe from "./pages/fiscal/NFe";
+import FiscalNFSe from "./pages/fiscal/NFSe";
+import FiscalCertificados from "./pages/fiscal/Certificados";
+// Estoque
+import EstoqueIndex from "./pages/estoque/Index";
+import EstoqueMovimentacoes from "./pages/estoque/Movimentacoes";
+import EstoqueInventario from "./pages/estoque/Inventario";
+// Compras
+import ComprasIndex from "./pages/compras/Index";
+import ComprasPedidos from "./pages/compras/Pedidos";
+import ComprasCotacoes from "./pages/compras/Cotacoes";
+import ComprasEntradas from "./pages/compras/Entradas";
+// Cobrança
+import CobrancaIndex from "./pages/cobranca/Index";
+import CobrancaBoletos from "./pages/cobranca/Boletos";
+import CobrancaReguas from "./pages/cobranca/Reguas";
+import CobrancaNegativacao from "./pages/cobranca/Negativacao";
 import TesourariaIndex from "./pages/tesouraria/Index";
 import TesourariaPosicao from "./pages/tesouraria/Posicao";
 import TesourariaConciliacao from "./pages/tesouraria/Conciliacao";
@@ -172,12 +189,32 @@ const App = () => (
                 {/* ERP Modules - Fiscal */}
                 <Route path="/fiscal" element={<FiscalIndex />} />
                 <Route path="/fiscal/documentos" element={<FiscalDocumentos />} />
+                <Route path="/fiscal/nfe" element={<FiscalNFe />} />
+                <Route path="/fiscal/nfse" element={<FiscalNFSe />} />
+                <Route path="/fiscal/certificados" element={<FiscalCertificados />} />
                 <Route path="/fiscal/sped" element={<FiscalSPED />} />
                 <Route path="/fiscal/retencoes" element={<FiscalRetencoes />} />
                 <Route path="/fiscal/apuracao" element={<FiscalApuracao />} />
                 <Route path="/fiscal/regras" element={<FiscalRegras />} />
                 <Route path="/fiscal/obrigacoes" element={<FiscalObrigacoes />} />
                 <Route path="/fiscal/empresa" element={<FiscalEmpresa />} />
+                
+                {/* ============ ESTOQUE ============ */}
+                <Route path="/estoque" element={<EstoqueIndex />} />
+                <Route path="/estoque/movimentacoes" element={<EstoqueMovimentacoes />} />
+                <Route path="/estoque/inventario" element={<EstoqueInventario />} />
+                
+                {/* ============ COMPRAS ============ */}
+                <Route path="/compras" element={<ComprasIndex />} />
+                <Route path="/compras/pedidos" element={<ComprasPedidos />} />
+                <Route path="/compras/cotacoes" element={<ComprasCotacoes />} />
+                <Route path="/compras/entradas" element={<ComprasEntradas />} />
+                
+                {/* ============ COBRANÇA ============ */}
+                <Route path="/cobranca" element={<CobrancaIndex />} />
+                <Route path="/cobranca/boletos" element={<CobrancaBoletos />} />
+                <Route path="/cobranca/reguas" element={<CobrancaReguas />} />
+                <Route path="/cobranca/negativacao" element={<CobrancaNegativacao />} />
                 
 {/* ERP Modules - Tesouraria */}
                 <Route path="/tesouraria" element={<TesourariaIndex />} />

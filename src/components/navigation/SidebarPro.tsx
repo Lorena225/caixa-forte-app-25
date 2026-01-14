@@ -11,7 +11,8 @@ import {
   FileBarChart, CalendarClock, Calculator, Sparkles, Inbox,
   MessageCircle, Bot, Wand2, Database, ListTree, Network, Users,
   Layers, Plug, ArrowLeftRight, Settings, PanelLeft, Search, Blocks,
-  ShoppingCart, Plus, FileText, ClipboardList
+  ShoppingCart, Plus, FileText, ClipboardList, Package, Truck, Receipt,
+  Bell, AlertOctagon, Shield, ArrowRightLeft
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
@@ -28,7 +29,8 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   FileBarChart, CalendarClock, Calculator, Sparkles, Inbox,
   MessageCircle, Bot, Wand2, Database, ListTree, Network, Users,
   Layers, Plug, ArrowLeftRight, Settings, PanelLeft, Search, Blocks,
-  ShoppingCart, Plus, FileText, ClipboardList,
+  ShoppingCart, Plus, FileText, ClipboardList, Package, Truck, Receipt,
+  Bell, AlertOctagon, Shield,
 };
 
 const getIcon = (iconName: string) => iconMap[iconName] || LayoutDashboard;

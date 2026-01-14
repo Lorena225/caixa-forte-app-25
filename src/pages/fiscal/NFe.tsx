@@ -7,14 +7,14 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Plus, Search, FileText, Send, Download, Eye, XCircle, RefreshCw } from 'lucide-react';
+import { Plus, Search, Send, Download, Eye, XCircle, RefreshCw } from 'lucide-react';
 import { useFiscalDocuments } from '@/hooks/useFiscalDocuments';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
 const statusColors: Record<string, string> = {
   rascunho: 'bg-gray-100 text-gray-800',
-  validando: 'bg-blue-100 text-blue-800',
+  pendente: 'bg-blue-100 text-blue-800',
   autorizada: 'bg-green-100 text-green-800',
   cancelada: 'bg-red-100 text-red-800',
   rejeitada: 'bg-orange-100 text-orange-800',
@@ -23,7 +23,7 @@ const statusColors: Record<string, string> = {
 
 const statusLabels: Record<string, string> = {
   rascunho: 'Rascunho',
-  validando: 'Validando',
+  pendente: 'Pendente',
   autorizada: 'Autorizada',
   cancelada: 'Cancelada',
   rejeitada: 'Rejeitada',
@@ -33,24 +33,26 @@ const statusLabels: Record<string, string> = {
 export default function NFe() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
-  const { data: notas = [], isLoading } = useFiscalDocuments('nfe');
+  const { data: allNotas = [], isLoading } = useFiscalDocuments();
+
+  // Filter only NF-e documents (model 55)
+  const notas = allNotas.filter(n => n.document_model === '55');
 
   const filteredNotas = notas.filter(nota => {
     const matchesSearch = 
-      nota.numero?.toString().includes(searchTerm) ||
-      nota.destinatario_nome?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      nota.chave_acesso?.includes(searchTerm);
+      nota.document_number?.toString().includes(searchTerm) ||
+      nota.access_key?.includes(searchTerm);
     const matchesStatus = statusFilter === 'all' || nota.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
 
   // KPIs
   const totalAutorizadas = notas.filter(n => n.status === 'autorizada').length;
-  const totalPendentes = notas.filter(n => n.status === 'rascunho' || n.status === 'validando').length;
+  const totalPendentes = notas.filter(n => n.status === 'rascunho' || n.status === 'pendente').length;
   const totalCanceladas = notas.filter(n => n.status === 'cancelada').length;
   const valorTotal = notas
     .filter(n => n.status === 'autorizada')
-    .reduce((sum, n) => sum + (n.valor_total || 0), 0);
+    .reduce((sum, n) => sum + (Number(n.total_nf) || 0), 0);
 
   const columns = [
     {
@@ -58,15 +60,15 @@ export default function NFe() {
       header: 'Número',
       cell: (row: any) => (
         <div className="font-medium">
-          {row.serie}-{row.numero?.toString().padStart(9, '0')}
+          {row.document_series}-{row.document_number?.toString().padStart(9, '0')}
         </div>
       ),
     },
     {
-      key: 'data_emissao',
+      key: 'issue_date',
       header: 'Data Emissão',
-      cell: (row: any) => row.data_emissao 
-        ? format(new Date(row.data_emissao), 'dd/MM/yyyy HH:mm', { locale: ptBR })
+      cell: (row: any) => row.issue_date 
+        ? format(new Date(row.issue_date), 'dd/MM/yyyy HH:mm', { locale: ptBR })
         : '-',
     },
     {
@@ -74,15 +76,14 @@ export default function NFe() {
       header: 'Destinatário',
       cell: (row: any) => (
         <div>
-          <div className="font-medium truncate max-w-[200px]">{row.destinatario_nome || '-'}</div>
-          <div className="text-xs text-muted-foreground">{row.destinatario_documento}</div>
+          <div className="font-medium truncate max-w-[200px]">{row.counterparty_id ? 'Ver detalhes' : '-'}</div>
         </div>
       ),
     },
     {
-      key: 'valor_total',
+      key: 'total_nf',
       header: 'Valor Total',
-      cell: (row: any) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(row.valor_total || 0),
+      cell: (row: any) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Number(row.total_nf) || 0),
     },
     {
       key: 'status',
