@@ -5,6 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useTransactions, useAccounts, useWallets, useCounterparties, useCostCenters } from '@/hooks/useCompanyData';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { PageHeader } from '@/components/common/PageHeader';
+import { BackButton } from '@/components/common/BackButton';
 import { StatusBadge } from '@/components/common/StatusBadge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -397,11 +398,16 @@ export default function ContasReceber() {
   return (
     <MainLayout>
       <div className="space-y-6 animate-fade-in">
-        <PageHeader
-          title="Contas a Receber"
-          description="Gerencie suas receitas, recebimentos e baixas"
-          action={mainTab === 'titulos' ? { label: 'Nova Receita', onClick: handleNew } : undefined}
-        />
+        <div className="flex items-start gap-4">
+          <BackButton />
+          <div className="flex-1">
+            <PageHeader
+              title="Contas a Receber"
+              description="Gerencie suas receitas, recebimentos e baixas"
+              action={mainTab === 'titulos' ? { label: 'Nova Receita', onClick: handleNew } : undefined}
+            />
+          </div>
+        </div>
 
         {/* Main Tabs */}
         <Tabs value={mainTab} onValueChange={setMainTab}>

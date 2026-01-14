@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
 import { useDreMonthly } from '@/hooks/useCompanyData';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { PageHeader } from '@/components/common/PageHeader';
+import { BackButton } from '@/components/common/BackButton';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import {
   Select,
   SelectContent,
@@ -11,18 +12,36 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
 import { formatCurrency, formatShortMonth } from '@/lib/formatters';
-import { TrendingUp, TrendingDown, Target, DollarSign } from 'lucide-react';
+import { TrendingUp, TrendingDown, Target, DollarSign, Filter, X, Download } from 'lucide-react';
 
-const categoryLabels: Record<string, string> = {
-  receita: 'Receitas',
-  custo: 'Custos',
-  despesa: 'Despesas',
+interface DREFilters {
+  costCenters: string[];
+  projects: string[];
+  branches: string[];
+  compareMode: 'none' | 'previous_year' | 'budget';
+}
+
+const defaultFilters: DREFilters = {
+  costCenters: [],
+  projects: [],
+  branches: [],
+  compareMode: 'none',
 };
 
 export default function DRE() {
   const currentYear = new Date().getFullYear();
   const [year, setYear] = useState(currentYear);
+  const [filters, setFilters] = useState<DREFilters>(defaultFilters);
+  const [filtersOpen, setFiltersOpen] = useState(false);
   
   const { data: dreData = [], isLoading } = useDreMonthly(year);
   
@@ -55,19 +74,157 @@ export default function DRE() {
     return { month: m, receitas: rec, custos: cus, despesas: des, lucrobruto: lb, resultado: res };
   });
 
+  const activeFiltersCount = [
+    filters.costCenters.length > 0,
+    filters.projects.length > 0,
+    filters.branches.length > 0,
+    filters.compareMode !== 'none',
+  ].filter(Boolean).length;
+
+  const clearFilters = () => setFilters(defaultFilters);
+
   return (
     <MainLayout>
       <div className="space-y-6 animate-fade-in">
-        <PageHeader title="DRE - Demonstrativo de Resultado" description="Análise de receitas, custos e despesas">
-          <Select value={year.toString()} onValueChange={(v) => setYear(parseInt(v))}>
-            <SelectTrigger className="w-24"><SelectValue /></SelectTrigger>
-            <SelectContent>
-              {[currentYear - 2, currentYear - 1, currentYear, currentYear + 1].map((y) => (
-                <SelectItem key={y} value={y.toString()}>{y}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </PageHeader>
+        <div className="flex items-start gap-4">
+          <BackButton />
+          <div className="flex-1">
+            <PageHeader title="DRE - Demonstrativo de Resultado" description="Análise de receitas, custos e despesas">
+              <div className="flex items-center gap-2">
+                <Select value={year.toString()} onValueChange={(v) => setYear(parseInt(v))}>
+                  <SelectTrigger className="w-24"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {[currentYear - 2, currentYear - 1, currentYear, currentYear + 1].map((y) => (
+                      <SelectItem key={y} value={y.toString()}>{y}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                {/* Advanced Filters */}
+                <Popover open={filtersOpen} onOpenChange={setFiltersOpen}>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" size="sm" className="gap-2">
+                      <Filter className="h-4 w-4" />
+                      Filtros
+                      {activeFiltersCount > 0 && (
+                        <span className="bg-primary text-primary-foreground rounded-full px-1.5 text-xs">
+                          {activeFiltersCount}
+                        </span>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80" align="end">
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <h4 className="font-medium">Filtros Avançados</h4>
+                        {activeFiltersCount > 0 && (
+                          <Button variant="ghost" size="sm" onClick={clearFilters}>
+                            <X className="h-4 w-4 mr-1" /> Limpar
+                          </Button>
+                        )}
+                      </div>
+                      
+                      <Separator />
+
+                      {/* Compare Mode */}
+                      <div className="space-y-2">
+                        <Label className="text-xs font-medium text-muted-foreground">Comparar com</Label>
+                        <Select 
+                          value={filters.compareMode} 
+                          onValueChange={(v) => setFilters(f => ({ ...f, compareMode: v as DREFilters['compareMode'] }))}
+                        >
+                          <SelectTrigger><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="none">Sem comparação</SelectItem>
+                            <SelectItem value="previous_year">Ano anterior</SelectItem>
+                            <SelectItem value="budget">Orçamento</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {/* Cost Centers */}
+                      <div className="space-y-2">
+                        <Label className="text-xs font-medium text-muted-foreground">Centro de Custo</Label>
+                        <div className="space-y-1">
+                          {['Administrativo', 'Comercial', 'Operacional', 'TI'].map((cc) => (
+                            <div key={cc} className="flex items-center space-x-2">
+                              <Checkbox
+                                id={`cc-${cc}`}
+                                checked={filters.costCenters.includes(cc)}
+                                onCheckedChange={(checked) => {
+                                  setFilters(f => ({
+                                    ...f,
+                                    costCenters: checked 
+                                      ? [...f.costCenters, cc]
+                                      : f.costCenters.filter(t => t !== cc)
+                                  }));
+                                }}
+                              />
+                              <Label htmlFor={`cc-${cc}`} className="text-sm">{cc}</Label>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Projects */}
+                      <div className="space-y-2">
+                        <Label className="text-xs font-medium text-muted-foreground">Projeto</Label>
+                        <div className="space-y-1">
+                          {['Projeto A', 'Projeto B', 'Projeto C'].map((proj) => (
+                            <div key={proj} className="flex items-center space-x-2">
+                              <Checkbox
+                                id={`proj-${proj}`}
+                                checked={filters.projects.includes(proj)}
+                                onCheckedChange={(checked) => {
+                                  setFilters(f => ({
+                                    ...f,
+                                    projects: checked 
+                                      ? [...f.projects, proj]
+                                      : f.projects.filter(t => t !== proj)
+                                  }));
+                                }}
+                              />
+                              <Label htmlFor={`proj-${proj}`} className="text-sm">{proj}</Label>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Branches */}
+                      <div className="space-y-2">
+                        <Label className="text-xs font-medium text-muted-foreground">Filial</Label>
+                        <div className="space-y-1">
+                          {['Matriz', 'Filial SP', 'Filial RJ'].map((branch) => (
+                            <div key={branch} className="flex items-center space-x-2">
+                              <Checkbox
+                                id={`branch-${branch}`}
+                                checked={filters.branches.includes(branch)}
+                                onCheckedChange={(checked) => {
+                                  setFilters(f => ({
+                                    ...f,
+                                    branches: checked 
+                                      ? [...f.branches, branch]
+                                      : f.branches.filter(t => t !== branch)
+                                  }));
+                                }}
+                              />
+                              <Label htmlFor={`branch-${branch}`} className="text-sm">{branch}</Label>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+
+                <Button variant="outline" size="sm" className="gap-2">
+                  <Download className="h-4 w-4" />
+                  Exportar
+                </Button>
+              </div>
+            </PageHeader>
+          </div>
+        </div>
 
         {/* KPIs */}
         <div className="grid gap-4 md:grid-cols-4">

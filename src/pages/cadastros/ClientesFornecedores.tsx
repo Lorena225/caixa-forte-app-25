@@ -5,6 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useCounterpartiesAll, Counterparty } from '@/hooks/useCounterpartiesFiltered';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { PageHeader } from '@/components/common/PageHeader';
+import { BackButton } from '@/components/common/BackButton';
 import { DataTable } from '@/components/common/DataTable';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -490,11 +491,16 @@ export default function ClientesFornecedores() {
   return (
     <MainLayout>
       <div className="space-y-6 animate-fade-in">
-        <PageHeader
-          title="Clientes e Fornecedores"
-          description="Cadastro unificado de parceiros com validações contextuais"
-          action={{ label: 'Novo Cadastro', onClick: handleNew }}
-        />
+        <div className="flex items-start gap-4">
+          <BackButton />
+          <div className="flex-1">
+            <PageHeader
+              title="Parceiros"
+              description="Cadastro unificado de clientes e fornecedores"
+              action={{ label: 'Novo Cadastro', onClick: handleNew }}
+            />
+          </div>
+        </div>
 
         {/* Bulk Actions Bar */}
         <BulkActionsBar
