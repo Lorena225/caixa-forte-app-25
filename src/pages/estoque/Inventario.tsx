@@ -12,16 +12,15 @@ import { Progress } from '@/components/ui/progress';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Plus, Search, ClipboardCheck, AlertTriangle, CheckCircle, Clock, Play, Eye, XCircle } from 'lucide-react';
-import { useInventories, useCreateInventory, useInventoryItems, useUpdateInventoryItem, useFinalizeInventory } from '@/hooks/useInventories';
+import { useInventories, useInventoryItems } from '@/hooks/useInventories';
 import { useProducts } from '@/hooks/useProducts';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
 const statusConfig: Record<string, { label: string; color: string; icon: any }> = {
-  pending: { label: 'Pendente', color: 'bg-gray-100 text-gray-800', icon: Clock },
-  in_progress: { label: 'Em Andamento', color: 'bg-blue-100 text-blue-800', icon: Play },
-  completed: { label: 'Concluído', color: 'bg-green-100 text-green-800', icon: CheckCircle },
-  cancelled: { label: 'Cancelado', color: 'bg-red-100 text-red-800', icon: XCircle },
+  em_andamento: { label: 'Em Andamento', color: 'bg-blue-100 text-blue-800', icon: Play },
+  concluido: { label: 'Concluído', color: 'bg-green-100 text-green-800', icon: CheckCircle },
+  cancelado: { label: 'Cancelado', color: 'bg-red-100 text-red-800', icon: XCircle },
 };
 
 export default function Inventario() {
@@ -29,29 +28,25 @@ export default function Inventario() {
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [isNewModalOpen, setIsNewModalOpen] = useState(false);
   const [selectedInventoryId, setSelectedInventoryId] = useState<string | null>(null);
-  const [newInventoryDescription, setNewInventoryDescription] = useState('');
+  const [newInventoryNotes, setNewInventoryNotes] = useState('');
 
-  const { data: inventories = [], isLoading } = useInventories();
-  const { data: products = [] } = useProducts();
-  const createInventory = useCreateInventory();
-  const { data: inventoryItems = [] } = useInventoryItems(selectedInventoryId);
-  const updateItem = useUpdateInventoryItem();
-  const finalizeInventory = useFinalizeInventory();
+  const { inventories, isLoading, createInventory, updateInventory } = useInventories();
+  const { activeProducts: products } = useProducts();
+  const { items: inventoryItems, updateItem } = useInventoryItems(selectedInventoryId);
 
   const filteredInventories = inventories.filter(inv => {
-    const matchesSearch = inv.description?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = inv.notes?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      inv.inventory_code.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === 'all' || inv.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
 
   const handleCreateInventory = async () => {
-    if (!newInventoryDescription) return;
-    const productIds = products.map(p => p.id);
     await createInventory.mutateAsync({
-      description: newInventoryDescription,
-      product_ids: productIds,
+      notes: newInventoryNotes || null,
+      inventory_date: new Date().toISOString().split('T')[0],
     });
-    setNewInventoryDescription('');
+    setNewInventoryNotes('');
     setIsNewModalOpen(false);
   };
 
@@ -61,20 +56,25 @@ export default function Inventario() {
 
   const handleFinalize = async () => {
     if (!selectedInventoryId) return;
-    await finalizeInventory.mutateAsync(selectedInventoryId);
+    await updateInventory.mutateAsync({ id: selectedInventoryId, status: 'concluido', completed_at: new Date().toISOString() });
     setSelectedInventoryId(null);
   };
 
   const columns = [
+    {
+      key: 'inventory_code',
+      header: 'Código',
+      cell: (row: any) => row.inventory_code,
+    },
     {
       key: 'inventory_date',
       header: 'Data',
       cell: (row: any) => format(new Date(row.inventory_date), 'dd/MM/yyyy', { locale: ptBR }),
     },
     {
-      key: 'description',
-      header: 'Descrição',
-      cell: (row: any) => row.description || 'Inventário',
+      key: 'notes',
+      header: 'Observações',
+      cell: (row: any) => row.notes || '-',
     },
     {
       key: 'progress',
@@ -95,11 +95,11 @@ export default function Inventario() {
       },
     },
     {
-      key: 'divergences',
+      key: 'discrepancy_count',
       header: 'Divergências',
       cell: (row: any) => (
-        <span className={(row.divergences || 0) > 0 ? 'text-red-600 font-medium' : 'text-green-600'}>
-          {row.divergences || 0}
+        <span className={(row.discrepancy_count || 0) > 0 ? 'text-red-600 font-medium' : 'text-green-600'}>
+          {row.discrepancy_count || 0}
         </span>
       ),
     },
@@ -125,7 +125,7 @@ export default function Inventario() {
           <Button variant="ghost" size="icon" onClick={() => setSelectedInventoryId(row.id)}>
             <Eye className="h-4 w-4" />
           </Button>
-          {row.status === 'in_progress' && (
+          {row.status === 'em_andamento' && (
             <Button variant="outline" size="sm" onClick={() => setSelectedInventoryId(row.id)}>
               Continuar
             </Button>
@@ -136,9 +136,9 @@ export default function Inventario() {
   ];
 
   // KPIs
-  const emAndamento = inventories.filter(i => i.status === 'in_progress').length;
-  const comDivergencias = inventories.filter(i => (i.divergences || 0) > 0).length;
-  const concluidos = inventories.filter(i => i.status === 'completed').length;
+  const emAndamento = inventories.filter(i => i.status === 'em_andamento').length;
+  const comDivergencias = inventories.filter(i => (i.discrepancy_count || 0) > 0).length;
+  const concluidos = inventories.filter(i => i.status === 'concluido').length;
 
   // Selected inventory for counting
   const selectedInventory = inventories.find(i => i.id === selectedInventoryId);
@@ -216,10 +216,9 @@ export default function Inventario() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Todos</SelectItem>
-              <SelectItem value="pending">Pendente</SelectItem>
-              <SelectItem value="in_progress">Em Andamento</SelectItem>
-              <SelectItem value="completed">Concluído</SelectItem>
-              <SelectItem value="cancelled">Cancelado</SelectItem>
+              <SelectItem value="em_andamento">Em Andamento</SelectItem>
+              <SelectItem value="concluido">Concluído</SelectItem>
+              <SelectItem value="cancelado">Cancelado</SelectItem>
             </SelectContent>
           </Select>
           <Button onClick={() => setIsNewModalOpen(true)}>
@@ -246,10 +245,10 @@ export default function Inventario() {
             </DialogHeader>
             <div className="space-y-4">
               <div>
-                <Label>Descrição</Label>
+                <Label>Observações (opcional)</Label>
                 <Input
-                  value={newInventoryDescription}
-                  onChange={(e) => setNewInventoryDescription(e.target.value)}
+                  value={newInventoryNotes}
+                  onChange={(e) => setNewInventoryNotes(e.target.value)}
                   placeholder="Ex: Inventário Mensal - Janeiro/2026"
                 />
               </div>
@@ -268,11 +267,11 @@ export default function Inventario() {
           <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Contagem de Inventário</DialogTitle>
-              <DialogDescription>{selectedInventory?.description}</DialogDescription>
+              <DialogDescription>{selectedInventory?.notes || selectedInventory?.inventory_code}</DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
               {inventoryItems.map((item) => {
-                const product = products.find(p => p.id === item.product_id);
+                const product = item.products;
                 const diff = (item.counted_qty ?? 0) - (item.expected_qty || 0);
                 return (
                   <div key={item.id} className="flex items-center justify-between p-3 border rounded-lg">
@@ -301,9 +300,9 @@ export default function Inventario() {
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setSelectedInventoryId(null)}>Fechar</Button>
-              {selectedInventory?.status !== 'completed' && (
-                <Button onClick={handleFinalize} disabled={finalizeInventory.isPending}>
-                  {finalizeInventory.isPending ? 'Finalizando...' : 'Finalizar e Ajustar Estoque'}
+              {selectedInventory?.status === 'em_andamento' && (
+                <Button onClick={handleFinalize} disabled={updateInventory.isPending}>
+                  {updateInventory.isPending ? 'Finalizando...' : 'Finalizar e Ajustar Estoque'}
                 </Button>
               )}
             </DialogFooter>
