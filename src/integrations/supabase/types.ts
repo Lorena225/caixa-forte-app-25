@@ -2569,6 +2569,70 @@ export type Database = {
           },
         ]
       }
+      categorias_produto: {
+        Row: {
+          categoria_pai_id: string | null
+          codigo: string
+          created_at: string
+          descricao: string
+          empresa_id: string
+          id: string
+          nivel: number | null
+          ordem: number | null
+          path: string | null
+          situacao: string
+          updated_at: string
+        }
+        Insert: {
+          categoria_pai_id?: string | null
+          codigo: string
+          created_at?: string
+          descricao: string
+          empresa_id: string
+          id?: string
+          nivel?: number | null
+          ordem?: number | null
+          path?: string | null
+          situacao?: string
+          updated_at?: string
+        }
+        Update: {
+          categoria_pai_id?: string | null
+          codigo?: string
+          created_at?: string
+          descricao?: string
+          empresa_id?: string
+          id?: string
+          nivel?: number | null
+          ordem?: number | null
+          path?: string | null
+          situacao?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "categorias_produto_categoria_pai_id_fkey"
+            columns: ["categoria_pai_id"]
+            isOneToOne: false
+            referencedRelation: "categorias_produto"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "categorias_produto_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "categorias_produto_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
       categorization_rules: {
         Row: {
           account_id: string | null
@@ -2716,6 +2780,285 @@ export type Database = {
             foreignKeyName: "chart_of_accounts_settings_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: true
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      clientes: {
+        Row: {
+          bairro: string | null
+          celular: string | null
+          cep: string | null
+          cidade: string | null
+          codigo: string
+          codigo_municipio: string | null
+          complemento: string | null
+          condicao_pagamento_id: string | null
+          consumidor_final: boolean | null
+          contribuinte_icms: boolean | null
+          cpf_cnpj: string | null
+          created_at: string
+          created_by: string | null
+          dia_vencimento: number | null
+          email: string | null
+          empresa_id: string
+          id: string
+          indicador_ie: number | null
+          inscricao_estadual: string | null
+          inscricao_municipal: string | null
+          limite_credito: number | null
+          logradouro: string | null
+          nome_fantasia: string | null
+          nome_razao: string
+          numero: string | null
+          observacoes: string | null
+          observacoes_internas: string | null
+          regime_tributario: number | null
+          situacao: string
+          tags: string[] | null
+          telefone: string | null
+          tipo_pessoa: string
+          uf: string | null
+          updated_at: string
+          vendedor_id: string | null
+          whatsapp: string | null
+        }
+        Insert: {
+          bairro?: string | null
+          celular?: string | null
+          cep?: string | null
+          cidade?: string | null
+          codigo: string
+          codigo_municipio?: string | null
+          complemento?: string | null
+          condicao_pagamento_id?: string | null
+          consumidor_final?: boolean | null
+          contribuinte_icms?: boolean | null
+          cpf_cnpj?: string | null
+          created_at?: string
+          created_by?: string | null
+          dia_vencimento?: number | null
+          email?: string | null
+          empresa_id: string
+          id?: string
+          indicador_ie?: number | null
+          inscricao_estadual?: string | null
+          inscricao_municipal?: string | null
+          limite_credito?: number | null
+          logradouro?: string | null
+          nome_fantasia?: string | null
+          nome_razao: string
+          numero?: string | null
+          observacoes?: string | null
+          observacoes_internas?: string | null
+          regime_tributario?: number | null
+          situacao?: string
+          tags?: string[] | null
+          telefone?: string | null
+          tipo_pessoa?: string
+          uf?: string | null
+          updated_at?: string
+          vendedor_id?: string | null
+          whatsapp?: string | null
+        }
+        Update: {
+          bairro?: string | null
+          celular?: string | null
+          cep?: string | null
+          cidade?: string | null
+          codigo?: string
+          codigo_municipio?: string | null
+          complemento?: string | null
+          condicao_pagamento_id?: string | null
+          consumidor_final?: boolean | null
+          contribuinte_icms?: boolean | null
+          cpf_cnpj?: string | null
+          created_at?: string
+          created_by?: string | null
+          dia_vencimento?: number | null
+          email?: string | null
+          empresa_id?: string
+          id?: string
+          indicador_ie?: number | null
+          inscricao_estadual?: string | null
+          inscricao_municipal?: string | null
+          limite_credito?: number | null
+          logradouro?: string | null
+          nome_fantasia?: string | null
+          nome_razao?: string
+          numero?: string | null
+          observacoes?: string | null
+          observacoes_internas?: string | null
+          regime_tributario?: number | null
+          situacao?: string
+          tags?: string[] | null
+          telefone?: string | null
+          tipo_pessoa?: string
+          uf?: string | null
+          updated_at?: string
+          vendedor_id?: string | null
+          whatsapp?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clientes_condicao_pagamento_id_fkey"
+            columns: ["condicao_pagamento_id"]
+            isOneToOne: false
+            referencedRelation: "condicoes_pagamento"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clientes_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clientes_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      clientes_contatos: {
+        Row: {
+          cargo: string | null
+          celular: string | null
+          cliente_id: string
+          created_at: string
+          email: string | null
+          empresa_id: string
+          id: string
+          nome: string
+          principal: boolean | null
+          telefone: string | null
+          whatsapp: string | null
+        }
+        Insert: {
+          cargo?: string | null
+          celular?: string | null
+          cliente_id: string
+          created_at?: string
+          email?: string | null
+          empresa_id: string
+          id?: string
+          nome: string
+          principal?: boolean | null
+          telefone?: string | null
+          whatsapp?: string | null
+        }
+        Update: {
+          cargo?: string | null
+          celular?: string | null
+          cliente_id?: string
+          created_at?: string
+          email?: string | null
+          empresa_id?: string
+          id?: string
+          nome?: string
+          principal?: boolean | null
+          telefone?: string | null
+          whatsapp?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clientes_contatos_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clientes_contatos_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clientes_contatos_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      clientes_enderecos: {
+        Row: {
+          bairro: string | null
+          cep: string | null
+          cidade: string | null
+          cliente_id: string
+          codigo_municipio: string | null
+          complemento: string | null
+          created_at: string
+          descricao: string | null
+          empresa_id: string
+          id: string
+          logradouro: string | null
+          numero: string | null
+          padrao: boolean | null
+          tipo: string
+          uf: string | null
+        }
+        Insert: {
+          bairro?: string | null
+          cep?: string | null
+          cidade?: string | null
+          cliente_id: string
+          codigo_municipio?: string | null
+          complemento?: string | null
+          created_at?: string
+          descricao?: string | null
+          empresa_id: string
+          id?: string
+          logradouro?: string | null
+          numero?: string | null
+          padrao?: boolean | null
+          tipo?: string
+          uf?: string | null
+        }
+        Update: {
+          bairro?: string | null
+          cep?: string | null
+          cidade?: string | null
+          cliente_id?: string
+          codigo_municipio?: string | null
+          complemento?: string | null
+          created_at?: string
+          descricao?: string | null
+          empresa_id?: string
+          id?: string
+          logradouro?: string | null
+          numero?: string | null
+          padrao?: boolean | null
+          tipo?: string
+          uf?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clientes_enderecos_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clientes_enderecos_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clientes_enderecos_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
             referencedRelation: "v_security_status"
             referencedColumns: ["company_id"]
           },
@@ -3944,6 +4287,63 @@ export type Database = {
           {
             foreignKeyName: "company_users_company_id_fkey"
             columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      condicoes_pagamento: {
+        Row: {
+          codigo: string
+          created_at: string
+          descricao: string
+          dias_entre_parcelas: number
+          dias_primeira_parcela: number
+          empresa_id: string
+          forma_pagamento: string | null
+          id: string
+          parcelas: number
+          situacao: string
+          updated_at: string
+        }
+        Insert: {
+          codigo: string
+          created_at?: string
+          descricao: string
+          dias_entre_parcelas?: number
+          dias_primeira_parcela?: number
+          empresa_id: string
+          forma_pagamento?: string | null
+          id?: string
+          parcelas?: number
+          situacao?: string
+          updated_at?: string
+        }
+        Update: {
+          codigo?: string
+          created_at?: string
+          descricao?: string
+          dias_entre_parcelas?: number
+          dias_primeira_parcela?: number
+          empresa_id?: string
+          forma_pagamento?: string | null
+          id?: string
+          parcelas?: number
+          situacao?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "condicoes_pagamento_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "condicoes_pagamento_empresa_id_fkey"
+            columns: ["empresa_id"]
             isOneToOne: false
             referencedRelation: "v_security_status"
             referencedColumns: ["company_id"]
@@ -6533,6 +6933,291 @@ export type Database = {
           },
         ]
       }
+      fornecedores: {
+        Row: {
+          agencia: string | null
+          bairro: string | null
+          banco: string | null
+          celular: string | null
+          cep: string | null
+          cidade: string | null
+          codigo: string
+          codigo_municipio: string | null
+          complemento: string | null
+          condicao_pagamento_id: string | null
+          conta: string | null
+          contribuinte_icms: boolean | null
+          cpf_cnpj: string | null
+          created_at: string
+          created_by: string | null
+          email: string | null
+          empresa_id: string
+          id: string
+          indicador_ie: number | null
+          inscricao_estadual: string | null
+          inscricao_municipal: string | null
+          logradouro: string | null
+          nome_fantasia: string | null
+          nome_razao: string
+          numero: string | null
+          observacoes: string | null
+          observacoes_internas: string | null
+          pix_chave: string | null
+          pix_tipo: string | null
+          prazo_entrega_dias: number | null
+          regime_tributario: number | null
+          situacao: string
+          tags: string[] | null
+          telefone: string | null
+          tipo_pessoa: string
+          uf: string | null
+          updated_at: string
+          whatsapp: string | null
+        }
+        Insert: {
+          agencia?: string | null
+          bairro?: string | null
+          banco?: string | null
+          celular?: string | null
+          cep?: string | null
+          cidade?: string | null
+          codigo: string
+          codigo_municipio?: string | null
+          complemento?: string | null
+          condicao_pagamento_id?: string | null
+          conta?: string | null
+          contribuinte_icms?: boolean | null
+          cpf_cnpj?: string | null
+          created_at?: string
+          created_by?: string | null
+          email?: string | null
+          empresa_id: string
+          id?: string
+          indicador_ie?: number | null
+          inscricao_estadual?: string | null
+          inscricao_municipal?: string | null
+          logradouro?: string | null
+          nome_fantasia?: string | null
+          nome_razao: string
+          numero?: string | null
+          observacoes?: string | null
+          observacoes_internas?: string | null
+          pix_chave?: string | null
+          pix_tipo?: string | null
+          prazo_entrega_dias?: number | null
+          regime_tributario?: number | null
+          situacao?: string
+          tags?: string[] | null
+          telefone?: string | null
+          tipo_pessoa?: string
+          uf?: string | null
+          updated_at?: string
+          whatsapp?: string | null
+        }
+        Update: {
+          agencia?: string | null
+          bairro?: string | null
+          banco?: string | null
+          celular?: string | null
+          cep?: string | null
+          cidade?: string | null
+          codigo?: string
+          codigo_municipio?: string | null
+          complemento?: string | null
+          condicao_pagamento_id?: string | null
+          conta?: string | null
+          contribuinte_icms?: boolean | null
+          cpf_cnpj?: string | null
+          created_at?: string
+          created_by?: string | null
+          email?: string | null
+          empresa_id?: string
+          id?: string
+          indicador_ie?: number | null
+          inscricao_estadual?: string | null
+          inscricao_municipal?: string | null
+          logradouro?: string | null
+          nome_fantasia?: string | null
+          nome_razao?: string
+          numero?: string | null
+          observacoes?: string | null
+          observacoes_internas?: string | null
+          pix_chave?: string | null
+          pix_tipo?: string | null
+          prazo_entrega_dias?: number | null
+          regime_tributario?: number | null
+          situacao?: string
+          tags?: string[] | null
+          telefone?: string | null
+          tipo_pessoa?: string
+          uf?: string | null
+          updated_at?: string
+          whatsapp?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fornecedores_condicao_pagamento_id_fkey"
+            columns: ["condicao_pagamento_id"]
+            isOneToOne: false
+            referencedRelation: "condicoes_pagamento"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fornecedores_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fornecedores_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      fornecedores_contatos: {
+        Row: {
+          cargo: string | null
+          celular: string | null
+          created_at: string
+          email: string | null
+          empresa_id: string
+          fornecedor_id: string
+          id: string
+          nome: string
+          principal: boolean | null
+          telefone: string | null
+          whatsapp: string | null
+        }
+        Insert: {
+          cargo?: string | null
+          celular?: string | null
+          created_at?: string
+          email?: string | null
+          empresa_id: string
+          fornecedor_id: string
+          id?: string
+          nome: string
+          principal?: boolean | null
+          telefone?: string | null
+          whatsapp?: string | null
+        }
+        Update: {
+          cargo?: string | null
+          celular?: string | null
+          created_at?: string
+          email?: string | null
+          empresa_id?: string
+          fornecedor_id?: string
+          id?: string
+          nome?: string
+          principal?: boolean | null
+          telefone?: string | null
+          whatsapp?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fornecedores_contatos_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fornecedores_contatos_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "fornecedores_contatos_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "fornecedores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fornecedores_enderecos: {
+        Row: {
+          bairro: string | null
+          cep: string | null
+          cidade: string | null
+          codigo_municipio: string | null
+          complemento: string | null
+          created_at: string
+          descricao: string | null
+          empresa_id: string
+          fornecedor_id: string
+          id: string
+          logradouro: string | null
+          numero: string | null
+          padrao: boolean | null
+          tipo: string
+          uf: string | null
+        }
+        Insert: {
+          bairro?: string | null
+          cep?: string | null
+          cidade?: string | null
+          codigo_municipio?: string | null
+          complemento?: string | null
+          created_at?: string
+          descricao?: string | null
+          empresa_id: string
+          fornecedor_id: string
+          id?: string
+          logradouro?: string | null
+          numero?: string | null
+          padrao?: boolean | null
+          tipo?: string
+          uf?: string | null
+        }
+        Update: {
+          bairro?: string | null
+          cep?: string | null
+          cidade?: string | null
+          codigo_municipio?: string | null
+          complemento?: string | null
+          created_at?: string
+          descricao?: string | null
+          empresa_id?: string
+          fornecedor_id?: string
+          id?: string
+          logradouro?: string | null
+          numero?: string | null
+          padrao?: boolean | null
+          tipo?: string
+          uf?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fornecedores_enderecos_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fornecedores_enderecos_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "fornecedores_enderecos_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "fornecedores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       gl_balances_monthly: {
         Row: {
           account_id: string
@@ -8480,6 +9165,54 @@ export type Database = {
         }
         Relationships: []
       }
+      marcas: {
+        Row: {
+          codigo: string
+          created_at: string
+          descricao: string
+          empresa_id: string
+          id: string
+          logo_url: string | null
+          situacao: string
+          updated_at: string
+        }
+        Insert: {
+          codigo: string
+          created_at?: string
+          descricao: string
+          empresa_id: string
+          id?: string
+          logo_url?: string | null
+          situacao?: string
+          updated_at?: string
+        }
+        Update: {
+          codigo?: string
+          created_at?: string
+          descricao?: string
+          empresa_id?: string
+          id?: string
+          logo_url?: string | null
+          situacao?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "marcas_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "marcas_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
       navigation_audit_log: {
         Row: {
           action: string
@@ -10073,6 +10806,259 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_security_status"
             referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      produtos: {
+        Row: {
+          aliquota_cofins: number | null
+          aliquota_icms: number | null
+          aliquota_ipi: number | null
+          aliquota_iss: number | null
+          aliquota_pis: number | null
+          categoria_id: string | null
+          cest: string | null
+          cfop_padrao: string | null
+          codigo: string
+          codigo_servico: string | null
+          controla_estoque: boolean | null
+          created_at: string
+          created_by: string | null
+          cst_cofins: string | null
+          cst_icms: string | null
+          cst_ipi: string | null
+          cst_pis: string | null
+          descricao: string
+          descricao_completa: string | null
+          destaque: boolean | null
+          ean: string | null
+          empresa_id: string
+          estoque_maximo: number | null
+          estoque_minimo: number | null
+          fornecedor_padrao_id: string | null
+          id: string
+          imagem_url: string | null
+          imagens_adicionais: string[] | null
+          item_lista_servico: string | null
+          localizacao: string | null
+          marca_id: string | null
+          margem_lucro: number | null
+          markup_percentual: number | null
+          ncm: string | null
+          observacoes: string | null
+          origem: number | null
+          peso_bruto: number | null
+          peso_liquido: number | null
+          preco_custo: number | null
+          preco_venda: number | null
+          referencia: string | null
+          situacao: string
+          tags: string[] | null
+          tipo: string
+          unidade: string
+          updated_at: string
+        }
+        Insert: {
+          aliquota_cofins?: number | null
+          aliquota_icms?: number | null
+          aliquota_ipi?: number | null
+          aliquota_iss?: number | null
+          aliquota_pis?: number | null
+          categoria_id?: string | null
+          cest?: string | null
+          cfop_padrao?: string | null
+          codigo: string
+          codigo_servico?: string | null
+          controla_estoque?: boolean | null
+          created_at?: string
+          created_by?: string | null
+          cst_cofins?: string | null
+          cst_icms?: string | null
+          cst_ipi?: string | null
+          cst_pis?: string | null
+          descricao: string
+          descricao_completa?: string | null
+          destaque?: boolean | null
+          ean?: string | null
+          empresa_id: string
+          estoque_maximo?: number | null
+          estoque_minimo?: number | null
+          fornecedor_padrao_id?: string | null
+          id?: string
+          imagem_url?: string | null
+          imagens_adicionais?: string[] | null
+          item_lista_servico?: string | null
+          localizacao?: string | null
+          marca_id?: string | null
+          margem_lucro?: number | null
+          markup_percentual?: number | null
+          ncm?: string | null
+          observacoes?: string | null
+          origem?: number | null
+          peso_bruto?: number | null
+          peso_liquido?: number | null
+          preco_custo?: number | null
+          preco_venda?: number | null
+          referencia?: string | null
+          situacao?: string
+          tags?: string[] | null
+          tipo?: string
+          unidade?: string
+          updated_at?: string
+        }
+        Update: {
+          aliquota_cofins?: number | null
+          aliquota_icms?: number | null
+          aliquota_ipi?: number | null
+          aliquota_iss?: number | null
+          aliquota_pis?: number | null
+          categoria_id?: string | null
+          cest?: string | null
+          cfop_padrao?: string | null
+          codigo?: string
+          codigo_servico?: string | null
+          controla_estoque?: boolean | null
+          created_at?: string
+          created_by?: string | null
+          cst_cofins?: string | null
+          cst_icms?: string | null
+          cst_ipi?: string | null
+          cst_pis?: string | null
+          descricao?: string
+          descricao_completa?: string | null
+          destaque?: boolean | null
+          ean?: string | null
+          empresa_id?: string
+          estoque_maximo?: number | null
+          estoque_minimo?: number | null
+          fornecedor_padrao_id?: string | null
+          id?: string
+          imagem_url?: string | null
+          imagens_adicionais?: string[] | null
+          item_lista_servico?: string | null
+          localizacao?: string | null
+          marca_id?: string | null
+          margem_lucro?: number | null
+          markup_percentual?: number | null
+          ncm?: string | null
+          observacoes?: string | null
+          origem?: number | null
+          peso_bruto?: number | null
+          peso_liquido?: number | null
+          preco_custo?: number | null
+          preco_venda?: number | null
+          referencia?: string | null
+          situacao?: string
+          tags?: string[] | null
+          tipo?: string
+          unidade?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "produtos_categoria_id_fkey"
+            columns: ["categoria_id"]
+            isOneToOne: false
+            referencedRelation: "categorias_produto"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "produtos_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "produtos_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "produtos_fornecedor_padrao_id_fkey"
+            columns: ["fornecedor_padrao_id"]
+            isOneToOne: false
+            referencedRelation: "fornecedores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "produtos_marca_id_fkey"
+            columns: ["marca_id"]
+            isOneToOne: false
+            referencedRelation: "marcas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      produtos_variacoes: {
+        Row: {
+          atributos: Json | null
+          codigo: string
+          created_at: string
+          descricao_variacao: string
+          ean: string | null
+          empresa_id: string
+          id: string
+          imagem_url: string | null
+          preco_custo: number | null
+          preco_venda: number | null
+          produto_id: string
+          situacao: string
+          updated_at: string
+        }
+        Insert: {
+          atributos?: Json | null
+          codigo: string
+          created_at?: string
+          descricao_variacao: string
+          ean?: string | null
+          empresa_id: string
+          id?: string
+          imagem_url?: string | null
+          preco_custo?: number | null
+          preco_venda?: number | null
+          produto_id: string
+          situacao?: string
+          updated_at?: string
+        }
+        Update: {
+          atributos?: Json | null
+          codigo?: string
+          created_at?: string
+          descricao_variacao?: string
+          ean?: string | null
+          empresa_id?: string
+          id?: string
+          imagem_url?: string | null
+          preco_custo?: number | null
+          preco_venda?: number | null
+          produto_id?: string
+          situacao?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "produtos_variacoes_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "produtos_variacoes_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "produtos_variacoes_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -12054,6 +13040,48 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "wallets"
             referencedColumns: ["id"]
+          },
+        ]
+      }
+      unidades_medida: {
+        Row: {
+          codigo: string
+          created_at: string
+          descricao: string
+          empresa_id: string
+          id: string
+          situacao: string
+        }
+        Insert: {
+          codigo: string
+          created_at?: string
+          descricao: string
+          empresa_id: string
+          id?: string
+          situacao?: string
+        }
+        Update: {
+          codigo?: string
+          created_at?: string
+          descricao?: string
+          empresa_id?: string
+          id?: string
+          situacao?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "unidades_medida_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "unidades_medida_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
           },
         ]
       }
@@ -14744,6 +15772,10 @@ export type Database = {
       cleanup_security_data: {
         Args: { p_days_login_attempts?: number; p_days_rate_limit?: number }
         Returns: Json
+      }
+      generate_sequential_code: {
+        Args: { p_company_id?: string; p_prefix?: string; p_table_name: string }
+        Returns: string
       }
       get_company_tier: {
         Args: { p_company_id: string }
