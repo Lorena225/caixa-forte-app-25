@@ -4356,6 +4356,276 @@ export type Database = {
           },
         ]
       }
+      compras: {
+        Row: {
+          condicao_pagamento_id: string | null
+          conta_pagar_gerada: boolean | null
+          cotacao_id: string | null
+          created_at: string | null
+          created_by: string | null
+          data_compra: string | null
+          data_entrega: string | null
+          data_recebimento: string | null
+          empresa_id: string
+          fornecedor_cpf_cnpj: string | null
+          fornecedor_id: string
+          fornecedor_nome: string | null
+          id: string
+          nfe_chave: string | null
+          nfe_numero: string | null
+          nfe_serie: string | null
+          numero: string
+          observacoes: string | null
+          observacoes_internas: string | null
+          pedido_compra_id: string | null
+          situacao: string | null
+          tipo: string | null
+          updated_at: string | null
+          updated_by: string | null
+          valor_desconto: number | null
+          valor_frete: number | null
+          valor_icms_st: number | null
+          valor_ipi: number | null
+          valor_outras_despesas: number | null
+          valor_produtos: number | null
+          valor_seguro: number | null
+          valor_total: number | null
+          xml_nfe: string | null
+        }
+        Insert: {
+          condicao_pagamento_id?: string | null
+          conta_pagar_gerada?: boolean | null
+          cotacao_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          data_compra?: string | null
+          data_entrega?: string | null
+          data_recebimento?: string | null
+          empresa_id: string
+          fornecedor_cpf_cnpj?: string | null
+          fornecedor_id: string
+          fornecedor_nome?: string | null
+          id?: string
+          nfe_chave?: string | null
+          nfe_numero?: string | null
+          nfe_serie?: string | null
+          numero: string
+          observacoes?: string | null
+          observacoes_internas?: string | null
+          pedido_compra_id?: string | null
+          situacao?: string | null
+          tipo?: string | null
+          updated_at?: string | null
+          updated_by?: string | null
+          valor_desconto?: number | null
+          valor_frete?: number | null
+          valor_icms_st?: number | null
+          valor_ipi?: number | null
+          valor_outras_despesas?: number | null
+          valor_produtos?: number | null
+          valor_seguro?: number | null
+          valor_total?: number | null
+          xml_nfe?: string | null
+        }
+        Update: {
+          condicao_pagamento_id?: string | null
+          conta_pagar_gerada?: boolean | null
+          cotacao_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          data_compra?: string | null
+          data_entrega?: string | null
+          data_recebimento?: string | null
+          empresa_id?: string
+          fornecedor_cpf_cnpj?: string | null
+          fornecedor_id?: string
+          fornecedor_nome?: string | null
+          id?: string
+          nfe_chave?: string | null
+          nfe_numero?: string | null
+          nfe_serie?: string | null
+          numero?: string
+          observacoes?: string | null
+          observacoes_internas?: string | null
+          pedido_compra_id?: string | null
+          situacao?: string | null
+          tipo?: string | null
+          updated_at?: string | null
+          updated_by?: string | null
+          valor_desconto?: number | null
+          valor_frete?: number | null
+          valor_icms_st?: number | null
+          valor_ipi?: number | null
+          valor_outras_despesas?: number | null
+          valor_produtos?: number | null
+          valor_seguro?: number | null
+          valor_total?: number | null
+          xml_nfe?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "compras_condicao_pagamento_id_fkey"
+            columns: ["condicao_pagamento_id"]
+            isOneToOne: false
+            referencedRelation: "condicoes_pagamento"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "compras_cotacao_id_fkey"
+            columns: ["cotacao_id"]
+            isOneToOne: false
+            referencedRelation: "cotacoes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "compras_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "compras_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "compras_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "fornecedores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "compras_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "v_fornecedores_performance"
+            referencedColumns: ["fornecedor_id"]
+          },
+          {
+            foreignKeyName: "compras_pedido_compra_id_fkey"
+            columns: ["pedido_compra_id"]
+            isOneToOne: false
+            referencedRelation: "pedidos_compra"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "compras_pedido_compra_id_fkey"
+            columns: ["pedido_compra_id"]
+            isOneToOne: false
+            referencedRelation: "v_pedidos_pendentes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      compras_itens: {
+        Row: {
+          aliquota_icms: number | null
+          aliquota_ipi: number | null
+          cfop: string | null
+          codigo: string | null
+          compra_id: string
+          cst_icms: string | null
+          data_fabricacao: string | null
+          data_validade: string | null
+          descricao: string
+          estoque_movimentado: boolean | null
+          id: string
+          lote: string | null
+          movimenta_estoque: boolean | null
+          ncm: string | null
+          observacoes: string | null
+          ordem: number
+          preco_custo: number
+          preco_unitario: number
+          produto_id: string
+          produto_variacao_id: string | null
+          quantidade: number
+          unidade: string | null
+          valor_desconto: number | null
+          valor_icms: number | null
+          valor_icms_st: number | null
+          valor_ipi: number | null
+          valor_total: number
+        }
+        Insert: {
+          aliquota_icms?: number | null
+          aliquota_ipi?: number | null
+          cfop?: string | null
+          codigo?: string | null
+          compra_id: string
+          cst_icms?: string | null
+          data_fabricacao?: string | null
+          data_validade?: string | null
+          descricao: string
+          estoque_movimentado?: boolean | null
+          id?: string
+          lote?: string | null
+          movimenta_estoque?: boolean | null
+          ncm?: string | null
+          observacoes?: string | null
+          ordem: number
+          preco_custo: number
+          preco_unitario: number
+          produto_id: string
+          produto_variacao_id?: string | null
+          quantidade: number
+          unidade?: string | null
+          valor_desconto?: number | null
+          valor_icms?: number | null
+          valor_icms_st?: number | null
+          valor_ipi?: number | null
+          valor_total: number
+        }
+        Update: {
+          aliquota_icms?: number | null
+          aliquota_ipi?: number | null
+          cfop?: string | null
+          codigo?: string | null
+          compra_id?: string
+          cst_icms?: string | null
+          data_fabricacao?: string | null
+          data_validade?: string | null
+          descricao?: string
+          estoque_movimentado?: boolean | null
+          id?: string
+          lote?: string | null
+          movimenta_estoque?: boolean | null
+          ncm?: string | null
+          observacoes?: string | null
+          ordem?: number
+          preco_custo?: number
+          preco_unitario?: number
+          produto_id?: string
+          produto_variacao_id?: string | null
+          quantidade?: number
+          unidade?: string | null
+          valor_desconto?: number | null
+          valor_icms?: number | null
+          valor_icms_st?: number | null
+          valor_ipi?: number | null
+          valor_total?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "compras_itens_compra_id_fkey"
+            columns: ["compra_id"]
+            isOneToOne: false
+            referencedRelation: "compras"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "compras_itens_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       condicoes_pagamento: {
         Row: {
           codigo: string
@@ -4783,6 +5053,233 @@ export type Database = {
             columns: ["parent_id"]
             isOneToOne: false
             referencedRelation: "v_cost_center_tree"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cotacoes: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          data_aprovacao: string | null
+          data_cotacao: string | null
+          data_validade: string | null
+          descricao: string | null
+          empresa_id: string
+          id: string
+          numero: string
+          observacoes: string | null
+          situacao: string | null
+          tipo_selecao: string | null
+          updated_at: string | null
+          vencedor_cotacao_fornecedor_id: string | null
+          vencedor_fornecedor_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          data_aprovacao?: string | null
+          data_cotacao?: string | null
+          data_validade?: string | null
+          descricao?: string | null
+          empresa_id: string
+          id?: string
+          numero: string
+          observacoes?: string | null
+          situacao?: string | null
+          tipo_selecao?: string | null
+          updated_at?: string | null
+          vencedor_cotacao_fornecedor_id?: string | null
+          vencedor_fornecedor_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          data_aprovacao?: string | null
+          data_cotacao?: string | null
+          data_validade?: string | null
+          descricao?: string | null
+          empresa_id?: string
+          id?: string
+          numero?: string
+          observacoes?: string | null
+          situacao?: string | null
+          tipo_selecao?: string | null
+          updated_at?: string | null
+          vencedor_cotacao_fornecedor_id?: string | null
+          vencedor_fornecedor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cotacoes_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cotacoes_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "cotacoes_vencedor_fornecedor_id_fkey"
+            columns: ["vencedor_fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "fornecedores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cotacoes_vencedor_fornecedor_id_fkey"
+            columns: ["vencedor_fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "v_fornecedores_performance"
+            referencedColumns: ["fornecedor_id"]
+          },
+        ]
+      }
+      cotacoes_fornecedores: {
+        Row: {
+          condicao_pagamento_id: string | null
+          cotacao_id: string
+          cotacao_item_id: string
+          data_resposta: string | null
+          forma_pagamento: string | null
+          fornecedor_id: string
+          fornecedor_nome: string | null
+          id: string
+          observacoes: string | null
+          prazo_entrega_dias: number | null
+          prazo_pagamento_dias: number | null
+          preco_unitario: number
+          status: string | null
+          valor_frete: number | null
+          valor_total: number
+        }
+        Insert: {
+          condicao_pagamento_id?: string | null
+          cotacao_id: string
+          cotacao_item_id: string
+          data_resposta?: string | null
+          forma_pagamento?: string | null
+          fornecedor_id: string
+          fornecedor_nome?: string | null
+          id?: string
+          observacoes?: string | null
+          prazo_entrega_dias?: number | null
+          prazo_pagamento_dias?: number | null
+          preco_unitario: number
+          status?: string | null
+          valor_frete?: number | null
+          valor_total: number
+        }
+        Update: {
+          condicao_pagamento_id?: string | null
+          cotacao_id?: string
+          cotacao_item_id?: string
+          data_resposta?: string | null
+          forma_pagamento?: string | null
+          fornecedor_id?: string
+          fornecedor_nome?: string | null
+          id?: string
+          observacoes?: string | null
+          prazo_entrega_dias?: number | null
+          prazo_pagamento_dias?: number | null
+          preco_unitario?: number
+          status?: string | null
+          valor_frete?: number | null
+          valor_total?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cotacoes_fornecedores_condicao_pagamento_id_fkey"
+            columns: ["condicao_pagamento_id"]
+            isOneToOne: false
+            referencedRelation: "condicoes_pagamento"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cotacoes_fornecedores_cotacao_id_fkey"
+            columns: ["cotacao_id"]
+            isOneToOne: false
+            referencedRelation: "cotacoes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cotacoes_fornecedores_cotacao_item_id_fkey"
+            columns: ["cotacao_item_id"]
+            isOneToOne: false
+            referencedRelation: "cotacoes_itens"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cotacoes_fornecedores_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "fornecedores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cotacoes_fornecedores_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "v_fornecedores_performance"
+            referencedColumns: ["fornecedor_id"]
+          },
+        ]
+      }
+      cotacoes_itens: {
+        Row: {
+          codigo: string | null
+          cotacao_id: string
+          descricao: string
+          id: string
+          observacoes: string | null
+          ordem: number
+          produto_id: string
+          produto_variacao_id: string | null
+          quantidade: number
+          unidade: string | null
+        }
+        Insert: {
+          codigo?: string | null
+          cotacao_id: string
+          descricao: string
+          id?: string
+          observacoes?: string | null
+          ordem: number
+          produto_id: string
+          produto_variacao_id?: string | null
+          quantidade: number
+          unidade?: string | null
+        }
+        Update: {
+          codigo?: string | null
+          cotacao_id?: string
+          descricao?: string
+          id?: string
+          observacoes?: string | null
+          ordem?: number
+          produto_id?: string
+          produto_variacao_id?: string | null
+          quantidade?: number
+          unidade?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cotacoes_itens_cotacao_id_fkey"
+            columns: ["cotacao_id"]
+            isOneToOne: false
+            referencedRelation: "cotacoes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cotacoes_itens_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
             referencedColumns: ["id"]
           },
         ]
@@ -7393,6 +7890,13 @@ export type Database = {
             referencedRelation: "fornecedores"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "fornecedores_contatos_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "v_fornecedores_performance"
+            referencedColumns: ["fornecedor_id"]
+          },
         ]
       }
       fornecedores_enderecos: {
@@ -7468,6 +7972,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "fornecedores"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fornecedores_enderecos_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "v_fornecedores_performance"
+            referencedColumns: ["fornecedor_id"]
           },
         ]
       }
@@ -11408,6 +11919,220 @@ export type Database = {
           },
         ]
       }
+      pedidos_compra: {
+        Row: {
+          aprovador_id: string | null
+          condicao_pagamento_id: string | null
+          created_at: string | null
+          created_by: string | null
+          data_aprovacao: string | null
+          data_necessidade: string | null
+          data_pedido: string | null
+          empresa_id: string
+          forma_pagamento: string | null
+          fornecedor_cpf_cnpj: string | null
+          fornecedor_id: string
+          fornecedor_nome: string | null
+          id: string
+          numero: string
+          observacoes: string | null
+          observacoes_aprovacao: string | null
+          observacoes_internas: string | null
+          prazo_entrega_dias: number | null
+          serie: string | null
+          situacao: string | null
+          updated_at: string | null
+          updated_by: string | null
+          valor_desconto: number | null
+          valor_frete: number | null
+          valor_outras_despesas: number | null
+          valor_produtos: number | null
+          valor_total: number | null
+        }
+        Insert: {
+          aprovador_id?: string | null
+          condicao_pagamento_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          data_aprovacao?: string | null
+          data_necessidade?: string | null
+          data_pedido?: string | null
+          empresa_id: string
+          forma_pagamento?: string | null
+          fornecedor_cpf_cnpj?: string | null
+          fornecedor_id: string
+          fornecedor_nome?: string | null
+          id?: string
+          numero: string
+          observacoes?: string | null
+          observacoes_aprovacao?: string | null
+          observacoes_internas?: string | null
+          prazo_entrega_dias?: number | null
+          serie?: string | null
+          situacao?: string | null
+          updated_at?: string | null
+          updated_by?: string | null
+          valor_desconto?: number | null
+          valor_frete?: number | null
+          valor_outras_despesas?: number | null
+          valor_produtos?: number | null
+          valor_total?: number | null
+        }
+        Update: {
+          aprovador_id?: string | null
+          condicao_pagamento_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          data_aprovacao?: string | null
+          data_necessidade?: string | null
+          data_pedido?: string | null
+          empresa_id?: string
+          forma_pagamento?: string | null
+          fornecedor_cpf_cnpj?: string | null
+          fornecedor_id?: string
+          fornecedor_nome?: string | null
+          id?: string
+          numero?: string
+          observacoes?: string | null
+          observacoes_aprovacao?: string | null
+          observacoes_internas?: string | null
+          prazo_entrega_dias?: number | null
+          serie?: string | null
+          situacao?: string | null
+          updated_at?: string | null
+          updated_by?: string | null
+          valor_desconto?: number | null
+          valor_frete?: number | null
+          valor_outras_despesas?: number | null
+          valor_produtos?: number | null
+          valor_total?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pedidos_compra_condicao_pagamento_id_fkey"
+            columns: ["condicao_pagamento_id"]
+            isOneToOne: false
+            referencedRelation: "condicoes_pagamento"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pedidos_compra_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pedidos_compra_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "pedidos_compra_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "fornecedores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pedidos_compra_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "v_fornecedores_performance"
+            referencedColumns: ["fornecedor_id"]
+          },
+        ]
+      }
+      pedidos_compra_itens: {
+        Row: {
+          cfop: string | null
+          codigo: string | null
+          cst_icms: string | null
+          data_necessidade: string | null
+          descricao: string
+          id: string
+          ncm: string | null
+          observacoes: string | null
+          ordem: number
+          pedido_compra_id: string
+          preco_unitario: number
+          produto_id: string
+          produto_variacao_id: string | null
+          quantidade_pedida: number
+          quantidade_pendente: number | null
+          quantidade_recebida: number | null
+          unidade: string | null
+          valor_desconto: number | null
+          valor_total: number
+        }
+        Insert: {
+          cfop?: string | null
+          codigo?: string | null
+          cst_icms?: string | null
+          data_necessidade?: string | null
+          descricao: string
+          id?: string
+          ncm?: string | null
+          observacoes?: string | null
+          ordem: number
+          pedido_compra_id: string
+          preco_unitario: number
+          produto_id: string
+          produto_variacao_id?: string | null
+          quantidade_pedida: number
+          quantidade_pendente?: number | null
+          quantidade_recebida?: number | null
+          unidade?: string | null
+          valor_desconto?: number | null
+          valor_total: number
+        }
+        Update: {
+          cfop?: string | null
+          codigo?: string | null
+          cst_icms?: string | null
+          data_necessidade?: string | null
+          descricao?: string
+          id?: string
+          ncm?: string | null
+          observacoes?: string | null
+          ordem?: number
+          pedido_compra_id?: string
+          preco_unitario?: number
+          produto_id?: string
+          produto_variacao_id?: string | null
+          quantidade_pedida?: number
+          quantidade_pendente?: number | null
+          quantidade_recebida?: number | null
+          unidade?: string | null
+          valor_desconto?: number | null
+          valor_total?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pedidos_compra_itens_pedido_compra_id_fkey"
+            columns: ["pedido_compra_id"]
+            isOneToOne: false
+            referencedRelation: "pedidos_compra"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pedidos_compra_itens_pedido_compra_id_fkey"
+            columns: ["pedido_compra_id"]
+            isOneToOne: false
+            referencedRelation: "v_pedidos_pendentes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pedidos_compra_itens_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       period_locks: {
         Row: {
           company_id: string
@@ -12197,6 +12922,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "produtos_fornecedor_padrao_id_fkey"
+            columns: ["fornecedor_padrao_id"]
+            isOneToOne: false
+            referencedRelation: "v_fornecedores_performance"
+            referencedColumns: ["fornecedor_id"]
+          },
+          {
             foreignKeyName: "produtos_marca_id_fkey"
             columns: ["marca_id"]
             isOneToOne: false
@@ -12350,6 +13082,53 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_security_status"
             referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      recebimentos_compra: {
+        Row: {
+          compra_id: string
+          conferido_por: string | null
+          created_at: string | null
+          data_recebimento: string | null
+          hora_recebimento: string | null
+          id: string
+          numero_recebimento: string | null
+          observacoes: string | null
+          quantidade_volumes: number | null
+          recebido_por: string | null
+        }
+        Insert: {
+          compra_id: string
+          conferido_por?: string | null
+          created_at?: string | null
+          data_recebimento?: string | null
+          hora_recebimento?: string | null
+          id?: string
+          numero_recebimento?: string | null
+          observacoes?: string | null
+          quantidade_volumes?: number | null
+          recebido_por?: string | null
+        }
+        Update: {
+          compra_id?: string
+          conferido_por?: string | null
+          created_at?: string | null
+          data_recebimento?: string | null
+          hora_recebimento?: string | null
+          id?: string
+          numero_recebimento?: string | null
+          observacoes?: string | null
+          quantidade_volumes?: number | null
+          recebido_por?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recebimentos_compra_compra_id_fkey"
+            columns: ["compra_id"]
+            isOneToOne: false
+            referencedRelation: "compras"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -16653,6 +17432,35 @@ export type Database = {
           },
         ]
       }
+      v_compras_periodo: {
+        Row: {
+          empresa_id: string | null
+          periodo: string | null
+          ticket_medio: number | null
+          total_compras: number | null
+          total_fornecedores: number | null
+          valor_frete: number | null
+          valor_ipi: number | null
+          valor_produtos: number | null
+          valor_total: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "compras_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "compras_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
       v_cost_center_tree: {
         Row: {
           branch_id: string | null
@@ -16784,6 +17592,37 @@ export type Database = {
           {
             foreignKeyName: "transactions_company_id_fkey"
             columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      v_fornecedores_performance: {
+        Row: {
+          empresa_id: string | null
+          entregas_atrasadas: number | null
+          entregas_no_prazo: number | null
+          fornecedor_id: string | null
+          fornecedor_nome: string | null
+          percentual_no_prazo: number | null
+          prazo_medio_entrega_dias: number | null
+          ticket_medio: number | null
+          total_compras: number | null
+          ultima_compra: string | null
+          valor_total_compras: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fornecedores_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fornecedores_empresa_id_fkey"
+            columns: ["empresa_id"]
             isOneToOne: false
             referencedRelation: "v_security_status"
             referencedColumns: ["company_id"]
@@ -16931,6 +17770,53 @@ export type Database = {
           revenue_count: number | null
         }
         Relationships: []
+      }
+      v_pedidos_pendentes: {
+        Row: {
+          data_necessidade: string | null
+          data_pedido: string | null
+          empresa_id: string | null
+          fornecedor_id: string | null
+          fornecedor_nome: string | null
+          id: string | null
+          numero: string | null
+          situacao: string | null
+          total_itens: number | null
+          total_quantidade_pedida: number | null
+          total_quantidade_pendente: number | null
+          total_quantidade_recebida: number | null
+          valor_total: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pedidos_compra_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pedidos_compra_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "pedidos_compra_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "fornecedores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pedidos_compra_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "v_fornecedores_performance"
+            referencedColumns: ["fornecedor_id"]
+          },
+        ]
       }
       v_pending_approvals: {
         Row: {
