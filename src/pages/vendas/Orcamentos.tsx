@@ -1,10 +1,17 @@
 import { useState } from "react";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { PageHeader } from "@/components/common/PageHeader";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { DataTable } from "@/components/common/DataTable";
 import {
   DropdownMenu,
@@ -12,7 +19,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Search, Plus, MoreHorizontal, Eye, FileEdit, ArrowRight, Trash2 } from "lucide-react";
+import { Search, Plus, MoreHorizontal, Eye, FileEdit, ArrowRight, Trash2, FileText, Clock, CheckCircle, XCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useVendas, SITUACAO_VENDA_LABELS } from "@/hooks/useVendas";
 import { format, startOfMonth, endOfMonth } from "date-fns";
@@ -20,11 +27,10 @@ import { ptBR } from "date-fns/locale";
 import { toast } from "sonner";
 
 const SITUACAO_BADGE_VARIANT: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
-  A: "secondary",
-  P: "outline",
-  F: "default",
-  E: "default",
-  C: "destructive",
+  A: "secondary",   // Aberto
+  P: "outline",     // Pendente/Aprovado
+  F: "default",     // Convertido
+  C: "destructive", // Reprovado/Cancelado
 };
 
 export default function Orcamentos() {
@@ -33,16 +39,24 @@ export default function Orcamentos() {
 
   // Filtros
   const [search, setSearch] = useState("");
+  const [situacao, setSituacao] = useState<string>("all");
   const [dateFrom, setDateFrom] = useState(format(startOfMonth(hoje), 'yyyy-MM-dd'));
   const [dateTo, setDateTo] = useState(format(endOfMonth(hoje), 'yyyy-MM-dd'));
 
   // Data - apenas orçamentos (tipo = 'O')
   const { data: orcamentos = [], isLoading } = useVendas({
     tipo: 'O',
+    situacao: situacao !== 'all' ? situacao : undefined,
     dateFrom,
     dateTo,
     search: search || undefined,
   });
+
+  // Stats
+  const totalOrcamentos = orcamentos.length;
+  const abertos = orcamentos.filter(o => o.situacao === 'A').length;
+  const aprovados = orcamentos.filter(o => o.situacao === 'P').length;
+  const valorTotal = orcamentos.reduce((sum, o) => sum + Number(o.valor_total || 0), 0);
 
   // Handlers
   const handleConverterVenda = (orcamentoId: string) => {
@@ -149,6 +163,52 @@ export default function Orcamentos() {
           </Button>
         </PageHeader>
 
+        {/* KPI Cards */}
+        <div className="grid gap-4 md:grid-cols-4">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Total de Orçamentos</CardTitle>
+              <FileText className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{totalOrcamentos}</div>
+              <p className="text-xs text-muted-foreground">no período selecionado</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Em Aberto</CardTitle>
+              <Clock className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{abertos}</div>
+              <p className="text-xs text-muted-foreground">aguardando aprovação</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Aprovados</CardTitle>
+              <CheckCircle className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{aprovados}</div>
+              <p className="text-xs text-muted-foreground">prontos para converter</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Valor Total</CardTitle>
+              <FileText className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {valorTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+              </div>
+              <p className="text-xs text-muted-foreground">soma dos orçamentos</p>
+            </CardContent>
+          </Card>
+        </div>
+
         {/* Filtros */}
         <Card>
           <CardContent className="pt-6">
@@ -164,6 +224,18 @@ export default function Orcamentos() {
                   />
                 </div>
               </div>
+              <Select value={situacao} onValueChange={setSituacao}>
+                <SelectTrigger className="w-[150px]">
+                  <SelectValue placeholder="Situação" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todas</SelectItem>
+                  <SelectItem value="A">Aberto</SelectItem>
+                  <SelectItem value="P">Aprovado</SelectItem>
+                  <SelectItem value="F">Convertido</SelectItem>
+                  <SelectItem value="C">Reprovado</SelectItem>
+                </SelectContent>
+              </Select>
               <Input
                 type="date"
                 value={dateFrom}

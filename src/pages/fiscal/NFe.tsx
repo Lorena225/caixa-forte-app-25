@@ -75,8 +75,11 @@ export default function NFe() {
       key: 'destinatario',
       header: 'Destinatário',
       cell: (row: any) => (
-        <div>
-          <div className="font-medium truncate max-w-[200px]">{row.counterparty_id ? 'Ver detalhes' : '-'}</div>
+        <div className="max-w-[200px]">
+          <div className="font-medium truncate">{row.recipient_name || '-'}</div>
+          {row.recipient_document && (
+            <div className="text-xs text-muted-foreground">{row.recipient_document}</div>
+          )}
         </div>
       ),
     },
