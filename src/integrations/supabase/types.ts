@@ -6080,6 +6080,109 @@ export type Database = {
           },
         ]
       }
+      digital_tax_books: {
+        Row: {
+          book_type: string
+          certificate_info: Json | null
+          company_id: string
+          created_at: string
+          file_hash: string | null
+          file_name: string | null
+          file_path: string | null
+          file_size_bytes: number | null
+          generated_at: string | null
+          generated_by: string | null
+          id: string
+          is_signed: boolean | null
+          is_transmitted: boolean | null
+          is_validated: boolean | null
+          period_id: string | null
+          period_month: number
+          period_year: number
+          protocol_number: string | null
+          signed_at: string | null
+          signed_by: string | null
+          status: string | null
+          transmitted_at: string | null
+          updated_at: string
+          validation_errors: Json | null
+        }
+        Insert: {
+          book_type: string
+          certificate_info?: Json | null
+          company_id: string
+          created_at?: string
+          file_hash?: string | null
+          file_name?: string | null
+          file_path?: string | null
+          file_size_bytes?: number | null
+          generated_at?: string | null
+          generated_by?: string | null
+          id?: string
+          is_signed?: boolean | null
+          is_transmitted?: boolean | null
+          is_validated?: boolean | null
+          period_id?: string | null
+          period_month: number
+          period_year: number
+          protocol_number?: string | null
+          signed_at?: string | null
+          signed_by?: string | null
+          status?: string | null
+          transmitted_at?: string | null
+          updated_at?: string
+          validation_errors?: Json | null
+        }
+        Update: {
+          book_type?: string
+          certificate_info?: Json | null
+          company_id?: string
+          created_at?: string
+          file_hash?: string | null
+          file_name?: string | null
+          file_path?: string | null
+          file_size_bytes?: number | null
+          generated_at?: string | null
+          generated_by?: string | null
+          id?: string
+          is_signed?: boolean | null
+          is_transmitted?: boolean | null
+          is_validated?: boolean | null
+          period_id?: string | null
+          period_month?: number
+          period_year?: number
+          protocol_number?: string | null
+          signed_at?: string | null
+          signed_by?: string | null
+          status?: string | null
+          transmitted_at?: string | null
+          updated_at?: string
+          validation_errors?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "digital_tax_books_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "digital_tax_books_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "digital_tax_books_period_id_fkey"
+            columns: ["period_id"]
+            isOneToOne: false
+            referencedRelation: "fiscal_periods"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       dimension_values: {
         Row: {
           code: string
@@ -15008,6 +15111,278 @@ export type Database = {
           },
         ]
       }
+      sped_accounting_entries: {
+        Row: {
+          account_code: string
+          account_id: string | null
+          company_id: string
+          cost_center_id: string | null
+          counterparty_id: string | null
+          created_at: string
+          credit_value: number | null
+          debit_value: number | null
+          document_number: string | null
+          document_type: string | null
+          entry_date: string
+          entry_number: number
+          history: string
+          id: string
+          is_validated: boolean | null
+          period_id: string | null
+        }
+        Insert: {
+          account_code: string
+          account_id?: string | null
+          company_id: string
+          cost_center_id?: string | null
+          counterparty_id?: string | null
+          created_at?: string
+          credit_value?: number | null
+          debit_value?: number | null
+          document_number?: string | null
+          document_type?: string | null
+          entry_date: string
+          entry_number: number
+          history: string
+          id?: string
+          is_validated?: boolean | null
+          period_id?: string | null
+        }
+        Update: {
+          account_code?: string
+          account_id?: string | null
+          company_id?: string
+          cost_center_id?: string | null
+          counterparty_id?: string | null
+          created_at?: string
+          credit_value?: number | null
+          debit_value?: number | null
+          document_number?: string | null
+          document_type?: string | null
+          entry_date?: string
+          entry_number?: number
+          history?: string
+          id?: string
+          is_validated?: boolean | null
+          period_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sped_accounting_entries_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sped_accounting_entries_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "v_rc_flow_by_account"
+            referencedColumns: ["account_id"]
+          },
+          {
+            foreignKeyName: "sped_accounting_entries_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "v_trial_balance"
+            referencedColumns: ["account_id"]
+          },
+          {
+            foreignKeyName: "sped_accounting_entries_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sped_accounting_entries_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "sped_accounting_entries_cost_center_id_fkey"
+            columns: ["cost_center_id"]
+            isOneToOne: false
+            referencedRelation: "cost_centers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sped_accounting_entries_cost_center_id_fkey"
+            columns: ["cost_center_id"]
+            isOneToOne: false
+            referencedRelation: "v_cost_center_tree"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sped_accounting_entries_counterparty_id_fkey"
+            columns: ["counterparty_id"]
+            isOneToOne: false
+            referencedRelation: "counterparties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sped_accounting_entries_counterparty_id_fkey"
+            columns: ["counterparty_id"]
+            isOneToOne: false
+            referencedRelation: "counterparties_safe"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sped_accounting_entries_period_id_fkey"
+            columns: ["period_id"]
+            isOneToOne: false
+            referencedRelation: "fiscal_periods"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sped_fiscal_movements: {
+        Row: {
+          cfop_code: string
+          cofins_base: number | null
+          cofins_rate: number | null
+          cofins_value: number | null
+          company_id: string
+          counterparty_id: string | null
+          created_at: string
+          cst_cofins: string | null
+          cst_icms: string | null
+          cst_pis: string | null
+          document_date: string
+          document_number: string
+          document_type: string
+          icms_base: number | null
+          icms_rate: number | null
+          icms_value: number | null
+          id: string
+          ipi_base: number | null
+          ipi_rate: number | null
+          ipi_value: number | null
+          is_validated: boolean | null
+          ncm_code: string | null
+          observation: string | null
+          operation_type: string
+          period_id: string | null
+          pis_base: number | null
+          pis_rate: number | null
+          pis_value: number | null
+          source_document_id: string | null
+          total_value: number
+          updated_at: string
+          validation_errors: Json | null
+          xml_key: string | null
+        }
+        Insert: {
+          cfop_code: string
+          cofins_base?: number | null
+          cofins_rate?: number | null
+          cofins_value?: number | null
+          company_id: string
+          counterparty_id?: string | null
+          created_at?: string
+          cst_cofins?: string | null
+          cst_icms?: string | null
+          cst_pis?: string | null
+          document_date: string
+          document_number: string
+          document_type: string
+          icms_base?: number | null
+          icms_rate?: number | null
+          icms_value?: number | null
+          id?: string
+          ipi_base?: number | null
+          ipi_rate?: number | null
+          ipi_value?: number | null
+          is_validated?: boolean | null
+          ncm_code?: string | null
+          observation?: string | null
+          operation_type: string
+          period_id?: string | null
+          pis_base?: number | null
+          pis_rate?: number | null
+          pis_value?: number | null
+          source_document_id?: string | null
+          total_value?: number
+          updated_at?: string
+          validation_errors?: Json | null
+          xml_key?: string | null
+        }
+        Update: {
+          cfop_code?: string
+          cofins_base?: number | null
+          cofins_rate?: number | null
+          cofins_value?: number | null
+          company_id?: string
+          counterparty_id?: string | null
+          created_at?: string
+          cst_cofins?: string | null
+          cst_icms?: string | null
+          cst_pis?: string | null
+          document_date?: string
+          document_number?: string
+          document_type?: string
+          icms_base?: number | null
+          icms_rate?: number | null
+          icms_value?: number | null
+          id?: string
+          ipi_base?: number | null
+          ipi_rate?: number | null
+          ipi_value?: number | null
+          is_validated?: boolean | null
+          ncm_code?: string | null
+          observation?: string | null
+          operation_type?: string
+          period_id?: string | null
+          pis_base?: number | null
+          pis_rate?: number | null
+          pis_value?: number | null
+          source_document_id?: string | null
+          total_value?: number
+          updated_at?: string
+          validation_errors?: Json | null
+          xml_key?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sped_fiscal_movements_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sped_fiscal_movements_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "sped_fiscal_movements_counterparty_id_fkey"
+            columns: ["counterparty_id"]
+            isOneToOne: false
+            referencedRelation: "counterparties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sped_fiscal_movements_counterparty_id_fkey"
+            columns: ["counterparty_id"]
+            isOneToOne: false
+            referencedRelation: "counterparties_safe"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sped_fiscal_movements_period_id_fkey"
+            columns: ["period_id"]
+            isOneToOne: false
+            referencedRelation: "fiscal_periods"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       sped_jobs: {
         Row: {
           branch_id: string | null
@@ -15251,49 +15626,70 @@ export type Database = {
       }
       tax_calculations: {
         Row: {
-          amount: number
-          base_amount: number
+          balance: number | null
+          calculated_at: string | null
+          calculated_by: string | null
           company_id: string
-          created_at: string | null
-          due_date: string | null
+          created_at: string
+          darf_code: string | null
           id: string
-          is_withholding: boolean | null
-          paid_date: string | null
+          notes: string | null
+          payment_date: string | null
+          payment_due_date: string | null
+          payment_value: number | null
           period_id: string | null
-          rate: number | null
-          source_id: string | null
-          source_type: string | null
+          period_month: number
+          period_year: number
+          previous_balance: number | null
+          status: string | null
           tax_type: string
+          total_credits: number | null
+          total_debits: number | null
+          updated_at: string
         }
         Insert: {
-          amount: number
-          base_amount: number
+          balance?: number | null
+          calculated_at?: string | null
+          calculated_by?: string | null
           company_id: string
-          created_at?: string | null
-          due_date?: string | null
+          created_at?: string
+          darf_code?: string | null
           id?: string
-          is_withholding?: boolean | null
-          paid_date?: string | null
+          notes?: string | null
+          payment_date?: string | null
+          payment_due_date?: string | null
+          payment_value?: number | null
           period_id?: string | null
-          rate?: number | null
-          source_id?: string | null
-          source_type?: string | null
+          period_month: number
+          period_year: number
+          previous_balance?: number | null
+          status?: string | null
           tax_type: string
+          total_credits?: number | null
+          total_debits?: number | null
+          updated_at?: string
         }
         Update: {
-          amount?: number
-          base_amount?: number
+          balance?: number | null
+          calculated_at?: string | null
+          calculated_by?: string | null
           company_id?: string
-          created_at?: string | null
-          due_date?: string | null
+          created_at?: string
+          darf_code?: string | null
           id?: string
-          is_withholding?: boolean | null
-          paid_date?: string | null
+          notes?: string | null
+          payment_date?: string | null
+          payment_due_date?: string | null
+          payment_value?: number | null
           period_id?: string | null
-          rate?: number | null
-          source_id?: string | null
-          source_type?: string | null
+          period_month?: number
+          period_year?: number
+          previous_balance?: number | null
+          status?: string | null
           tax_type?: string
+          total_credits?: number | null
+          total_debits?: number | null
+          updated_at?: string
         }
         Relationships: [
           {
@@ -15314,7 +15710,7 @@ export type Database = {
             foreignKeyName: "tax_calculations_period_id_fkey"
             columns: ["period_id"]
             isOneToOne: false
-            referencedRelation: "periods"
+            referencedRelation: "fiscal_periods"
             referencedColumns: ["id"]
           },
         ]
@@ -15373,6 +15769,100 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_security_status"
             referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      tax_obligations: {
+        Row: {
+          company_id: string
+          created_at: string
+          due_date: string
+          file_hash: string | null
+          file_name: string | null
+          file_path: string | null
+          id: string
+          notes: string | null
+          obligation_name: string
+          obligation_type: string
+          protocol_number: string | null
+          receipt_number: string | null
+          reception_date: string | null
+          rectification_of: string | null
+          reference_month: number | null
+          reference_year: number
+          rejection_reason: string | null
+          responsible_user_id: string | null
+          status: string | null
+          transmission_date: string | null
+          updated_at: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          due_date: string
+          file_hash?: string | null
+          file_name?: string | null
+          file_path?: string | null
+          id?: string
+          notes?: string | null
+          obligation_name: string
+          obligation_type: string
+          protocol_number?: string | null
+          receipt_number?: string | null
+          reception_date?: string | null
+          rectification_of?: string | null
+          reference_month?: number | null
+          reference_year: number
+          rejection_reason?: string | null
+          responsible_user_id?: string | null
+          status?: string | null
+          transmission_date?: string | null
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          due_date?: string
+          file_hash?: string | null
+          file_name?: string | null
+          file_path?: string | null
+          id?: string
+          notes?: string | null
+          obligation_name?: string
+          obligation_type?: string
+          protocol_number?: string | null
+          receipt_number?: string | null
+          reception_date?: string | null
+          rectification_of?: string | null
+          reference_month?: number | null
+          reference_year?: number
+          rejection_reason?: string | null
+          responsible_user_id?: string | null
+          status?: string | null
+          transmission_date?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tax_obligations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tax_obligations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "tax_obligations_rectification_of_fkey"
+            columns: ["rectification_of"]
+            isOneToOne: false
+            referencedRelation: "tax_obligations"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -19119,32 +19609,6 @@ export type Database = {
           },
           {
             foreignKeyName: "webhook_ingress_company_id_fkey"
-            columns: ["company_id"]
-            isOneToOne: false
-            referencedRelation: "v_security_status"
-            referencedColumns: ["company_id"]
-          },
-        ]
-      }
-      v_withholding_summary: {
-        Row: {
-          company_id: string | null
-          month: number | null
-          tax_type: string | null
-          total_base: number | null
-          total_withheld: number | null
-          year: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "tax_calculations_company_id_fkey"
-            columns: ["company_id"]
-            isOneToOne: false
-            referencedRelation: "companies"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "tax_calculations_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "v_security_status"
