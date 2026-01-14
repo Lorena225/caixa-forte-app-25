@@ -69,7 +69,7 @@ export default function ExecutiveDashboard() {
             </Button>
             <Button variant="outline" size="sm" className="gap-2">
               <FileDown className="h-4 w-4" />
-              Exportar PDF
+              Exportar
             </Button>
           </div>
         </PageHeader>

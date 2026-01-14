@@ -5,6 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useTransactions, useAccounts, useWallets, useCounterparties, useCostCenters } from '@/hooks/useCompanyData';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { PageHeader } from '@/components/common/PageHeader';
+import { BackButton } from '@/components/common/BackButton';
 import { StatusBadge } from '@/components/common/StatusBadge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -351,11 +352,16 @@ export default function ContasPagar() {
   return (
     <MainLayout>
       <div className="space-y-6 animate-fade-in">
-        <PageHeader 
-          title="Contas a Pagar" 
-          description="Gerencie suas despesas, pagamentos e baixas" 
-          action={activeTab === 'titulos' ? { label: 'Nova Despesa', onClick: handleNew } : undefined} 
-        />
+        <div className="flex items-start gap-4">
+          <BackButton />
+          <div className="flex-1">
+            <PageHeader 
+              title="Contas a Pagar" 
+              description="Gerencie suas despesas, pagamentos e baixas" 
+              action={activeTab === 'titulos' ? { label: 'Nova Despesa', onClick: handleNew } : undefined} 
+            />
+          </div>
+        </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-grid">
