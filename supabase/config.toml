@@ -80,3 +80,9 @@ verify_jwt = true
 
 [functions.api-v1-faturamento]
 verify_jwt = false
+
+[functions.api-v1-crm]
+verify_jwt = false
+
+[functions.api-v1-fiscal]
+verify_jwt = false
