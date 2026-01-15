@@ -88,6 +88,7 @@ import CobrancaIndex from "./pages/cobranca/Index";
 import CobrancaBoletos from "./pages/cobranca/Boletos";
 import CobrancaReguas from "./pages/cobranca/Reguas";
 import CobrancaNegativacao from "./pages/cobranca/Negativacao";
+import CobrancaSerasa from "./pages/cobranca/Serasa";
 import TesourariaIndex from "./pages/tesouraria/Index";
 import TesourariaPosicao from "./pages/tesouraria/Posicao";
 import TesourariaConciliacao from "./pages/tesouraria/Conciliacao";
