@@ -46,6 +46,9 @@ import VendasIndex from "./pages/vendas/Index";
 import VendasNova from "./pages/vendas/NovaVenda";
 import VendasPedidos from "./pages/vendas/Pedidos";
 import VendasOrcamentos from "./pages/vendas/Orcamentos";
+// Developer Portal & Marketplace
+import DeveloperPortal from "./pages/developers/Index";
+import Marketplace from "./pages/marketplace/Index";
 // ERP Modules
 import ContabilidadeIndex from "./pages/contabilidade/Index";
 import ContabilidadeLancamentos from "./pages/contabilidade/Lancamentos";
@@ -388,6 +391,10 @@ const App = () => (
                 <Route path="/crm/vendedores" element={<CRMVendedores />} />
                 <Route path="/crm/comissoes" element={<CRMComissoes />} />
                 <Route path="/crm/metas" element={<CRMMetas />} />
+                
+                {/* ============ DEVELOPER PORTAL & MARKETPLACE ============ */}
+                <Route path="/developers" element={<DeveloperPortal />} />
+                <Route path="/marketplace" element={<Marketplace />} />
                 
                 {/* ============ AUTOPILOTO (PT-BR) ============ */}
                 <Route path="/autopiloto/caixa-entrada" element={<Inbox />} />
