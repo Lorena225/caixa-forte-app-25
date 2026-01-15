@@ -86,3 +86,6 @@ verify_jwt = false
 
 [functions.api-v1-fiscal]
 verify_jwt = false
+
+[functions.webhook-worker]
+verify_jwt = false
