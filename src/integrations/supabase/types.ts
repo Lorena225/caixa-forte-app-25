@@ -20301,6 +20301,60 @@ export type Database = {
           },
         ]
       }
+      webhooks: {
+        Row: {
+          company_id: string
+          created_at: string | null
+          created_by: string | null
+          events: string[]
+          id: string
+          is_active: boolean | null
+          name: string
+          secret: string | null
+          updated_at: string | null
+          url: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string | null
+          created_by?: string | null
+          events?: string[]
+          id?: string
+          is_active?: boolean | null
+          name: string
+          secret?: string | null
+          updated_at?: string | null
+          url: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string | null
+          created_by?: string | null
+          events?: string[]
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          secret?: string | null
+          updated_at?: string | null
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "webhooks_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "webhooks_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
       whatsapp_connections: {
         Row: {
           company_id: string
