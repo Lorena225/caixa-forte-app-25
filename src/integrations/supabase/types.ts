@@ -22418,20 +22418,29 @@ export type Database = {
           lockout_until: string
         }[]
       }
-      check_rate_limit: {
-        Args: {
-          p_action_type: string
-          p_ip_address?: unknown
-          p_max_requests?: number
-          p_user_id?: string
-          p_window_seconds?: number
-        }
-        Returns: {
-          allowed: boolean
-          current_count: number
-          retry_after_seconds: number
-        }[]
-      }
+      check_rate_limit:
+        | {
+            Args: {
+              p_action_type: string
+              p_ip_address?: unknown
+              p_max_requests?: number
+              p_user_id?: string
+              p_window_seconds?: number
+            }
+            Returns: {
+              allowed: boolean
+              current_count: number
+              retry_after_seconds: number
+            }[]
+          }
+        | {
+            Args: {
+              p_api_key_id: string
+              p_limit_per_day: number
+              p_limit_per_minute: number
+            }
+            Returns: boolean
+          }
       check_rbac_action: {
         Args: { p_action: string; p_company_id: string; p_user_id: string }
         Returns: boolean
@@ -22504,6 +22513,22 @@ export type Database = {
           p_variacao_id: string
         }
         Returns: boolean
+      }
+      log_api_request: {
+        Args: {
+          p_api_key_id: string
+          p_company_id: string
+          p_endpoint: string
+          p_error_message?: string
+          p_ip_address?: unknown
+          p_latency_ms?: number
+          p_method: string
+          p_request_body?: Json
+          p_response_body?: Json
+          p_status_code: number
+          p_user_agent?: string
+        }
+        Returns: string
       }
       process_settlement: {
         Args: {
