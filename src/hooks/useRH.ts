@@ -152,7 +152,6 @@ export interface RegistroPonto {
   aprovado: boolean;
   funcionario?: { id: string; nome_completo: string; matricula?: string };
 }
-}
 
 // Hook principal
 export function useRH() {
@@ -312,39 +311,23 @@ export function useRH() {
     queryKey: ['ferias', companyId],
     queryFn: async () => {
       if (!companyId) return [];
+      
+      // First get all funcionarios for this company
+      const { data: funcs } = await supabase
+        .from('funcionarios')
+        .select('id')
+        .eq('company_id', companyId);
+      
+      if (!funcs || funcs.length === 0) return [];
+      
+      const funcIds = funcs.map(f => f.id);
       const { data, error } = await supabase
         .from('ferias')
-        .select(`
-          *,
-          funcionario:funcionarios(id, nome_completo, matricula)
-        `)
-        .in('funcionario_id', 
-          supabase
-            .from('funcionarios')
-            .select('id')
-            .eq('company_id', companyId)
-        )
+        .select(`*, funcionario:funcionarios(id, nome_completo, matricula)`)
+        .in('funcionario_id', funcIds)
         .order('data_inicio', { ascending: false });
       
-      // Fallback query without subquery filter
-      if (error) {
-        const { data: funcs } = await supabase
-          .from('funcionarios')
-          .select('id')
-          .eq('company_id', companyId);
-        
-        if (funcs && funcs.length > 0) {
-          const funcIds = funcs.map(f => f.id);
-          const { data: feriasData, error: fErr } = await supabase
-            .from('ferias')
-            .select(`*, funcionario:funcionarios(id, nome_completo, matricula)`)
-            .in('funcionario_id', funcIds)
-            .order('data_inicio', { ascending: false });
-          if (fErr) throw fErr;
-          return feriasData as Ferias[];
-        }
-        return [];
-      }
+      if (error) throw error;
       return data as Ferias[];
     },
     enabled: !!companyId,
