@@ -1,7 +1,8 @@
+// deno-lint-ignore-file no-explicit-any
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient, SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const corsHeaders = {
+const corsHeaders: Record<string, string> = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-api-key',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
@@ -23,7 +24,31 @@ interface AuthResult {
   rate_limit_per_day: number;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+interface ApiResponse {
+  data?: unknown;
+  error?: string;
+  code?: string;
+  message?: string;
+  details?: string;
+  pagination?: {
+    page: number;
+    limit: number;
+    total: number;
+    total_pages: number;
+  };
+  required_scopes?: string[];
+}
+
+interface InvoiceInput {
+  counterparty_id?: string;
+  amount?: number;
+  status?: string;
+  issue_date?: string;
+  due_date?: string;
+  description?: string;
+  [key: string]: unknown;
+}
+
 type AnySupabaseClient = SupabaseClient<any, any, any>;
 
 serve(async (req) => {
@@ -53,13 +78,13 @@ serve(async (req) => {
   }
 
   let authResult: AuthResult | null = null;
-  let requestBody: Record<string, unknown> | null = null;
+  let requestBody: InvoiceInput | null = null;
 
   try {
     // Parse request body for POST/PUT
     if (req.method === 'POST' || req.method === 'PUT') {
       try {
-        requestBody = await req.json();
+        requestBody = await req.json() as InvoiceInput;
       } catch {
         return new Response(
           JSON.stringify({ error: 'Invalid JSON body', code: 'INVALID_BODY' }),
@@ -199,13 +224,13 @@ async function logRequest(
   method: string,
   endpoint: string,
   statusCode: number,
-  requestBody: Record<string, unknown> | null,
-  responseBody: unknown,
+  requestBody: InvoiceInput | null,
+  responseBody: ApiResponse | null,
   errorMessage: string | null,
   startTime: number,
   clientIp: string,
   userAgent: string | null
-) {
+): Promise<void> {
   const latencyMs = Date.now() - startTime;
   
   try {
@@ -232,7 +257,7 @@ async function listFaturas(
   supabase: AnySupabaseClient,
   companyId: string,
   params: URLSearchParams
-) {
+): Promise<Response> {
   const page = parseInt(params.get('page') || '1');
   const limit = Math.min(parseInt(params.get('limit') || '50'), 100);
   const offset = (page - 1) * limit;
@@ -292,7 +317,7 @@ async function getFatura(
   supabase: AnySupabaseClient,
   companyId: string,
   id: string
-) {
+): Promise<Response> {
   console.log('Getting fatura:', id);
 
   const { data, error } = await supabase
@@ -326,8 +351,8 @@ async function getFatura(
 async function createFatura(
   supabase: AnySupabaseClient,
   companyId: string,
-  body: Record<string, unknown> | null
-) {
+  body: InvoiceInput | null
+): Promise<Response> {
   console.log('Creating fatura for company:', companyId);
 
   if (!body || typeof body !== 'object') {
@@ -377,8 +402,8 @@ async function updateFatura(
   supabase: AnySupabaseClient,
   companyId: string,
   id: string,
-  body: Record<string, unknown> | null
-) {
+  body: InvoiceInput | null
+): Promise<Response> {
   console.log('Updating fatura:', id);
 
   if (!body || typeof body !== 'object') {
@@ -424,7 +449,7 @@ async function deleteFatura(
   supabase: AnySupabaseClient,
   companyId: string,
   id: string
-) {
+): Promise<Response> {
   console.log('Deleting fatura:', id);
 
   // Check if invoice exists first
