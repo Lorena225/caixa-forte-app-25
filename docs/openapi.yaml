@@ -1,0 +1,1342 @@
+openapi: 3.0.3
+info:
+  title: Caixa Forte Financeiro API
+  description: |
+    API REST pública para integração com o sistema ERP Caixa Forte Financeiro.
+    
+    ## Autenticação
+    Todas as requisições devem incluir uma API Key válida no header Authorization.
+    
+    ## Rate Limiting
+    - 100 requisições por minuto
+    - 10.000 requisições por dia
+    
+    ## Suporte
+    - Email: suporte@caixaforte.com.br
+    - Documentação: https://docs.caixaforte.com.br
+  version: 1.0.0
+  contact:
+    name: Suporte API
+    email: api@caixaforte.com.br
+  license:
+    name: Proprietário
+    url: https://caixaforte.com.br/termos
+
+servers:
+  - url: https://{project_id}.supabase.co/functions/v1
+    description: Produção
+    variables:
+      project_id:
+        default: hwiyewggonhyppwaikss
+        description: ID do projeto Supabase
+
+security:
+  - bearerAuth: []
+
+tags:
+  - name: Faturamento
+    description: Gestão de faturas e cobranças
+  - name: CRM
+    description: Gestão de clientes, leads e relacionamentos
+  - name: Fiscal
+    description: Documentos fiscais, impostos e obrigações
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: API Key
+      description: |
+        Insira sua API Key no formato: `Bearer {sua_api_key}`
+        
+        Para obter uma API Key, acesse Configurações > API no painel administrativo.
+
+  schemas:
+    # Common schemas
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          example: "Recurso não encontrado"
+        code:
+          type: string
+          example: "NOT_FOUND"
+      required:
+        - success
+        - error
+
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+          example: 1
+        limit:
+          type: integer
+          example: 50
+        total:
+          type: integer
+          example: 150
+        totalPages:
+          type: integer
+          example: 3
+
+    # Faturamento schemas
+    Fatura:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        counterparty_id:
+          type: string
+          format: uuid
+          description: ID do cliente/fornecedor
+        numero:
+          type: string
+          example: "FAT-2024-001"
+        valor:
+          type: number
+          format: decimal
+          example: 1500.00
+        status:
+          type: string
+          enum: [pending, paid, overdue, cancelled]
+          example: "pending"
+        data_emissao:
+          type: string
+          format: date
+          example: "2024-01-15"
+        data_vencimento:
+          type: string
+          format: date
+          example: "2024-02-15"
+        descricao:
+          type: string
+          example: "Serviços de consultoria - Janeiro/2024"
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    FaturaInput:
+      type: object
+      required:
+        - counterparty_id
+        - valor
+        - data_vencimento
+      properties:
+        counterparty_id:
+          type: string
+          format: uuid
+        valor:
+          type: number
+          format: decimal
+          minimum: 0.01
+        data_vencimento:
+          type: string
+          format: date
+        descricao:
+          type: string
+          maxLength: 500
+
+    # CRM schemas
+    Cliente:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: "Empresa ABC Ltda"
+        document:
+          type: string
+          example: "12.345.678/0001-90"
+        email:
+          type: string
+          format: email
+          example: "contato@empresaabc.com.br"
+        phone:
+          type: string
+          example: "(11) 99999-9999"
+        segment:
+          type: string
+          example: "tecnologia"
+        status:
+          type: string
+          enum: [active, inactive, blocked]
+          example: "active"
+        address:
+          type: object
+          properties:
+            street:
+              type: string
+            number:
+              type: string
+            complement:
+              type: string
+            neighborhood:
+              type: string
+            city:
+              type: string
+            state:
+              type: string
+            zip_code:
+              type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    ClienteInput:
+      type: object
+      required:
+        - name
+        - document
+      properties:
+        name:
+          type: string
+          minLength: 2
+          maxLength: 200
+        document:
+          type: string
+          description: CPF ou CNPJ
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        segment:
+          type: string
+        address:
+          type: object
+          properties:
+            street:
+              type: string
+            number:
+              type: string
+            complement:
+              type: string
+            neighborhood:
+              type: string
+            city:
+              type: string
+            state:
+              type: string
+            zip_code:
+              type: string
+
+    Lead:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: "João Silva"
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        company:
+          type: string
+        source:
+          type: string
+          enum: [website, referral, social, campaign, other]
+        status:
+          type: string
+          enum: [new, contacted, qualified, proposal, negotiation, won, lost]
+        assigned_to:
+          type: string
+          format: uuid
+        notes:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+
+    LeadInput:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        company:
+          type: string
+        source:
+          type: string
+          enum: [website, referral, social, campaign, other]
+        notes:
+          type: string
+
+    # Fiscal schemas
+    NFe:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        numero:
+          type: integer
+          example: 1234
+        serie:
+          type: string
+          example: "1"
+        chave_acesso:
+          type: string
+          example: "35240112345678000190550010000001231234567890"
+        status:
+          type: string
+          enum: [rascunho, pendente, autorizada, rejeitada, cancelada, inutilizada]
+        natureza_operacao:
+          type: string
+          example: "Venda de mercadoria"
+        valor_total:
+          type: number
+          format: decimal
+          example: 1500.00
+        destinatario:
+          type: object
+          properties:
+            nome:
+              type: string
+            documento:
+              type: string
+            endereco:
+              type: object
+        itens:
+          type: array
+          items:
+            type: object
+            properties:
+              descricao:
+                type: string
+              quantidade:
+                type: number
+              valor_unitario:
+                type: number
+              ncm:
+                type: string
+              cfop:
+                type: string
+        impostos:
+          type: object
+          properties:
+            icms:
+              type: number
+            pis:
+              type: number
+            cofins:
+              type: number
+            ipi:
+              type: number
+        data_emissao:
+          type: string
+          format: date-time
+        protocolo_autorizacao:
+          type: string
+        xml_url:
+          type: string
+          format: uri
+        pdf_url:
+          type: string
+          format: uri
+
+    NFeInput:
+      type: object
+      required:
+        - natureza_operacao
+        - destinatario
+        - itens
+      properties:
+        natureza_operacao:
+          type: string
+        destinatario:
+          type: object
+          required:
+            - nome
+            - documento
+          properties:
+            nome:
+              type: string
+            documento:
+              type: string
+            endereco:
+              type: object
+              properties:
+                logradouro:
+                  type: string
+                numero:
+                  type: string
+                bairro:
+                  type: string
+                cidade:
+                  type: string
+                uf:
+                  type: string
+                cep:
+                  type: string
+        itens:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required:
+              - descricao
+              - quantidade
+              - valor_unitario
+            properties:
+              descricao:
+                type: string
+              quantidade:
+                type: number
+                minimum: 0.001
+              valor_unitario:
+                type: number
+                minimum: 0.01
+              ncm:
+                type: string
+              cfop:
+                type: string
+
+    CalculoImpostos:
+      type: object
+      properties:
+        regime_tributario:
+          type: string
+          enum: [simples_nacional, lucro_presumido, lucro_real]
+        receita_bruta:
+          type: number
+        impostos:
+          type: object
+          properties:
+            pis:
+              type: number
+            cofins:
+              type: number
+            irpj:
+              type: number
+            csll:
+              type: number
+            icms:
+              type: number
+            iss:
+              type: number
+            total:
+              type: number
+        aliquota_efetiva:
+          type: number
+
+    RelatorioFiscal:
+      type: object
+      properties:
+        periodo:
+          type: object
+          properties:
+            inicio:
+              type: string
+              format: date
+            fim:
+              type: string
+              format: date
+        totais:
+          type: object
+          properties:
+            faturamento:
+              type: number
+            impostos_devidos:
+              type: number
+            creditos:
+              type: number
+            debitos:
+              type: number
+        documentos:
+          type: object
+          properties:
+            nfe_emitidas:
+              type: integer
+            nfe_canceladas:
+              type: integer
+            nfse_emitidas:
+              type: integer
+
+  parameters:
+    PageParam:
+      name: page
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+      description: Número da página
+
+    LimitParam:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 50
+      description: Itens por página
+
+    SortByParam:
+      name: sort_by
+      in: query
+      schema:
+        type: string
+      description: Campo para ordenação
+
+    SortOrderParam:
+      name: sort_order
+      in: query
+      schema:
+        type: string
+        enum: [asc, desc]
+        default: desc
+      description: Direção da ordenação
+
+  responses:
+    BadRequest:
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            success: false
+            error: "Dados inválidos na requisição"
+            code: "BAD_REQUEST"
+
+    Unauthorized:
+      description: Não autorizado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            success: false
+            error: "API Key inválida ou expirada"
+            code: "UNAUTHORIZED"
+
+    Forbidden:
+      description: Acesso negado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            success: false
+            error: "Permissão insuficiente para esta operação"
+            code: "FORBIDDEN"
+
+    NotFound:
+      description: Recurso não encontrado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            success: false
+            error: "Recurso não encontrado"
+            code: "NOT_FOUND"
+
+    RateLimited:
+      description: Rate limit excedido
+      headers:
+        X-RateLimit-Limit:
+          schema:
+            type: integer
+          description: Limite de requisições
+        X-RateLimit-Remaining:
+          schema:
+            type: integer
+          description: Requisições restantes
+        X-RateLimit-Reset:
+          schema:
+            type: integer
+          description: Timestamp de reset
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            success: false
+            error: "Rate limit excedido. Tente novamente em 60 segundos."
+            code: "RATE_LIMITED"
+
+paths:
+  # Faturamento endpoints
+  /api-v1-faturamento:
+    get:
+      tags:
+        - Faturamento
+      summary: Listar faturas
+      description: Retorna lista paginada de faturas com filtros opcionais
+      operationId: listFaturas
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - $ref: '#/components/parameters/SortByParam'
+        - $ref: '#/components/parameters/SortOrderParam'
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [pending, paid, overdue, cancelled]
+          description: Filtrar por status
+        - name: data_inicio
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Data inicial (vencimento)
+        - name: data_fim
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Data final (vencimento)
+        - name: counterparty_id
+          in: query
+          schema:
+            type: string
+            format: uuid
+          description: Filtrar por cliente
+      responses:
+        '200':
+          description: Lista de faturas
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Fatura'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+
+    post:
+      tags:
+        - Faturamento
+      summary: Criar fatura
+      description: Cria uma nova fatura
+      operationId: createFatura
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FaturaInput'
+            example:
+              counterparty_id: "123e4567-e89b-12d3-a456-426614174000"
+              valor: 1500.00
+              data_vencimento: "2024-02-15"
+              descricao: "Serviços de consultoria"
+      responses:
+        '201':
+          description: Fatura criada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Fatura'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api-v1-faturamento/{id}:
+    get:
+      tags:
+        - Faturamento
+      summary: Buscar fatura
+      description: Retorna detalhes de uma fatura específica
+      operationId: getFatura
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Detalhes da fatura
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/Fatura'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    put:
+      tags:
+        - Faturamento
+      summary: Atualizar fatura
+      description: Atualiza uma fatura existente
+      operationId: updateFatura
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FaturaInput'
+      responses:
+        '200':
+          description: Fatura atualizada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/Fatura'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      tags:
+        - Faturamento
+      summary: Deletar fatura
+      description: Remove uma fatura (soft delete)
+      operationId: deleteFatura
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Fatura removida
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Fatura removida com sucesso"
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # CRM endpoints
+  /api-v1-crm/clientes:
+    get:
+      tags:
+        - CRM
+      summary: Listar clientes
+      description: Retorna lista paginada de clientes
+      operationId: listClientes
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - $ref: '#/components/parameters/SortByParam'
+        - $ref: '#/components/parameters/SortOrderParam'
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [active, inactive, blocked]
+        - name: segment
+          in: query
+          schema:
+            type: string
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: Busca por nome ou documento
+      responses:
+        '200':
+          description: Lista de clientes
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Cliente'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    post:
+      tags:
+        - CRM
+      summary: Criar cliente
+      description: Cadastra um novo cliente
+      operationId: createCliente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClienteInput'
+      responses:
+        '201':
+          description: Cliente criado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/Cliente'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /api-v1-crm/clientes/{id}:
+    get:
+      tags:
+        - CRM
+      summary: Buscar cliente
+      operationId: getCliente
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Detalhes do cliente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/Cliente'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    put:
+      tags:
+        - CRM
+      summary: Atualizar cliente
+      operationId: updateCliente
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClienteInput'
+      responses:
+        '200':
+          description: Cliente atualizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/Cliente'
+
+    delete:
+      tags:
+        - CRM
+      summary: Deletar cliente
+      operationId: deleteCliente
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Cliente removido
+
+  /api-v1-crm/leads:
+    get:
+      tags:
+        - CRM
+      summary: Listar leads
+      operationId: listLeads
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [new, contacted, qualified, proposal, negotiation, won, lost]
+        - name: source
+          in: query
+          schema:
+            type: string
+        - name: assigned_to
+          in: query
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Lista de leads
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Lead'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+
+    post:
+      tags:
+        - CRM
+      summary: Criar lead
+      operationId: createLead
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LeadInput'
+      responses:
+        '201':
+          description: Lead criado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/Lead'
+
+  # Fiscal endpoints
+  /api-v1-fiscal/nfe:
+    get:
+      tags:
+        - Fiscal
+      summary: Listar NFe
+      description: Retorna lista de notas fiscais eletrônicas
+      operationId: listNFe
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [rascunho, pendente, autorizada, rejeitada, cancelada]
+        - name: data_inicio
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: data_fim
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: numero
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista de NFe
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/NFe'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+
+    post:
+      tags:
+        - Fiscal
+      summary: Emitir NFe
+      description: Emite uma nova nota fiscal eletrônica
+      operationId: createNFe
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NFeInput'
+      responses:
+        '201':
+          description: NFe criada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/NFe'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /api-v1-fiscal/nfe/{id}:
+    get:
+      tags:
+        - Fiscal
+      summary: Buscar NFe
+      operationId: getNFe
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Detalhes da NFe
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/NFe'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api-v1-fiscal/nfe/{id}/cancelar:
+    put:
+      tags:
+        - Fiscal
+      summary: Cancelar NFe
+      description: Solicita o cancelamento de uma NFe autorizada
+      operationId: cancelNFe
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - justificativa
+              properties:
+                justificativa:
+                  type: string
+                  minLength: 15
+                  maxLength: 255
+                  description: Motivo do cancelamento (mínimo 15 caracteres)
+      responses:
+        '200':
+          description: NFe cancelada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/NFe'
+                  protocolo_cancelamento:
+                    type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /api-v1-fiscal/impostos:
+    get:
+      tags:
+        - Fiscal
+      summary: Calcular impostos
+      description: Calcula impostos com base no regime tributário e valores
+      operationId: calcularImpostos
+      parameters:
+        - name: regime_tributario
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [simples_nacional, lucro_presumido, lucro_real]
+        - name: receita_bruta
+          in: query
+          required: true
+          schema:
+            type: number
+            minimum: 0
+        - name: atividade
+          in: query
+          schema:
+            type: string
+            enum: [comercio, servicos, industria]
+      responses:
+        '200':
+          description: Cálculo de impostos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/CalculoImpostos'
+
+  /api-v1-fiscal/relatorios:
+    get:
+      tags:
+        - Fiscal
+      summary: Relatórios fiscais
+      description: Gera relatório fiscal consolidado
+      operationId: getRelatorioFiscal
+      parameters:
+        - name: tipo
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [mensal, trimestral, anual]
+        - name: periodo_inicio
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: periodo_fim
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Relatório fiscal
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/RelatorioFiscal'
+
+  /api-v1-fiscal/tributos:
+    get:
+      tags:
+        - Fiscal
+      summary: Consultar tributos
+      description: Consulta regras de tributação
+      operationId: consultarTributos
+      parameters:
+        - name: ncm
+          in: query
+          schema:
+            type: string
+          description: Código NCM do produto
+        - name: cfop
+          in: query
+          schema:
+            type: string
+          description: Código CFOP
+        - name: uf_origem
+          in: query
+          schema:
+            type: string
+            pattern: '^[A-Z]{2}$'
+        - name: uf_destino
+          in: query
+          schema:
+            type: string
+            pattern: '^[A-Z]{2}$'
+      responses:
+        '200':
+          description: Regras de tributação
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        ncm:
+                          type: string
+                        descricao:
+                          type: string
+                        aliquota_icms:
+                          type: number
+                        aliquota_pis:
+                          type: number
+                        aliquota_cofins:
+                          type: number
+                        aliquota_ipi:
+                          type: number
+                        cst_icms:
+                          type: string
+                        cst_pis_cofins:
+                          type: string
+
+  # Webhooks
+  /webhooks:
+    post:
+      tags:
+        - Webhooks
+      summary: Registrar webhook
+      description: |
+        Registra um endpoint para receber notificações de eventos.
+        
+        ## Eventos disponíveis
+        - `fatura.criada` - Nova fatura criada
+        - `fatura.atualizada` - Fatura atualizada
+        - `fatura.paga` - Fatura paga
+        - `cliente.criado` - Novo cliente cadastrado
+        - `cliente.atualizado` - Cliente atualizado
+        - `nfe.emitida` - NFe autorizada
+        - `nfe.cancelada` - NFe cancelada
+      operationId: registerWebhook
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - url
+                - events
+              properties:
+                url:
+                  type: string
+                  format: uri
+                  description: URL do endpoint que receberá as notificações
+                events:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                      - fatura.criada
+                      - fatura.atualizada
+                      - fatura.paga
+                      - cliente.criado
+                      - cliente.atualizado
+                      - nfe.emitida
+                      - nfe.cancelada
+                secret:
+                  type: string
+                  description: Chave secreta para validar assinaturas HMAC
+      responses:
+        '201':
+          description: Webhook registrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      url:
+                        type: string
+                      events:
+                        type: array
+                        items:
+                          type: string
+                      secret:
+                        type: string
+                        description: Chave para validar assinaturas (mostrada apenas uma vez)
