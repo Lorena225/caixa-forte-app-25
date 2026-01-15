@@ -77,3 +77,6 @@ verify_jwt = true
 
 [functions.refresh-cache]
 verify_jwt = true
+
+[functions.api-v1-faturamento]
+verify_jwt = false
