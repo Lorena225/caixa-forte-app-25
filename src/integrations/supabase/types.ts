@@ -20176,61 +20176,47 @@ export type Database = {
       }
       webhook_events: {
         Row: {
-          company_id: string
+          attempts: number | null
           created_at: string | null
+          delivered_at: string | null
           error_message: string | null
+          event_type: string
           id: string
-          integration_id: string
-          payload_json: Json | null
-          processed_at: string | null
-          provider_event_id: string | null
-          received_at: string | null
+          last_attempt_at: string | null
+          payload: Json
           status: string | null
+          webhook_id: string
         }
         Insert: {
-          company_id: string
+          attempts?: number | null
           created_at?: string | null
+          delivered_at?: string | null
           error_message?: string | null
+          event_type: string
           id?: string
-          integration_id: string
-          payload_json?: Json | null
-          processed_at?: string | null
-          provider_event_id?: string | null
-          received_at?: string | null
+          last_attempt_at?: string | null
+          payload: Json
           status?: string | null
+          webhook_id: string
         }
         Update: {
-          company_id?: string
+          attempts?: number | null
           created_at?: string | null
+          delivered_at?: string | null
           error_message?: string | null
+          event_type?: string
           id?: string
-          integration_id?: string
-          payload_json?: Json | null
-          processed_at?: string | null
-          provider_event_id?: string | null
-          received_at?: string | null
+          last_attempt_at?: string | null
+          payload?: Json
           status?: string | null
+          webhook_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "webhook_events_company_id_fkey"
-            columns: ["company_id"]
+            foreignKeyName: "webhook_events_webhook_id_fkey"
+            columns: ["webhook_id"]
             isOneToOne: false
-            referencedRelation: "companies"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "webhook_events_company_id_fkey"
-            columns: ["company_id"]
-            isOneToOne: false
-            referencedRelation: "v_security_status"
-            referencedColumns: ["company_id"]
-          },
-          {
-            foreignKeyName: "webhook_events_integration_id_fkey"
-            columns: ["integration_id"]
-            isOneToOne: false
-            referencedRelation: "integrations"
+            referencedRelation: "webhooks"
             referencedColumns: ["id"]
           },
         ]
