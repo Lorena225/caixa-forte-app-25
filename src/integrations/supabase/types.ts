@@ -921,6 +921,244 @@ export type Database = {
           },
         ]
       }
+      api_keys: {
+        Row: {
+          company_id: string
+          created_at: string
+          created_by: string | null
+          expires_at: string | null
+          id: string
+          is_active: boolean
+          key_hash: string
+          key_prefix: string
+          last_used_at: string | null
+          name: string
+          rate_limit_per_day: number
+          rate_limit_per_minute: number
+          scopes: string[]
+          updated_at: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          created_by?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          key_hash: string
+          key_prefix: string
+          last_used_at?: string | null
+          name: string
+          rate_limit_per_day?: number
+          rate_limit_per_minute?: number
+          scopes?: string[]
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          created_by?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          key_hash?: string
+          key_prefix?: string
+          last_used_at?: string | null
+          name?: string
+          rate_limit_per_day?: number
+          rate_limit_per_minute?: number
+          scopes?: string[]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "api_keys_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "api_keys_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      api_logs: {
+        Row: {
+          api_key_id: string | null
+          company_id: string
+          created_at: string
+          endpoint: string
+          error_message: string | null
+          id: string
+          ip_address: unknown
+          latency_ms: number | null
+          method: string
+          request_body: Json | null
+          response_body: Json | null
+          status_code: number
+          user_agent: string | null
+        }
+        Insert: {
+          api_key_id?: string | null
+          company_id: string
+          created_at?: string
+          endpoint: string
+          error_message?: string | null
+          id?: string
+          ip_address?: unknown
+          latency_ms?: number | null
+          method: string
+          request_body?: Json | null
+          response_body?: Json | null
+          status_code: number
+          user_agent?: string | null
+        }
+        Update: {
+          api_key_id?: string | null
+          company_id?: string
+          created_at?: string
+          endpoint?: string
+          error_message?: string | null
+          id?: string
+          ip_address?: unknown
+          latency_ms?: number | null
+          method?: string
+          request_body?: Json | null
+          response_body?: Json | null
+          status_code?: number
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "api_logs_api_key_id_fkey"
+            columns: ["api_key_id"]
+            isOneToOne: false
+            referencedRelation: "api_keys"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "api_logs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "api_logs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      api_rate_limits: {
+        Row: {
+          api_key_id: string
+          id: string
+          request_count: number
+          window_start: string
+          window_type: string
+        }
+        Insert: {
+          api_key_id: string
+          id?: string
+          request_count?: number
+          window_start: string
+          window_type: string
+        }
+        Update: {
+          api_key_id?: string
+          id?: string
+          request_count?: number
+          window_start?: string
+          window_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "api_rate_limits_api_key_id_fkey"
+            columns: ["api_key_id"]
+            isOneToOne: false
+            referencedRelation: "api_keys"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      app_connections: {
+        Row: {
+          app_id: string
+          company_id: string
+          connected_at: string | null
+          connected_by: string | null
+          created_at: string
+          credentials_encrypted: string | null
+          credentials_meta: Json | null
+          error_message: string | null
+          id: string
+          last_sync_at: string | null
+          settings: Json | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          app_id: string
+          company_id: string
+          connected_at?: string | null
+          connected_by?: string | null
+          created_at?: string
+          credentials_encrypted?: string | null
+          credentials_meta?: Json | null
+          error_message?: string | null
+          id?: string
+          last_sync_at?: string | null
+          settings?: Json | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          app_id?: string
+          company_id?: string
+          connected_at?: string | null
+          connected_by?: string | null
+          created_at?: string
+          credentials_encrypted?: string | null
+          credentials_meta?: Json | null
+          error_message?: string | null
+          id?: string
+          last_sync_at?: string | null
+          settings?: Json | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "app_connections_app_id_fkey"
+            columns: ["app_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace_apps"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "app_connections_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "app_connections_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
       approval_actions: {
         Row: {
           action: string
@@ -12234,6 +12472,66 @@ export type Database = {
           },
         ]
       }
+      marketplace_apps: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          documentation_url: string | null
+          features: string[] | null
+          icon_url: string | null
+          id: string
+          is_active: boolean
+          is_featured: boolean
+          long_description: string | null
+          name: string
+          pricing_type: string | null
+          required_scopes: string[] | null
+          setup_instructions: string | null
+          slug: string
+          updated_at: string
+          website_url: string | null
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description?: string | null
+          documentation_url?: string | null
+          features?: string[] | null
+          icon_url?: string | null
+          id?: string
+          is_active?: boolean
+          is_featured?: boolean
+          long_description?: string | null
+          name: string
+          pricing_type?: string | null
+          required_scopes?: string[] | null
+          setup_instructions?: string | null
+          slug: string
+          updated_at?: string
+          website_url?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          documentation_url?: string | null
+          features?: string[] | null
+          icon_url?: string | null
+          id?: string
+          is_active?: boolean
+          is_featured?: boolean
+          long_description?: string | null
+          name?: string
+          pricing_type?: string | null
+          required_scopes?: string[] | null
+          setup_instructions?: string | null
+          slug?: string
+          updated_at?: string
+          website_url?: string | null
+        }
+        Relationships: []
+      }
       movimentacoes_estoque: {
         Row: {
           cfop: string | null
@@ -22158,6 +22456,7 @@ export type Database = {
         Args: { p_days_login_attempts?: number; p_days_rate_limit?: number }
         Returns: Json
       }
+      generate_api_key: { Args: never; Returns: string }
       generate_sequential_code: {
         Args: { p_company_id?: string; p_prefix?: string; p_table_name: string }
         Returns: string
@@ -22192,6 +22491,7 @@ export type Database = {
         Returns: boolean
       }
       has_role: { Args: { _role: string; _user_id: string }; Returns: boolean }
+      hash_api_key: { Args: { key: string }; Returns: string }
       is_feature_enabled: {
         Args: { p_company_id: string; p_feature_key: string }
         Returns: boolean
