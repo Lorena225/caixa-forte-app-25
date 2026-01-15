@@ -81,12 +81,11 @@ export default function DeveloperPortal() {
       <PageHeader
         title="Portal do Desenvolvedor"
         description="Gerencie suas API Keys, webhooks e monitore o uso da API"
-        action={
-          <Button variant="outline" onClick={refetchAll}>
-            <RefreshCw className="h-4 w-4 mr-2" />
-            Atualizar
-          </Button>
-        }
+        action={{
+          label: "Atualizar",
+          onClick: refetchAll,
+          icon: <RefreshCw className="h-4 w-4" />
+        }}
       />
 
       {/* KPIs */}
