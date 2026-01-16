@@ -22610,6 +22610,10 @@ export type Database = {
         Returns: string
       }
       sanitize_pii: { Args: { p_data: Json }; Returns: Json }
+      user_belongs_to_company: {
+        Args: { check_company_id: string }
+        Returns: boolean
+      }
       user_can_write: { Args: { p_company_id: string }; Returns: boolean }
       user_has_company_access: {
         Args: { p_company_id: string }
