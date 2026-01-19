@@ -31,7 +31,7 @@ export function useAuditLogs(filters?: AuditLogFilters) {
     queryKey: ["audit-logs", companyId, filters],
     queryFn: async () => {
       let query = supabase
-        .from("audit_logs")
+        .from("audit_logs_safe")
         .select("*")
         .eq("company_id", companyId!)
         .order("created_at", { ascending: false })
@@ -69,7 +69,7 @@ export function useAuditLogTables() {
     queryKey: ["audit-log-tables", companyId],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("audit_logs")
+        .from("audit_logs_safe")
         .select("table_name")
         .eq("company_id", companyId!)
         .limit(1000);

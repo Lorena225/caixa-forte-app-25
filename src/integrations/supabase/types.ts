@@ -20586,6 +20586,60 @@ export type Database = {
       }
     }
     Views: {
+      audit_logs_safe: {
+        Row: {
+          action: string | null
+          company_id: string | null
+          created_at: string | null
+          id: string | null
+          new_data: Json | null
+          old_data: Json | null
+          record_id: string | null
+          sensitivity_level: string | null
+          table_name: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action?: string | null
+          company_id?: string | null
+          created_at?: string | null
+          id?: string | null
+          new_data?: never
+          old_data?: never
+          record_id?: string | null
+          sensitivity_level?: string | null
+          table_name?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string | null
+          company_id?: string | null
+          created_at?: string | null
+          id?: string | null
+          new_data?: never
+          old_data?: never
+          record_id?: string | null
+          sensitivity_level?: string | null
+          table_name?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_logs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "audit_logs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
       counterparties_safe: {
         Row: {
           address_city: string | null
@@ -22570,6 +22624,7 @@ export type Database = {
         }
         Returns: string
       }
+      mask_sensitive_audit_data: { Args: { data: Json }; Returns: Json }
       process_settlement: {
         Args: {
           p_bank_account_id: string
