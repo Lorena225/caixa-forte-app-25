@@ -340,3 +340,5 @@ export function CopilotWidget() {
     </div>
   );
 }
+
+export default CopilotWidget;
