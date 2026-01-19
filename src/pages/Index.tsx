@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { MainLayout } from '@/components/layout/MainLayout';
 import Dashboard from './Dashboard';
 import { Loader2 } from 'lucide-react';
+import { CopilotWidget } from '@/components/CopilotWidget';
 
 export default function Index() {
   const { user, loading, currentCompany } = useAuth();
@@ -28,8 +29,11 @@ export default function Index() {
   }
 
   return (
-    <MainLayout>
-      <Dashboard />
-    </MainLayout>
+    <>
+      <MainLayout>
+        <Dashboard />
+      </MainLayout>
+      <CopilotWidget />
+    </>
   );
 }
