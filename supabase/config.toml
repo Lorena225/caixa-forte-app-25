@@ -89,3 +89,6 @@ verify_jwt = false
 
 [functions.webhook-worker]
 verify_jwt = false
+
+[functions.copilot-message]
+verify_jwt = false
