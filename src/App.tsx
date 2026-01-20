@@ -158,7 +158,27 @@ import TesourariaContratos from "./pages/tesouraria/Contratos";
 import TesourariaContratoDetalhe from "./pages/tesouraria/ContratoDetalhe";
 import TesourariaContratoNovo from "./pages/tesouraria/ContratoNovo";
 import ConciliacaoIndex from "./pages/conciliacao/Index";
-
+// Operacional
+import OperacionalIndex from "./pages/operacional/Index";
+import EstruturaOrganizacional from "./pages/operacional/EstruturaOrganizacional";
+import CentrosCustodia from "./pages/operacional/CentrosCustodia";
+import Departamentos from "./pages/operacional/Departamentos";
+import Responsaveis from "./pages/operacional/Responsaveis";
+// Relatórios expandidos
+import BalancoPatrimonial from "./pages/relatorios/BalancoPatrimonial";
+import Balancete from "./pages/relatorios/Balancete";
+import LivroRazao from "./pages/relatorios/LivroRazao";
+import LivroDiario from "./pages/relatorios/LivroDiario";
+import ECF from "./pages/relatorios/ECF";
+import AnaliseVendas from "./pages/relatorios/AnaliseVendas";
+import AnaliseCompras from "./pages/relatorios/AnaliseCompras";
+// Fiscal expandido
+import NFCe from "./pages/fiscal/NFCe";
+import CupomFiscal from "./pages/fiscal/CupomFiscal";
+import DANFE from "./pages/fiscal/DANFE";
+import AnaliseFiscal from "./pages/fiscal/AnaliseFiscal";
+// Contabil
+import Reclassificacao from "./pages/contabilidade/Reclassificacao";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -211,7 +231,7 @@ const App = () => (
                 <Route path="/contabilidade/balanco" element={<ContabilidadeBalanco />} />
                 <Route path="/contabilidade/dre" element={<ContabilidadeDREContabil />} />
                 <Route path="/contabilidade/fechamento" element={<ContabilidadeFechamento />} />
-                
+                <Route path="/contabilidade/reclassificacao" element={<Reclassificacao />} />
                 {/* ERP Modules - Fiscal */}
                 <Route path="/fiscal" element={<FiscalIndex />} />
                 <Route path="/fiscal/documentos" element={<FiscalDocumentos />} />
@@ -229,6 +249,17 @@ const App = () => (
                 <Route path="/fiscal/apuracao-impostos" element={<FiscalApuracaoImpostos />} />
                 <Route path="/fiscal/livros-fiscais" element={<FiscalLivrosFiscais />} />
                 <Route path="/fiscal/obrigacoes-acessorias" element={<FiscalObrigacoesAcessorias />} />
+                <Route path="/fiscal/nfce" element={<NFCe />} />
+                <Route path="/fiscal/cupom-fiscal" element={<CupomFiscal />} />
+                <Route path="/fiscal/danfe" element={<DANFE />} />
+                <Route path="/fiscal/analise" element={<AnaliseFiscal />} />
+                
+                {/* ============ OPERACIONAL ============ */}
+                <Route path="/operacional" element={<OperacionalIndex />} />
+                <Route path="/operacional/estrutura" element={<EstruturaOrganizacional />} />
+                <Route path="/operacional/centros-custodia" element={<CentrosCustodia />} />
+                <Route path="/operacional/departamentos" element={<Departamentos />} />
+                <Route path="/operacional/responsaveis" element={<Responsaveis />} />
                 
                 {/* ============ ESTOQUE ============ */}
                 <Route path="/estoque" element={<EstoqueIndex />} />
@@ -343,7 +374,13 @@ const App = () => (
                 {/* ============ RELATÓRIOS ============ */}
                 <Route path="/relatorios" element={<ReportsIndex />} />
                 <Route path="/relatorios/drilldown" element={<DrilldownPage />} />
-                
+                <Route path="/relatorios/balanco" element={<BalancoPatrimonial />} />
+                <Route path="/relatorios/balancete" element={<Balancete />} />
+                <Route path="/relatorios/livro-razao" element={<LivroRazao />} />
+                <Route path="/relatorios/livro-diario" element={<LivroDiario />} />
+                <Route path="/relatorios/ecf" element={<ECF />} />
+                <Route path="/relatorios/analise-vendas" element={<AnaliseVendas />} />
+                <Route path="/relatorios/analise-compras" element={<AnaliseCompras />} />
                 {/* Redirects reports */}
                 <Route path="/reports" element={<Navigate to="/relatorios" replace />} />
                 <Route path="/reports/drilldown" element={<Navigate to="/relatorios/drilldown" replace />} />

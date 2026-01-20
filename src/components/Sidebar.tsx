@@ -32,6 +32,10 @@ import {
   FileSpreadsheet,
   Scale,
   ClipboardList,
+  Network,
+  Building2,
+  FolderTree,
+  UserCheck,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -109,6 +113,17 @@ const menuItems: MenuItem[] = [
     ]
   },
   { 
+    key: 'operacional', 
+    label: 'Operacional', 
+    icon: Network,
+    children: [
+      { key: 'estrutura-org', label: 'Estrutura Organizacional', icon: Network, route: '/operacional/estrutura' },
+      { key: 'centros-custodia', label: 'Centros de Custódia', icon: FolderTree, route: '/operacional/centros-custodia' },
+      { key: 'departamentos', label: 'Seções e Departamentos', icon: Building2, route: '/operacional/departamentos' },
+      { key: 'responsaveis', label: 'Responsáveis por CC', icon: UserCheck, route: '/operacional/responsaveis' },
+    ]
+  },
+  {
     key: 'estoque', 
     label: 'Estoque', 
     icon: Boxes,
