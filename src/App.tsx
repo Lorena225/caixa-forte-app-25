@@ -167,6 +167,12 @@ import AdminGoLive from "./pages/admin/GoLiveChecklist";
 import AdminSystemTier from "./pages/admin/SystemTier";
 import AdminNavigationSettings from "./pages/admin/NavigationSettings";
 import AdminSecurityReport from "./pages/admin/SecurityReport";
+// Backup & Recovery
+import BackupIndex from "./pages/admin/backup/Index";
+import BackupJobs from "./pages/admin/backup/Jobs";
+import BackupHistorico from "./pages/admin/backup/Historico";
+import BackupPolitica from "./pages/admin/backup/Politica";
+import BackupConfiguracoes from "./pages/admin/backup/Configuracoes";
 import TesourariaCNAB from "./pages/tesouraria/CNAB";
 import TesourariaCNABRemessa from "./pages/tesouraria/CNABRemessa";
 import TesourariaCNABRetorno from "./pages/tesouraria/CNABRetorno";
@@ -451,6 +457,12 @@ const App = () => (
                 <Route path="/admin/go-live" element={<AdminGoLive />} />
                 <Route path="/admin/navegacao" element={<AdminNavigationSettings />} />
                 <Route path="/admin/relatorio-seguranca" element={<AdminSecurityReport />} />
+                {/* Backup & Recovery */}
+                <Route path="/admin/backup" element={<BackupIndex />} />
+                <Route path="/admin/backup/jobs" element={<BackupJobs />} />
+                <Route path="/admin/backup/historico" element={<BackupHistorico />} />
+                <Route path="/admin/backup/politica" element={<BackupPolitica />} />
+                <Route path="/admin/backup/configuracoes" element={<BackupConfiguracoes />} />
                 
                 {/* Redirects admin antigas (inglês) */}
                 <Route path="/admin/company" element={<Navigate to="/admin/empresa" replace />} />

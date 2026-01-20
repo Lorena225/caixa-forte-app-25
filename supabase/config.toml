@@ -92,3 +92,6 @@ verify_jwt = false
 
 [functions.copilot-message]
 verify_jwt = false
+
+[functions.backup-api]
+verify_jwt = false
