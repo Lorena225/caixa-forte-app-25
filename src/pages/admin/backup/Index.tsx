@@ -16,6 +16,7 @@ import { useBackupStats, useBackupPolicySettings } from "@/hooks/useBackupManage
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { ManualBackupCard } from "@/components/admin/backup/ManualBackupCard";
 
 const backupModules = [
   {
@@ -132,8 +133,12 @@ export default function BackupIndex() {
           </Card>
         </div>
 
-        {/* Module Cards */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {/* Manual Backup + Module Cards */}
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+          {/* Manual Backup Card */}
+          <ManualBackupCard />
+
+          {/* Module Cards */}
           {backupModules.map((module) => (
             <Link key={module.href} to={module.href}>
               <Card className="h-full transition-all hover:shadow-md hover:border-primary/50 cursor-pointer group">
