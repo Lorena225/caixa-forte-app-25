@@ -57,7 +57,7 @@ export default function AnalystChat() {
 
   const handleNewConversation = async () => {
     try {
-      const conv = await createConversation.mutateAsync();
+      const conv = await createConversation.mutateAsync("Nova conversa");
       setActiveConversationId(conv.id);
     } catch (error) {
       toast.error("Erro ao criar conversa");

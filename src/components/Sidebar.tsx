@@ -41,6 +41,9 @@ import {
   Banknote,
   RefreshCw,
   Send,
+  MessageSquare,
+  BellRing,
+  Brain,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -170,6 +173,18 @@ const menuItems: MenuItem[] = [
       { key: 'analise-vendas', label: 'Análise de Vendas', icon: TrendingUp, route: '/relatorios/analise-vendas' },
       { key: 'analise-compras', label: 'Análise de Compras', icon: Truck, route: '/relatorios/analise-compras' },
       { key: 'dashboards', label: 'Dashboards', icon: BarChart3, route: '/paineis' },
+    ]
+  },
+  { 
+    key: 'ia-chatgpt', 
+    label: 'IA & ChatGPT', 
+    icon: Bot,
+    children: [
+      { key: 'ia-config', label: 'Configurações de IA', icon: Settings, route: '/ia/configuracoes' },
+      { key: 'ia-whatsapp', label: 'Agente WhatsApp', icon: MessageSquare, route: '/ia/whatsapp' },
+      { key: 'ia-monitor', label: 'Monitor Financeiro', icon: BellRing, route: '/ia/alertas' },
+      { key: 'ia-analista', label: 'Analista Inteligente', icon: Brain, route: '/ia/analista' },
+      { key: 'ia-logs', label: 'Logs & Auditoria', icon: FileText, route: '/ia/logs' },
     ]
   },
   { 
