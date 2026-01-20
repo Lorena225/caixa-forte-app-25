@@ -16,6 +16,7 @@ import {
   ClipboardList,
   Sparkles,
   Gauge,
+  Database,
 } from "lucide-react";
 
 const adminModules = [
@@ -133,6 +134,13 @@ const adminModules = [
     description: "Checklist de implantação",
     icon: Sparkles,
     href: "/admin/go-live",
+  },
+  {
+    title: "Backup & Recuperação",
+    description: "Backups, DR e governança de dados",
+    icon: Database,
+    href: "/admin/backup",
+    highlight: true,
   },
   {
     title: "Relatório de Segurança",
