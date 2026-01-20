@@ -5796,27 +5796,42 @@ export type Database = {
           company_id: string
           cost_center_id: string
           created_at: string
+          end_date: string | null
           id: string
+          is_active: boolean | null
           limits_json: Json | null
+          notes: string | null
           resp_role: string
+          start_date: string | null
+          updated_at: string | null
           user_id: string
         }
         Insert: {
           company_id: string
           cost_center_id: string
           created_at?: string
+          end_date?: string | null
           id?: string
+          is_active?: boolean | null
           limits_json?: Json | null
+          notes?: string | null
           resp_role?: string
+          start_date?: string | null
+          updated_at?: string | null
           user_id: string
         }
         Update: {
           company_id?: string
           cost_center_id?: string
           created_at?: string
+          end_date?: string | null
           id?: string
+          is_active?: boolean | null
           limits_json?: Json | null
+          notes?: string | null
           resp_role?: string
+          start_date?: string | null
+          updated_at?: string | null
           user_id?: string
         }
         Relationships: [
@@ -5863,6 +5878,7 @@ export type Database = {
           level_type: string | null
           manager_user_id: string | null
           name: string
+          organizational_unit_id: string | null
           parent_id: string | null
           path: string
           path_codes: string
@@ -5883,6 +5899,7 @@ export type Database = {
           level_type?: string | null
           manager_user_id?: string | null
           name: string
+          organizational_unit_id?: string | null
           parent_id?: string | null
           path?: string
           path_codes?: string
@@ -5903,6 +5920,7 @@ export type Database = {
           level_type?: string | null
           manager_user_id?: string | null
           name?: string
+          organizational_unit_id?: string | null
           parent_id?: string | null
           path?: string
           path_codes?: string
@@ -5932,6 +5950,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_security_status"
             referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "cost_centers_organizational_unit_id_fkey"
+            columns: ["organizational_unit_id"]
+            isOneToOne: false
+            referencedRelation: "organizational_units"
+            referencedColumns: ["id"]
           },
           {
             foreignKeyName: "cost_centers_parent_id_fkey"
