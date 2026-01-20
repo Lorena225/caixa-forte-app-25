@@ -44,6 +44,13 @@ import {
   MessageSquare,
   BellRing,
   Brain,
+  Lightbulb,
+  Globe,
+  Zap,
+  AlertTriangle,
+  Gauge,
+  Coins,
+  Target,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -184,7 +191,37 @@ const menuItems: MenuItem[] = [
       { key: 'ia-whatsapp', label: 'Agente WhatsApp', icon: MessageSquare, route: '/ia/whatsapp' },
       { key: 'ia-monitor', label: 'Monitor Financeiro', icon: BellRing, route: '/ia/alertas' },
       { key: 'ia-analista', label: 'Analista Inteligente', icon: Brain, route: '/ia/analista' },
+      { key: 'ia-cfo', label: 'CFO Virtual', icon: Target, route: '/ia/cfo-virtual' },
       { key: 'ia-logs', label: 'Logs & Auditoria', icon: FileText, route: '/ia/logs' },
+    ]
+  },
+  {
+    key: 'inovacao',
+    label: 'Inovação',
+    icon: Lightbulb,
+    children: [
+      { key: 'roadmap', label: 'Roadmap IA & Finance', icon: Sparkles, route: '/inovacao' },
+      { key: 'simulacoes', label: 'Simulações & Cenários', icon: Calculator, route: '/financeiro/simulacoes' },
+      { key: 'tempo-real', label: 'Finanças Tempo Real', icon: Gauge, route: '/financeiro/tempo-real' },
+      { key: 'anomalias', label: 'Monitor Anomalias', icon: AlertTriangle, route: '/compliance/anomalias' },
+    ]
+  },
+  {
+    key: 'openfinance',
+    label: 'Open Finance',
+    icon: Globe,
+    children: [
+      { key: 'of-conexoes', label: 'Conexões Bancárias', icon: Link2, route: '/openfinance/conexoes' },
+      { key: 'of-pagamentos', label: 'Pagamentos Pix', icon: Zap, route: '/openfinance/pagamentos' },
+    ]
+  },
+  {
+    key: 'embedded',
+    label: 'Serviços Financeiros',
+    icon: Coins,
+    children: [
+      { key: 'emb-servicos', label: 'Hub de Serviços', icon: Briefcase, route: '/embedded/servicos' },
+      { key: 'emb-antecipacao', label: 'Antecipação', icon: Wallet, route: '/embedded/antecipacao' },
     ]
   },
   { 
