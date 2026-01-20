@@ -7157,6 +7157,64 @@ export type Database = {
           },
         ]
       }
+      departments: {
+        Row: {
+          code: string | null
+          company_id: string
+          created_at: string
+          id: string
+          is_active: boolean
+          manager_user_id: string | null
+          name: string
+          organizational_unit_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          code?: string | null
+          company_id: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          manager_user_id?: string | null
+          name: string
+          organizational_unit_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          code?: string | null
+          company_id?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          manager_user_id?: string | null
+          name?: string
+          organizational_unit_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "departments_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "departments_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "departments_organizational_unit_id_fkey"
+            columns: ["organizational_unit_id"]
+            isOneToOne: false
+            referencedRelation: "organizational_units"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       dependentes: {
         Row: {
           cpf: string | null
@@ -13978,6 +14036,67 @@ export type Database = {
             columns: ["stage_id"]
             isOneToOne: false
             referencedRelation: "pipeline_stages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organizational_units: {
+        Row: {
+          code: string | null
+          company_id: string
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          parent_unit_id: string | null
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          code?: string | null
+          company_id: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          parent_unit_id?: string | null
+          type?: string
+          updated_at?: string
+        }
+        Update: {
+          code?: string | null
+          company_id?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          parent_unit_id?: string | null
+          type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organizational_units_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "organizational_units_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "organizational_units_parent_unit_id_fkey"
+            columns: ["parent_unit_id"]
+            isOneToOne: false
+            referencedRelation: "organizational_units"
             referencedColumns: ["id"]
           },
         ]
