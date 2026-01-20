@@ -9882,6 +9882,66 @@ export type Database = {
           },
         ]
       }
+      help_articles: {
+        Row: {
+          category: string
+          company_id: string | null
+          content: string
+          created_at: string
+          helpful_count: number
+          id: string
+          is_public: boolean
+          keywords: string[] | null
+          module: string | null
+          title: string
+          updated_at: string
+          view_count: number
+        }
+        Insert: {
+          category: string
+          company_id?: string | null
+          content: string
+          created_at?: string
+          helpful_count?: number
+          id?: string
+          is_public?: boolean
+          keywords?: string[] | null
+          module?: string | null
+          title: string
+          updated_at?: string
+          view_count?: number
+        }
+        Update: {
+          category?: string
+          company_id?: string | null
+          content?: string
+          created_at?: string
+          helpful_count?: number
+          id?: string
+          is_public?: boolean
+          keywords?: string[] | null
+          module?: string | null
+          title?: string
+          updated_at?: string
+          view_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "help_articles_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "help_articles_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
       historico_salarial: {
         Row: {
           cargo_anterior_id: string | null
