@@ -7,10 +7,14 @@ import OnboardingCards from '@/components/dashboard/OnboardingCards';
 import { KPICard, KPIGrid } from '@/components/dashboard/KPICard';
 import { CashFlowChart } from '@/components/dashboard/CashFlowChart';
 import { AgingChart } from '@/components/dashboard/AgingChart';
+import { AlertsPanel } from '@/components/dashboard/AlertsPanel';
+import { CashFlowProjection } from '@/components/dashboard/CashFlowProjection';
 import { DashboardFilters } from '@/components/dashboard/FilterBar';
 import { formatCurrency } from '@/lib/formatters';
 import { useExecutiveKPIs, useARAgingSummary, useAPAgingSummary } from '@/hooks/useDashboardData';
 import { useCashflowMonthly } from '@/hooks/useCompanyData';
+import { useDashboardAlerts } from '@/hooks/useDashboardAlerts';
+import { useDashboardFluxo } from '@/hooks/useDashboardFluxo';
 import {
   Wallet,
   TrendingUp,
@@ -50,6 +54,8 @@ export default function HomeDashboard() {
   const { data: arAging = [], isLoading: arLoading } = useARAgingSummary();
   const { data: apAging = [], isLoading: apLoading } = useAPAgingSummary();
   const { data: cashflowMonthly = [] } = useCashflowMonthly(currentYear);
+  const { data: alerts = [], isLoading: alertsLoading } = useDashboardAlerts(5);
+  const { data: fluxoProjetado = [], isLoading: fluxoLoading } = useDashboardFluxo(30);
 
   // Check if user has completed onboarding (simplified check)
   const hasData = (kpis?.revenue ?? 0) > 0 || (kpis?.expenses ?? 0) > 0;
@@ -213,6 +219,21 @@ export default function HomeDashboard() {
         />
       </KPIGrid>
 
+      {/* Alerts + Projection Row */}
+      <div className="grid gap-6 lg:grid-cols-3">
+        <AlertsPanel 
+          alerts={alerts} 
+          isLoading={alertsLoading} 
+          maxVisible={5}
+          className="lg:col-span-1"
+        />
+        <CashFlowProjection 
+          data={fluxoProjetado} 
+          isLoading={fluxoLoading}
+          title="Projeção 30 dias"
+        />
+      </div>
+
       {/* Charts Row */}
       {hasData && (
         <div className="grid gap-6 lg:grid-cols-2">
@@ -221,14 +242,12 @@ export default function HomeDashboard() {
             title="Fluxo de Caixa Mensal"
             type="bar"
           />
-          <div className="grid gap-6">
-            <AgingChart
-              data={arAging}
-              title="Contas a Receber"
-              type="ar"
-              isLoading={arLoading}
-            />
-          </div>
+          <AgingChart
+            data={arAging}
+            title="Contas a Receber"
+            type="ar"
+            isLoading={arLoading}
+          />
         </div>
       )}
 
