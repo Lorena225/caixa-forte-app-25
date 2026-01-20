@@ -444,7 +444,7 @@ export default function Simulacoes() {
               </div>
             ) : scenarios.length === 0 ? (
               <EmptyState
-                icon={FileText}
+                icon={<FileText className="h-8 w-8 text-muted-foreground" />}
                 title="Nenhum cenário salvo"
                 description="Crie simulações e salve cenários para análise posterior"
               />
