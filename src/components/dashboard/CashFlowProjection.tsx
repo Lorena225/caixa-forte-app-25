@@ -1,3 +1,4 @@
+import { memo, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -39,12 +40,39 @@ const chartConfig = {
   },
 };
 
-export function CashFlowProjection({
+export const CashFlowProjection = memo(function CashFlowProjection({
   data,
   isLoading = false,
   title = 'Projeção de Fluxo de Caixa',
   showBars = false,
 }: CashFlowProjectionProps) {
+  // Memoize all calculations to avoid recalculating on re-renders
+  const { firstBalance, lastBalance, minBalance, variation, variationPercent, negativeDays, hasNegativeProjection, sampledData } = useMemo(() => {
+    if (!data.length) return { 
+      firstBalance: 0, lastBalance: 0, minBalance: 0, variation: 0, 
+      variationPercent: 0, negativeDays: 0, hasNegativeProjection: false, sampledData: [] 
+    };
+    
+    const first = data[0]?.saldoAcumulado || 0;
+    const last = data[data.length - 1]?.saldoAcumulado || 0;
+    const min = Math.min(...data.map(d => d.saldoAcumulado));
+    const varVal = last - first;
+    const varPercent = first !== 0 ? (varVal / Math.abs(first)) * 100 : 0;
+    const negDays = data.filter(d => d.saldoAcumulado < 0).length;
+    const sampled = data.filter((_, index) => index % 3 === 0 || index === data.length - 1);
+    
+    return {
+      firstBalance: first,
+      lastBalance: last,
+      minBalance: min,
+      variation: varVal,
+      variationPercent: varPercent,
+      negativeDays: negDays,
+      hasNegativeProjection: negDays > 0,
+      sampledData: sampled,
+    };
+  }, [data]);
+
   if (isLoading) {
     return (
       <Card>
@@ -57,20 +85,6 @@ export function CashFlowProjection({
       </Card>
     );
   }
-
-  // Calculate summary stats
-  const firstBalance = data[0]?.saldoAcumulado || 0;
-  const lastBalance = data[data.length - 1]?.saldoAcumulado || 0;
-  const minBalance = Math.min(...data.map(d => d.saldoAcumulado));
-  const variation = lastBalance - firstBalance;
-  const variationPercent = firstBalance !== 0 ? (variation / Math.abs(firstBalance)) * 100 : 0;
-
-  // Check for negative days
-  const negativeDays = data.filter(d => d.saldoAcumulado < 0).length;
-  const hasNegativeProjection = negativeDays > 0;
-
-  // Sample data for display (every 2-3 days for 30 days)
-  const sampledData = data.filter((_, index) => index % 3 === 0 || index === data.length - 1);
 
   return (
     <Card>
@@ -194,4 +208,6 @@ export function CashFlowProjection({
       </CardContent>
     </Card>
   );
-}
+});
+
+CashFlowProjection.displayName = 'CashFlowProjection';

@@ -1,3 +1,4 @@
+import { memo, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -56,7 +57,7 @@ const alertTypeIcons: Record<string, typeof AlertTriangle> = {
   permissoes_pendentes: Shield,
 };
 
-function AlertItem({ alert }: { alert: AlertaDashboard }) {
+const AlertItem = memo(function AlertItem({ alert }: { alert: AlertaDashboard }) {
   const navigate = useNavigate();
   const config = urgencyConfig[alert.urgencia];
   const Icon = alertTypeIcons[alert.tipo] || config.icon;
@@ -111,7 +112,9 @@ function AlertItem({ alert }: { alert: AlertaDashboard }) {
       )}
     </div>
   );
-}
+});
+
+AlertItem.displayName = 'AlertItem';
 
 function AlertSkeleton() {
   return (
@@ -128,14 +131,15 @@ function AlertSkeleton() {
   );
 }
 
-export function AlertsPanel({ 
+export const AlertsPanel = memo(function AlertsPanel({ 
   alerts, 
   isLoading = false, 
   maxVisible = 5,
   className 
 }: AlertsPanelProps) {
   const navigate = useNavigate();
-  const visibleAlerts = alerts.slice(0, maxVisible);
+  
+  const visibleAlerts = useMemo(() => alerts.slice(0, maxVisible), [alerts, maxVisible]);
   const hasMore = alerts.length > maxVisible;
 
   return (
@@ -191,4 +195,6 @@ export function AlertsPanel({
       </CardContent>
     </Card>
   );
-}
+});
+
+AlertsPanel.displayName = 'AlertsPanel';
