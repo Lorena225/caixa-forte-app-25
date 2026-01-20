@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback, forwardRef } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { MessageSquare, X, Send, Loader2, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -60,7 +60,7 @@ const getModuleFromRoute = (pathname: string): string => {
   return moduleMap[segments[0]] || segments[0].charAt(0).toUpperCase() + segments[0].slice(1);
 };
 
-export const CopilotWidget = forwardRef<HTMLDivElement, object>(function CopilotWidget(_props, ref) {
+export function CopilotWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
@@ -247,7 +247,7 @@ export const CopilotWidget = forwardRef<HTMLDivElement, object>(function Copilot
         </div>
 
         {/* Messages */}
-        <ScrollArea className="flex-1 p-4" ref={scrollRef as any}>
+        <ScrollArea className="flex-1 p-4" ref={scrollRef as React.RefObject<HTMLDivElement>}>
           {messages.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center text-center text-muted-foreground">
               <Sparkles className="mb-4 h-12 w-12 text-[#0085FF]/50" />
@@ -314,8 +314,6 @@ export const CopilotWidget = forwardRef<HTMLDivElement, object>(function Copilot
       </div>
     </>
   );
-});
-
-CopilotWidget.displayName = 'CopilotWidget';
+}
 
 export default CopilotWidget;
