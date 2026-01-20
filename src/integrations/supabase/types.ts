@@ -2181,6 +2181,137 @@ export type Database = {
           },
         ]
       }
+      bank_transfers: {
+        Row: {
+          amount: number
+          company_id: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          destination_bank_account_id: string
+          executed_at: string | null
+          executed_by: string | null
+          id: string
+          origin_bank_account_id: string
+          reference_number: string | null
+          scheduled_date: string | null
+          status: Database["public"]["Enums"]["transfer_status"]
+          transaction_destination_id: string | null
+          transaction_origin_id: string | null
+          transfer_date: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          company_id: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          destination_bank_account_id: string
+          executed_at?: string | null
+          executed_by?: string | null
+          id?: string
+          origin_bank_account_id: string
+          reference_number?: string | null
+          scheduled_date?: string | null
+          status?: Database["public"]["Enums"]["transfer_status"]
+          transaction_destination_id?: string | null
+          transaction_origin_id?: string | null
+          transfer_date?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          company_id?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          destination_bank_account_id?: string
+          executed_at?: string | null
+          executed_by?: string | null
+          id?: string
+          origin_bank_account_id?: string
+          reference_number?: string | null
+          scheduled_date?: string | null
+          status?: Database["public"]["Enums"]["transfer_status"]
+          transaction_destination_id?: string | null
+          transaction_origin_id?: string | null
+          transfer_date?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bank_transfers_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bank_transfers_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "bank_transfers_destination_bank_account_id_fkey"
+            columns: ["destination_bank_account_id"]
+            isOneToOne: false
+            referencedRelation: "bank_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bank_transfers_origin_bank_account_id_fkey"
+            columns: ["origin_bank_account_id"]
+            isOneToOne: false
+            referencedRelation: "bank_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bank_transfers_transaction_destination_id_fkey"
+            columns: ["transaction_destination_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bank_transfers_transaction_destination_id_fkey"
+            columns: ["transaction_destination_id"]
+            isOneToOne: false
+            referencedRelation: "v_ap_open"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bank_transfers_transaction_destination_id_fkey"
+            columns: ["transaction_destination_id"]
+            isOneToOne: false
+            referencedRelation: "v_ar_open"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bank_transfers_transaction_origin_id_fkey"
+            columns: ["transaction_origin_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bank_transfers_transaction_origin_id_fkey"
+            columns: ["transaction_origin_id"]
+            isOneToOne: false
+            referencedRelation: "v_ap_open"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bank_transfers_transaction_origin_id_fkey"
+            columns: ["transaction_origin_id"]
+            isOneToOne: false
+            referencedRelation: "v_ar_open"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       banks_reference: {
         Row: {
           bank_type: string
@@ -3262,6 +3393,180 @@ export type Database = {
           },
         ]
       }
+      cash_register_movements: {
+        Row: {
+          amount: number
+          balance_after: number | null
+          balance_before: number | null
+          cash_register_id: string
+          company_id: string
+          created_at: string
+          description: string | null
+          id: string
+          movement_date: string
+          movement_time: string
+          movement_type: string
+          payment_method: string | null
+          performed_by: string | null
+          reference_document: string | null
+          transaction_id: string | null
+        }
+        Insert: {
+          amount: number
+          balance_after?: number | null
+          balance_before?: number | null
+          cash_register_id: string
+          company_id: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          movement_date?: string
+          movement_time?: string
+          movement_type: string
+          payment_method?: string | null
+          performed_by?: string | null
+          reference_document?: string | null
+          transaction_id?: string | null
+        }
+        Update: {
+          amount?: number
+          balance_after?: number | null
+          balance_before?: number | null
+          cash_register_id?: string
+          company_id?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          movement_date?: string
+          movement_time?: string
+          movement_type?: string
+          payment_method?: string | null
+          performed_by?: string | null
+          reference_document?: string | null
+          transaction_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cash_register_movements_cash_register_id_fkey"
+            columns: ["cash_register_id"]
+            isOneToOne: false
+            referencedRelation: "cash_registers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cash_register_movements_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cash_register_movements_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "cash_register_movements_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cash_register_movements_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "v_ap_open"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cash_register_movements_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "v_ar_open"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cash_registers: {
+        Row: {
+          code: string | null
+          company_id: string
+          created_at: string
+          current_balance: number
+          id: string
+          is_active: boolean
+          location: string | null
+          name: string
+          opening_balance: number
+          opening_date: string
+          responsible_id: string | null
+          updated_at: string
+          wallet_id: string | null
+        }
+        Insert: {
+          code?: string | null
+          company_id: string
+          created_at?: string
+          current_balance?: number
+          id?: string
+          is_active?: boolean
+          location?: string | null
+          name: string
+          opening_balance?: number
+          opening_date?: string
+          responsible_id?: string | null
+          updated_at?: string
+          wallet_id?: string | null
+        }
+        Update: {
+          code?: string | null
+          company_id?: string
+          created_at?: string
+          current_balance?: number
+          id?: string
+          is_active?: boolean
+          location?: string | null
+          name?: string
+          opening_balance?: number
+          opening_date?: string
+          responsible_id?: string | null
+          updated_at?: string
+          wallet_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cash_registers_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cash_registers_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "cash_registers_wallet_id_fkey"
+            columns: ["wallet_id"]
+            isOneToOne: false
+            referencedRelation: "v_cash_position_daily"
+            referencedColumns: ["wallet_id"]
+          },
+          {
+            foreignKeyName: "cash_registers_wallet_id_fkey"
+            columns: ["wallet_id"]
+            isOneToOne: false
+            referencedRelation: "wallets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       categorias_produto: {
         Row: {
           categoria_pai_id: string | null
@@ -3538,6 +3843,124 @@ export type Database = {
             isOneToOne: true
             referencedRelation: "v_security_status"
             referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      cheques: {
+        Row: {
+          account: string | null
+          agency: string | null
+          amount: number
+          bank_account_id: string | null
+          bank_code: string
+          beneficiary_document: string | null
+          beneficiary_name: string | null
+          cheque_number: string
+          cheque_type: Database["public"]["Enums"]["cheque_type"]
+          company_id: string
+          compensation_date: string | null
+          created_at: string
+          created_by: string | null
+          deposit_date: string | null
+          due_date: string | null
+          id: string
+          issue_date: string
+          notes: string | null
+          return_reason: string | null
+          status: Database["public"]["Enums"]["cheque_status"]
+          transaction_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          account?: string | null
+          agency?: string | null
+          amount: number
+          bank_account_id?: string | null
+          bank_code: string
+          beneficiary_document?: string | null
+          beneficiary_name?: string | null
+          cheque_number: string
+          cheque_type: Database["public"]["Enums"]["cheque_type"]
+          company_id: string
+          compensation_date?: string | null
+          created_at?: string
+          created_by?: string | null
+          deposit_date?: string | null
+          due_date?: string | null
+          id?: string
+          issue_date: string
+          notes?: string | null
+          return_reason?: string | null
+          status?: Database["public"]["Enums"]["cheque_status"]
+          transaction_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          account?: string | null
+          agency?: string | null
+          amount?: number
+          bank_account_id?: string | null
+          bank_code?: string
+          beneficiary_document?: string | null
+          beneficiary_name?: string | null
+          cheque_number?: string
+          cheque_type?: Database["public"]["Enums"]["cheque_type"]
+          company_id?: string
+          compensation_date?: string | null
+          created_at?: string
+          created_by?: string | null
+          deposit_date?: string | null
+          due_date?: string | null
+          id?: string
+          issue_date?: string
+          notes?: string | null
+          return_reason?: string | null
+          status?: Database["public"]["Enums"]["cheque_status"]
+          transaction_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cheques_bank_account_id_fkey"
+            columns: ["bank_account_id"]
+            isOneToOne: false
+            referencedRelation: "bank_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cheques_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cheques_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "cheques_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cheques_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "v_ap_open"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cheques_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "v_ar_open"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -22920,6 +23343,14 @@ export type Database = {
         | "despesa"
       amortization_system: "SAC" | "PRICE"
       app_role: "admin" | "gestor" | "operador" | "visualizador" | "auditor"
+      cheque_status:
+        | "em_carteira"
+        | "depositado"
+        | "compensado"
+        | "devolvido"
+        | "sustado"
+        | "cancelado"
+      cheque_type: "emitido" | "recebido"
       contra_mode: "reduce_parent" | "reduce_classification"
       counterparty_type: "cliente" | "fornecedor" | "ambos"
       doc_group:
@@ -23087,6 +23518,7 @@ export type Database = {
       tipo_rubrica: "provento" | "desconto"
       transaction_direction: "entrada" | "saida"
       transaction_status: "rascunho" | "lancado" | "pago" | "cancelado"
+      transfer_status: "rascunho" | "pendente" | "concluido" | "cancelado"
       user_role: "admin" | "gestor" | "visualizador"
       wallet_type: "caixa" | "banco" | "cartao"
     }
@@ -23238,6 +23670,15 @@ export const Constants = {
       ],
       amortization_system: ["SAC", "PRICE"],
       app_role: ["admin", "gestor", "operador", "visualizador", "auditor"],
+      cheque_status: [
+        "em_carteira",
+        "depositado",
+        "compensado",
+        "devolvido",
+        "sustado",
+        "cancelado",
+      ],
+      cheque_type: ["emitido", "recebido"],
       contra_mode: ["reduce_parent", "reduce_classification"],
       counterparty_type: ["cliente", "fornecedor", "ambos"],
       doc_group: [
@@ -23424,6 +23865,7 @@ export const Constants = {
       tipo_rubrica: ["provento", "desconto"],
       transaction_direction: ["entrada", "saida"],
       transaction_status: ["rascunho", "lancado", "pago", "cancelado"],
+      transfer_status: ["rascunho", "pendente", "concluido", "cancelado"],
       user_role: ["admin", "gestor", "visualizador"],
       wallet_type: ["caixa", "banco", "cartao"],
     },
