@@ -134,6 +134,13 @@ const adminModules = [
     icon: Sparkles,
     href: "/admin/go-live",
   },
+  {
+    title: "Relatório de Segurança",
+    description: "Auditoria e escalabilidade",
+    icon: Shield,
+    href: "/admin/relatorio-seguranca",
+    highlight: true,
+  },
 ];
 
 export default function AdminIndex() {

@@ -27714,6 +27714,20 @@ export type Database = {
         Args: { p_company_id: string }
         Returns: Database["public"]["Enums"]["system_tier"]
       }
+      get_security_dashboard: {
+        Args: { p_company_id: string }
+        Returns: {
+          active_sessions: number
+          api_errors_24h: number
+          audit_events_24h: number
+          company_id: string
+          company_name: string
+          critical_unresolved: number
+          rate_limits_24h: number
+          refreshed_at: string
+          security_events_24h: number
+        }[]
+      }
       get_user_role: {
         Args: { p_company_id: string }
         Returns: Database["public"]["Enums"]["user_role"]

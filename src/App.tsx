@@ -166,6 +166,7 @@ import AdminSystemHealth from "./pages/admin/SystemHealth";
 import AdminGoLive from "./pages/admin/GoLiveChecklist";
 import AdminSystemTier from "./pages/admin/SystemTier";
 import AdminNavigationSettings from "./pages/admin/NavigationSettings";
+import AdminSecurityReport from "./pages/admin/SecurityReport";
 import TesourariaCNAB from "./pages/tesouraria/CNAB";
 import TesourariaCNABRemessa from "./pages/tesouraria/CNABRemessa";
 import TesourariaCNABRetorno from "./pages/tesouraria/CNABRetorno";
@@ -449,6 +450,7 @@ const App = () => (
                 <Route path="/admin/monitor-jobs" element={<AdminJobsMonitor />} />
                 <Route path="/admin/go-live" element={<AdminGoLive />} />
                 <Route path="/admin/navegacao" element={<AdminNavigationSettings />} />
+                <Route path="/admin/relatorio-seguranca" element={<AdminSecurityReport />} />
                 
                 {/* Redirects admin antigas (inglês) */}
                 <Route path="/admin/company" element={<Navigate to="/admin/empresa" replace />} />
