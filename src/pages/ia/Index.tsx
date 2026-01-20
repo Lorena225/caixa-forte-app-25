@@ -23,35 +23,40 @@ const modules = [
     description: "Configure chaves de API, modos de operação e preferências dos agentes",
     icon: Settings,
     href: "/ia/configuracoes",
-    color: "text-slate-500",
+    bgColor: "bg-muted",
+    iconColor: "text-muted-foreground",
   },
   {
     title: "Agente WhatsApp",
     description: "Baixas e lançamentos automáticos via mensagens do WhatsApp",
     icon: MessageSquare,
     href: "/ia/whatsapp",
-    color: "text-green-500",
+    bgColor: "bg-success/10",
+    iconColor: "text-success",
   },
   {
     title: "Monitor Financeiro",
     description: "Alertas e insights em tempo real sobre sua conta",
     icon: BellRing,
-    href: "/ia/monitor",
-    color: "text-orange-500",
+    href: "/ia/alertas",
+    bgColor: "bg-warning/10",
+    iconColor: "text-warning",
   },
   {
     title: "Analista Inteligente",
     description: "Chat com IA para análises, relatórios e perguntas sobre seus dados",
     icon: Brain,
     href: "/ia/analista",
-    color: "text-purple-500",
+    bgColor: "bg-primary/10",
+    iconColor: "text-primary",
   },
   {
     title: "Logs de IA & Auditoria",
     description: "Histórico completo de todas as ações e decisões dos agentes",
     icon: FileText,
     href: "/ia/logs",
-    color: "text-blue-500",
+    bgColor: "bg-info/10",
+    iconColor: "text-info",
   },
 ];
 
@@ -70,13 +75,13 @@ export default function IAIndex() {
         />
 
         {/* Status Banner */}
-        <Card className={isAIEnabled ? "border-green-500/30 bg-green-500/5" : "border-orange-500/30 bg-orange-500/5"}>
+        <Card className={isAIEnabled ? "border-success/30 bg-success/5" : "border-warning/30 bg-warning/5"}>
           <CardContent className="flex items-center gap-4 py-4">
-            <div className={`h-12 w-12 rounded-full flex items-center justify-center ${isAIEnabled ? 'bg-green-500/20' : 'bg-orange-500/20'}`}>
+            <div className={`h-12 w-12 rounded-full flex items-center justify-center ${isAIEnabled ? 'bg-success/20' : 'bg-warning/20'}`}>
               {isAIEnabled ? (
-                <CheckCircle2 className="h-6 w-6 text-green-500" />
+                <CheckCircle2 className="h-6 w-6 text-success" />
               ) : (
-                <AlertTriangle className="h-6 w-6 text-orange-500" />
+                <AlertTriangle className="h-6 w-6 text-warning" />
               )}
             </div>
             <div className="flex-1">
@@ -103,76 +108,75 @@ export default function IAIndex() {
           </CardContent>
         </Card>
 
-        {/* Agents Overview */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {/* Agent Status Cards */}
+        {/* Agents Overview - Consistent with AP/AR Cards */}
+        <div className="grid gap-4 md:grid-cols-3">
           <Card>
-            <CardHeader className="pb-3">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                <MessageSquare className="h-4 w-4 text-success" />
+                Agente WhatsApp
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <MessageSquare className="h-5 w-5 text-green-500" />
-                  <CardTitle className="text-base">Agente WhatsApp</CardTitle>
-                </div>
+                <p className="text-sm text-muted-foreground">
+                  Processa mensagens e executa baixas/lançamentos
+                </p>
                 <Badge variant={settings?.agent_whatsapp_enabled ? "default" : "secondary"}>
                   {settings?.agent_whatsapp_enabled ? "Ativo" : "Inativo"}
                 </Badge>
               </div>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                Processa mensagens e executa baixas/lançamentos automaticamente
-              </p>
             </CardContent>
           </Card>
 
           <Card>
-            <CardHeader className="pb-3">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                <BellRing className="h-4 w-4 text-warning" />
+                Monitor Financeiro
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <BellRing className="h-5 w-5 text-orange-500" />
-                  <CardTitle className="text-base">Monitor Financeiro</CardTitle>
-                </div>
+                <p className="text-sm text-muted-foreground">
+                  Observa eventos e gera alertas de riscos
+                </p>
                 <Badge variant={settings?.agent_monitor_enabled ? "default" : "secondary"}>
                   {settings?.agent_monitor_enabled ? "Ativo" : "Inativo"}
                 </Badge>
               </div>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                Observa eventos e gera alertas de riscos e oportunidades
-              </p>
             </CardContent>
           </Card>
 
           <Card>
-            <CardHeader className="pb-3">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                <Brain className="h-4 w-4 text-primary" />
+                Analista IA
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Brain className="h-5 w-5 text-purple-500" />
-                  <CardTitle className="text-base">Analista IA</CardTitle>
-                </div>
+                <p className="text-sm text-muted-foreground">
+                  Responde perguntas e gera relatórios
+                </p>
                 <Badge variant={settings?.agent_analyst_enabled ? "default" : "secondary"}>
                   {settings?.agent_analyst_enabled ? "Ativo" : "Inativo"}
                 </Badge>
               </div>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                Responde perguntas e gera relatórios em linguagem natural
-              </p>
             </CardContent>
           </Card>
         </div>
 
-        {/* Module Links */}
+        {/* Module Links - Consistent hover styles */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {modules.map((module) => (
             <Link key={module.href} to={module.href}>
               <Card className="h-full hover:border-primary/50 hover:shadow-md transition-all cursor-pointer group">
                 <CardHeader>
                   <div className="flex items-center justify-between">
-                    <div className={`h-10 w-10 rounded-lg flex items-center justify-center bg-muted`}>
-                      <module.icon className={`h-5 w-5 ${module.color}`} />
+                    <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${module.bgColor}`}>
+                      <module.icon className={`h-5 w-5 ${module.iconColor}`} />
                     </div>
                     <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
                   </div>
@@ -184,7 +188,7 @@ export default function IAIndex() {
           ))}
         </div>
 
-        {/* Quick Tips */}
+        {/* Quick Tips - Consistent with other modules */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -196,7 +200,7 @@ export default function IAIndex() {
             <div className="grid gap-4 md:grid-cols-3">
               <div className="space-y-2">
                 <h4 className="font-medium flex items-center gap-2">
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-green-500/20 text-green-500 text-sm">1</span>
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-success/20 text-success text-sm font-bold">1</span>
                   Agente WhatsApp
                 </h4>
                 <p className="text-sm text-muted-foreground">
@@ -205,7 +209,7 @@ export default function IAIndex() {
               </div>
               <div className="space-y-2">
                 <h4 className="font-medium flex items-center gap-2">
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-orange-500/20 text-orange-500 text-sm">2</span>
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-warning/20 text-warning text-sm font-bold">2</span>
                   Monitor Financeiro
                 </h4>
                 <p className="text-sm text-muted-foreground">
@@ -214,7 +218,7 @@ export default function IAIndex() {
               </div>
               <div className="space-y-2">
                 <h4 className="font-medium flex items-center gap-2">
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-purple-500/20 text-purple-500 text-sm">3</span>
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/20 text-primary text-sm font-bold">3</span>
                   Analista IA
                 </h4>
                 <p className="text-sm text-muted-foreground">
