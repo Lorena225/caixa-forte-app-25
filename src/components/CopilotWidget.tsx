@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, forwardRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { MessageSquare, X, Send, Loader2, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -50,12 +50,17 @@ const getModuleFromRoute = (pathname: string): string => {
     'financeiro': 'Financeiro',
     'produtos': 'Produtos',
     'servicos': 'Serviços',
+    'inovacao': 'Inovação',
+    'openfinance': 'Open Finance',
+    'embedded': 'Serviços Financeiros',
+    'compliance': 'Compliance',
+    'ia': 'Inteligência Artificial',
   };
   
   return moduleMap[segments[0]] || segments[0].charAt(0).toUpperCase() + segments[0].slice(1);
 };
 
-export function CopilotWidget() {
+export const CopilotWidget = forwardRef<HTMLDivElement, object>(function CopilotWidget(_props, ref) {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
@@ -309,6 +314,8 @@ export function CopilotWidget() {
       </div>
     </>
   );
-}
+});
+
+CopilotWidget.displayName = 'CopilotWidget';
 
 export default CopilotWidget;
