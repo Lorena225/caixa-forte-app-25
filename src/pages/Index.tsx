@@ -1,8 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { MainLayout } from "@/components/layout/MainLayout";
-import HomeDashboard from "@/components/dashboard/HomeDashboard";
+import Dashboard from "@/pages/Dashboard";
 import { Loader2 } from "lucide-react";
 
 export default function Index() {
@@ -27,9 +26,5 @@ export default function Index() {
     return null;
   }
 
-  return (
-    <MainLayout>
-      <HomeDashboard />
-    </MainLayout>
-  );
+  return <Dashboard />;
 }
