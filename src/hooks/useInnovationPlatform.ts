@@ -161,18 +161,18 @@ export function useCreateScenario() {
   const { currentCompany, user } = useAuth();
 
   return useMutation({
-    mutationFn: async (scenario: { name: string; scenario_type?: string; horizon_days?: number; parameters_json?: Record<string, unknown> }) => {
+    mutationFn: async (scenario: { name: string; scenario_type?: string; horizon_days?: number; parameters_json?: Json }) => {
       if (!currentCompany?.id) throw new Error("Empresa não selecionada");
       const { data, error } = await supabase
         .from("financial_scenarios")
-        .insert({
+        .insert([{
           company_id: currentCompany.id,
-          created_by: user?.id,
+          created_by: user?.id || null,
           name: scenario.name,
           scenario_type: scenario.scenario_type || "what_if",
           horizon_days: scenario.horizon_days || 90,
           parameters_json: scenario.parameters_json || {},
-        })
+        }])
         .select()
         .single();
       if (error) throw error;
