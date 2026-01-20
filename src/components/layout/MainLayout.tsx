@@ -1,14 +1,14 @@
 import { ReactNode } from 'react';
-import { AppShell } from '@/components/layout/AppShell';
+import { AppLayout } from '@/components/layout/AppLayout';
 
 interface MainLayoutProps {
   children: ReactNode;
 }
 
 /**
- * MainLayout - Wrapper component that uses AppShell
+ * MainLayout - Wrapper component that uses AppLayout
  * Maintained for backwards compatibility with existing pages
  */
 export function MainLayout({ children }: MainLayoutProps) {
-  return <AppShell>{children}</AppShell>;
+  return <AppLayout>{children}</AppLayout>;
 }
