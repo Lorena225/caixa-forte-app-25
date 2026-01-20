@@ -384,48 +384,174 @@ export type Database = {
           },
         ]
       }
+      ai_analyst_conversations: {
+        Row: {
+          company_id: string
+          created_at: string | null
+          id: string
+          is_archived: boolean | null
+          last_message_at: string | null
+          title: string | null
+          user_id: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string | null
+          id?: string
+          is_archived?: boolean | null
+          last_message_at?: string | null
+          title?: string | null
+          user_id: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string | null
+          id?: string
+          is_archived?: boolean | null
+          last_message_at?: string | null
+          title?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_analyst_conversations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_analyst_conversations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      ai_analyst_messages: {
+        Row: {
+          ai_log_id: string | null
+          content: string
+          content_type: string | null
+          conversation_id: string
+          created_at: string | null
+          id: string
+          metadata_json: Json | null
+          query_executed: string | null
+          role: string
+        }
+        Insert: {
+          ai_log_id?: string | null
+          content: string
+          content_type?: string | null
+          conversation_id: string
+          created_at?: string | null
+          id?: string
+          metadata_json?: Json | null
+          query_executed?: string | null
+          role: string
+        }
+        Update: {
+          ai_log_id?: string | null
+          content?: string
+          content_type?: string | null
+          conversation_id?: string
+          created_at?: string | null
+          id?: string
+          metadata_json?: Json | null
+          query_executed?: string | null
+          role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_analyst_messages_ai_log_id_fkey"
+            columns: ["ai_log_id"]
+            isOneToOne: false
+            referencedRelation: "ai_logs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_analyst_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "ai_analyst_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ai_company_settings: {
         Row: {
+          agent_analyst_enabled: boolean | null
+          agent_monitor_enabled: boolean | null
           agent_profile_id: string | null
+          agent_whatsapp_enabled: boolean | null
           allow_auto_create_and_settle: boolean
           allow_auto_create_counterparty: boolean
           allow_auto_settle: boolean
           autopilot_mode: string
           company_id: string
+          default_ai_model: string | null
           enabled: boolean
           high_risk_amount_limit: number | null
+          monitor_alert_cooldown_minutes: number | null
+          monitor_digest_enabled: boolean | null
+          monitor_digest_time: string | null
           require_pin_for_high_risk: boolean
+          risk_tolerance: string | null
           thresholds_json: Json
           updated_at: string
           updated_by: string | null
+          whatsapp_provider: string | null
+          whatsapp_webhook_url: string | null
         }
         Insert: {
+          agent_analyst_enabled?: boolean | null
+          agent_monitor_enabled?: boolean | null
           agent_profile_id?: string | null
+          agent_whatsapp_enabled?: boolean | null
           allow_auto_create_and_settle?: boolean
           allow_auto_create_counterparty?: boolean
           allow_auto_settle?: boolean
           autopilot_mode?: string
           company_id: string
+          default_ai_model?: string | null
           enabled?: boolean
           high_risk_amount_limit?: number | null
+          monitor_alert_cooldown_minutes?: number | null
+          monitor_digest_enabled?: boolean | null
+          monitor_digest_time?: string | null
           require_pin_for_high_risk?: boolean
+          risk_tolerance?: string | null
           thresholds_json?: Json
           updated_at?: string
           updated_by?: string | null
+          whatsapp_provider?: string | null
+          whatsapp_webhook_url?: string | null
         }
         Update: {
+          agent_analyst_enabled?: boolean | null
+          agent_monitor_enabled?: boolean | null
           agent_profile_id?: string | null
+          agent_whatsapp_enabled?: boolean | null
           allow_auto_create_and_settle?: boolean
           allow_auto_create_counterparty?: boolean
           allow_auto_settle?: boolean
           autopilot_mode?: string
           company_id?: string
+          default_ai_model?: string | null
           enabled?: boolean
           high_risk_amount_limit?: number | null
+          monitor_alert_cooldown_minutes?: number | null
+          monitor_digest_enabled?: boolean | null
+          monitor_digest_time?: string | null
           require_pin_for_high_risk?: boolean
+          risk_tolerance?: string | null
           thresholds_json?: Json
           updated_at?: string
           updated_by?: string | null
+          whatsapp_provider?: string | null
+          whatsapp_webhook_url?: string | null
         }
         Relationships: [
           {
@@ -639,6 +765,163 @@ export type Database = {
           },
         ]
       }
+      ai_logs: {
+        Row: {
+          action_executed: Json | null
+          agent_type: string
+          company_id: string
+          cost_estimate: number | null
+          created_at: string | null
+          error_message: string | null
+          id: string
+          input_raw: Json | null
+          input_text: string | null
+          interpretation: Json | null
+          latency_ms: number | null
+          origin: string
+          reference_entity_id: string | null
+          reference_entity_type: string | null
+          status: string | null
+          tokens_used: number | null
+          user_id: string | null
+        }
+        Insert: {
+          action_executed?: Json | null
+          agent_type: string
+          company_id: string
+          cost_estimate?: number | null
+          created_at?: string | null
+          error_message?: string | null
+          id?: string
+          input_raw?: Json | null
+          input_text?: string | null
+          interpretation?: Json | null
+          latency_ms?: number | null
+          origin?: string
+          reference_entity_id?: string | null
+          reference_entity_type?: string | null
+          status?: string | null
+          tokens_used?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          action_executed?: Json | null
+          agent_type?: string
+          company_id?: string
+          cost_estimate?: number | null
+          created_at?: string | null
+          error_message?: string | null
+          id?: string
+          input_raw?: Json | null
+          input_text?: string | null
+          interpretation?: Json | null
+          latency_ms?: number | null
+          origin?: string
+          reference_entity_id?: string | null
+          reference_entity_type?: string | null
+          status?: string | null
+          tokens_used?: number | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_logs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_logs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      ai_monitor_alerts: {
+        Row: {
+          ai_log_id: string | null
+          alert_type: string
+          company_id: string
+          created_at: string | null
+          details_json: Json | null
+          dismissed_at: string | null
+          dismissed_by: string | null
+          expires_at: string | null
+          id: string
+          is_dismissed: boolean | null
+          is_read: boolean | null
+          message_summary: string
+          reference_entity_id: string | null
+          reference_entity_type: string | null
+          severity: string
+          suggested_actions: Json | null
+          title: string
+        }
+        Insert: {
+          ai_log_id?: string | null
+          alert_type: string
+          company_id: string
+          created_at?: string | null
+          details_json?: Json | null
+          dismissed_at?: string | null
+          dismissed_by?: string | null
+          expires_at?: string | null
+          id?: string
+          is_dismissed?: boolean | null
+          is_read?: boolean | null
+          message_summary: string
+          reference_entity_id?: string | null
+          reference_entity_type?: string | null
+          severity?: string
+          suggested_actions?: Json | null
+          title: string
+        }
+        Update: {
+          ai_log_id?: string | null
+          alert_type?: string
+          company_id?: string
+          created_at?: string | null
+          details_json?: Json | null
+          dismissed_at?: string | null
+          dismissed_by?: string | null
+          expires_at?: string | null
+          id?: string
+          is_dismissed?: boolean | null
+          is_read?: boolean | null
+          message_summary?: string
+          reference_entity_id?: string | null
+          reference_entity_type?: string | null
+          severity?: string
+          suggested_actions?: Json | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_monitor_alerts_ai_log_id_fkey"
+            columns: ["ai_log_id"]
+            isOneToOne: false
+            referencedRelation: "ai_logs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_monitor_alerts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_monitor_alerts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
       ai_requests: {
         Row: {
           company_id: string
@@ -708,6 +991,95 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_security_status"
             referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      ai_whatsapp_messages: {
+        Row: {
+          action_status: string | null
+          ai_log_id: string | null
+          attachments_json: Json | null
+          company_id: string
+          confidence_score: number | null
+          connection_id: string | null
+          created_at: string | null
+          executed_at: string | null
+          executed_by: string | null
+          id: string
+          mapped_counterparty_id: string | null
+          mapped_user_id: string | null
+          message_text: string | null
+          message_type: string | null
+          phone_e164: string | null
+          phone_sender: string
+          suggested_action: Json | null
+        }
+        Insert: {
+          action_status?: string | null
+          ai_log_id?: string | null
+          attachments_json?: Json | null
+          company_id: string
+          confidence_score?: number | null
+          connection_id?: string | null
+          created_at?: string | null
+          executed_at?: string | null
+          executed_by?: string | null
+          id?: string
+          mapped_counterparty_id?: string | null
+          mapped_user_id?: string | null
+          message_text?: string | null
+          message_type?: string | null
+          phone_e164?: string | null
+          phone_sender: string
+          suggested_action?: Json | null
+        }
+        Update: {
+          action_status?: string | null
+          ai_log_id?: string | null
+          attachments_json?: Json | null
+          company_id?: string
+          confidence_score?: number | null
+          connection_id?: string | null
+          created_at?: string | null
+          executed_at?: string | null
+          executed_by?: string | null
+          id?: string
+          mapped_counterparty_id?: string | null
+          mapped_user_id?: string | null
+          message_text?: string | null
+          message_type?: string | null
+          phone_e164?: string | null
+          phone_sender?: string
+          suggested_action?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_whatsapp_messages_ai_log_id_fkey"
+            columns: ["ai_log_id"]
+            isOneToOne: false
+            referencedRelation: "ai_logs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_whatsapp_messages_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_whatsapp_messages_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "ai_whatsapp_messages_connection_id_fkey"
+            columns: ["connection_id"]
+            isOneToOne: false
+            referencedRelation: "whatsapp_connections"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -22468,6 +22840,31 @@ export type Database = {
           },
           {
             foreignKeyName: "counterparties_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      v_ai_alerts_summary: {
+        Row: {
+          company_id: string | null
+          critical_count: number | null
+          latest_alert_at: string | null
+          unread_count: number | null
+          warning_count: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_monitor_alerts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_monitor_alerts_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "v_security_status"
