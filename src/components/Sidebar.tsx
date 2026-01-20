@@ -107,6 +107,23 @@ const menuItems: MenuItem[] = [
       { key: 'fornecedores', label: 'Fornecedores', icon: Users, route: '/cadastros/clientes-fornecedores' },
     ]
   },
+  { 
+    key: 'cadastros', 
+    label: 'Cadastros', 
+    icon: ClipboardList,
+    children: [
+      { key: 'clientes-fornecedores', label: 'Clientes e Fornecedores', icon: Users, route: '/cadastros/clientes-fornecedores' },
+      { key: 'produtos-cad', label: 'Produtos', icon: Package, route: '/cadastros/produtos' },
+      { key: 'servicos-cad', label: 'Serviços', icon: Briefcase, route: '/cadastros/servicos' },
+      { key: 'plano-contas-cad', label: 'Plano de Contas', icon: ClipboardList, route: '/cadastros/plano-contas' },
+      { key: 'centros-custo-cad', label: 'Centros de Custo', icon: Landmark, route: '/cadastros/centros-custo' },
+      { key: 'dimensoes-cad', label: 'Dimensões', icon: FolderTree, route: '/cadastros/dimensoes' },
+      { key: 'contas-bancarias-cad', label: 'Contas Bancárias', icon: Building2, route: '/cadastros/contas-bancarias' },
+      { key: 'bancos-ref', label: 'Bancos (Referência)', icon: Landmark, route: '/cadastros/bancos-referencia' },
+      { key: 'agencias', label: 'Agências', icon: Building2, route: '/cadastros/agencias' },
+      { key: 'carteiras', label: 'Carteiras', icon: Wallet, route: '/cadastros/carteiras' },
+    ]
+  },
 { 
     key: 'financeiro', 
     label: 'Financeiro', 
