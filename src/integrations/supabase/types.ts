@@ -3910,6 +3910,508 @@ export type Database = {
           },
         ]
       }
+      budget_forecasts: {
+        Row: {
+          account_id: string | null
+          budget_id: string | null
+          company_id: string
+          cost_center_id: string | null
+          created_at: string
+          created_by: string | null
+          cutoff_month: number
+          forecast_amount: number
+          id: string
+          is_actual: boolean
+          month: number
+          notes: string | null
+          updated_at: string
+          year: number
+        }
+        Insert: {
+          account_id?: string | null
+          budget_id?: string | null
+          company_id: string
+          cost_center_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          cutoff_month: number
+          forecast_amount?: number
+          id?: string
+          is_actual?: boolean
+          month: number
+          notes?: string | null
+          updated_at?: string
+          year: number
+        }
+        Update: {
+          account_id?: string | null
+          budget_id?: string | null
+          company_id?: string
+          cost_center_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          cutoff_month?: number
+          forecast_amount?: number
+          id?: string
+          is_actual?: boolean
+          month?: number
+          notes?: string | null
+          updated_at?: string
+          year?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "budget_forecasts_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_forecasts_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "v_rc_flow_by_account"
+            referencedColumns: ["account_id"]
+          },
+          {
+            foreignKeyName: "budget_forecasts_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "v_trial_balance"
+            referencedColumns: ["account_id"]
+          },
+          {
+            foreignKeyName: "budget_forecasts_budget_id_fkey"
+            columns: ["budget_id"]
+            isOneToOne: false
+            referencedRelation: "budget_master"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_forecasts_budget_id_fkey"
+            columns: ["budget_id"]
+            isOneToOne: false
+            referencedRelation: "v_budget_master_analysis"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_forecasts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_forecasts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_security_dashboard"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "budget_forecasts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "budget_forecasts_cost_center_id_fkey"
+            columns: ["cost_center_id"]
+            isOneToOne: false
+            referencedRelation: "cost_centers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_forecasts_cost_center_id_fkey"
+            columns: ["cost_center_id"]
+            isOneToOne: false
+            referencedRelation: "v_cost_center_tree"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      budget_lines: {
+        Row: {
+          account_id: string | null
+          budget_id: string
+          cost_center_id: string | null
+          created_at: string
+          id: string
+          month: number
+          notes: string | null
+          planned_amount: number
+          updated_at: string
+        }
+        Insert: {
+          account_id?: string | null
+          budget_id: string
+          cost_center_id?: string | null
+          created_at?: string
+          id?: string
+          month: number
+          notes?: string | null
+          planned_amount?: number
+          updated_at?: string
+        }
+        Update: {
+          account_id?: string | null
+          budget_id?: string
+          cost_center_id?: string | null
+          created_at?: string
+          id?: string
+          month?: number
+          notes?: string | null
+          planned_amount?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "budget_lines_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_lines_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "v_rc_flow_by_account"
+            referencedColumns: ["account_id"]
+          },
+          {
+            foreignKeyName: "budget_lines_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "v_trial_balance"
+            referencedColumns: ["account_id"]
+          },
+          {
+            foreignKeyName: "budget_lines_budget_id_fkey"
+            columns: ["budget_id"]
+            isOneToOne: false
+            referencedRelation: "budget_master"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_lines_budget_id_fkey"
+            columns: ["budget_id"]
+            isOneToOne: false
+            referencedRelation: "v_budget_master_analysis"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_lines_cost_center_id_fkey"
+            columns: ["cost_center_id"]
+            isOneToOne: false
+            referencedRelation: "cost_centers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_lines_cost_center_id_fkey"
+            columns: ["cost_center_id"]
+            isOneToOne: false
+            referencedRelation: "v_cost_center_tree"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      budget_master: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          company_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          is_active: boolean
+          name: string
+          notes: string | null
+          parent_budget_id: string | null
+          period_type: string
+          scenario_type: string
+          status: string
+          updated_at: string
+          version: number
+          year: number
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          company_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          notes?: string | null
+          parent_budget_id?: string | null
+          period_type?: string
+          scenario_type?: string
+          status?: string
+          updated_at?: string
+          version?: number
+          year: number
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          company_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          notes?: string | null
+          parent_budget_id?: string | null
+          period_type?: string
+          scenario_type?: string
+          status?: string
+          updated_at?: string
+          version?: number
+          year?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "budget_master_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_master_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_security_dashboard"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "budget_master_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "budget_master_parent_budget_id_fkey"
+            columns: ["parent_budget_id"]
+            isOneToOne: false
+            referencedRelation: "budget_master"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_master_parent_budget_id_fkey"
+            columns: ["parent_budget_id"]
+            isOneToOne: false
+            referencedRelation: "v_budget_master_analysis"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      budget_report_schedules: {
+        Row: {
+          budget_id: string | null
+          company_id: string
+          created_at: string
+          created_by: string | null
+          day_of_month: number | null
+          day_of_week: number | null
+          frequency: string
+          id: string
+          is_active: boolean
+          last_sent_at: string | null
+          recipients: Json
+          report_type: string
+        }
+        Insert: {
+          budget_id?: string | null
+          company_id: string
+          created_at?: string
+          created_by?: string | null
+          day_of_month?: number | null
+          day_of_week?: number | null
+          frequency: string
+          id?: string
+          is_active?: boolean
+          last_sent_at?: string | null
+          recipients?: Json
+          report_type: string
+        }
+        Update: {
+          budget_id?: string | null
+          company_id?: string
+          created_at?: string
+          created_by?: string | null
+          day_of_month?: number | null
+          day_of_week?: number | null
+          frequency?: string
+          id?: string
+          is_active?: boolean
+          last_sent_at?: string | null
+          recipients?: Json
+          report_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "budget_report_schedules_budget_id_fkey"
+            columns: ["budget_id"]
+            isOneToOne: false
+            referencedRelation: "budget_master"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_report_schedules_budget_id_fkey"
+            columns: ["budget_id"]
+            isOneToOne: false
+            referencedRelation: "v_budget_master_analysis"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_report_schedules_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_report_schedules_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_security_dashboard"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "budget_report_schedules_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      budget_revisions: {
+        Row: {
+          budget_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          reason: string | null
+          revision_name: string | null
+          revision_number: number
+          snapshot_data: Json
+        }
+        Insert: {
+          budget_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          reason?: string | null
+          revision_name?: string | null
+          revision_number: number
+          snapshot_data: Json
+        }
+        Update: {
+          budget_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          reason?: string | null
+          revision_name?: string | null
+          revision_number?: number
+          snapshot_data?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "budget_revisions_budget_id_fkey"
+            columns: ["budget_id"]
+            isOneToOne: false
+            referencedRelation: "budget_master"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_revisions_budget_id_fkey"
+            columns: ["budget_id"]
+            isOneToOne: false
+            referencedRelation: "v_budget_master_analysis"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      budget_simulations: {
+        Row: {
+          budget_id: string | null
+          company_id: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          name: string
+          parameters: Json
+          results: Json
+        }
+        Insert: {
+          budget_id?: string | null
+          company_id: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          parameters?: Json
+          results?: Json
+        }
+        Update: {
+          budget_id?: string | null
+          company_id?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          parameters?: Json
+          results?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "budget_simulations_budget_id_fkey"
+            columns: ["budget_id"]
+            isOneToOne: false
+            referencedRelation: "budget_master"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_simulations_budget_id_fkey"
+            columns: ["budget_id"]
+            isOneToOne: false
+            referencedRelation: "v_budget_master_analysis"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_simulations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_simulations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_security_dashboard"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "budget_simulations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
       budgets: {
         Row: {
           company_id: string
@@ -26577,6 +27079,65 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_security_status"
             referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      v_budget_master_analysis: {
+        Row: {
+          accounts_count: number | null
+          approved_at: string | null
+          company_id: string | null
+          cost_centers_count: number | null
+          created_at: string | null
+          id: string | null
+          is_active: boolean | null
+          name: string | null
+          parent_budget_id: string | null
+          period_type: string | null
+          revisions_count: number | null
+          scenario_type: string | null
+          status: string | null
+          total_expense_planned: number | null
+          total_profit_planned: number | null
+          total_revenue_planned: number | null
+          version: number | null
+          year: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "budget_master_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_master_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_security_dashboard"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "budget_master_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "budget_master_parent_budget_id_fkey"
+            columns: ["parent_budget_id"]
+            isOneToOne: false
+            referencedRelation: "budget_master"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_master_parent_budget_id_fkey"
+            columns: ["parent_budget_id"]
+            isOneToOne: false
+            referencedRelation: "v_budget_master_analysis"
+            referencedColumns: ["id"]
           },
         ]
       }
