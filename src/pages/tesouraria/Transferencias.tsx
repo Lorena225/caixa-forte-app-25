@@ -72,7 +72,7 @@ export default function TransferenciasPage() {
   };
 
   const formatAccountLabel = (account: typeof bankAccounts[0]) => {
-    return `${account.bank?.name || account.bank_code} - Ag ${account.branch?.agency_number || ''} / CC ${account.account_number}`;
+    return `${account.bank?.name || account.bank?.compe_code || ''} - Ag ${account.agency_number || ''} / CC ${account.account_number}`;
   };
 
   const isLoading = loadingAccounts || loadingTransfers;

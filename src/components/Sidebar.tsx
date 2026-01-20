@@ -36,6 +36,12 @@ import {
   Building2,
   FolderTree,
   UserCheck,
+  ArrowRightLeft,
+  FileCheck,
+  Banknote,
+  RefreshCw,
+  Send,
+  Download,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -99,6 +105,13 @@ const menuItems: MenuItem[] = [
       { key: 'contas-receber', label: 'Contas a Receber', icon: Wallet, route: '/ar' },
       { key: 'fluxo-caixa', label: 'Fluxo de Caixa', icon: TrendingUp, route: '/fluxo-caixa' },
       { key: 'tesouraria', label: 'Tesouraria', icon: CreditCard, route: '/tesouraria' },
+      { key: 'contas-bancarias', label: 'Contas Bancárias', icon: Building2, route: '/cadastros/contas-bancarias' },
+      { key: 'conciliacao', label: 'Conciliação Bancária', icon: RefreshCw, route: '/tesouraria/conciliacao' },
+      { key: 'posicao-caixa', label: 'Posição de Caixa', icon: Wallet, route: '/tesouraria/posicao' },
+      { key: 'transferencias', label: 'Transferências', icon: ArrowRightLeft, route: '/tesouraria/transferencias' },
+      { key: 'cnab', label: 'CNAB', icon: Send, route: '/tesouraria/cnab' },
+      { key: 'cheques', label: 'Cheques', icon: FileCheck, route: '/tesouraria/cheques' },
+      { key: 'caixa-fisica', label: 'Caixa Física', icon: Banknote, route: '/tesouraria/caixa-fisica' },
     ]
   },
   { 

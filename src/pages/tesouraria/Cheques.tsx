@@ -227,8 +227,8 @@ export default function ChequesPage() {
                     </SelectTrigger>
                     <SelectContent>
                     {banks.map((bank) => (
-                        <SelectItem key={bank.id} value={bank.bank_code}>
-                          {bank.bank_code} - {bank.name}
+                        <SelectItem key={bank.id} value={bank.compe_code}>
+                          {bank.compe_code} - {bank.name}
                         </SelectItem>
                       ))}
                     </SelectContent>

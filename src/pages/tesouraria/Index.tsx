@@ -14,7 +14,10 @@ import {
   TrendingUp,
   Landmark,
   CreditCard,
-  Barcode
+  Barcode,
+  ArrowRightLeft,
+  FileCheck,
+  Banknote,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -30,6 +33,13 @@ const modules = [
     color: 'text-success'
   },
   {
+    title: 'Contas Bancárias',
+    description: 'Cadastro e gestão de contas',
+    icon: Building2,
+    href: '/cadastros/contas-bancarias',
+    color: 'text-primary'
+  },
+  {
     title: 'Conciliação Bancária',
     description: 'Importar extratos e conciliar movimentos',
     icon: RefreshCw,
@@ -37,11 +47,11 @@ const modules = [
     color: 'text-primary'
   },
   {
-    title: 'Empréstimos e Financiamentos',
-    description: 'Contratos, parcelas e geração de títulos',
-    icon: Landmark,
-    href: '/tesouraria/contratos',
-    color: 'text-primary'
+    title: 'Transferências Bancárias',
+    description: 'Transferências entre contas',
+    icon: ArrowRightLeft,
+    href: '/tesouraria/transferencias',
+    color: 'text-info'
   },
   {
     title: 'CNAB - Remessas',
@@ -56,6 +66,27 @@ const modules = [
     icon: Download,
     href: '/tesouraria/cnab-retorno',
     color: 'text-warning'
+  },
+  {
+    title: 'Cheques',
+    description: 'Gestão de cheques emitidos e recebidos',
+    icon: FileCheck,
+    href: '/tesouraria/cheques',
+    color: 'text-primary'
+  },
+  {
+    title: 'Caixa Física',
+    description: 'Controle de caixas e movimentações',
+    icon: Banknote,
+    href: '/tesouraria/caixa-fisica',
+    color: 'text-success'
+  },
+  {
+    title: 'Empréstimos e Financiamentos',
+    description: 'Contratos, parcelas e geração de títulos',
+    icon: Landmark,
+    href: '/tesouraria/contratos',
+    color: 'text-primary'
   },
   {
     title: 'Boletos',
@@ -78,13 +109,6 @@ const modules = [
     href: '/tesouraria/bordero',
     color: 'text-primary'
   },
-  {
-    title: 'Extratos Bancários',
-    description: 'Histórico de extratos importados',
-    icon: Building2,
-    href: '/tesouraria/extratos',
-    color: 'text-muted-foreground'
-  }
 ];
 
 export default function TesourariaIndex() {
