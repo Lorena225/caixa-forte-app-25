@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { LucideIcon } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
@@ -47,7 +48,7 @@ const variantStyles = {
   },
 };
 
-export function KPICard({
+export const KPICard = memo(function KPICard({
   title,
   value,
   subtitle,
@@ -108,7 +109,9 @@ export function KPICard({
       </CardContent>
     </Card>
   );
-}
+});
+
+KPICard.displayName = 'KPICard';
 
 interface KPIGridProps {
   children: React.ReactNode;
