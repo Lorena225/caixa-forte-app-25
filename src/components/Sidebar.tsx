@@ -51,6 +51,8 @@ import {
   Gauge,
   Coins,
   Target,
+  Shield,
+  UserCog,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -234,6 +236,18 @@ const menuItems: MenuItem[] = [
     children: [
       { key: 'conexoes', label: 'Conexões', icon: Link2, route: '/integracoes/conexoes' },
       { key: 'config-integracoes', label: 'Configurar', icon: Settings, route: '/integracoes/configurar' },
+    ]
+  },
+  {
+    key: 'admin',
+    label: 'Administração',
+    icon: Shield,
+    children: [
+      { key: 'gestao-usuarios', label: 'Gestão de Usuários', icon: UserCog, route: '/admin/gestao-usuarios' },
+      { key: 'admin-usuarios', label: 'Usuários (Simples)', icon: Users, route: '/admin/usuarios' },
+      { key: 'admin-papeis', label: 'Papéis e Permissões', icon: Shield, route: '/admin/permissoes' },
+      { key: 'admin-seguranca', label: 'Segurança', icon: Shield, route: '/admin/seguranca' },
+      { key: 'admin-config', label: 'Todas Configurações', icon: Settings, route: '/admin' },
     ]
   },
 ];
