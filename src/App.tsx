@@ -136,6 +136,8 @@ import ComplianceAnomalias from "./pages/compliance/Anomalias";
 import ConciliacaoBancaria from "./pages/financeiro/ConciliacaoBancaria";
 import AnaliseCustos from "./pages/financeiro/AnaliseCustos";
 import OrcamentoReal from "./pages/financeiro/OrcamentoReal";
+import RollingForecast from "./pages/financeiro/RollingForecast";
+import SimulacoesOrcamento from "./pages/financeiro/SimulacoesOrcamento";
 import Investimentos from "./pages/financeiro/Investimentos";
 import Moedas from "./pages/configuracoes/Moedas";
 // CRM
@@ -328,10 +330,12 @@ const App = () => (
                 {/* Conciliação Bancária */}
                 <Route path="/conciliacao" element={<ConciliacaoIndex />} />
                 
-                {/* ============ FINANCEIRO AVANÇADO ============ */}
+{/* ============ FINANCEIRO AVANÇADO ============ */}
                 <Route path="/financeiro/conciliacao-bancaria" element={<ConciliacaoBancaria />} />
                 <Route path="/financeiro/analise-custos" element={<AnaliseCustos />} />
                 <Route path="/financeiro/orcamento-real" element={<OrcamentoReal />} />
+                <Route path="/financeiro/rolling-forecast" element={<RollingForecast />} />
+                <Route path="/financeiro/simulacoes-orcamento" element={<SimulacoesOrcamento />} />
                 <Route path="/financeiro/investimentos" element={<Investimentos />} />
                 <Route path="/configuracoes/moedas" element={<Moedas />} />
                 
