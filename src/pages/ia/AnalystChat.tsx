@@ -5,7 +5,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Badge } from "@/components/ui/badge";
 import { 
   Brain, 
   Send, 
@@ -15,7 +14,8 @@ import {
   User,
   RefreshCw,
   Sparkles,
-  History
+  History,
+  Trash2
 } from "lucide-react";
 import { 
   useAnalystConversations,
@@ -49,7 +49,6 @@ export default function AnalystChat() {
   const sendMessage = useSendAnalystMessage();
 
   useEffect(() => {
-    // Auto-scroll to bottom when new messages arrive
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
@@ -69,7 +68,6 @@ export default function AnalystChat() {
 
     let convId = activeConversationId;
 
-    // Create new conversation if none exists
     if (!convId) {
       try {
         const conv = await createConversation.mutateAsync(inputMessage.slice(0, 50));
@@ -118,7 +116,7 @@ export default function AnalystChat() {
                   <History className="h-4 w-4" />
                   Conversas
                 </CardTitle>
-                <Button size="sm" onClick={handleNewConversation} disabled={createConversation.isPending}>
+                <Button size="sm" variant="outline" onClick={handleNewConversation} disabled={createConversation.isPending}>
                   <Plus className="h-4 w-4" />
                 </Button>
               </div>
@@ -133,6 +131,7 @@ export default function AnalystChat() {
                   <div className="text-center py-8 text-muted-foreground text-sm">
                     <MessageSquare className="h-8 w-8 mx-auto mb-2 opacity-50" />
                     <p>Nenhuma conversa</p>
+                    <p className="text-xs mt-1">Inicie uma nova conversa</p>
                   </div>
                 ) : (
                   <div className="space-y-1">
@@ -143,13 +142,13 @@ export default function AnalystChat() {
                         className={cn(
                           "w-full text-left px-3 py-2 rounded-lg text-sm transition-colors",
                           activeConversationId === conv.id 
-                            ? "bg-primary/10 text-primary" 
+                            ? "bg-primary/10 text-primary border border-primary/20" 
                             : "hover:bg-muted"
                         )}
                       >
                         <p className="font-medium truncate">{conv.title || "Nova conversa"}</p>
                         <p className="text-xs text-muted-foreground">
-                          {format(new Date(conv.last_message_at), "dd/MM HH:mm")}
+                          {format(new Date(conv.last_message_at), "dd/MM 'às' HH:mm", { locale: ptBR })}
                         </p>
                       </button>
                     ))}
@@ -160,7 +159,7 @@ export default function AnalystChat() {
           </Card>
 
           {/* Main Chat Area */}
-          <Card className="lg:col-span-3">
+          <Card className="lg:col-span-3 flex flex-col">
             <CardContent className="p-0 flex flex-col h-[600px]">
               {/* Messages */}
               <ScrollArea className="flex-1 p-4" ref={scrollRef}>
@@ -174,14 +173,14 @@ export default function AnalystChat() {
                       Faça perguntas sobre seus dados financeiros e receba análises detalhadas em linguagem natural.
                     </p>
                     
-                    <div className="space-y-2 w-full max-w-lg">
+                    <div className="space-y-3 w-full max-w-lg">
                       <p className="text-sm font-medium text-muted-foreground">Experimente perguntar:</p>
                       <div className="grid gap-2">
                         {EXAMPLE_QUESTIONS.slice(0, 4).map((question, idx) => (
                           <button
                             key={idx}
                             onClick={() => handleExampleClick(question)}
-                            className="text-left text-sm p-3 rounded-lg border hover:bg-muted transition-colors"
+                            className="text-left text-sm p-3 rounded-lg border hover:bg-muted hover:border-primary/30 transition-colors"
                           >
                             <Sparkles className="h-4 w-4 inline mr-2 text-primary" />
                             {question}
@@ -194,20 +193,26 @@ export default function AnalystChat() {
                   <div className="flex items-center justify-center h-full">
                     <RefreshCw className="h-6 w-6 animate-spin text-muted-foreground" />
                   </div>
+                ) : !messages?.length ? (
+                  <div className="h-full flex flex-col items-center justify-center text-center p-8">
+                    <MessageSquare className="h-12 w-12 text-muted-foreground/50 mb-4" />
+                    <p className="text-muted-foreground">Nenhuma mensagem ainda</p>
+                    <p className="text-sm text-muted-foreground">Envie uma pergunta para começar</p>
+                  </div>
                 ) : (
                   <div className="space-y-4">
-                    {messages?.map((msg) => (
+                    {messages.map((msg) => (
                       <MessageBubble key={msg.id} message={msg} />
                     ))}
                     {isStreaming && (
                       <div className="flex items-start gap-3">
-                        <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                        <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                           <Bot className="h-4 w-4 text-primary" />
                         </div>
                         <div className="bg-muted rounded-lg p-3">
                           <div className="flex items-center gap-2">
                             <RefreshCw className="h-4 w-4 animate-spin" />
-                            <span className="text-sm text-muted-foreground">Analisando...</span>
+                            <span className="text-sm text-muted-foreground">Analisando seus dados...</span>
                           </div>
                         </div>
                       </div>
@@ -216,8 +221,8 @@ export default function AnalystChat() {
                 )}
               </ScrollArea>
 
-              {/* Input */}
-              <div className="border-t p-4">
+              {/* Input - Fixed at bottom */}
+              <div className="border-t p-4 bg-background">
                 <form 
                   onSubmit={(e) => {
                     e.preventDefault();
@@ -266,10 +271,10 @@ function MessageBubble({ message }: { message: any }) {
       )}>
         <div className="text-sm whitespace-pre-wrap">{message.content}</div>
         <p className={cn(
-          "text-xs mt-1",
+          "text-xs mt-2",
           isUser ? "text-primary-foreground/70" : "text-muted-foreground"
         )}>
-          {format(new Date(message.created_at), "HH:mm")}
+          {format(new Date(message.created_at), "HH:mm", { locale: ptBR })}
         </p>
       </div>
     </div>

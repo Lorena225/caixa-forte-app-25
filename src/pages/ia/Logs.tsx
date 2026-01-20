@@ -5,7 +5,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { DataTable } from "@/components/common/DataTable";
+import { 
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { 
   FileText, 
   MessageSquare, 
@@ -13,10 +20,7 @@ import {
   Brain,
   RefreshCw,
   Eye,
-  Check,
-  X,
-  AlertCircle,
-  Clock
+  Inbox
 } from "lucide-react";
 import { useAILogs } from "@/hooks/useAIModule";
 import { format } from "date-fns";
@@ -24,10 +28,10 @@ import { ptBR } from "date-fns/locale";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-const AGENT_CONFIG: Record<string, { icon: React.ComponentType<any>; color: string; label: string }> = {
-  whatsapp: { icon: MessageSquare, color: "text-green-500", label: "WhatsApp" },
-  monitor: { icon: BellRing, color: "text-orange-500", label: "Monitor" },
-  analyst: { icon: Brain, color: "text-purple-500", label: "Analista" },
+const AGENT_CONFIG: Record<string, { icon: React.ComponentType<any>; colorClass: string; label: string }> = {
+  whatsapp: { icon: MessageSquare, colorClass: "text-success", label: "WhatsApp" },
+  monitor: { icon: BellRing, colorClass: "text-warning", label: "Monitor" },
+  analyst: { icon: Brain, colorClass: "text-primary", label: "Analista" },
 };
 
 const STATUS_CONFIG: Record<string, { variant: 'default' | 'secondary' | 'destructive' | 'outline'; label: string }> = {
@@ -48,72 +52,6 @@ export default function IALogs() {
     limit: 200,
   });
 
-  const columns = [
-    {
-      key: "created_at",
-      header: "Data/Hora",
-      render: (log: any) => (
-        <span className="text-sm">
-          {format(new Date(log.created_at), "dd/MM/yyyy HH:mm:ss", { locale: ptBR })}
-        </span>
-      ),
-    },
-    {
-      key: "agent_type",
-      header: "Agente",
-      render: (log: any) => {
-        const config = AGENT_CONFIG[log.agent_type] || AGENT_CONFIG.analyst;
-        const Icon = config.icon;
-        return (
-          <div className="flex items-center gap-2">
-            <Icon className={`h-4 w-4 ${config.color}`} />
-            <span className="text-sm">{config.label}</span>
-          </div>
-        );
-      },
-    },
-    {
-      key: "origin",
-      header: "Origem",
-      render: (log: any) => (
-        <Badge variant="outline" className="text-xs">
-          {log.origin}
-        </Badge>
-      ),
-    },
-    {
-      key: "input_text",
-      header: "Entrada",
-      render: (log: any) => (
-        <span className="text-sm text-muted-foreground truncate max-w-[200px] block">
-          {log.input_text || "(sem texto)"}
-        </span>
-      ),
-    },
-    {
-      key: "status",
-      header: "Status",
-      render: (log: any) => {
-        const config = STATUS_CONFIG[log.status] || { variant: "secondary" as const, label: log.status };
-        return <Badge variant={config.variant}>{config.label}</Badge>;
-      },
-    },
-    {
-      key: "latency_ms",
-      header: "Latência",
-      render: (log: any) => (
-        <span className="text-sm text-muted-foreground">
-          {log.latency_ms ? `${log.latency_ms}ms` : "-"}
-        </span>
-      ),
-    },
-    {
-      key: "actions",
-      header: "",
-      render: (log: any) => <LogDetailDialog log={log} />,
-    },
-  ];
-
   return (
     <MainLayout>
       <div className="space-y-6">
@@ -122,7 +60,7 @@ export default function IALogs() {
           description="Histórico completo de todas as ações e decisões dos agentes de IA"
         />
 
-        {/* Filters */}
+        {/* Filters - Consistent with other modules */}
         <Card>
           <CardContent className="pt-6">
             <div className="flex flex-wrap gap-4">
@@ -167,7 +105,7 @@ export default function IALogs() {
           </CardContent>
         </Card>
 
-        {/* Logs Table */}
+        {/* Logs Table - Consistent with AP/AR tables */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -179,12 +117,75 @@ export default function IALogs() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <DataTable
-              data={logs || []}
-              columns={columns}
-              loading={isLoading}
-              emptyMessage="Nenhum registro encontrado"
-            />
+            {isLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <RefreshCw className="h-6 w-6 animate-spin text-muted-foreground" />
+              </div>
+            ) : !logs?.length ? (
+              <div className="text-center py-12">
+                <div className="mb-4 rounded-full bg-muted p-4 w-fit mx-auto">
+                  <Inbox className="h-8 w-8 text-muted-foreground" />
+                </div>
+                <h3 className="text-lg font-semibold mb-2">Nenhum registro encontrado</h3>
+                <p className="text-sm text-muted-foreground max-w-md mx-auto">
+                  Os logs de atividade dos agentes de IA aparecerão aqui conforme eles processam mensagens e geram alertas.
+                </p>
+              </div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Data/Hora</TableHead>
+                    <TableHead>Agente</TableHead>
+                    <TableHead>Origem</TableHead>
+                    <TableHead>Entrada</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead className="text-right">Latência</TableHead>
+                    <TableHead></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {logs.map((log) => {
+                    const agentConfig = AGENT_CONFIG[log.agent_type] || AGENT_CONFIG.analyst;
+                    const statusConfig = STATUS_CONFIG[log.status] || { variant: "secondary" as const, label: log.status };
+                    const AgentIcon = agentConfig.icon;
+                    
+                    return (
+                      <TableRow key={log.id}>
+                        <TableCell className="whitespace-nowrap">
+                          {format(new Date(log.created_at), "dd/MM/yyyy HH:mm:ss", { locale: ptBR })}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <AgentIcon className={`h-4 w-4 ${agentConfig.colorClass}`} />
+                            <span className="text-sm">{agentConfig.label}</span>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant="outline" className="text-xs">
+                            {log.origin}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="max-w-[200px]">
+                          <span className="text-sm text-muted-foreground truncate block">
+                            {log.input_text || "(sem texto)"}
+                          </span>
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant={statusConfig.variant}>{statusConfig.label}</Badge>
+                        </TableCell>
+                        <TableCell className="text-right text-muted-foreground">
+                          {log.latency_ms ? `${log.latency_ms}ms` : "-"}
+                        </TableCell>
+                        <TableCell>
+                          <LogDetailDialog log={log} />
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            )}
           </CardContent>
         </Card>
       </div>
@@ -193,6 +194,9 @@ export default function IALogs() {
 }
 
 function LogDetailDialog({ log }: { log: any }) {
+  const agentConfig = AGENT_CONFIG[log.agent_type] || AGENT_CONFIG.analyst;
+  const statusConfig = STATUS_CONFIG[log.status] || { variant: "secondary" as const, label: log.status };
+  
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -209,23 +213,21 @@ function LogDetailDialog({ log }: { log: any }) {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="text-sm font-medium text-muted-foreground">ID</label>
-                <p className="text-sm font-mono">{log.id}</p>
+                <p className="text-sm font-mono truncate">{log.id}</p>
               </div>
               <div>
                 <label className="text-sm font-medium text-muted-foreground">Data/Hora</label>
                 <p className="text-sm">
-                  {format(new Date(log.created_at), "dd/MM/yyyy HH:mm:ss", { locale: ptBR })}
+                  {format(new Date(log.created_at), "dd/MM/yyyy 'às' HH:mm:ss", { locale: ptBR })}
                 </p>
               </div>
               <div>
                 <label className="text-sm font-medium text-muted-foreground">Agente</label>
-                <p className="text-sm">{AGENT_CONFIG[log.agent_type]?.label || log.agent_type}</p>
+                <p className="text-sm">{agentConfig.label}</p>
               </div>
               <div>
                 <label className="text-sm font-medium text-muted-foreground">Status</label>
-                <Badge variant={STATUS_CONFIG[log.status]?.variant || "secondary"}>
-                  {STATUS_CONFIG[log.status]?.label || log.status}
-                </Badge>
+                <Badge variant={statusConfig.variant}>{statusConfig.label}</Badge>
               </div>
             </div>
 
@@ -241,7 +243,7 @@ function LogDetailDialog({ log }: { log: any }) {
             {log.input_raw && (
               <div>
                 <label className="text-sm font-medium text-muted-foreground">Entrada (JSON)</label>
-                <pre className="bg-muted rounded-lg p-3 mt-1 text-xs overflow-auto">
+                <pre className="bg-muted rounded-lg p-3 mt-1 text-xs overflow-auto max-h-40">
                   {JSON.stringify(log.input_raw, null, 2)}
                 </pre>
               </div>
@@ -249,8 +251,8 @@ function LogDetailDialog({ log }: { log: any }) {
 
             {log.interpretation && (
               <div>
-                <label className="text-sm font-medium text-muted-foreground">Interpretação</label>
-                <pre className="bg-muted rounded-lg p-3 mt-1 text-xs overflow-auto">
+                <label className="text-sm font-medium text-muted-foreground">Interpretação da IA</label>
+                <pre className="bg-muted rounded-lg p-3 mt-1 text-xs overflow-auto max-h-40">
                   {JSON.stringify(log.interpretation, null, 2)}
                 </pre>
               </div>
@@ -259,7 +261,7 @@ function LogDetailDialog({ log }: { log: any }) {
             {log.action_executed && (
               <div>
                 <label className="text-sm font-medium text-muted-foreground">Ação Executada</label>
-                <pre className="bg-muted rounded-lg p-3 mt-1 text-xs overflow-auto">
+                <pre className="bg-success/10 rounded-lg p-3 mt-1 text-xs overflow-auto max-h-40">
                   {JSON.stringify(log.action_executed, null, 2)}
                 </pre>
               </div>
@@ -274,25 +276,19 @@ function LogDetailDialog({ log }: { log: any }) {
               </div>
             )}
 
-            <div className="grid grid-cols-3 gap-4">
-              {log.latency_ms && (
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">Latência</label>
-                  <p className="text-sm">{log.latency_ms}ms</p>
-                </div>
-              )}
-              {log.tokens_used && (
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">Tokens</label>
-                  <p className="text-sm">{log.tokens_used}</p>
-                </div>
-              )}
-              {log.cost_estimate && (
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">Custo Estimado</label>
-                  <p className="text-sm">${Number(log.cost_estimate).toFixed(6)}</p>
-                </div>
-              )}
+            <div className="grid grid-cols-3 gap-4 pt-2 border-t">
+              <div>
+                <label className="text-sm font-medium text-muted-foreground">Latência</label>
+                <p className="text-sm">{log.latency_ms ? `${log.latency_ms}ms` : "-"}</p>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-muted-foreground">Tokens</label>
+                <p className="text-sm">{log.tokens_used || "-"}</p>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-muted-foreground">Custo Estimado</label>
+                <p className="text-sm">{log.cost_estimate ? `$${Number(log.cost_estimate).toFixed(6)}` : "-"}</p>
+              </div>
             </div>
           </div>
         </ScrollArea>

@@ -18,7 +18,8 @@ import {
   Shield,
   Zap,
   Save,
-  RefreshCw
+  RefreshCw,
+  Key
 } from "lucide-react";
 import { useAISettingsExtended, useUpdateAISettingsExtended } from "@/hooks/useAIModule";
 import { useAIKeyStatus, useTestAIKey, useSetAIKey } from "@/hooks/useAIKeyManagement";
@@ -95,16 +96,16 @@ export default function IAConfiguracoes() {
           description="Configure as preferências e credenciais do módulo de inteligência artificial"
         />
 
-        {/* Status Geral */}
+        {/* Status Geral - Card consistente */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Bot className="h-5 w-5" />
-              Status Geral
+              Configurações Gerais
             </CardTitle>
-            <CardDescription>Ative ou desative todo o módulo de IA</CardDescription>
+            <CardDescription>Ative ou desative todo o módulo de IA e defina o modo de operação</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-6">
             <div className="flex items-center justify-between">
               <div>
                 <Label className="text-base">Módulo de IA Ativo</Label>
@@ -120,64 +121,66 @@ export default function IAConfiguracoes() {
 
             <Separator />
 
-            <div className="space-y-2">
-              <Label>Modo de Operação</Label>
-              <Select
-                value={settings?.autopilot_mode || "safe"}
-                onValueChange={(value) => handleSaveSettings({ autopilot_mode: value })}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="safe">
-                    <div className="flex items-center gap-2">
-                      <Shield className="h-4 w-4" />
-                      Assistido - Requer aprovação para todas as ações
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="balanced">
-                    <div className="flex items-center gap-2">
-                      <Zap className="h-4 w-4" />
-                      Balanceado - Aprovação apenas para ações de alto risco
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="autopilot">
-                    <div className="flex items-center gap-2">
-                      <Bot className="h-4 w-4" />
-                      Automático - Executa ações automaticamente
-                    </div>
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label>Modo de Operação</Label>
+                <Select
+                  value={settings?.autopilot_mode || "safe"}
+                  onValueChange={(value) => handleSaveSettings({ autopilot_mode: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="safe">
+                      <div className="flex items-center gap-2">
+                        <Shield className="h-4 w-4" />
+                        Assistido - Requer aprovação
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="balanced">
+                      <div className="flex items-center gap-2">
+                        <Zap className="h-4 w-4" />
+                        Balanceado - Só alto risco
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="autopilot">
+                      <div className="flex items-center gap-2">
+                        <Bot className="h-4 w-4" />
+                        Automático - Sem aprovação
+                      </div>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
 
-            <div className="space-y-2">
-              <Label>Modelo de IA Padrão</Label>
-              <Select
-                value={settings?.default_ai_model || "google/gemini-3-flash-preview"}
-                onValueChange={(value) => handleSaveSettings({ default_ai_model: value })}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="google/gemini-3-flash-preview">Gemini 3 Flash (Recomendado)</SelectItem>
-                  <SelectItem value="google/gemini-2.5-flash">Gemini 2.5 Flash</SelectItem>
-                  <SelectItem value="google/gemini-2.5-pro">Gemini 2.5 Pro</SelectItem>
-                  <SelectItem value="openai/gpt-5-mini">GPT-5 Mini</SelectItem>
-                  <SelectItem value="openai/gpt-5">GPT-5</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="space-y-2">
+                <Label>Modelo de IA Padrão</Label>
+                <Select
+                  value={settings?.default_ai_model || "google/gemini-3-flash-preview"}
+                  onValueChange={(value) => handleSaveSettings({ default_ai_model: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="google/gemini-3-flash-preview">Gemini 3 Flash (Recomendado)</SelectItem>
+                    <SelectItem value="google/gemini-2.5-flash">Gemini 2.5 Flash</SelectItem>
+                    <SelectItem value="google/gemini-2.5-pro">Gemini 2.5 Pro</SelectItem>
+                    <SelectItem value="openai/gpt-5-mini">GPT-5 Mini</SelectItem>
+                    <SelectItem value="openai/gpt-5">GPT-5</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Chave OpenAI (para uso externo) */}
+        {/* Chave OpenAI */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Settings className="h-5 w-5" />
+              <Key className="h-5 w-5" />
               Chave OpenAI (Opcional)
             </CardTitle>
             <CardDescription>
@@ -185,7 +188,7 @@ export default function IAConfiguracoes() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex items-center gap-2 mb-4">
+            <div className="flex items-center gap-2">
               <Badge variant={keyStatus?.configured ? "default" : "secondary"}>
                 {keyStatus?.configured ? "Chave Configurada" : "Usando IA Lovable"}
               </Badge>
@@ -223,8 +226,8 @@ export default function IAConfiguracoes() {
             {/* Agente WhatsApp */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-lg bg-green-500/10 flex items-center justify-center">
-                  <MessageSquare className="h-5 w-5 text-green-500" />
+                <div className="h-10 w-10 rounded-lg bg-success/10 flex items-center justify-center">
+                  <MessageSquare className="h-5 w-5 text-success" />
                 </div>
                 <div>
                   <Label className="text-base">Agente WhatsApp</Label>
@@ -244,8 +247,8 @@ export default function IAConfiguracoes() {
             {/* Agente Monitor */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-lg bg-orange-500/10 flex items-center justify-center">
-                  <BellRing className="h-5 w-5 text-orange-500" />
+                <div className="h-10 w-10 rounded-lg bg-warning/10 flex items-center justify-center">
+                  <BellRing className="h-5 w-5 text-warning" />
                 </div>
                 <div>
                   <Label className="text-base">Monitor Financeiro</Label>
@@ -265,8 +268,8 @@ export default function IAConfiguracoes() {
             {/* Agente Analista */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-lg bg-purple-500/10 flex items-center justify-center">
-                  <Brain className="h-5 w-5 text-purple-500" />
+                <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <Brain className="h-5 w-5 text-primary" />
                 </div>
                 <div>
                   <Label className="text-base">Analista Inteligente</Label>
@@ -290,8 +293,9 @@ export default function IAConfiguracoes() {
               <Shield className="h-5 w-5" />
               Segurança e Limites
             </CardTitle>
+            <CardDescription>Configure limites de valor e permissões de automação</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-6">
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
                 <Label>Limite de Valor Alto Risco (R$)</Label>
@@ -376,6 +380,7 @@ export default function IAConfiguracoes() {
               <BellRing className="h-5 w-5" />
               Configurações do Monitor
             </CardTitle>
+            <CardDescription>Configure a frequência de alertas e resumos</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid gap-4 md:grid-cols-2">
