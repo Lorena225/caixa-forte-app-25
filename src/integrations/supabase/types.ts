@@ -2390,42 +2390,201 @@ export type Database = {
           },
         ]
       }
+      backup_config_critical: {
+        Row: {
+          company_id: string | null
+          created_at: string
+          detalhes: Json | null
+          id: string
+          snapshot_data: Json | null
+          tipo: string
+          ultima_versao_backup_em: string | null
+          updated_at: string
+        }
+        Insert: {
+          company_id?: string | null
+          created_at?: string
+          detalhes?: Json | null
+          id?: string
+          snapshot_data?: Json | null
+          tipo: string
+          ultima_versao_backup_em?: string | null
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string | null
+          created_at?: string
+          detalhes?: Json | null
+          id?: string
+          snapshot_data?: Json | null
+          tipo?: string
+          ultima_versao_backup_em?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "backup_config_critical_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "backup_config_critical_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_security_dashboard"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "backup_config_critical_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      backup_executions: {
+        Row: {
+          arquivos_processados: number | null
+          backup_job_id: string
+          company_id: string | null
+          detalhes: Json | null
+          erro_mensagem: string | null
+          finalizado_em: string | null
+          id: string
+          iniciado_em: string
+          local_armazenamento: string | null
+          status: string
+          tamanho_bytes: number | null
+          trigger_type: string | null
+          triggered_by: string | null
+        }
+        Insert: {
+          arquivos_processados?: number | null
+          backup_job_id: string
+          company_id?: string | null
+          detalhes?: Json | null
+          erro_mensagem?: string | null
+          finalizado_em?: string | null
+          id?: string
+          iniciado_em?: string
+          local_armazenamento?: string | null
+          status?: string
+          tamanho_bytes?: number | null
+          trigger_type?: string | null
+          triggered_by?: string | null
+        }
+        Update: {
+          arquivos_processados?: number | null
+          backup_job_id?: string
+          company_id?: string | null
+          detalhes?: Json | null
+          erro_mensagem?: string | null
+          finalizado_em?: string | null
+          id?: string
+          iniciado_em?: string
+          local_armazenamento?: string | null
+          status?: string
+          tamanho_bytes?: number | null
+          trigger_type?: string | null
+          triggered_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "backup_executions_backup_job_id_fkey"
+            columns: ["backup_job_id"]
+            isOneToOne: false
+            referencedRelation: "backup_jobs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "backup_executions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "backup_executions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_security_dashboard"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "backup_executions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
       backup_jobs: {
         Row: {
+          alvo: string | null
+          ativo: boolean | null
           company_id: string
           completed_at: string | null
+          configuracao_json: Json | null
           created_at: string | null
           created_by: string | null
+          descricao: string | null
           error_message: string | null
+          frequencia: string | null
           id: string
+          nome_job: string | null
+          proximo_agendamento: string | null
           scheduled_at: string | null
           scope_json: Json | null
           started_at: string | null
           status: string | null
+          tipo: string | null
+          updated_at: string | null
         }
         Insert: {
+          alvo?: string | null
+          ativo?: boolean | null
           company_id: string
           completed_at?: string | null
+          configuracao_json?: Json | null
           created_at?: string | null
           created_by?: string | null
+          descricao?: string | null
           error_message?: string | null
+          frequencia?: string | null
           id?: string
+          nome_job?: string | null
+          proximo_agendamento?: string | null
           scheduled_at?: string | null
           scope_json?: Json | null
           started_at?: string | null
           status?: string | null
+          tipo?: string | null
+          updated_at?: string | null
         }
         Update: {
+          alvo?: string | null
+          ativo?: boolean | null
           company_id?: string
           completed_at?: string | null
+          configuracao_json?: Json | null
           created_at?: string | null
           created_by?: string | null
+          descricao?: string | null
           error_message?: string | null
+          frequencia?: string | null
           id?: string
+          nome_job?: string | null
+          proximo_agendamento?: string | null
           scheduled_at?: string | null
           scope_json?: Json | null
           started_at?: string | null
           status?: string | null
+          tipo?: string | null
+          updated_at?: string | null
         }
         Relationships: [
           {
@@ -2446,6 +2605,82 @@ export type Database = {
             foreignKeyName: "backup_jobs_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      backup_policy_settings: {
+        Row: {
+          backup_arquivos_enabled: boolean | null
+          backup_configs_enabled: boolean | null
+          backup_db_enabled: boolean | null
+          company_id: string | null
+          configuracao_extra: Json | null
+          created_at: string
+          emails_notificacao: string[] | null
+          id: string
+          notificar_falhas: boolean | null
+          offsite_enabled: boolean | null
+          retencao_dias: number
+          rpo_minutos: number
+          rto_minutos: number
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          backup_arquivos_enabled?: boolean | null
+          backup_configs_enabled?: boolean | null
+          backup_db_enabled?: boolean | null
+          company_id?: string | null
+          configuracao_extra?: Json | null
+          created_at?: string
+          emails_notificacao?: string[] | null
+          id?: string
+          notificar_falhas?: boolean | null
+          offsite_enabled?: boolean | null
+          retencao_dias?: number
+          rpo_minutos?: number
+          rto_minutos?: number
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          backup_arquivos_enabled?: boolean | null
+          backup_configs_enabled?: boolean | null
+          backup_db_enabled?: boolean | null
+          company_id?: string | null
+          configuracao_extra?: Json | null
+          created_at?: string
+          emails_notificacao?: string[] | null
+          id?: string
+          notificar_falhas?: boolean | null
+          offsite_enabled?: boolean | null
+          retencao_dias?: number
+          rpo_minutos?: number
+          rto_minutos?: number
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "backup_policy_settings_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "backup_policy_settings_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "mv_security_dashboard"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "backup_policy_settings_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
             referencedRelation: "v_security_status"
             referencedColumns: ["company_id"]
           },
@@ -9822,6 +10057,73 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "document_types"
             referencedColumns: ["id"]
+          },
+        ]
+      }
+      dr_test_checklist: {
+        Row: {
+          ambiente_teste: string | null
+          checklist_items: Json | null
+          company_id: string | null
+          created_at: string
+          id: string
+          observacoes: string | null
+          proximo_teste_planejado: string | null
+          responsavel_email: string | null
+          responsavel_nome: string | null
+          resultado_ultimo_teste: string | null
+          ultimo_teste_em: string | null
+          updated_at: string
+        }
+        Insert: {
+          ambiente_teste?: string | null
+          checklist_items?: Json | null
+          company_id?: string | null
+          created_at?: string
+          id?: string
+          observacoes?: string | null
+          proximo_teste_planejado?: string | null
+          responsavel_email?: string | null
+          responsavel_nome?: string | null
+          resultado_ultimo_teste?: string | null
+          ultimo_teste_em?: string | null
+          updated_at?: string
+        }
+        Update: {
+          ambiente_teste?: string | null
+          checklist_items?: Json | null
+          company_id?: string | null
+          created_at?: string
+          id?: string
+          observacoes?: string | null
+          proximo_teste_planejado?: string | null
+          responsavel_email?: string | null
+          responsavel_nome?: string | null
+          resultado_ultimo_teste?: string | null
+          ultimo_teste_em?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dr_test_checklist_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dr_test_checklist_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "mv_security_dashboard"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "dr_test_checklist_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
           },
         ]
       }
