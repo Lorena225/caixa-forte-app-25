@@ -16,7 +16,6 @@ import {
   Plug,
   Settings,
   Menu,
-  X,
   Sparkles,
   FileText,
   Users,
@@ -28,6 +27,11 @@ import {
   Calculator,
   PieChart,
   Link2,
+  BookOpen,
+  Landmark,
+  FileSpreadsheet,
+  Scale,
+  ClipboardList,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -94,6 +98,17 @@ const menuItems: MenuItem[] = [
     ]
   },
   { 
+    key: 'contabil', 
+    label: 'Contábil', 
+    icon: BookOpen,
+    children: [
+      { key: 'plano-contas', label: 'Plano de Contas', icon: ClipboardList, route: '/cadastros/plano-contas' },
+      { key: 'centros-custo', label: 'Centro de Custo', icon: Landmark, route: '/cadastros/centros-custo' },
+      { key: 'lancamentos-contabeis', label: 'Lançamentos Contábeis', icon: FileText, route: '/contabilidade/lancamentos' },
+      { key: 'reclassificacao', label: 'Reclassificação', icon: Scale, route: '/contabilidade/reclassificacao' },
+    ]
+  },
+  { 
     key: 'estoque', 
     label: 'Estoque', 
     icon: Boxes,
@@ -103,11 +118,30 @@ const menuItems: MenuItem[] = [
     ]
   },
   { 
+    key: 'fiscal', 
+    label: 'Fiscal', 
+    icon: FileSpreadsheet,
+    children: [
+      { key: 'nfe', label: 'NF-e', icon: FileText, route: '/fiscal/nfe' },
+      { key: 'nfce', label: 'NFC-e', icon: Receipt, route: '/fiscal/nfce' },
+      { key: 'cupom-fiscal', label: 'Cupom Fiscal', icon: Receipt, route: '/fiscal/cupom-fiscal' },
+      { key: 'danfe', label: 'DANFE', icon: FileText, route: '/fiscal/danfe' },
+      { key: 'analise-fiscal', label: 'Análise Fiscal', icon: PieChart, route: '/fiscal/analise' },
+    ]
+  },
+  { 
     key: 'relatorios', 
     label: 'Relatórios', 
     icon: BarChart3,
     children: [
       { key: 'dre', label: 'DRE', icon: PieChart, route: '/dre' },
+      { key: 'balanco', label: 'Balanço Patrimonial', icon: Scale, route: '/relatorios/balanco' },
+      { key: 'balancete', label: 'Balancete', icon: FileText, route: '/relatorios/balancete' },
+      { key: 'livro-razao', label: 'Livro Razão', icon: BookOpen, route: '/relatorios/livro-razao' },
+      { key: 'livro-diario', label: 'Livro Diário', icon: BookOpen, route: '/relatorios/livro-diario' },
+      { key: 'ecf', label: 'ECF', icon: FileSpreadsheet, route: '/relatorios/ecf' },
+      { key: 'analise-vendas', label: 'Análise de Vendas', icon: TrendingUp, route: '/relatorios/analise-vendas' },
+      { key: 'analise-compras', label: 'Análise de Compras', icon: Truck, route: '/relatorios/analise-compras' },
       { key: 'dashboards', label: 'Dashboards', icon: BarChart3, route: '/paineis' },
     ]
   },
@@ -151,7 +185,6 @@ const SidebarContent = memo(function SidebarContent({ collapsed = false, onNavig
 
   return (
     <div className="flex h-full flex-col bg-sidebar">
-      {/* Logo */}
       <div className="flex h-16 items-center gap-3 border-b border-sidebar-border px-4">
         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#0085FF]">
           <Sparkles className="h-5 w-5 text-white" />
@@ -161,7 +194,6 @@ const SidebarContent = memo(function SidebarContent({ collapsed = false, onNavig
         )}
       </div>
 
-      {/* Menu */}
       <ScrollArea className="flex-1 px-3 py-4">
         <div className="space-y-1">
           {menuItems.map((item) => {
@@ -170,29 +202,17 @@ const SidebarContent = memo(function SidebarContent({ collapsed = false, onNavig
               const hasActive = hasActiveChild(item);
 
               return (
-                <Collapsible
-                  key={item.key}
-                  open={isOpen}
-                  onOpenChange={() => toggleGroup(item.key)}
-                >
+                <Collapsible key={item.key} open={isOpen} onOpenChange={() => toggleGroup(item.key)}>
                   <CollapsibleTrigger asChild>
-                    <button
-                      className={cn(
-                        'flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
-                        hasActive
-                          ? 'bg-sidebar-accent text-sidebar-primary'
-                          : 'text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-foreground'
-                      )}
-                    >
+                    <button className={cn(
+                      'flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
+                      hasActive ? 'bg-sidebar-accent text-sidebar-primary' : 'text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-foreground'
+                    )}>
                       <item.icon className="h-5 w-5 shrink-0" />
                       {!collapsed && (
                         <>
                           <span className="flex-1 text-left">{item.label}</span>
-                          {isOpen ? (
-                            <ChevronDown className="h-4 w-4" />
-                          ) : (
-                            <ChevronRight className="h-4 w-4" />
-                          )}
+                          {isOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                         </>
                       )}
                     </button>
@@ -206,9 +226,7 @@ const SidebarContent = memo(function SidebarContent({ collapsed = false, onNavig
                             onClick={() => child.route && handleNavigate(child.route)}
                             className={cn(
                               'flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors',
-                              isActive(child.route)
-                                ? 'bg-sidebar-primary/20 text-sidebar-primary font-medium'
-                                : 'text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground'
+                              isActive(child.route) ? 'bg-sidebar-primary/20 text-sidebar-primary font-medium' : 'text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground'
                             )}
                           >
                             <child.icon className="h-4 w-4 shrink-0" />
@@ -228,9 +246,7 @@ const SidebarContent = memo(function SidebarContent({ collapsed = false, onNavig
                 onClick={() => item.route && handleNavigate(item.route)}
                 className={cn(
                   'flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
-                  isActive(item.route)
-                    ? 'bg-sidebar-primary/20 text-sidebar-primary'
-                    : 'text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-foreground'
+                  isActive(item.route) ? 'bg-sidebar-primary/20 text-sidebar-primary' : 'text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-foreground'
                 )}
               >
                 <item.icon className="h-5 w-5 shrink-0" />
@@ -241,7 +257,6 @@ const SidebarContent = memo(function SidebarContent({ collapsed = false, onNavig
         </div>
       </ScrollArea>
 
-      {/* Footer */}
       <div className="border-t border-sidebar-border p-3">
         <button
           onClick={() => handleNavigate('/admin')}
@@ -260,14 +275,9 @@ export function Sidebar() {
 
   return (
     <>
-      {/* Mobile Trigger */}
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
         <SheetTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="fixed left-4 top-4 z-50 h-10 w-10 bg-background shadow-md border md:hidden"
-          >
+          <Button variant="ghost" size="icon" className="fixed left-4 top-4 z-50 h-10 w-10 bg-background shadow-md border md:hidden">
             <Menu className="h-5 w-5" />
           </Button>
         </SheetTrigger>
@@ -279,7 +289,6 @@ export function Sidebar() {
         </SheetContent>
       </Sheet>
 
-      {/* Desktop Sidebar */}
       <aside className="fixed left-0 top-0 z-40 hidden h-screen w-64 border-r border-sidebar-border bg-sidebar md:block">
         <SidebarContent />
       </aside>
