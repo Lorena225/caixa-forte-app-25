@@ -158,6 +158,10 @@ import TesourariaContratos from "./pages/tesouraria/Contratos";
 import TesourariaContratoDetalhe from "./pages/tesouraria/ContratoDetalhe";
 import TesourariaContratoNovo from "./pages/tesouraria/ContratoNovo";
 import ConciliacaoIndex from "./pages/conciliacao/Index";
+// Gestão Bancária
+import TesourariaTransferencias from "./pages/tesouraria/Transferencias";
+import TesourariaCheques from "./pages/tesouraria/Cheques";
+import TesourariaCaixaFisica from "./pages/tesouraria/CaixaFisica";
 // Operacional
 import OperacionalIndex from "./pages/operacional/Index";
 import EstruturaOrganizacional from "./pages/operacional/EstruturaOrganizacional";
@@ -290,6 +294,9 @@ const App = () => (
                 <Route path="/tesouraria/cnab-retorno" element={<TesourariaCNABRetorno />} />
                 <Route path="/tesouraria/boletos" element={<TesourariaBoletos />} />
                 <Route path="/tesouraria/cartoes" element={<TesourariaCards />} />
+                <Route path="/tesouraria/transferencias" element={<TesourariaTransferencias />} />
+                <Route path="/tesouraria/cheques" element={<TesourariaCheques />} />
+                <Route path="/tesouraria/caixa-fisica" element={<TesourariaCaixaFisica />} />
                 <Route path="/tesouraria/contratos" element={<TesourariaContratos />} />
                 <Route path="/tesouraria/contratos/novo" element={<TesourariaContratoNovo />} />
                 <Route path="/tesouraria/contratos/:id" element={<TesourariaContratoDetalhe />} />
