@@ -19107,28 +19107,37 @@ export type Database = {
       }
       permissions: {
         Row: {
+          action: string | null
           code: string
           created_at: string | null
           description: string | null
           id: string
+          is_active: boolean | null
           module: string
           name: string
+          resource: string | null
         }
         Insert: {
+          action?: string | null
           code: string
           created_at?: string | null
           description?: string | null
           id?: string
+          is_active?: boolean | null
           module: string
           name: string
+          resource?: string | null
         }
         Update: {
+          action?: string | null
           code?: string
           created_at?: string | null
           description?: string | null
           id?: string
+          is_active?: boolean | null
           module?: string
           name?: string
+          resource?: string | null
         }
         Relationships: []
       }
@@ -24559,6 +24568,70 @@ export type Database = {
           },
         ]
       }
+      user_audit_log: {
+        Row: {
+          action: string
+          company_id: string
+          created_at: string | null
+          details: Json | null
+          id: string
+          ip_address: unknown
+          resource: string | null
+          resource_id: string | null
+          success: boolean | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          company_id: string
+          created_at?: string | null
+          details?: Json | null
+          id?: string
+          ip_address?: unknown
+          resource?: string | null
+          resource_id?: string | null
+          success?: boolean | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          company_id?: string
+          created_at?: string | null
+          details?: Json | null
+          id?: string
+          ip_address?: unknown
+          resource?: string | null
+          resource_id?: string | null
+          success?: boolean | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_audit_log_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_audit_log_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_security_dashboard"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "user_audit_log_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
       user_branch_access: {
         Row: {
           access_level: string | null
@@ -24795,6 +24868,122 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_security_status"
             referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      user_permissions_custom: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          granted: boolean
+          id: string
+          permission_id: string
+          user_profile_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          granted?: boolean
+          id?: string
+          permission_id: string
+          user_profile_id: string
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          granted?: boolean
+          id?: string
+          permission_id?: string
+          user_profile_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_permissions_custom_permission_id_fkey"
+            columns: ["permission_id"]
+            isOneToOne: false
+            referencedRelation: "permissions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_permissions_custom_user_profile_id_fkey"
+            columns: ["user_profile_id"]
+            isOneToOne: false
+            referencedRelation: "user_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_profiles: {
+        Row: {
+          access_expires_at: string | null
+          avatar_url: string | null
+          company_id: string
+          created_at: string | null
+          full_name: string | null
+          id: string
+          is_active: boolean | null
+          last_access_at: string | null
+          phone: string | null
+          role_id: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          access_expires_at?: string | null
+          avatar_url?: string | null
+          company_id: string
+          created_at?: string | null
+          full_name?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_access_at?: string | null
+          phone?: string | null
+          role_id?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          access_expires_at?: string | null
+          avatar_url?: string | null
+          company_id?: string
+          created_at?: string | null
+          full_name?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_access_at?: string | null
+          phone?: string | null
+          role_id?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_profiles_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_profiles_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_security_dashboard"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "user_profiles_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "user_profiles_role_id_fkey"
+            columns: ["role_id"]
+            isOneToOne: false
+            referencedRelation: "roles"
+            referencedColumns: ["id"]
           },
         ]
       }
