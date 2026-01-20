@@ -28780,6 +28780,16 @@ export type Database = {
           security_events_24h: number
         }[]
       }
+      get_user_permissions: {
+        Args: { p_company_id: string; p_user_id: string }
+        Returns: {
+          code: string
+          module: string
+          name: string
+          permission_id: string
+          source: string
+        }[]
+      }
       get_user_role: {
         Args: { p_company_id: string }
         Returns: Database["public"]["Enums"]["user_role"]
@@ -28828,6 +28838,18 @@ export type Database = {
           p_severity?: string
           p_user_agent?: string
           p_user_id?: string
+        }
+        Returns: string
+      }
+      log_user_audit: {
+        Args: {
+          p_action: string
+          p_company_id: string
+          p_details?: Json
+          p_resource?: string
+          p_resource_id?: string
+          p_success?: boolean
+          p_user_id: string
         }
         Returns: string
       }
