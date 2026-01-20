@@ -122,6 +122,16 @@ import IAWhatsAppAgent from "./pages/ia/WhatsAppAgent";
 import IAMonitorAlerts from "./pages/ia/MonitorAlerts";
 import IAAnalystChat from "./pages/ia/AnalystChat";
 import IALogs from "./pages/ia/Logs";
+import CFOVirtual from "./pages/ia/CFOVirtual";
+// Inovação & Open Finance
+import InovacaoIndex from "./pages/inovacao/Index";
+import OpenFinanceConexoes from "./pages/openfinance/Conexoes";
+import OpenFinancePagamentos from "./pages/openfinance/Pagamentos";
+import EmbeddedAntecipacao from "./pages/embedded/Antecipacao";
+import EmbeddedServicos from "./pages/embedded/Servicos";
+import FinanceiroSimulacoes from "./pages/financeiro/Simulacoes";
+import FinanceiroTempoReal from "./pages/financeiro/TempoReal";
+import ComplianceAnomalias from "./pages/compliance/Anomalias";
 // Financeiro Avançado
 import ConciliacaoBancaria from "./pages/financeiro/ConciliacaoBancaria";
 import AnaliseCustos from "./pages/financeiro/AnaliseCustos";
@@ -381,6 +391,17 @@ const App = () => (
                 <Route path="/ia/alertas" element={<IAMonitorAlerts />} />
                 <Route path="/ia/analista" element={<IAAnalystChat />} />
                 <Route path="/ia/logs" element={<IALogs />} />
+                <Route path="/ia/cfo-virtual" element={<CFOVirtual />} />
+                
+                {/* ============ INOVAÇÃO & OPEN FINANCE ============ */}
+                <Route path="/inovacao" element={<InovacaoIndex />} />
+                <Route path="/openfinance/conexoes" element={<OpenFinanceConexoes />} />
+                <Route path="/openfinance/pagamentos" element={<OpenFinancePagamentos />} />
+                <Route path="/embedded/antecipacao" element={<EmbeddedAntecipacao />} />
+                <Route path="/embedded/servicos" element={<EmbeddedServicos />} />
+                <Route path="/financeiro/simulacoes" element={<FinanceiroSimulacoes />} />
+                <Route path="/financeiro/tempo-real" element={<FinanceiroTempoReal />} />
+                <Route path="/compliance/anomalias" element={<ComplianceAnomalias />} />
                 
                 {/* Redirects integrações antigas */}
                 <Route path="/integracoes/connections" element={<Navigate to="/integracoes/conexoes" replace />} />
