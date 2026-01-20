@@ -1293,6 +1293,160 @@ export type Database = {
           },
         ]
       }
+      anomaly_detections: {
+        Row: {
+          ai_explanation: string | null
+          company_id: string
+          created_at: string
+          description: string | null
+          details_json: Json | null
+          detection_type: string
+          entity_id: string | null
+          entity_type: string
+          id: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          risk_score: number
+          severity: string
+          status: string
+          title: string
+        }
+        Insert: {
+          ai_explanation?: string | null
+          company_id: string
+          created_at?: string
+          description?: string | null
+          details_json?: Json | null
+          detection_type: string
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          risk_score?: number
+          severity?: string
+          status?: string
+          title: string
+        }
+        Update: {
+          ai_explanation?: string | null
+          company_id?: string
+          created_at?: string
+          description?: string | null
+          details_json?: Json | null
+          detection_type?: string
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          risk_score?: number
+          severity?: string
+          status?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "anomaly_detections_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "anomaly_detections_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      anticipation_operations: {
+        Row: {
+          company_id: string
+          created_at: string
+          created_by: string | null
+          discount_rate: number
+          fee_amount: number
+          id: string
+          iof_amount: number
+          net_amount: number
+          operation_number: string | null
+          provider_response_json: Json | null
+          receivable_ids: Json
+          service_id: string | null
+          settlement_date: string | null
+          simulation_expires_at: string | null
+          status: string
+          total_anticipation_value: number
+          total_face_value: number
+          updated_at: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          created_by?: string | null
+          discount_rate: number
+          fee_amount?: number
+          id?: string
+          iof_amount?: number
+          net_amount: number
+          operation_number?: string | null
+          provider_response_json?: Json | null
+          receivable_ids?: Json
+          service_id?: string | null
+          settlement_date?: string | null
+          simulation_expires_at?: string | null
+          status?: string
+          total_anticipation_value: number
+          total_face_value: number
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          created_by?: string | null
+          discount_rate?: number
+          fee_amount?: number
+          id?: string
+          iof_amount?: number
+          net_amount?: number
+          operation_number?: string | null
+          provider_response_json?: Json | null
+          receivable_ids?: Json
+          service_id?: string | null
+          settlement_date?: string | null
+          simulation_expires_at?: string | null
+          status?: string
+          total_anticipation_value?: number
+          total_face_value?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "anticipation_operations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "anticipation_operations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "anticipation_operations_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "financial_services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       api_keys: {
         Row: {
           company_id: string
@@ -1586,6 +1740,66 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "approval_steps"
             referencedColumns: ["id"]
+          },
+        ]
+      }
+      approval_ai_suggestions: {
+        Row: {
+          ai_reasoning: string | null
+          approver_suggested: string | null
+          company_id: string
+          confidence_score: number | null
+          created_at: string
+          entity_id: string
+          entity_type: string
+          id: string
+          priority_suggested: string | null
+          recommendation: string | null
+          risk_flags: Json | null
+          user_followed_suggestion: boolean | null
+        }
+        Insert: {
+          ai_reasoning?: string | null
+          approver_suggested?: string | null
+          company_id: string
+          confidence_score?: number | null
+          created_at?: string
+          entity_id: string
+          entity_type: string
+          id?: string
+          priority_suggested?: string | null
+          recommendation?: string | null
+          risk_flags?: Json | null
+          user_followed_suggestion?: boolean | null
+        }
+        Update: {
+          ai_reasoning?: string | null
+          approver_suggested?: string | null
+          company_id?: string
+          confidence_score?: number | null
+          created_at?: string
+          entity_id?: string
+          entity_type?: string
+          id?: string
+          priority_suggested?: string | null
+          recommendation?: string | null
+          risk_flags?: Json | null
+          user_followed_suggestion?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "approval_ai_suggestions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approval_ai_suggestions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
           },
         ]
       }
@@ -4246,6 +4460,69 @@ export type Database = {
           {
             foreignKeyName: "certificados_digitais_empresa_id_fkey"
             columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      cfo_insights: {
+        Row: {
+          category: string | null
+          company_id: string
+          created_at: string
+          data_json: Json | null
+          detailed_analysis: string | null
+          id: string
+          insight_type: string
+          is_read: boolean
+          priority: string
+          suggested_actions: Json | null
+          summary: string
+          title: string
+          valid_until: string | null
+        }
+        Insert: {
+          category?: string | null
+          company_id: string
+          created_at?: string
+          data_json?: Json | null
+          detailed_analysis?: string | null
+          id?: string
+          insight_type: string
+          is_read?: boolean
+          priority?: string
+          suggested_actions?: Json | null
+          summary: string
+          title: string
+          valid_until?: string | null
+        }
+        Update: {
+          category?: string | null
+          company_id?: string
+          created_at?: string
+          data_json?: Json | null
+          detailed_analysis?: string | null
+          id?: string
+          insight_type?: string
+          is_read?: boolean
+          priority?: string
+          suggested_actions?: Json | null
+          summary?: string
+          title?: string
+          valid_until?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cfo_insights_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cfo_insights_company_id_fkey"
+            columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "v_security_status"
             referencedColumns: ["company_id"]
@@ -8235,6 +8512,75 @@ export type Database = {
           },
         ]
       }
+      demand_forecasts: {
+        Row: {
+          ai_notes: string | null
+          company_id: string
+          confidence_interval_high: number | null
+          confidence_interval_low: number | null
+          confidence_percent: number | null
+          created_at: string
+          forecast_date: string
+          forecast_horizon_days: number
+          historical_data_points: number | null
+          id: string
+          predicted_quantity: number
+          product_code: string | null
+          product_id: string | null
+          seasonality_factor: number | null
+          trend_factor: number | null
+        }
+        Insert: {
+          ai_notes?: string | null
+          company_id: string
+          confidence_interval_high?: number | null
+          confidence_interval_low?: number | null
+          confidence_percent?: number | null
+          created_at?: string
+          forecast_date: string
+          forecast_horizon_days?: number
+          historical_data_points?: number | null
+          id?: string
+          predicted_quantity: number
+          product_code?: string | null
+          product_id?: string | null
+          seasonality_factor?: number | null
+          trend_factor?: number | null
+        }
+        Update: {
+          ai_notes?: string | null
+          company_id?: string
+          confidence_interval_high?: number | null
+          confidence_interval_low?: number | null
+          confidence_percent?: number | null
+          created_at?: string
+          forecast_date?: string
+          forecast_horizon_days?: number
+          historical_data_points?: number | null
+          id?: string
+          predicted_quantity?: number
+          product_code?: string | null
+          product_id?: string | null
+          seasonality_factor?: number | null
+          trend_factor?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "demand_forecasts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "demand_forecasts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
       departamentos: {
         Row: {
           ativo: boolean | null
@@ -9702,6 +10048,132 @@ export type Database = {
             foreignKeyName: "field_visibility_policies_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: true
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      financial_scenarios: {
+        Row: {
+          ai_analysis: string | null
+          base_date: string
+          company_id: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          horizon_days: number
+          id: string
+          name: string
+          parameters_json: Json
+          results_json: Json | null
+          scenario_type: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          ai_analysis?: string | null
+          base_date?: string
+          company_id: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          horizon_days?: number
+          id?: string
+          name: string
+          parameters_json?: Json
+          results_json?: Json | null
+          scenario_type?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          ai_analysis?: string | null
+          base_date?: string
+          company_id?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          horizon_days?: number
+          id?: string
+          name?: string
+          parameters_json?: Json
+          results_json?: Json | null
+          scenario_type?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "financial_scenarios_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "financial_scenarios_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      financial_services: {
+        Row: {
+          activated_at: string | null
+          activated_by: string | null
+          company_id: string
+          created_at: string
+          id: string
+          limits_json: Json | null
+          provider_id: string | null
+          provider_name: string | null
+          service_type: string
+          settings_json: Json | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          activated_at?: string | null
+          activated_by?: string | null
+          company_id: string
+          created_at?: string
+          id?: string
+          limits_json?: Json | null
+          provider_id?: string | null
+          provider_name?: string | null
+          service_type: string
+          settings_json?: Json | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          activated_at?: string | null
+          activated_by?: string | null
+          company_id?: string
+          created_at?: string
+          id?: string
+          limits_json?: Json | null
+          provider_id?: string | null
+          provider_name?: string | null
+          service_type?: string
+          settings_json?: Json | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "financial_services_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "financial_services_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "v_security_status"
             referencedColumns: ["company_id"]
           },
@@ -13236,6 +13708,75 @@ export type Database = {
           },
         ]
       }
+      liquidity_alerts: {
+        Row: {
+          affected_accounts: Json | null
+          ai_summary: string | null
+          alert_date: string
+          alert_type: string
+          company_id: string
+          created_at: string
+          days_until_negative: number | null
+          dismissed_at: string | null
+          dismissed_by: string | null
+          id: string
+          is_dismissed: boolean
+          is_read: boolean
+          projected_balance: number | null
+          recommended_actions: Json | null
+          severity: string
+        }
+        Insert: {
+          affected_accounts?: Json | null
+          ai_summary?: string | null
+          alert_date: string
+          alert_type: string
+          company_id: string
+          created_at?: string
+          days_until_negative?: number | null
+          dismissed_at?: string | null
+          dismissed_by?: string | null
+          id?: string
+          is_dismissed?: boolean
+          is_read?: boolean
+          projected_balance?: number | null
+          recommended_actions?: Json | null
+          severity?: string
+        }
+        Update: {
+          affected_accounts?: Json | null
+          ai_summary?: string | null
+          alert_date?: string
+          alert_type?: string
+          company_id?: string
+          created_at?: string
+          days_until_negative?: number | null
+          dismissed_at?: string | null
+          dismissed_by?: string | null
+          id?: string
+          is_dismissed?: boolean
+          is_read?: boolean
+          projected_balance?: number | null
+          recommended_actions?: Json | null
+          severity?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "liquidity_alerts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "liquidity_alerts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
       loan_contract_types: {
         Row: {
           company_id: string
@@ -15236,6 +15777,142 @@ export type Database = {
           },
         ]
       }
+      open_finance_connections: {
+        Row: {
+          access_token_encrypted: string | null
+          accounts_linked: Json | null
+          company_id: string
+          connection_type: string
+          consent_expires_at: string | null
+          consent_id: string | null
+          created_at: string
+          id: string
+          institution_id: string
+          institution_logo_url: string | null
+          institution_name: string
+          last_sync_at: string | null
+          refresh_token_encrypted: string | null
+          status: string
+          sync_error: string | null
+          token_expires_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          access_token_encrypted?: string | null
+          accounts_linked?: Json | null
+          company_id: string
+          connection_type?: string
+          consent_expires_at?: string | null
+          consent_id?: string | null
+          created_at?: string
+          id?: string
+          institution_id: string
+          institution_logo_url?: string | null
+          institution_name: string
+          last_sync_at?: string | null
+          refresh_token_encrypted?: string | null
+          status?: string
+          sync_error?: string | null
+          token_expires_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          access_token_encrypted?: string | null
+          accounts_linked?: Json | null
+          company_id?: string
+          connection_type?: string
+          consent_expires_at?: string | null
+          consent_id?: string | null
+          created_at?: string
+          id?: string
+          institution_id?: string
+          institution_logo_url?: string | null
+          institution_name?: string
+          last_sync_at?: string | null
+          refresh_token_encrypted?: string | null
+          status?: string
+          sync_error?: string | null
+          token_expires_at?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "open_finance_connections_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "open_finance_connections_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      open_finance_sync_logs: {
+        Row: {
+          company_id: string
+          completed_at: string | null
+          connection_id: string
+          error_message: string | null
+          id: string
+          records_fetched: number | null
+          records_processed: number | null
+          started_at: string
+          status: string
+          sync_type: string
+        }
+        Insert: {
+          company_id: string
+          completed_at?: string | null
+          connection_id: string
+          error_message?: string | null
+          id?: string
+          records_fetched?: number | null
+          records_processed?: number | null
+          started_at?: string
+          status?: string
+          sync_type: string
+        }
+        Update: {
+          company_id?: string
+          completed_at?: string | null
+          connection_id?: string
+          error_message?: string | null
+          id?: string
+          records_fetched?: number | null
+          records_processed?: number | null
+          started_at?: string
+          status?: string
+          sync_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "open_finance_sync_logs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "open_finance_sync_logs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "open_finance_sync_logs_connection_id_fkey"
+            columns: ["connection_id"]
+            isOneToOne: false
+            referencedRelation: "open_finance_connections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       operating_leverage: {
         Row: {
           company_id: string
@@ -15582,6 +16259,127 @@ export type Database = {
             isOneToOne: true
             referencedRelation: "v_security_status"
             referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      payment_instructions: {
+        Row: {
+          amount: number
+          beneficiary_account: string | null
+          beneficiary_agency: string | null
+          beneficiary_bank_code: string | null
+          beneficiary_document: string | null
+          beneficiary_name: string
+          company_id: string
+          connection_id: string | null
+          created_at: string
+          created_by: string | null
+          currency: string
+          end_to_end_id: string | null
+          error_message: string | null
+          external_id: string | null
+          id: string
+          payment_type: string
+          pix_key: string | null
+          pix_key_type: string | null
+          scheduled_date: string | null
+          status: string
+          status_history: Json | null
+          transaction_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          beneficiary_account?: string | null
+          beneficiary_agency?: string | null
+          beneficiary_bank_code?: string | null
+          beneficiary_document?: string | null
+          beneficiary_name: string
+          company_id: string
+          connection_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          end_to_end_id?: string | null
+          error_message?: string | null
+          external_id?: string | null
+          id?: string
+          payment_type: string
+          pix_key?: string | null
+          pix_key_type?: string | null
+          scheduled_date?: string | null
+          status?: string
+          status_history?: Json | null
+          transaction_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          beneficiary_account?: string | null
+          beneficiary_agency?: string | null
+          beneficiary_bank_code?: string | null
+          beneficiary_document?: string | null
+          beneficiary_name?: string
+          company_id?: string
+          connection_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          end_to_end_id?: string | null
+          error_message?: string | null
+          external_id?: string | null
+          id?: string
+          payment_type?: string
+          pix_key?: string | null
+          pix_key_type?: string | null
+          scheduled_date?: string | null
+          status?: string
+          status_history?: Json | null
+          transaction_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_instructions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_instructions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "payment_instructions_connection_id_fkey"
+            columns: ["connection_id"]
+            isOneToOne: false
+            referencedRelation: "open_finance_connections"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_instructions_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_instructions_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "v_ap_open"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_instructions_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "v_ar_open"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -16604,6 +17402,75 @@ export type Database = {
           },
         ]
       }
+      platform_revenue_events: {
+        Row: {
+          billing_period_end: string | null
+          billing_period_start: string | null
+          company_id: string
+          created_at: string
+          event_type: string
+          gross_amount: number
+          id: string
+          net_platform_revenue: number
+          operation_id: string | null
+          operation_table: string | null
+          partner_share_amount: number | null
+          partner_share_percent: number | null
+          platform_fee_amount: number
+          platform_fee_percent: number | null
+          status: string
+        }
+        Insert: {
+          billing_period_end?: string | null
+          billing_period_start?: string | null
+          company_id: string
+          created_at?: string
+          event_type: string
+          gross_amount: number
+          id?: string
+          net_platform_revenue: number
+          operation_id?: string | null
+          operation_table?: string | null
+          partner_share_amount?: number | null
+          partner_share_percent?: number | null
+          platform_fee_amount: number
+          platform_fee_percent?: number | null
+          status?: string
+        }
+        Update: {
+          billing_period_end?: string | null
+          billing_period_start?: string | null
+          company_id?: string
+          created_at?: string
+          event_type?: string
+          gross_amount?: number
+          id?: string
+          net_platform_revenue?: number
+          operation_id?: string | null
+          operation_table?: string | null
+          partner_share_amount?: number | null
+          partner_share_percent?: number | null
+          platform_fee_amount?: number
+          platform_fee_percent?: number | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "platform_revenue_events_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "platform_revenue_events_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
       posting_rules: {
         Row: {
           company_id: string
@@ -17532,6 +18399,81 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "counterparties_safe"
             referencedColumns: ["id"]
+          },
+        ]
+      }
+      purchase_recommendations: {
+        Row: {
+          ai_reasoning: string | null
+          avg_daily_demand: number | null
+          company_id: string
+          created_at: string
+          current_stock: number
+          id: string
+          lead_time_days: number | null
+          max_stock: number | null
+          min_stock: number | null
+          product_code: string
+          product_id: string | null
+          product_name: string | null
+          purchase_order_id: string | null
+          recommended_order_date: string | null
+          recommended_qty: number
+          status: string
+          urgency: string
+        }
+        Insert: {
+          ai_reasoning?: string | null
+          avg_daily_demand?: number | null
+          company_id: string
+          created_at?: string
+          current_stock?: number
+          id?: string
+          lead_time_days?: number | null
+          max_stock?: number | null
+          min_stock?: number | null
+          product_code: string
+          product_id?: string | null
+          product_name?: string | null
+          purchase_order_id?: string | null
+          recommended_order_date?: string | null
+          recommended_qty: number
+          status?: string
+          urgency?: string
+        }
+        Update: {
+          ai_reasoning?: string | null
+          avg_daily_demand?: number | null
+          company_id?: string
+          created_at?: string
+          current_stock?: number
+          id?: string
+          lead_time_days?: number | null
+          max_stock?: number | null
+          min_stock?: number | null
+          product_code?: string
+          product_id?: string | null
+          product_name?: string | null
+          purchase_order_id?: string | null
+          recommended_order_date?: string | null
+          recommended_qty?: number
+          status?: string
+          urgency?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_recommendations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_recommendations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
           },
         ]
       }
@@ -21192,6 +22134,57 @@ export type Database = {
           },
           {
             foreignKeyName: "user_branch_access_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      user_dashboard_preferences: {
+        Row: {
+          alert_preferences: Json | null
+          company_id: string
+          created_at: string
+          id: string
+          kpis_priority: Json | null
+          persona: string
+          updated_at: string
+          user_id: string
+          widgets_config: Json | null
+        }
+        Insert: {
+          alert_preferences?: Json | null
+          company_id: string
+          created_at?: string
+          id?: string
+          kpis_priority?: Json | null
+          persona?: string
+          updated_at?: string
+          user_id: string
+          widgets_config?: Json | null
+        }
+        Update: {
+          alert_preferences?: Json | null
+          company_id?: string
+          created_at?: string
+          id?: string
+          kpis_priority?: Json | null
+          persona?: string
+          updated_at?: string
+          user_id?: string
+          widgets_config?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_dashboard_preferences_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_dashboard_preferences_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "v_security_status"
