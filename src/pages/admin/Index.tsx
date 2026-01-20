@@ -17,6 +17,7 @@ import {
   Sparkles,
   Gauge,
   Database,
+  UserCog,
 } from "lucide-react";
 
 const adminModules = [
@@ -34,8 +35,15 @@ const adminModules = [
     href: "/admin/marca",
   },
   {
-    title: "Usuários",
-    description: "Gerenciar usuários e suas permissões",
+    title: "Gestão de Usuários",
+    description: "Usuários, papéis e permissões granulares",
+    icon: UserCog,
+    href: "/admin/gestao-usuarios",
+    highlight: true,
+  },
+  {
+    title: "Usuários (Simples)",
+    description: "Gerenciar usuários básicos",
     icon: Users,
     href: "/admin/usuarios",
   },
