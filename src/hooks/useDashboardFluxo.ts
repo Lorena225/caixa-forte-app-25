@@ -19,40 +19,21 @@ export function useDashboardFluxo(diasProjecao = 30) {
       const fimProjecao = addDays(hoje, diasProjecao);
       const fimProjecaoStr = format(fimProjecao, 'yyyy-MM-dd');
 
-      // Buscar saldo inicial
-      const { data: wallets } = await supabase
-        .from('wallets')
-        .select('current_balance')
-        .eq('company_id', companyId)
-        .eq('is_active', true);
+      const { data: wallets } = await supabase.from('wallets').select('*').eq('company_id', companyId).eq('is_active', true);
+      const saldoInicial = (wallets as any[])?.reduce((sum, w) => sum + (Number(w.current_balance || w.balance) || 0), 0) || 0;
 
-      const saldoInicial = wallets?.reduce((sum, w) => sum + (Number(w.current_balance) || 0), 0) || 0;
+      const { data: transactions } = await supabase.from('transactions').select('*').eq('company_id', companyId).in('status', ['lancado'] as any).gte('due_date', hojeStr).lte('due_date', fimProjecaoStr);
 
-      // Buscar transações pendentes
-      const { data: transactions } = await supabase
-        .from('transactions')
-        .select('valor, due_date, direcao')
-        .eq('company_id', companyId)
-        .in('status', ['lancado', 'rascunho'])
-        .gte('due_date', hojeStr)
-        .lte('due_date', fimProjecaoStr);
-
-      // Criar mapa por data
       const transactionsByDate = new Map<string, { inflow: number; outflow: number }>();
-
-      (transactions || []).forEach((t) => {
+      ((transactions as any[]) || []).forEach((t) => {
         if (!t.due_date) return;
         const dateKey = t.due_date.split('T')[0];
         const existing = transactionsByDate.get(dateKey) || { inflow: 0, outflow: 0 };
-        if (t.direcao === 'entrada') {
-          existing.inflow += Number(t.valor) || 0;
-        } else {
-          existing.outflow += Number(t.valor) || 0;
-        }
+        if (t.direction === 'entrada') existing.inflow += Number(t.amount) || 0;
+        else existing.outflow += Number(t.amount) || 0;
         transactionsByDate.set(dateKey, existing);
       });
 
-      // Gerar projeção
       const dias = eachDayOfInterval({ start: hoje, end: fimProjecao });
       let saldoAcumulado = saldoInicial;
 
@@ -60,15 +41,7 @@ export function useDashboardFluxo(diasProjecao = 30) {
         const dateKey = format(dia, 'yyyy-MM-dd');
         const dayData = transactionsByDate.get(dateKey) || { inflow: 0, outflow: 0 };
         saldoAcumulado += dayData.inflow - dayData.outflow;
-
-        return {
-          data: dateKey,
-          dataFormatada: format(dia, "dd/MM", { locale: ptBR }),
-          inflow: dayData.inflow,
-          outflow: dayData.outflow,
-          saldo: dayData.inflow - dayData.outflow,
-          saldoAcumulado,
-        };
+        return { data: dateKey, dataFormatada: format(dia, "dd/MM", { locale: ptBR }), inflow: dayData.inflow, outflow: dayData.outflow, saldo: dayData.inflow - dayData.outflow, saldoAcumulado };
       });
     },
     enabled: !!companyId,
