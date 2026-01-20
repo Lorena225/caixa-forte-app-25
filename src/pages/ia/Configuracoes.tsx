@@ -50,7 +50,7 @@ export default function IAConfiguracoes() {
     }
     setIsTesting(true);
     try {
-      const result = await testKey.mutateAsync(apiKey);
+      const result = await testKey.testKey(apiKey);
       if (result.valid) {
         toast.success("Chave válida!");
       } else {
@@ -186,11 +186,11 @@ export default function IAConfiguracoes() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center gap-2 mb-4">
-              <Badge variant={keyStatus?.has_key ? "default" : "secondary"}>
-                {keyStatus?.has_key ? "Chave Configurada" : "Usando IA Lovable"}
+              <Badge variant={keyStatus?.configured ? "default" : "secondary"}>
+                {keyStatus?.configured ? "Chave Configurada" : "Usando IA Lovable"}
               </Badge>
-              {keyStatus?.masked_key && (
-                <span className="text-sm text-muted-foreground font-mono">{keyStatus.masked_key}</span>
+              {keyStatus?.key_last4 && (
+                <span className="text-sm text-muted-foreground font-mono">****{keyStatus.key_last4}</span>
               )}
             </div>
 

@@ -115,6 +115,13 @@ import WhatsAppConfig from "./pages/autopilot/WhatsAppConfig";
 import AutomationRules from "./pages/autopilot/AutomationRules";
 import PendingCenter from "./pages/autopilot/PendingCenter";
 import Inbox from "./pages/autopilot/Inbox";
+// IA / ChatGPT Financeiro
+import IAIndex from "./pages/ia/Index";
+import IAConfiguracoes from "./pages/ia/Configuracoes";
+import IAWhatsAppAgent from "./pages/ia/WhatsAppAgent";
+import IAMonitorAlerts from "./pages/ia/MonitorAlerts";
+import IAAnalystChat from "./pages/ia/AnalystChat";
+import IALogs from "./pages/ia/Logs";
 // Financeiro Avançado
 import ConciliacaoBancaria from "./pages/financeiro/ConciliacaoBancaria";
 import AnaliseCustos from "./pages/financeiro/AnaliseCustos";
@@ -366,6 +373,14 @@ const App = () => (
                 <Route path="/integracoes/dlq" element={<IntegracoesDLQ />} />
                 <Route path="/integracoes/ia" element={<IAConfig />} />
                 <Route path="/integracoes/ia-teste" element={<IATest />} />
+                
+                {/* ============ IA / CHATGPT FINANCEIRO ============ */}
+                <Route path="/ia" element={<IAIndex />} />
+                <Route path="/ia/configuracoes" element={<IAConfiguracoes />} />
+                <Route path="/ia/whatsapp" element={<IAWhatsAppAgent />} />
+                <Route path="/ia/alertas" element={<IAMonitorAlerts />} />
+                <Route path="/ia/analista" element={<IAAnalystChat />} />
+                <Route path="/ia/logs" element={<IALogs />} />
                 
                 {/* Redirects integrações antigas */}
                 <Route path="/integracoes/connections" element={<Navigate to="/integracoes/conexoes" replace />} />
