@@ -13,21 +13,17 @@ import { useQuotations } from "@/hooks/useQuotations";
 import { format } from "date-fns";
 
 const STATUS_LABELS: Record<string, string> = {
-  rascunho: 'Rascunho',
-  enviado: 'Enviado',
+  pendente: 'Pendente',
   aprovado: 'Aprovado',
   rejeitado: 'Rejeitado',
   convertido: 'Convertido',
-  expirado: 'Expirado',
 };
 
 const STATUS_VARIANTS: Record<string, 'default' | 'secondary' | 'destructive' | 'outline'> = {
-  rascunho: 'secondary',
-  enviado: 'outline',
+  pendente: 'secondary',
   aprovado: 'default',
   rejeitado: 'destructive',
-  convertido: 'default',
-  expirado: 'secondary',
+  convertido: 'outline',
 };
 
 export default function VendasCotacoes() {
@@ -44,9 +40,9 @@ export default function VendasCotacoes() {
 
   const stats = {
     total: quotations?.length || 0,
-    abertas: quotations?.filter(q => ['rascunho', 'enviado'].includes(q.status)).length || 0,
+    abertas: quotations?.filter(q => ['pendente'].includes(q.status)).length || 0,
     aprovadas: quotations?.filter(q => q.status === 'aprovado').length || 0,
-    valorTotal: quotations?.reduce((sum, q) => sum + (q.valor_total || 0), 0) || 0,
+    valorTotal: quotations?.reduce((sum, q) => sum + (q.total || 0), 0) || 0,
   };
 
   const handleConvert = async (id: string) => {
@@ -62,31 +58,31 @@ export default function VendasCotacoes() {
       )
     },
     { 
-      key: 'counterparty', 
-      header: 'Cliente',
+      key: 'counterparties', 
+      header: 'Fornecedor',
       render: (item: NonNullable<typeof quotations>[number]) => (
-        item.counterparty?.name || '-'
+        item.counterparties?.name || '-'
       )
     },
     { 
-      key: 'data_emissao', 
+      key: 'quote_date', 
       header: 'Emissão',
       render: (item: NonNullable<typeof quotations>[number]) => (
-        format(new Date(item.data_emissao), 'dd/MM/yyyy')
+        format(new Date(item.quote_date), 'dd/MM/yyyy')
       )
     },
     { 
-      key: 'data_validade', 
+      key: 'validity_date', 
       header: 'Validade',
       render: (item: NonNullable<typeof quotations>[number]) => (
-        item.data_validade ? format(new Date(item.data_validade), 'dd/MM/yyyy') : '-'
+        item.validity_date ? format(new Date(item.validity_date), 'dd/MM/yyyy') : '-'
       )
     },
     { 
-      key: 'valor_total', 
+      key: 'total', 
       header: 'Valor',
       render: (item: NonNullable<typeof quotations>[number]) => (
-        (item.valor_total || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+        (item.total || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
       )
     },
     { 
