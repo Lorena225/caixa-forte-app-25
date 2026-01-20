@@ -9,6 +9,8 @@ import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
+import Favoritos from "./pages/Favoritos";
+import FrenteCaixa from "./pages/FrenteCaixa";
 import PlanoContas from "./pages/cadastros/PlanoContas";
 import CentrosCusto from "./pages/cadastros/CentrosCusto";
 import ClientesFornecedores from "./pages/cadastros/ClientesFornecedores";
@@ -190,6 +192,8 @@ const App = () => (
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/auth" element={<Auth />} />
+                <Route path="/favoritos" element={<Favoritos />} />
+                <Route path="/frente-caixa" element={<FrenteCaixa />} />
                 <Route path="/lancamentos" element={<Lancamentos />} />
                 <Route path="/contas-receber" element={<ContasReceber />} />
                 <Route path="/contas-pagar" element={<ContasPagar />} />

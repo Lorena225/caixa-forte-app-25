@@ -45,13 +45,13 @@ interface MenuItem {
 const menuItems: MenuItem[] = [
   { key: 'inicio', label: 'Início', icon: Home, route: '/' },
   { key: 'favoritos', label: 'Favoritos', icon: Star, route: '/favoritos' },
-  { key: 'ai-captura', label: 'Conta AI Captura', icon: Bot, route: '/autopilot/inbox' },
+  { key: 'ai-captura', label: 'Conta AI Captura', icon: Bot, route: '/autopiloto/caixa-entrada' },
   { 
     key: 'frente-caixa', 
     label: 'Frente de Caixa', 
     icon: ShoppingCart,
     children: [
-      { key: 'pdv', label: 'PDV', icon: CreditCard, route: '/vendas' },
+      { key: 'pdv', label: 'PDV', icon: CreditCard, route: '/frente-caixa' },
       { key: 'nova-venda', label: 'Nova Venda', icon: Receipt, route: '/vendas/nova' },
     ]
   },
