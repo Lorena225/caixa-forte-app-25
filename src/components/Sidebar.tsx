@@ -105,7 +105,7 @@ const menuItems: MenuItem[] = [
       { key: 'fornecedores', label: 'Fornecedores', icon: Users, route: '/cadastros/clientes-fornecedores' },
     ]
   },
-  { 
+{ 
     key: 'financeiro', 
     label: 'Financeiro', 
     icon: DollarSign,
@@ -121,6 +121,9 @@ const menuItems: MenuItem[] = [
       { key: 'cnab', label: 'CNAB', icon: Send, route: '/tesouraria/cnab' },
       { key: 'cheques', label: 'Cheques', icon: FileCheck, route: '/tesouraria/cheques' },
       { key: 'caixa-fisica', label: 'Caixa Física', icon: Banknote, route: '/tesouraria/caixa-fisica' },
+      { key: 'orcamento-real', label: 'Orçamento vs Real', icon: Target, route: '/financeiro/orcamento-real' },
+      { key: 'rolling-forecast', label: 'Rolling Forecast', icon: TrendingUp, route: '/financeiro/rolling-forecast' },
+      { key: 'simulacoes', label: 'Simulações What-If', icon: Calculator, route: '/financeiro/simulacoes-orcamento' },
     ]
   },
   { 
