@@ -60,6 +60,13 @@ export type Database = {
             foreignKeyName: "account_categories_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "account_categories_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -171,6 +178,13 @@ export type Database = {
             foreignKeyName: "accounts_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "accounts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -269,6 +283,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "action_rollbacks_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "action_rollbacks_company_id_fkey"
@@ -400,6 +421,13 @@ export type Database = {
             foreignKeyName: "ai_action_results_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "ai_action_results_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -447,6 +475,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_analyst_conversations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "ai_analyst_conversations_company_id_fkey"
@@ -600,6 +635,13 @@ export type Database = {
             foreignKeyName: "ai_company_settings_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: true
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "ai_company_settings_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -662,6 +704,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_confirmations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "ai_confirmations_company_id_fkey"
@@ -743,6 +792,13 @@ export type Database = {
             foreignKeyName: "ai_decisions_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "ai_decisions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -811,6 +867,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_feedback_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "ai_feedback_company_id_fkey"
@@ -893,6 +956,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_logs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "ai_logs_company_id_fkey"
@@ -987,6 +1057,13 @@ export type Database = {
             foreignKeyName: "ai_monitor_alerts_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "ai_monitor_alerts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -1061,6 +1138,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_requests_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "ai_requests_company_id_fkey"
@@ -1150,6 +1234,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_whatsapp_messages_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "ai_whatsapp_messages_company_id_fkey"
@@ -1264,6 +1355,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "allocation_rules_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "allocation_rules_company_id_fkey"
@@ -1386,6 +1484,13 @@ export type Database = {
             foreignKeyName: "analise_tributaria_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "analise_tributaria_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -1457,6 +1562,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "anomaly_detections_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "anomaly_detections_company_id_fkey"
@@ -1547,6 +1659,13 @@ export type Database = {
             foreignKeyName: "anticipation_operations_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "anticipation_operations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -1627,6 +1746,13 @@ export type Database = {
             foreignKeyName: "api_keys_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "api_keys_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -1699,6 +1825,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "api_logs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "api_logs_company_id_fkey"
@@ -1808,6 +1941,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "app_connections_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "app_connections_company_id_fkey"
@@ -1938,6 +2078,13 @@ export type Database = {
             foreignKeyName: "approval_ai_suggestions_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "approval_ai_suggestions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -1997,6 +2144,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approval_requests_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "approval_requests_company_id_fkey"
@@ -2109,6 +2263,13 @@ export type Database = {
             foreignKeyName: "approval_workflows_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "approval_workflows_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -2185,6 +2346,13 @@ export type Database = {
             foreignKeyName: "apuracoes_impostos_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "apuracoes_impostos_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -2256,6 +2424,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "audit_logs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "audit_logs_company_id_fkey"
@@ -2390,6 +2565,13 @@ export type Database = {
             foreignKeyName: "automation_rules_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "automation_rules_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -2452,6 +2634,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "automations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "automations_company_id_fkey"
@@ -2547,6 +2736,13 @@ export type Database = {
             foreignKeyName: "backup_config_critical_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "backup_config_critical_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -2628,6 +2824,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "backup_executions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "backup_executions_company_id_fkey"
@@ -2721,6 +2924,13 @@ export type Database = {
             foreignKeyName: "backup_jobs_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "backup_jobs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -2797,6 +3007,13 @@ export type Database = {
             foreignKeyName: "backup_policy_settings_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: true
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "backup_policy_settings_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -2856,6 +3073,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "backup_restore_logs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "backup_restore_logs_company_id_fkey"
@@ -3021,6 +3245,13 @@ export type Database = {
             foreignKeyName: "bank_accounts_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "bank_accounts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -3101,6 +3332,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bank_requests_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "bank_requests_company_id_fkey"
@@ -3198,6 +3436,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bank_statement_imports_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "bank_statement_imports_company_id_fkey"
@@ -3323,6 +3568,13 @@ export type Database = {
             foreignKeyName: "bank_statements_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "bank_statements_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -3418,6 +3670,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bank_sync_jobs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "bank_sync_jobs_company_id_fkey"
@@ -3545,6 +3804,13 @@ export type Database = {
             foreignKeyName: "bank_transactions_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "bank_transactions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -3622,6 +3888,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bank_transfers_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "bank_transfers_company_id_fkey"
@@ -3789,6 +4062,13 @@ export type Database = {
             foreignKeyName: "beneficios_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "beneficios_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -3858,6 +4138,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "boleto_events_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "boleto_events_company_id_fkey"
@@ -3976,6 +4263,13 @@ export type Database = {
             foreignKeyName: "boletos_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "boletos_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -4073,6 +4367,13 @@ export type Database = {
             foreignKeyName: "branches_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "branches_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -4138,6 +4439,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "breakeven_params_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "breakeven_params_company_id_fkey"
@@ -4224,6 +4532,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_accounts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "budget_accounts_company_id_fkey"
@@ -4332,6 +4647,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_forecasts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "budget_forecasts_company_id_fkey"
@@ -4516,6 +4838,13 @@ export type Database = {
             foreignKeyName: "budget_master_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "budget_master_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -4606,6 +4935,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_report_schedules_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "budget_report_schedules_company_id_fkey"
@@ -4731,6 +5067,13 @@ export type Database = {
             foreignKeyName: "budget_simulations_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "budget_simulations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -4787,6 +5130,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budgets_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "budgets_company_id_fkey"
@@ -4854,6 +5204,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "calendario_obrigacoes_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "calendario_obrigacoes_company_id_fkey"
@@ -4940,6 +5297,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "card_merchants_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "card_merchants_company_id_fkey"
@@ -5036,6 +5400,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "card_receivables_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "card_receivables_company_id_fkey"
@@ -5140,6 +5511,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "card_sales_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "card_sales_company_id_fkey"
@@ -5258,6 +5636,13 @@ export type Database = {
             foreignKeyName: "card_settlements_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "card_settlements_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -5350,6 +5735,13 @@ export type Database = {
             foreignKeyName: "cargos_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "cargos_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -5415,6 +5807,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cash_positions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "cash_positions_company_id_fkey"
@@ -5517,6 +5916,13 @@ export type Database = {
             foreignKeyName: "cash_register_movements_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "cash_register_movements_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -5608,6 +6014,13 @@ export type Database = {
             foreignKeyName: "cash_registers_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "cash_registers_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -5688,6 +6101,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "categorias_produto_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "categorias_produto_empresa_id_fkey"
@@ -5776,6 +6196,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "categorization_rules_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "categorization_rules_company_id_fkey"
@@ -5886,6 +6313,13 @@ export type Database = {
             foreignKeyName: "certificados_digitais_empresa_id_fkey"
             columns: ["empresa_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "certificados_digitais_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -5956,6 +6390,13 @@ export type Database = {
             foreignKeyName: "cfo_insights_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "cfo_insights_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -5994,6 +6435,13 @@ export type Database = {
             isOneToOne: true
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chart_of_accounts_settings_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "chart_of_accounts_settings_company_id_fkey"
@@ -6098,6 +6546,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cheques_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "cheques_company_id_fkey"
@@ -6270,6 +6725,13 @@ export type Database = {
             foreignKeyName: "clientes_empresa_id_fkey"
             columns: ["empresa_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "clientes_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -6336,6 +6798,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clientes_contatos_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "clientes_contatos_empresa_id_fkey"
@@ -6424,6 +6893,13 @@ export type Database = {
             foreignKeyName: "clientes_enderecos_empresa_id_fkey"
             columns: ["empresa_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "clientes_enderecos_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -6483,6 +6959,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "closing_checklists_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "closing_checklists_company_id_fkey"
@@ -6581,6 +7064,13 @@ export type Database = {
             foreignKeyName: "cnab_agreements_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "cnab_agreements_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -6658,6 +7148,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cnab_files_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "cnab_files_company_id_fkey"
@@ -6866,6 +7363,13 @@ export type Database = {
             foreignKeyName: "cnab_remittance_items_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "cnab_remittance_items_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -6995,6 +7499,13 @@ export type Database = {
             foreignKeyName: "cnab_remittances_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "cnab_remittances_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -7075,6 +7586,13 @@ export type Database = {
             foreignKeyName: "cnab_return_files_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "cnab_return_files_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -7128,6 +7646,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collection_actions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "collection_actions_company_id_fkey"
@@ -7207,6 +7732,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collection_rules_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "collection_rules_company_id_fkey"
@@ -7306,6 +7838,13 @@ export type Database = {
             foreignKeyName: "commission_rules_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "commission_rules_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -7399,6 +7938,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "commissions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "commissions_company_id_fkey"
@@ -7522,6 +8068,13 @@ export type Database = {
             foreignKeyName: "company_ai_keys_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "company_ai_keys_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -7630,6 +8183,13 @@ export type Database = {
             foreignKeyName: "company_bank_accounts_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "company_bank_accounts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -7709,6 +8269,13 @@ export type Database = {
             foreignKeyName: "company_bank_branches_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "company_bank_branches_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -7756,6 +8323,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_feature_flags_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "company_feature_flags_company_id_fkey"
@@ -7855,6 +8429,13 @@ export type Database = {
             foreignKeyName: "company_tier_history_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "company_tier_history_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -7919,6 +8500,13 @@ export type Database = {
             foreignKeyName: "company_tier_settings_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: true
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "company_tier_settings_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -7969,6 +8557,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_users_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "company_users_company_id_fkey"
@@ -8113,6 +8708,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "compras_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "compras_empresa_id_fkey"
@@ -8315,6 +8917,13 @@ export type Database = {
             foreignKeyName: "condicoes_pagamento_empresa_id_fkey"
             columns: ["empresa_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "condicoes_pagamento_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -8432,6 +9041,13 @@ export type Database = {
             foreignKeyName: "contracts_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "contracts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -8535,6 +9151,13 @@ export type Database = {
             foreignKeyName: "contratos_recorrentes_empresa_id_fkey"
             columns: ["empresa_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "contratos_recorrentes_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -8597,6 +9220,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cost_center_closure_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "cost_center_closure_company_id_fkey"
@@ -8683,6 +9313,13 @@ export type Database = {
             foreignKeyName: "cost_center_hierarchy_settings_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: true
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "cost_center_hierarchy_settings_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -8745,6 +9382,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cost_center_responsibles_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "cost_center_responsibles_company_id_fkey"
@@ -8859,6 +9503,13 @@ export type Database = {
             foreignKeyName: "cost_centers_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "cost_centers_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -8951,6 +9602,13 @@ export type Database = {
             foreignKeyName: "cost_drivers_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "cost_drivers_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -9004,6 +9662,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "costing_activities_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "costing_activities_company_id_fkey"
@@ -9080,6 +9745,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cotacoes_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "cotacoes_empresa_id_fkey"
@@ -9490,6 +10162,13 @@ export type Database = {
             foreignKeyName: "counterparties_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "counterparties_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -9564,6 +10243,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "counterparty_bank_accounts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "counterparty_bank_accounts_company_id_fkey"
@@ -9654,6 +10340,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "credit_protection_requests_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "credit_protection_requests_company_id_fkey"
@@ -9779,6 +10472,13 @@ export type Database = {
             foreignKeyName: "crm_activities_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "crm_activities_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -9867,6 +10567,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "custom_roles_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "custom_roles_company_id_fkey"
@@ -10132,6 +10839,13 @@ export type Database = {
             foreignKeyName: "customer_invoices_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "customer_invoices_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -10222,6 +10936,13 @@ export type Database = {
             foreignKeyName: "data_retention_policies_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "data_retention_policies_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -10293,6 +11014,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "demand_forecasts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "demand_forecasts_company_id_fkey"
@@ -10370,6 +11098,13 @@ export type Database = {
             foreignKeyName: "departamentos_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "departamentos_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -10430,6 +11165,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "departments_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "departments_company_id_fkey"
@@ -10592,6 +11334,13 @@ export type Database = {
             foreignKeyName: "digital_tax_books_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "digital_tax_books_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -10652,6 +11401,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dimension_values_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "dimension_values_company_id_fkey"
@@ -10726,6 +11482,13 @@ export type Database = {
             foreignKeyName: "dimensions_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "dimensions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -10793,6 +11556,13 @@ export type Database = {
             foreignKeyName: "document_types_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "document_types_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -10855,6 +11625,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documents_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "documents_company_id_fkey"
@@ -10943,6 +11720,13 @@ export type Database = {
             isOneToOne: true
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dr_test_checklist_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "dr_test_checklist_company_id_fkey"
@@ -11072,6 +11856,13 @@ export type Database = {
             foreignKeyName: "estoque_empresa_id_fkey"
             columns: ["empresa_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "estoque_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -11147,6 +11938,13 @@ export type Database = {
             foreignKeyName: "export_profiles_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "export_profiles_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -11194,6 +11992,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "external_keys_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "external_keys_company_id_fkey"
@@ -11274,6 +12079,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fact_ap_aging_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "fact_ap_aging_company_id_fkey"
@@ -11368,6 +12180,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fact_ar_aging_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "fact_ar_aging_company_id_fkey"
@@ -11473,6 +12292,13 @@ export type Database = {
             foreignKeyName: "fact_budget_vs_actual_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "fact_budget_vs_actual_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -11562,6 +12388,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fact_cashflow_day_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "fact_cashflow_day_company_id_fkey"
@@ -11688,6 +12521,13 @@ export type Database = {
             foreignKeyName: "fact_dre_month_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "fact_dre_month_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -11772,6 +12612,13 @@ export type Database = {
             foreignKeyName: "fact_liquidity_indicators_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "fact_liquidity_indicators_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -11819,6 +12666,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "feature_flags_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "feature_flags_company_id_fkey"
@@ -11963,6 +12817,13 @@ export type Database = {
             foreignKeyName: "field_visibility_policies_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: true
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "field_visibility_policies_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -12036,6 +12897,13 @@ export type Database = {
             foreignKeyName: "financial_scenarios_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "financial_scenarios_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -12098,6 +12966,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "financial_services_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "financial_services_company_id_fkey"
@@ -12398,6 +13273,13 @@ export type Database = {
             foreignKeyName: "fiscal_documents_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "fiscal_documents_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -12512,6 +13394,13 @@ export type Database = {
             foreignKeyName: "fiscal_periods_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "fiscal_periods_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -12585,6 +13474,13 @@ export type Database = {
             foreignKeyName: "fiscal_provider_config_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "fiscal_provider_config_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -12644,6 +13540,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fiscal_tax_regimes_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "fiscal_tax_regimes_company_id_fkey"
@@ -12732,6 +13635,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fiscal_tax_rules_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "fiscal_tax_rules_company_id_fkey"
@@ -12897,6 +13807,13 @@ export type Database = {
             foreignKeyName: "folhas_pagamento_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "folhas_pagamento_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -13049,6 +13966,13 @@ export type Database = {
             foreignKeyName: "fornecedores_empresa_id_fkey"
             columns: ["empresa_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "fornecedores_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -13108,6 +14032,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fornecedores_contatos_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "fornecedores_contatos_empresa_id_fkey"
@@ -13198,6 +14129,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fornecedores_enderecos_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "fornecedores_enderecos_empresa_id_fkey"
@@ -13440,6 +14378,13 @@ export type Database = {
             foreignKeyName: "funcionarios_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "funcionarios_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -13549,6 +14494,13 @@ export type Database = {
             foreignKeyName: "gl_balances_monthly_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "gl_balances_monthly_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -13625,6 +14577,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "help_articles_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "help_articles_company_id_fkey"
@@ -13734,6 +14693,13 @@ export type Database = {
             foreignKeyName: "idempotency_keys_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "idempotency_keys_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -13808,6 +14774,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "import_batches_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "import_batches_company_id_fkey"
@@ -13891,6 +14864,13 @@ export type Database = {
             foreignKeyName: "import_mappings_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "import_mappings_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -13957,6 +14937,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "import_rows_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "import_rows_company_id_fkey"
@@ -14096,6 +15083,13 @@ export type Database = {
             foreignKeyName: "imported_transactions_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "imported_transactions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -14207,6 +15201,13 @@ export type Database = {
             foreignKeyName: "impostos_configuracao_empresa_id_fkey"
             columns: ["empresa_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "impostos_configuracao_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -14293,6 +15294,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "installment_plans_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "installment_plans_company_id_fkey"
@@ -14387,6 +15395,13 @@ export type Database = {
             foreignKeyName: "integration_accounts_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "integration_accounts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -14475,6 +15490,13 @@ export type Database = {
             foreignKeyName: "integration_connections_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "integration_connections_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -14531,6 +15553,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "integration_credentials_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "integration_credentials_company_id_fkey"
@@ -14598,6 +15627,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "integration_dlq_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "integration_dlq_company_id_fkey"
@@ -14683,6 +15719,13 @@ export type Database = {
             foreignKeyName: "integration_jobs_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "integration_jobs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -14757,6 +15800,13 @@ export type Database = {
             foreignKeyName: "integration_logs_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "integration_logs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -14817,6 +15867,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "integration_webhooks_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "integration_webhooks_company_id_fkey"
@@ -14902,6 +15959,13 @@ export type Database = {
             foreignKeyName: "integrations_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "integrations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -14977,6 +16041,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventarios_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "inventarios_empresa_id_fkey"
@@ -15059,6 +16130,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventarios_itens_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "inventarios_itens_empresa_id_fkey"
@@ -15150,6 +16228,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventories_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "inventories_company_id_fkey"
@@ -15381,6 +16466,13 @@ export type Database = {
             foreignKeyName: "invoices_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "invoices_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -15548,6 +16640,13 @@ export type Database = {
             foreignKeyName: "jobs_queue_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "jobs_queue_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -15638,6 +16737,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "journal_entries_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "journal_entries_company_id_fkey"
@@ -15863,6 +16969,13 @@ export type Database = {
             foreignKeyName: "leads_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "leads_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -15946,6 +17059,13 @@ export type Database = {
             foreignKeyName: "liquidity_alerts_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "liquidity_alerts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -16002,6 +17122,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loan_contract_types_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "loan_contract_types_company_id_fkey"
@@ -16234,6 +17361,13 @@ export type Database = {
             foreignKeyName: "loan_contracts_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "loan_contracts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -16379,6 +17513,13 @@ export type Database = {
             foreignKeyName: "loan_generation_runs_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "loan_generation_runs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -16475,6 +17616,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loan_installments_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "loan_installments_company_id_fkey"
@@ -16599,6 +17747,13 @@ export type Database = {
             foreignKeyName: "lotes_empresa_id_fkey"
             columns: ["empresa_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "lotes_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -16670,6 +17825,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "marcas_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "marcas_empresa_id_fkey"
@@ -16859,6 +18021,13 @@ export type Database = {
             foreignKeyName: "movimentacoes_estoque_empresa_id_fkey"
             columns: ["empresa_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "movimentacoes_estoque_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -16926,6 +18095,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "navigation_audit_log_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "navigation_audit_log_company_id_fkey"
@@ -17217,6 +18393,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "nfe_invoices_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "nfe_invoices_company_id_fkey"
@@ -17546,6 +18729,13 @@ export type Database = {
             foreignKeyName: "nfse_invoices_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "nfse_invoices_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -17745,6 +18935,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notas_fiscais_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "notas_fiscais_empresa_id_fkey"
@@ -18030,6 +19227,13 @@ export type Database = {
             foreignKeyName: "obrigacoes_fiscais_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "obrigacoes_fiscais_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -18112,6 +19316,13 @@ export type Database = {
             foreignKeyName: "open_finance_connections_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "open_finance_connections_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -18168,6 +19379,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "open_finance_sync_logs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "open_finance_sync_logs_company_id_fkey"
@@ -18242,6 +19460,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "operating_leverage_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "operating_leverage_company_id_fkey"
@@ -18356,6 +19581,13 @@ export type Database = {
             foreignKeyName: "opportunities_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "opportunities_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -18447,6 +19679,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "organizational_units_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "organizational_units_company_id_fkey"
@@ -18557,6 +19796,13 @@ export type Database = {
             foreignKeyName: "parametros_fiscais_empresa_id_fkey"
             columns: ["empresa_id"]
             isOneToOne: true
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "parametros_fiscais_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: true
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -18657,6 +19903,13 @@ export type Database = {
             foreignKeyName: "payment_instructions_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "payment_instructions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -18729,6 +19982,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_methods_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "payment_methods_company_id_fkey"
@@ -18869,6 +20129,13 @@ export type Database = {
             foreignKeyName: "payment_runs_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "payment_runs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -18954,6 +20221,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "payments_company_id_fkey"
@@ -19134,6 +20408,13 @@ export type Database = {
             foreignKeyName: "pedidos_compra_empresa_id_fkey"
             columns: ["empresa_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "pedidos_compra_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -19300,6 +20581,13 @@ export type Database = {
             foreignKeyName: "period_locks_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "period_locks_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -19424,6 +20712,13 @@ export type Database = {
             foreignKeyName: "periods_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "periods_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -19527,6 +20822,13 @@ export type Database = {
             foreignKeyName: "pipeline_stages_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "pipeline_stages_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -19613,6 +20915,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pix_charges_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "pix_charges_company_id_fkey"
@@ -19722,6 +21031,13 @@ export type Database = {
             foreignKeyName: "pix_events_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "pix_events_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -19778,6 +21094,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pix_providers_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "pix_providers_company_id_fkey"
@@ -19859,6 +21182,13 @@ export type Database = {
             foreignKeyName: "platform_revenue_events_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "platform_revenue_events_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -19915,6 +21245,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "posting_rules_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "posting_rules_company_id_fkey"
@@ -20023,6 +21360,13 @@ export type Database = {
             foreignKeyName: "privacy_requests_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "privacy_requests_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -20073,6 +21417,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_cost_allocations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "product_cost_allocations_company_id_fkey"
@@ -20180,6 +21531,13 @@ export type Database = {
             foreignKeyName: "product_fiscal_data_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "product_fiscal_data_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -20263,6 +21621,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "products_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "products_company_id_fkey"
@@ -20444,6 +21809,13 @@ export type Database = {
             foreignKeyName: "produtos_empresa_id_fkey"
             columns: ["empresa_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "produtos_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -20530,6 +21902,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "produtos_variacoes_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "produtos_variacoes_empresa_id_fkey"
@@ -20696,6 +22075,13 @@ export type Database = {
             foreignKeyName: "purchase_orders_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "purchase_orders_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -20832,6 +22218,13 @@ export type Database = {
             foreignKeyName: "purchase_receipts_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "purchase_receipts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -20930,6 +22323,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_recommendations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "purchase_recommendations_company_id_fkey"
@@ -21059,6 +22459,13 @@ export type Database = {
             foreignKeyName: "quotations_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "quotations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -21129,6 +22536,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rate_limit_events_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "rate_limit_events_company_id_fkey"
@@ -21252,6 +22666,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "receipts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "receipts_company_id_fkey"
@@ -21386,6 +22807,13 @@ export type Database = {
             foreignKeyName: "received_files_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "received_files_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -21451,6 +22879,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reconciliation_matches_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "reconciliation_matches_company_id_fkey"
@@ -21551,6 +22986,13 @@ export type Database = {
             foreignKeyName: "reconciliation_rules_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "reconciliation_rules_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -21618,6 +23060,13 @@ export type Database = {
             foreignKeyName: "reconciliation_suggestions_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "reconciliation_suggestions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -21674,6 +23123,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reconciliation_tolerances_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "reconciliation_tolerances_company_id_fkey"
@@ -21751,6 +23207,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recovery_logs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "recovery_logs_company_id_fkey"
@@ -21921,6 +23384,13 @@ export type Database = {
             foreignKeyName: "regras_tributacao_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "regras_tributacao_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -21981,6 +23451,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "report_exports_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "report_exports_company_id_fkey"
@@ -22072,6 +23549,13 @@ export type Database = {
             foreignKeyName: "report_templates_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "report_templates_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -22146,6 +23630,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reports_generated_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "reports_generated_company_id_fkey"
@@ -22285,6 +23776,13 @@ export type Database = {
             foreignKeyName: "returns_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "returns_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -22396,6 +23894,13 @@ export type Database = {
             foreignKeyName: "roles_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "roles_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -22461,6 +23966,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rubricas_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "rubricas_company_id_fkey"
@@ -22537,6 +24049,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_commissions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "sales_commissions_company_id_fkey"
@@ -22630,6 +24149,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_goals_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "sales_goals_company_id_fkey"
@@ -22787,6 +24313,13 @@ export type Database = {
             foreignKeyName: "sales_orders_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "sales_orders_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -22865,6 +24398,13 @@ export type Database = {
             foreignKeyName: "saved_filters_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "saved_filters_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -22927,6 +24467,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "security_events_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "security_events_company_id_fkey"
@@ -23020,6 +24567,13 @@ export type Database = {
             foreignKeyName: "sellers_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "sellers_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -23092,6 +24646,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "settlement_file_rows_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "settlement_file_rows_company_id_fkey"
@@ -23232,6 +24793,13 @@ export type Database = {
             foreignKeyName: "settlement_files_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "settlement_files_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -23294,6 +24862,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "settlement_items_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "settlement_items_company_id_fkey"
@@ -23410,6 +24985,13 @@ export type Database = {
             foreignKeyName: "settlements_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "settlements_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -23508,6 +25090,13 @@ export type Database = {
             foreignKeyName: "simples_nacional_das_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "simples_nacional_das_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -23564,6 +25153,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sod_exceptions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "sod_exceptions_company_id_fkey"
@@ -23629,6 +25225,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sod_policies_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "sod_policies_company_id_fkey"
@@ -23710,6 +25313,13 @@ export type Database = {
             foreignKeyName: "sod_rules_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "sod_rules_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -23786,6 +25396,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sod_violations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "sod_violations_company_id_fkey"
@@ -23898,6 +25515,13 @@ export type Database = {
             foreignKeyName: "sped_accounting_entries_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "sped_accounting_entries_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -23998,6 +25622,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sped_bloco_k_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "sped_bloco_k_company_id_fkey"
@@ -24140,6 +25771,13 @@ export type Database = {
             foreignKeyName: "sped_fiscal_movements_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "sped_fiscal_movements_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -24256,6 +25894,13 @@ export type Database = {
             foreignKeyName: "sped_jobs_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "sped_jobs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -24324,6 +25969,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stock_movements_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "stock_movements_company_id_fkey"
@@ -24423,6 +26075,13 @@ export type Database = {
             foreignKeyName: "system_health_snapshots_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "system_health_snapshots_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -24514,6 +26173,13 @@ export type Database = {
             foreignKeyName: "tax_calculations_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "tax_calculations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -24580,6 +26246,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tax_codes_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "tax_codes_company_id_fkey"
@@ -24679,6 +26352,13 @@ export type Database = {
             foreignKeyName: "tax_obligations_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "tax_obligations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -24745,6 +26425,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tax_reports_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "tax_reports_company_id_fkey"
@@ -24822,6 +26509,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tax_rules_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "tax_rules_company_id_fkey"
@@ -25071,6 +26765,13 @@ export type Database = {
             foreignKeyName: "transactions_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "transactions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -25197,6 +26898,13 @@ export type Database = {
             foreignKeyName: "unidades_medida_empresa_id_fkey"
             columns: ["empresa_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "unidades_medida_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -25256,6 +26964,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_amount_limits_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "user_amount_limits_company_id_fkey"
@@ -25325,6 +27040,13 @@ export type Database = {
             foreignKeyName: "user_audit_log_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "user_audit_log_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -25384,6 +27106,13 @@ export type Database = {
             foreignKeyName: "user_branch_access_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "user_branch_access_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -25437,6 +27166,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_dashboard_preferences_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "user_dashboard_preferences_company_id_fkey"
@@ -25503,6 +27239,13 @@ export type Database = {
             foreignKeyName: "user_limits_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "user_limits_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -25559,6 +27302,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_nav_preferences_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "user_nav_preferences_company_id_fkey"
@@ -25673,6 +27423,13 @@ export type Database = {
             foreignKeyName: "user_profiles_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "user_profiles_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -25733,6 +27490,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_roles_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "user_roles_company_id_fkey"
@@ -25804,6 +27568,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_sessions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "user_sessions_company_id_fkey"
@@ -25967,6 +27738,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendas_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "vendas_empresa_id_fkey"
@@ -26536,6 +28314,13 @@ export type Database = {
             foreignKeyName: "vendor_bills_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "vendor_bills_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -26637,6 +28422,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wallets_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "wallets_company_id_fkey"
@@ -26762,6 +28554,13 @@ export type Database = {
             foreignKeyName: "webhook_ingress_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "webhook_ingress_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -26823,6 +28622,13 @@ export type Database = {
             foreignKeyName: "webhooks_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "webhooks_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -26879,6 +28685,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "whatsapp_connections_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "whatsapp_connections_company_id_fkey"
@@ -26949,6 +28762,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "whatsapp_contacts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "whatsapp_contacts_company_id_fkey"
@@ -27033,6 +28853,13 @@ export type Database = {
             foreignKeyName: "whatsapp_inbox_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "whatsapp_inbox_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -27089,6 +28916,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "withholding_rules_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "withholding_rules_company_id_fkey"
@@ -27152,6 +28986,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "audit_logs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "audit_logs_company_id_fkey"
@@ -27368,6 +29209,13 @@ export type Database = {
             foreignKeyName: "counterparties_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "counterparties_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -27379,6 +29227,18 @@ export type Database = {
             referencedColumns: ["company_id"]
           },
         ]
+      }
+      mv_dashboard_metrics: {
+        Row: {
+          company_id: string | null
+          overdue_count: number | null
+          refreshed_at: string | null
+          total_payable_amount: number | null
+          total_payables: number | null
+          total_receivable_amount: number | null
+          total_receivables: number | null
+        }
+        Relationships: []
       }
       mv_security_dashboard: {
         Row: {
@@ -27409,6 +29269,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_monitor_alerts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "ai_monitor_alerts_company_id_fkey"
@@ -27445,6 +29312,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_bills_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "vendor_bills_company_id_fkey"
@@ -27494,6 +29368,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "transactions_company_id_fkey"
@@ -27581,6 +29462,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "transactions_company_id_fkey"
@@ -27688,6 +29576,13 @@ export type Database = {
             foreignKeyName: "customer_invoices_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "customer_invoices_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -27715,6 +29610,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "transactions_company_id_fkey"
@@ -27807,6 +29709,13 @@ export type Database = {
             foreignKeyName: "transactions_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "transactions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -27891,6 +29800,13 @@ export type Database = {
             foreignKeyName: "bank_statements_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "bank_statements_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -27964,6 +29880,13 @@ export type Database = {
             foreignKeyName: "budget_accounts_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "budget_accounts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -28004,6 +29927,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_master_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "budget_master_company_id_fkey"
@@ -28066,6 +29996,13 @@ export type Database = {
             foreignKeyName: "budgets_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "budgets_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -28096,6 +30033,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "transactions_company_id_fkey"
@@ -28161,6 +30105,13 @@ export type Database = {
             foreignKeyName: "wallets_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "wallets_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -28196,6 +30147,13 @@ export type Database = {
             foreignKeyName: "transactions_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "transactions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -28224,6 +30182,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wallets_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "wallets_company_id_fkey"
@@ -28263,6 +30228,13 @@ export type Database = {
             foreignKeyName: "wallets_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "wallets_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -28294,6 +30266,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "compras_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "compras_empresa_id_fkey"
@@ -28352,6 +30331,13 @@ export type Database = {
             foreignKeyName: "cost_centers_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "cost_centers_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -28398,6 +30384,13 @@ export type Database = {
             foreignKeyName: "transactions_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "transactions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -28432,6 +30425,13 @@ export type Database = {
             foreignKeyName: "transactions_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "transactions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -28459,6 +30459,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "transactions_company_id_fkey"
@@ -28497,6 +30504,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fornecedores_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "fornecedores_empresa_id_fkey"
@@ -28584,6 +30598,13 @@ export type Database = {
             foreignKeyName: "jobs_queue_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "jobs_queue_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -28619,6 +30640,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "journal_entries_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "journal_entries_company_id_fkey"
@@ -28698,6 +30726,13 @@ export type Database = {
             foreignKeyName: "pedidos_compra_empresa_id_fkey"
             columns: ["empresa_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "pedidos_compra_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -28770,6 +30805,13 @@ export type Database = {
             foreignKeyName: "approval_requests_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "approval_requests_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -28801,6 +30843,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "movimentacoes_estoque_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "movimentacoes_estoque_empresa_id_fkey"
@@ -28853,6 +30902,13 @@ export type Database = {
             foreignKeyName: "estoque_empresa_id_fkey"
             columns: ["empresa_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "estoque_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -28894,6 +30950,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "estoque_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "estoque_empresa_id_fkey"
@@ -28943,6 +31006,13 @@ export type Database = {
             foreignKeyName: "transactions_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "transactions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -28974,6 +31044,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "transactions_company_id_fkey"
@@ -29061,6 +31138,13 @@ export type Database = {
             foreignKeyName: "settlement_items_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "settlement_items_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -29122,6 +31206,13 @@ export type Database = {
             foreignKeyName: "jobs_queue_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "jobs_queue_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -29152,6 +31243,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "transactions_company_id_fkey"
@@ -29206,6 +31304,13 @@ export type Database = {
             foreignKeyName: "transactions_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "transactions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "mv_security_dashboard"
             referencedColumns: ["company_id"]
           },
@@ -29250,6 +31355,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "accounts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "accounts_company_id_fkey"
@@ -29317,6 +31429,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "webhook_ingress_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
           },
           {
             foreignKeyName: "webhook_ingress_company_id_fkey"
