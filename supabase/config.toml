@@ -95,3 +95,6 @@ verify_jwt = false
 
 [functions.backup-api]
 verify_jwt = false
+
+[functions.ai-reconcile-match]
+verify_jwt = true
