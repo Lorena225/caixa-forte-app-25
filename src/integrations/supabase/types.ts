@@ -2273,6 +2273,53 @@ export type Database = {
           },
         ]
       }
+      automation_logs: {
+        Row: {
+          actions_executed: Json | null
+          automation_id: string
+          created_at: string | null
+          duration_ms: number | null
+          error: string | null
+          id: string
+          status: string
+          trigger_data: Json | null
+          trigger_type: string
+          triggered_at: string
+        }
+        Insert: {
+          actions_executed?: Json | null
+          automation_id: string
+          created_at?: string | null
+          duration_ms?: number | null
+          error?: string | null
+          id?: string
+          status: string
+          trigger_data?: Json | null
+          trigger_type: string
+          triggered_at?: string
+        }
+        Update: {
+          actions_executed?: Json | null
+          automation_id?: string
+          created_at?: string | null
+          duration_ms?: number | null
+          error?: string | null
+          id?: string
+          status?: string
+          trigger_data?: Json | null
+          trigger_type?: string
+          triggered_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "automation_logs_automation_id_fkey"
+            columns: ["automation_id"]
+            isOneToOne: false
+            referencedRelation: "automations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       automation_rules: {
         Row: {
           action_json: Json
@@ -2348,6 +2395,73 @@ export type Database = {
           },
           {
             foreignKeyName: "automation_rules_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      automations: {
+        Row: {
+          actions: Json
+          company_id: string
+          created_at: string | null
+          created_by: string
+          description: string | null
+          execution_count: number | null
+          id: string
+          is_active: boolean | null
+          last_executed_at: string | null
+          name: string
+          triggers: Json
+          updated_at: string | null
+        }
+        Insert: {
+          actions?: Json
+          company_id: string
+          created_at?: string | null
+          created_by: string
+          description?: string | null
+          execution_count?: number | null
+          id?: string
+          is_active?: boolean | null
+          last_executed_at?: string | null
+          name: string
+          triggers?: Json
+          updated_at?: string | null
+        }
+        Update: {
+          actions?: Json
+          company_id?: string
+          created_at?: string | null
+          created_by?: string
+          description?: string | null
+          execution_count?: number | null
+          id?: string
+          is_active?: boolean | null
+          last_executed_at?: string | null
+          name?: string
+          triggers?: Json
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "automations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "automations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_security_dashboard"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "automations_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "v_security_status"
