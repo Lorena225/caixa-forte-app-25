@@ -4,10 +4,14 @@
  */
 
 import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
 
 // Maximum records per query (Supabase default limit is 1000)
 export const MAX_PAGE_SIZE = 1000;
 export const DEFAULT_PAGE_SIZE = 50;
+
+// Valid table names from the database
+type TableName = keyof Database['public']['Tables'];
 
 /**
  * Pagination interface
@@ -105,43 +109,42 @@ export const SelectFields = {
 };
 
 /**
- * Apply pagination to query builder
+ * Apply pagination to a select query
+ * Must be called after .select()
  */
-export function applyPagination<T>(
-  query: ReturnType<typeof supabase.from>,
+export function applyPagination(
   params: PaginationParams
-) {
+): { from: number; to: number } {
   const page = Math.max(1, params.page || 1);
   const pageSize = Math.min(MAX_PAGE_SIZE, params.pageSize || DEFAULT_PAGE_SIZE);
   const from = (page - 1) * pageSize;
   const to = from + pageSize - 1;
 
-  return query.range(from, to);
+  return { from, to };
 }
 
 /**
- * Apply date range filter
+ * Apply date range filter - returns filter conditions
  */
-export function applyDateRangeFilter(
-  query: ReturnType<typeof supabase.from>,
+export function getDateRangeConditions(
   filter: DateRangeFilter,
   dateColumn: string = 'created_at'
-) {
-  let result = query;
+): { column: string; operator: 'gte' | 'lte'; value: string }[] {
+  const conditions: { column: string; operator: 'gte' | 'lte'; value: string }[] = [];
 
   if (filter.startDate) {
-    result = result.gte(dateColumn, filter.startDate);
+    conditions.push({ column: dateColumn, operator: 'gte', value: filter.startDate });
   }
 
   if (filter.endDate) {
-    result = result.lte(dateColumn, filter.endDate);
+    conditions.push({ column: dateColumn, operator: 'lte', value: filter.endDate });
   }
 
-  return result;
+  return conditions;
 }
 
 /**
- * Build cursor-based pagination (more efficient for large datasets)
+ * Build cursor-based pagination params (more efficient for large datasets)
  */
 export interface CursorPaginationParams {
   cursor?: string;
@@ -149,23 +152,23 @@ export interface CursorPaginationParams {
   direction?: 'forward' | 'backward';
 }
 
-export function applyCursorPagination(
-  query: ReturnType<typeof supabase.from>,
-  params: CursorPaginationParams,
-  cursorColumn: string = 'created_at'
-) {
+export function getCursorPaginationParams(
+  params: CursorPaginationParams
+): {
+  limit: number;
+  ascending: boolean;
+  cursorFilter?: { operator: 'gt' | 'lt'; value: string };
+} {
   const limit = Math.min(MAX_PAGE_SIZE, params.limit || DEFAULT_PAGE_SIZE);
-  let result = query;
+  const ascending = params.direction === 'backward';
 
-  if (params.cursor) {
-    if (params.direction === 'backward') {
-      result = result.gt(cursorColumn, params.cursor);
-    } else {
-      result = result.lt(cursorColumn, params.cursor);
-    }
-  }
-
-  return result.order(cursorColumn, { ascending: params.direction === 'backward' }).limit(limit);
+  return {
+    limit,
+    ascending,
+    cursorFilter: params.cursor
+      ? { operator: ascending ? 'gt' : 'lt', value: params.cursor }
+      : undefined,
+  };
 }
 
 /**
@@ -267,73 +270,109 @@ export function transformQueryResult<T, R>(
 }
 
 /**
- * Safe count query (avoids full table scan)
+ * Safe count query for transactions table
  */
-export async function getEstimatedCount(
-  tableName: string,
-  companyId?: string
+export async function getTransactionsCount(
+  companyId: string
 ): Promise<number> {
-  const query = supabase
-    .from(tableName)
-    .select('id', { count: 'exact', head: true });
+  const { count } = await supabase
+    .from('transactions')
+    .select('id', { count: 'exact', head: true })
+    .eq('company_id', companyId);
 
-  if (companyId) {
-    query.eq('company_id', companyId);
-  }
-
-  const { count } = await query;
   return count || 0;
 }
 
 /**
- * Optimized aggregation queries
+ * Safe count query for counterparties table
+ */
+export async function getCounterpartiesCount(
+  companyId: string
+): Promise<number> {
+  const { count } = await supabase
+    .from('counterparties')
+    .select('id', { count: 'exact', head: true })
+    .eq('company_id', companyId);
+
+  return count || 0;
+}
+
+/**
+ * Optimized aggregation queries for specific tables
  */
 export const AggregationQueries = {
   /**
-   * Sum amount by status
+   * Sum transaction total_amounts by status
    */
-  async sumByStatus(
-    tableName: string,
-    companyId: string,
-    amountColumn: string = 'amount'
+  async sumTransactionsByStatus(
+    companyId: string
   ): Promise<Record<string, number>> {
     const { data } = await supabase
-      .from(tableName)
-      .select(`status, ${amountColumn}`)
+      .from('transactions')
+      .select('status, total_amount')
       .eq('company_id', companyId);
 
     if (!data) return {};
 
     return data.reduce((acc, row) => {
-      const status = row.status as string;
-      acc[status] = (acc[status] || 0) + (row[amountColumn] as number || 0);
+      const status = row.status || 'unknown';
+      acc[status] = (acc[status] || 0) + (row.total_amount || 0);
       return acc;
     }, {} as Record<string, number>);
   },
 
   /**
-   * Count by month
+   * Count transactions by month
    */
-  async countByMonth(
-    tableName: string,
+  async countTransactionsByMonth(
     companyId: string,
-    year: number,
-    dateColumn: string = 'created_at'
+    year: number
   ): Promise<Record<number, number>> {
     const { data } = await supabase
-      .from(tableName)
-      .select(`id, ${dateColumn}`)
+      .from('transactions')
+      .select('id, created_at')
       .eq('company_id', companyId)
-      .gte(dateColumn, `${year}-01-01`)
-      .lt(dateColumn, `${year + 1}-01-01`);
+      .gte('created_at', `${year}-01-01`)
+      .lt('created_at', `${year + 1}-01-01`);
 
     if (!data) return {};
 
     return data.reduce((acc, row) => {
-      const month = new Date(row[dateColumn] as string).getMonth() + 1;
+      const month = new Date(row.created_at).getMonth() + 1;
       acc[month] = (acc[month] || 0) + 1;
       return acc;
     }, {} as Record<number, number>);
+  },
+
+  /**
+   * Sum audit logs by action type
+   */
+  async countAuditLogsByAction(
+    companyId: string,
+    startDate?: string,
+    endDate?: string
+  ): Promise<Record<string, number>> {
+    let query = supabase
+      .from('audit_logs')
+      .select('action')
+      .eq('company_id', companyId);
+
+    if (startDate) {
+      query = query.gte('created_at', startDate);
+    }
+    if (endDate) {
+      query = query.lte('created_at', endDate);
+    }
+
+    const { data } = await query;
+
+    if (!data) return {};
+
+    return data.reduce((acc, row) => {
+      const action = row.action as string;
+      acc[action] = (acc[action] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
   },
 };
 
