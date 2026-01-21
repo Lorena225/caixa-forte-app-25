@@ -184,6 +184,7 @@ import AdminSystemTier from "./pages/admin/SystemTier";
 import AdminNavigationSettings from "./pages/admin/NavigationSettings";
 import AdminSecurityReport from "./pages/admin/SecurityReport";
 import UserManagement from "./pages/admin/UserManagement";
+import PerformanceDashboard from "./pages/admin/PerformanceDashboard";
 // Backup & Recovery
 import BackupIndex from "./pages/admin/backup/Index";
 import BackupJobs from "./pages/admin/backup/Jobs";
@@ -510,6 +511,7 @@ const App = () => (
                 <Route path="/admin/limites-usuario" element={<AdminUserLimits />} />
                 <Route path="/admin/saude-sistema" element={<AdminSystemHealth />} />
                 <Route path="/admin/monitor-jobs" element={<AdminJobsMonitor />} />
+                <Route path="/admin/performance" element={<PerformanceDashboard />} />
                 <Route path="/admin/go-live" element={<AdminGoLive />} />
                 <Route path="/admin/navegacao" element={<AdminNavigationSettings />} />
                 <Route path="/admin/relatorio-seguranca" element={<AdminSecurityReport />} />

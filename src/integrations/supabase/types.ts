@@ -6057,6 +6057,80 @@ export type Database = {
           },
         ]
       }
+      cache_statistics: {
+        Row: {
+          avg_load_time_ms: number | null
+          cache_key: string
+          company_id: string | null
+          created_at: string
+          hits: number | null
+          id: string
+          last_accessed_at: string | null
+          last_refreshed_at: string | null
+          misses: number | null
+          size_bytes: number | null
+          ttl_seconds: number | null
+          updated_at: string
+        }
+        Insert: {
+          avg_load_time_ms?: number | null
+          cache_key: string
+          company_id?: string | null
+          created_at?: string
+          hits?: number | null
+          id?: string
+          last_accessed_at?: string | null
+          last_refreshed_at?: string | null
+          misses?: number | null
+          size_bytes?: number | null
+          ttl_seconds?: number | null
+          updated_at?: string
+        }
+        Update: {
+          avg_load_time_ms?: number | null
+          cache_key?: string
+          company_id?: string | null
+          created_at?: string
+          hits?: number | null
+          id?: string
+          last_accessed_at?: string | null
+          last_refreshed_at?: string | null
+          misses?: number | null
+          size_bytes?: number | null
+          ttl_seconds?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cache_statistics_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cache_statistics_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "cache_statistics_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_security_dashboard"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "cache_statistics_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
       calendario_obrigacoes: {
         Row: {
           arquivo_comprovante: string | null
@@ -22030,6 +22104,71 @@ export type Database = {
           },
         ]
       }
+      performance_metrics: {
+        Row: {
+          company_id: string | null
+          created_at: string
+          id: string
+          metadata: Json | null
+          metric_name: string
+          metric_type: string
+          recorded_at: string
+          unit: string | null
+          value: number
+        }
+        Insert: {
+          company_id?: string | null
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          metric_name: string
+          metric_type: string
+          recorded_at?: string
+          unit?: string | null
+          value: number
+        }
+        Update: {
+          company_id?: string | null
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          metric_name?: string
+          metric_type?: string
+          recorded_at?: string
+          unit?: string | null
+          value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "performance_metrics_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "performance_metrics_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "performance_metrics_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_security_dashboard"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "performance_metrics_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
       period_locks: {
         Row: {
           company_id: string
@@ -23841,6 +23980,77 @@ export type Database = {
           },
           {
             foreignKeyName: "purchase_recommendations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      query_performance_logs: {
+        Row: {
+          cache_hit: boolean | null
+          company_id: string | null
+          created_at: string
+          execution_time_ms: number
+          id: string
+          parameters: Json | null
+          query_hash: string | null
+          query_name: string
+          query_plan: Json | null
+          rows_returned: number | null
+          rows_scanned: number | null
+        }
+        Insert: {
+          cache_hit?: boolean | null
+          company_id?: string | null
+          created_at?: string
+          execution_time_ms: number
+          id?: string
+          parameters?: Json | null
+          query_hash?: string | null
+          query_name: string
+          query_plan?: Json | null
+          rows_returned?: number | null
+          rows_scanned?: number | null
+        }
+        Update: {
+          cache_hit?: boolean | null
+          company_id?: string | null
+          created_at?: string
+          execution_time_ms?: number
+          id?: string
+          parameters?: Json | null
+          query_hash?: string | null
+          query_name?: string
+          query_plan?: Json | null
+          rows_returned?: number | null
+          rows_scanned?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "query_performance_logs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "query_performance_logs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "query_performance_logs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_security_dashboard"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "query_performance_logs_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "v_security_status"
@@ -26603,6 +26813,92 @@ export type Database = {
           },
           {
             foreignKeyName: "simples_nacional_das_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      sla_metrics: {
+        Row: {
+          availability_pct: number | null
+          avg_db_query_time_ms: number | null
+          cache_hit_rate_pct: number | null
+          company_id: string | null
+          created_at: string
+          error_rate_pct: number | null
+          failed_requests: number | null
+          id: string
+          metric_date: string
+          p50_latency_ms: number | null
+          p95_latency_ms: number | null
+          p99_latency_ms: number | null
+          peak_concurrent_users: number | null
+          successful_requests: number | null
+          total_requests: number | null
+          updated_at: string
+        }
+        Insert: {
+          availability_pct?: number | null
+          avg_db_query_time_ms?: number | null
+          cache_hit_rate_pct?: number | null
+          company_id?: string | null
+          created_at?: string
+          error_rate_pct?: number | null
+          failed_requests?: number | null
+          id?: string
+          metric_date?: string
+          p50_latency_ms?: number | null
+          p95_latency_ms?: number | null
+          p99_latency_ms?: number | null
+          peak_concurrent_users?: number | null
+          successful_requests?: number | null
+          total_requests?: number | null
+          updated_at?: string
+        }
+        Update: {
+          availability_pct?: number | null
+          avg_db_query_time_ms?: number | null
+          cache_hit_rate_pct?: number | null
+          company_id?: string | null
+          created_at?: string
+          error_rate_pct?: number | null
+          failed_requests?: number | null
+          id?: string
+          metric_date?: string
+          p50_latency_ms?: number | null
+          p95_latency_ms?: number | null
+          p99_latency_ms?: number | null
+          peak_concurrent_users?: number | null
+          successful_requests?: number | null
+          total_requests?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sla_metrics_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sla_metrics_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "sla_metrics_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_security_dashboard"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "sla_metrics_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "v_security_status"
@@ -30815,6 +31111,95 @@ export type Database = {
         }
         Relationships: []
       }
+      mv_performance_summary: {
+        Row: {
+          avg_value: number | null
+          company_id: string | null
+          hour: string | null
+          max_value: number | null
+          metric_type: string | null
+          min_value: number | null
+          p50: number | null
+          p95: number | null
+          p99: number | null
+          sample_count: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "performance_metrics_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "performance_metrics_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "performance_metrics_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_security_dashboard"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "performance_metrics_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      mv_query_analytics: {
+        Row: {
+          avg_time_ms: number | null
+          cache_hit_rate: number | null
+          company_id: string | null
+          execution_count: number | null
+          first_seen: string | null
+          last_seen: string | null
+          max_time_ms: number | null
+          p95_time_ms: number | null
+          p99_time_ms: number | null
+          query_name: string | null
+          total_rows_returned: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "query_performance_logs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "query_performance_logs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "query_performance_logs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_security_dashboard"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "query_performance_logs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
       mv_security_dashboard: {
         Row: {
           active_sessions: number | null
@@ -33366,6 +33751,7 @@ export type Database = {
         }
         Returns: Json
       }
+      cleanup_old_performance_data: { Args: never; Returns: number }
       cleanup_security_data: {
         Args: { p_days_login_attempts?: number; p_days_rate_limit?: number }
         Returns: Json
@@ -33392,6 +33778,17 @@ export type Database = {
         Args: { p_empresa_id: string; p_serie: string; p_tipo_nota: string }
         Returns: number
       }
+      get_cache_stats: {
+        Args: { p_company_id: string }
+        Returns: {
+          avg_load_time_ms: number
+          hit_rate: number
+          total_hits: number
+          total_keys: number
+          total_misses: number
+          total_size_mb: number
+        }[]
+      }
       get_company_tier: {
         Args: { p_company_id: string }
         Returns: Database["public"]["Enums"]["system_tier"]
@@ -33408,6 +33805,21 @@ export type Database = {
           rate_limits_24h: number
           refreshed_at: string
           security_events_24h: number
+        }[]
+      }
+      get_slow_queries: {
+        Args: {
+          p_company_id: string
+          p_limit?: number
+          p_threshold_ms?: number
+        }
+        Returns: {
+          avg_time_ms: number
+          cache_hit_rate: number
+          execution_count: number
+          max_time_ms: number
+          p95_time_ms: number
+          query_name: string
         }[]
       }
       get_user_permissions: {
@@ -33517,7 +33929,30 @@ export type Database = {
         }
         Returns: undefined
       }
+      record_performance_metric: {
+        Args: {
+          p_company_id: string
+          p_metadata?: Json
+          p_metric_name: string
+          p_metric_type: string
+          p_unit?: string
+          p_value: number
+        }
+        Returns: string
+      }
+      record_query_performance: {
+        Args: {
+          p_cache_hit?: boolean
+          p_company_id: string
+          p_execution_time_ms: number
+          p_parameters?: Json
+          p_query_name: string
+          p_rows_returned?: number
+        }
+        Returns: string
+      }
       refresh_dashboard_cache: { Args: never; Returns: undefined }
+      refresh_performance_views: { Args: never; Returns: undefined }
       refresh_security_dashboard: { Args: never; Returns: undefined }
       request_digital_signature: {
         Args: {
@@ -33543,6 +33978,10 @@ export type Database = {
         Returns: string
       }
       sanitize_pii: { Args: { p_data: Json }; Returns: Json }
+      update_daily_sla_metrics: {
+        Args: { p_company_id: string }
+        Returns: undefined
+      }
       user_belongs_to_company: {
         Args: { check_company_id: string }
         Returns: boolean
