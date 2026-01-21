@@ -140,6 +140,7 @@ import RollingForecast from "./pages/financeiro/RollingForecast";
 import SimulacoesOrcamento from "./pages/financeiro/SimulacoesOrcamento";
 import Investimentos from "./pages/financeiro/Investimentos";
 import Moedas from "./pages/configuracoes/Moedas";
+import SettingsUsers from "./pages/settings/Users";
 // CRM
 import CRMIndex from "./pages/crm/Index";
 import CRMPipeline from "./pages/crm/Pipeline";
@@ -253,6 +254,8 @@ const App = () => (
                 <Route path="/metas" element={<Metas />} />
                 <Route path="/cartoes" element={<Cartoes />} />
                 
+                {/* Settings */}
+                <Route path="/configuracoes/usuarios" element={<SettingsUsers />} />
                 {/* ERP Modules - Contabilidade */}
                 <Route path="/contabilidade" element={<ContabilidadeIndex />} />
                 <Route path="/contabilidade/lancamentos" element={<ContabilidadeLancamentos />} />
