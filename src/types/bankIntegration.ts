@@ -22,10 +22,132 @@ export type SupportedBank =
   | 'stone'
   | 'other';
 
+// Authentication methods for bank integrations
+export type BankAuthMethod = 'OPEN_BANKING' | 'OFX' | 'API' | 'CNAB';
+
 export type BankSyncStatus = 'idle' | 'syncing' | 'error' | 'success';
 export type BankConnectionStatus = 'pending' | 'connected' | 'disconnected' | 'expired' | 'error';
 export type TransactionDirection = 'entrada' | 'saida';
 export type ReconciliationStatus = 'pending' | 'matched' | 'unmatched' | 'ignored' | 'manual';
+
+// Cron expression type for scheduling
+export type CronExpression = string;
+
+// Bank Integration configuration
+export interface BankIntegration {
+  id: string;
+  company_id: string;
+  bank_code: string;           // FEBRABAN code
+  bank_name: string;
+  bank_slug: SupportedBank;
+  auth_method: BankAuthMethod;
+  credentials_id?: string;     // Reference to encrypted credentials
+  
+  // Sync scheduling
+  sync_schedule?: CronExpression;
+  sync_enabled: boolean;
+  last_sync_at?: string;
+  next_scheduled_sync?: string;
+  
+  // Status
+  is_active: boolean;
+  connection_status: BankConnectionStatus;
+  
+  created_at: string;
+  updated_at: string;
+}
+
+// Bank statement from external source
+export interface BankStatement {
+  id: string;
+  bank_account_id: string;
+  period_start: string;
+  period_end: string;
+  opening_balance: number;
+  closing_balance: number;
+  transaction_count: number;
+  currency: string;
+  raw_data?: Record<string, unknown>;
+  created_at: string;
+}
+
+// Balance information
+export interface BankBalance {
+  account_id: string;
+  current_balance: number;
+  available_balance: number;
+  blocked_balance?: number;
+  currency: string;
+  as_of: string;
+}
+
+// Transfer request
+export interface TransferRequest {
+  id?: string;
+  company_id: string;
+  source_account_id: string;
+  destination_bank_code: string;
+  destination_agency: string;
+  destination_account: string;
+  destination_account_digit?: string;
+  destination_holder_name: string;
+  destination_cpf_cnpj: string;
+  amount: number;
+  description?: string;
+  scheduled_date?: string;
+  transfer_type: 'TED' | 'DOC' | 'PIX' | 'SAME_BANK';
+}
+
+// Transfer result
+export interface TransferResult {
+  success: boolean;
+  transfer_id?: string;
+  confirmation_code?: string;
+  scheduled_date?: string;
+  status: 'pending' | 'processing' | 'completed' | 'failed' | 'cancelled';
+  error_message?: string;
+  error_code?: string;
+  raw_response?: Record<string, unknown>;
+}
+
+// CNAB send result
+export interface CNABSendResult {
+  success: boolean;
+  protocol_number?: string;
+  batch_id?: string;
+  records_sent: number;
+  records_accepted: number;
+  records_rejected: number;
+  errors: Array<{
+    line: number;
+    code: string;
+    message: string;
+  }>;
+  sent_at: string;
+}
+
+// Date range for queries
+export interface DateRange {
+  start: string;
+  end: string;
+}
+
+// Encrypted credentials interface
+export interface EncryptedCredentials {
+  id: string;
+  bank_slug: SupportedBank;
+  auth_type: 'api_key' | 'oauth2' | 'certificate' | 'user_pass';
+  credentials_ref: string;     // Vault reference
+  oauth_token_ref?: string;
+  refresh_token_ref?: string;
+  token_expires_at?: string;
+  certificate_path?: string;
+  certificate_expires_at?: string;
+  is_valid: boolean;
+  last_validated_at?: string;
+  created_at: string;
+  updated_at: string;
+}
 
 // Bank Account Configuration
 export interface BankAccount {
@@ -48,6 +170,7 @@ export interface BankAccount {
   connection_status: BankConnectionStatus;
   api_credentials_id?: string; // Reference to encrypted credentials
   oauth_token_id?: string;     // For OAuth-based integrations
+  auth_method?: BankAuthMethod;
   
   // Sync Status
   sync_status: BankSyncStatus;
@@ -55,6 +178,7 @@ export interface BankAccount {
   last_sync_error?: string;
   next_sync_at?: string;
   sync_frequency_hours: number;
+  sync_schedule?: CronExpression;
   
   // Balance
   current_balance?: number;
@@ -509,15 +633,28 @@ export const BANK_CONFIGS: Record<SupportedBank, Partial<BankApiConfig>> = {
   },
 };
 
-// Helper to get bank display name
+// Helper functions
 export function getBankDisplayName(slug: SupportedBank): string {
   return BANK_CONFIGS[slug]?.name || slug;
 }
 
-// Helper to check if bank supports feature
-export function bankSupportsFeature(slug: SupportedBank, feature: keyof BankApiConfig): boolean {
-  const config = BANK_CONFIGS[slug];
-  if (!config) return false;
-  const value = config[feature];
-  return typeof value === 'boolean' ? value : false;
+export function bankSupportsFeature(
+  slug: SupportedBank, 
+  feature: keyof Pick<BankApiConfig, 'supports_oauth' | 'supports_pix' | 'supports_boleto' | 'supports_transfer' | 'supports_statement' | 'supports_balance' | 'supports_webhooks'>
+): boolean {
+  return BANK_CONFIGS[slug]?.[feature] === true;
+}
+
+export function getAvailableAuthMethods(slug: SupportedBank): BankAuthMethod[] {
+  const methods: BankAuthMethod[] = ['CNAB', 'OFX'];
+  
+  if (BANK_CONFIGS[slug]?.supports_oauth) {
+    methods.push('OPEN_BANKING');
+  }
+  
+  if (BANK_CONFIGS[slug]?.supports_statement || BANK_CONFIGS[slug]?.supports_transfer) {
+    methods.push('API');
+  }
+  
+  return methods;
 }
