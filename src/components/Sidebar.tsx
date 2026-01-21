@@ -258,25 +258,8 @@ const menuItems: MenuItem[] = [
     ]
   },
   
-  // 13. CONFIGURAÇÕES & ADMINISTRAÇÃO
-  {
-    key: 'config-admin',
-    label: 'Configurações',
-    icon: Settings,
-    children: [
-      // EMPRESA
-      { key: 'dados-empresa', label: 'Dados da Empresa', icon: Building2, route: '/admin/empresa' },
-      // ACESSO & CONTROLE
-      { key: 'config-usuarios', label: 'Usuários', icon: Users, route: '/settings/usuarios' },
-      { key: 'config-papeis', label: 'Papéis', icon: Shield, route: '/settings/papeis' },
-      { key: 'config-permissoes', label: 'Permissões', icon: Key, route: '/settings/permissoes' },
-      { key: 'gestao-usuarios', label: 'Gestão de Usuários', icon: UserCog, route: '/admin/gestao-usuarios' },
-      { key: 'admin-papeis', label: 'Papéis e Permissões', icon: Shield, route: '/admin/permissoes' },
-      { key: 'admin-seguranca', label: 'Segurança', icon: Shield, route: '/admin/seguranca' },
-      // ADMINISTRAÇÃO
-      { key: 'admin-config', label: 'Todas Configurações', icon: Settings, route: '/admin' },
-    ]
-  },
+  // 13. CONFIGURAÇÕES - Botão simples (sem expansível)
+  { key: 'configuracoes', label: 'Configurações', icon: Settings, route: '/admin' },
 ];
 
 interface SidebarContentProps {
@@ -379,16 +362,6 @@ const SidebarContent = memo(function SidebarContent({ collapsed = false, onNavig
           })}
         </div>
       </ScrollArea>
-
-      <div className="border-t border-sidebar-border p-3">
-        <button
-          onClick={() => handleNavigate('/admin')}
-          className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-foreground transition-colors"
-        >
-          <Settings className="h-5 w-5 shrink-0" />
-          {!collapsed && <span>Configurações</span>}
-        </button>
-      </div>
     </div>
   );
 });
