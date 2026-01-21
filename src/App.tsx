@@ -141,6 +141,9 @@ import SimulacoesOrcamento from "./pages/financeiro/SimulacoesOrcamento";
 import Investimentos from "./pages/financeiro/Investimentos";
 import Moedas from "./pages/configuracoes/Moedas";
 import SettingsUsers from "./pages/settings/Users";
+import SettingsRoles from "./pages/settings/Roles";
+import SettingsRoleDetail from "./pages/settings/RoleDetail";
+import SettingsPermissions from "./pages/settings/Permissions";
 // CRM
 import CRMIndex from "./pages/crm/Index";
 import CRMPipeline from "./pages/crm/Pipeline";
@@ -256,6 +259,10 @@ const App = () => (
                 
                 {/* Settings */}
                 <Route path="/configuracoes/usuarios" element={<SettingsUsers />} />
+                <Route path="/configuracoes/papeis" element={<SettingsRoles />} />
+                <Route path="/configuracoes/papeis/:roleId" element={<SettingsRoleDetail />} />
+                <Route path="/configuracoes/permissoes" element={<SettingsPermissions />} />
+                
                 {/* ERP Modules - Contabilidade */}
                 <Route path="/contabilidade" element={<ContabilidadeIndex />} />
                 <Route path="/contabilidade/lancamentos" element={<ContabilidadeLancamentos />} />
