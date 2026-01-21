@@ -6,7 +6,6 @@ import { supabase } from '@/integrations/supabase/client';
 import {
   ReportData,
   ReportPeriod,
-  ReportConfig,
   ReportColumn,
   ReportRow,
   ReportSummary,
@@ -14,7 +13,7 @@ import {
   ExportFormat,
   REPORT_TRANSLATIONS,
 } from '@/types/reports';
-import { format, parseISO, differenceInDays } from 'date-fns';
+import { format as formatDate, parseISO, differenceInDays } from 'date-fns';
 import { ptBR, enUS, es } from 'date-fns/locale';
 import * as XLSX from 'xlsx';
 
@@ -47,6 +46,18 @@ function setCache(key: string, data: ReportData): void {
   reportCache.set(key, { data, timestamp: Date.now() });
 }
 
+// Transaction type from database
+interface TransactionRow {
+  id: string;
+  amount: number | null;
+  total_amount: number | null;
+  description: string | null;
+  status: string | null;
+  due_date: string | null;
+  direction: string | null;
+  counterparty_id: string | null;
+}
+
 export class ReportEngine {
   private static locale: Locale = 'pt-BR';
   private static currency = 'BRL';
@@ -75,32 +86,27 @@ export class ReportEngine {
       if (cached) return cached;
     }
 
-    // Query receivables and payables for the period
-    const { data: receivables } = await supabase
-      .from('receivables')
-      .select('id, valor, descricao, status, data_vencimento, conta_id')
+    // Query paid transactions in period
+    const { data: transactions } = await supabase
+      .from('transactions')
+      .select('id, amount, total_amount, description, status, due_date, direction')
       .eq('company_id', companyId)
-      .gte('data_vencimento', periodo.inicio)
-      .lte('data_vencimento', periodo.fim)
-      .eq('status', 'pago');
-
-    const { data: payables } = await supabase
-      .from('payables')
-      .select('id, valor, descricao, status, data_vencimento, conta_id')
-      .eq('company_id', companyId)
-      .gte('data_vencimento', periodo.inicio)
-      .lte('data_vencimento', periodo.fim)
-      .eq('status', 'pago');
+      .gte('due_date', periodo.inicio)
+      .lte('due_date', periodo.fim)
+      .eq('status', 'pago' as never);
 
     let totalReceitas = 0;
     let totalDespesas = 0;
 
-    (receivables || []).forEach((r) => {
-      totalReceitas += Number(r.valor) || 0;
-    });
+    const txList = (transactions || []) as unknown as TransactionRow[];
 
-    (payables || []).forEach((p) => {
-      totalDespesas += Number(p.valor) || 0;
+    txList.forEach((tx) => {
+      const valor = Number(tx.total_amount || tx.amount) || 0;
+      if (tx.direction === 'entrada') {
+        totalReceitas += valor;
+      } else if (tx.direction === 'saida') {
+        totalDespesas += valor;
+      }
     });
 
     const resultado = totalReceitas - totalDespesas;
@@ -163,49 +169,37 @@ export class ReportEngine {
       if (cached) return cached;
     }
 
-    // Query paid receivables
-    const { data: receivables } = await supabase
-      .from('receivables')
-      .select('id, valor, descricao, data_vencimento, counterparty_id')
+    // Query paid transactions in period
+    const { data: transactions } = await supabase
+      .from('transactions')
+      .select('id, amount, total_amount, description, status, due_date, direction')
       .eq('company_id', companyId)
-      .gte('data_vencimento', periodo.inicio)
-      .lte('data_vencimento', periodo.fim)
-      .eq('status', 'pago')
-      .order('data_vencimento', { ascending: true });
-
-    // Query paid payables
-    const { data: payables } = await supabase
-      .from('payables')
-      .select('id, valor, descricao, data_vencimento, counterparty_id')
-      .eq('company_id', companyId)
-      .gte('data_vencimento', periodo.inicio)
-      .lte('data_vencimento', periodo.fim)
-      .eq('status', 'pago')
-      .order('data_vencimento', { ascending: true });
+      .gte('due_date', periodo.inicio)
+      .lte('due_date', periodo.fim)
+      .eq('status', 'pago' as never)
+      .order('due_date', { ascending: true });
 
     let saldoAcumulado = 0;
     const rows: ReportRow[] = [];
 
-    // Combine and sort by date
-    const allItems = [
-      ...(receivables || []).map(r => ({ ...r, tipo: 'entrada' as const })),
-      ...(payables || []).map(p => ({ ...p, tipo: 'saida' as const })),
-    ].sort((a, b) => (a.data_vencimento || '').localeCompare(b.data_vencimento || ''));
+    const txList = (transactions || []) as unknown as TransactionRow[];
 
-    allItems.forEach((item) => {
-      const valor = Number(item.valor) || 0;
-      if (item.tipo === 'entrada') {
+    txList.forEach((tx) => {
+      const valor = Number(tx.total_amount || tx.amount) || 0;
+      const isEntrada = tx.direction === 'entrada';
+      
+      if (isEntrada) {
         saldoAcumulado += valor;
       } else {
         saldoAcumulado -= valor;
       }
 
       rows.push({
-        id: item.id,
-        data: item.data_vencimento,
-        descricao: item.descricao || '-',
-        tipo: item.tipo,
-        valor: item.tipo === 'entrada' ? valor : -valor,
+        id: tx.id,
+        data: tx.due_date,
+        descricao: tx.description || '-',
+        tipo: isEntrada ? 'entrada' : 'saida',
+        valor: isEntrada ? valor : -valor,
         saldoAcumulado,
       });
     });
@@ -269,31 +263,35 @@ export class ReportEngine {
     // Query budgets
     const { data: budgets } = await supabase
       .from('budgets')
-      .select('id, name, total_amount')
+      .select('id, budget_amount')
       .eq('company_id', companyId);
 
-    // Query receivables and payables for actual values
-    const { data: receivables } = await supabase
-      .from('receivables')
-      .select('valor')
+    // Query paid transactions for actual values
+    const { data: transactions } = await supabase
+      .from('transactions')
+      .select('amount, total_amount, direction')
       .eq('company_id', companyId)
-      .gte('data_vencimento', periodo.inicio)
-      .lte('data_vencimento', periodo.fim)
-      .eq('status', 'pago');
+      .gte('due_date', periodo.inicio)
+      .lte('due_date', periodo.fim)
+      .eq('status', 'pago' as never);
 
-    const { data: payables } = await supabase
-      .from('payables')
-      .select('valor')
-      .eq('company_id', companyId)
-      .gte('data_vencimento', periodo.inicio)
-      .lte('data_vencimento', periodo.fim)
-      .eq('status', 'pago');
+    const txList = (transactions || []) as unknown as TransactionRow[];
+    const budgetList = (budgets || []) as unknown as { id: string; budget_amount: number | null }[];
 
-    const totalOrcado = (budgets || []).reduce((acc, b) => acc + (Number(b.total_amount) || 0), 0);
-    const totalRealizado = 
-      (receivables || []).reduce((acc, r) => acc + (Number(r.valor) || 0), 0) -
-      (payables || []).reduce((acc, p) => acc + (Number(p.valor) || 0), 0);
-
+    const totalOrcado = budgetList.reduce((acc, b) => acc + (Number(b.budget_amount) || 0), 0);
+    
+    let receitas = 0;
+    let despesas = 0;
+    txList.forEach((tx) => {
+      const valor = Number(tx.total_amount || tx.amount) || 0;
+      if (tx.direction === 'entrada') {
+        receitas += valor;
+      } else {
+        despesas += valor;
+      }
+    });
+    
+    const totalRealizado = receitas - despesas;
     const variacao = totalRealizado - totalOrcado;
     const variacaoPercentual = totalOrcado !== 0 ? (variacao / totalOrcado) * 100 : 0;
 
@@ -354,23 +352,27 @@ export class ReportEngine {
       if (cached) return cached;
     }
 
-    const table = tipo === 'receivable' ? 'receivables' : 'payables';
-    const { data: items } = await supabase
-      .from(table)
-      .select('id, valor, descricao, data_vencimento')
+    const direction = tipo === 'receivable' ? 'entrada' : 'saida';
+
+    const { data: transactions } = await supabase
+      .from('transactions')
+      .select('id, amount, total_amount, description, due_date, direction')
       .eq('company_id', companyId)
-      .in('status', ['pendente', 'lancado'])
-      .lte('data_vencimento', asOfDate);
+      .eq('direction', direction as never)
+      .in('status', ['lancado', 'pendente'] as never[])
+      .lte('due_date', asOfDate);
 
     const today = parseISO(asOfDate);
     const rows: ReportRow[] = [];
     const buckets = { a_vencer: 0, '1_30': 0, '31_60': 0, '61_90': 0, '90_mais': 0 };
 
-    (items || []).forEach((item) => {
-      if (!item.data_vencimento) return;
-      const dueDate = parseISO(item.data_vencimento);
+    const txList = (transactions || []) as unknown as TransactionRow[];
+
+    txList.forEach((tx) => {
+      if (!tx.due_date) return;
+      const dueDate = parseISO(tx.due_date);
       const diasAtraso = differenceInDays(today, dueDate);
-      const valor = Number(item.valor) || 0;
+      const valor = Number(tx.total_amount || tx.amount) || 0;
 
       let faixa: keyof typeof buckets = 'a_vencer';
       if (diasAtraso <= 0) faixa = 'a_vencer';
@@ -380,7 +382,14 @@ export class ReportEngine {
       else faixa = '90_mais';
 
       buckets[faixa] += valor;
-      rows.push({ id: item.id, documento: item.descricao, vencimento: item.data_vencimento, valor, diasAtraso: Math.max(0, diasAtraso), faixa });
+      rows.push({ 
+        id: tx.id, 
+        documento: tx.description || '-', 
+        vencimento: tx.due_date, 
+        valor, 
+        diasAtraso: Math.max(0, diasAtraso), 
+        faixa 
+      });
     });
 
     const columns: ReportColumn[] = [
@@ -415,12 +424,12 @@ export class ReportEngine {
   // =====================================================
   static async exportReport(
     report: ReportData,
-    format: ExportFormat
+    exportFormat: ExportFormat
   ): Promise<{ blob: Blob; filename: string; mimeType: string }> {
-    const timestamp = format(new Date(), 'yyyyMMdd_HHmmss');
+    const timestamp = formatDate(new Date(), 'yyyyMMdd_HHmmss');
     const baseFilename = `${report.metadata.reportType}_${timestamp}`;
 
-    switch (format) {
+    switch (exportFormat) {
       case 'csv':
         return this.exportToCSV(report, baseFilename);
       case 'excel':
