@@ -41,7 +41,7 @@ import {
   ChevronRight,
   Filter,
 } from "lucide-react";
-import { useUsersList, useUpdateUserRole, useRemoveUser, useResetUserPassword } from "@/hooks/useUsers";
+import { useUsersList, useUpdateUserRole, useRemoveUser, useResetUserPassword, useInviteUser } from "@/hooks/useUsers";
 import { useRoles } from "@/hooks/useRoles";
 import { InviteUserDialog, UserDialog } from "@/components/permissions";
 import {
@@ -87,6 +87,7 @@ export default function SettingsUsers() {
   const updateRole = useUpdateUserRole();
   const removeUser = useRemoveUser();
   const resetPassword = useResetUserPassword();
+  const inviteUser = useInviteUser();
 
   const handleRoleChange = async (userId: string, roleId: string) => {
     try {
@@ -118,8 +119,18 @@ export default function SettingsUsers() {
   };
 
   const handleInvite = async (data: { email: string; full_name?: string; role_id?: string }) => {
-    // Invite handled inside InviteUserDialog via hook
-    refetch();
+    try {
+      await inviteUser.mutateAsync({
+        email: data.email,
+        fullName: data.full_name,
+        roleId: data.role_id,
+      });
+      toast.success(`Convite enviado para ${data.email}`);
+      refetch();
+    } catch (error) {
+      toast.error("Erro ao enviar convite");
+      throw error; // Re-throw to let the dialog handle it
+    }
   };
 
   const handleSaveUser = async (data: any) => {
