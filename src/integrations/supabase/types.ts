@@ -33699,6 +33699,24 @@ export type Database = {
         }
         Returns: Json
       }
+      calculate_credit_score: {
+        Args: { p_company_id: string; p_counterparty_id: string }
+        Returns: {
+          default_probability: number
+          factors: Json
+          rating: string
+          risk_level: string
+          score: number
+        }[]
+      }
+      calculate_loss_provision: {
+        Args: {
+          p_company_id: string
+          p_period_end: string
+          p_period_start: string
+        }
+        Returns: string
+      }
       check_login_lockout: {
         Args: { p_email: string; p_ip_address?: unknown }
         Returns: {
@@ -33978,6 +33996,18 @@ export type Database = {
         Returns: string
       }
       sanitize_pii: { Args: { p_data: Json }; Returns: Json }
+      schedule_collection_actions: {
+        Args: { p_company_id: string; p_transaction_id: string }
+        Returns: number
+      }
+      update_credit_portfolio_summary: {
+        Args: { p_company_id: string }
+        Returns: undefined
+      }
+      update_credit_profile_score: {
+        Args: { p_company_id: string; p_counterparty_id: string }
+        Returns: string
+      }
       update_daily_sla_metrics: {
         Args: { p_company_id: string }
         Returns: undefined
