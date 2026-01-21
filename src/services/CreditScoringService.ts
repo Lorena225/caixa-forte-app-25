@@ -119,6 +119,63 @@ export interface LossProvision {
   posted_to_accounting: boolean;
 }
 
+// Helper function to execute queries on tables not yet in types
+async function executeQuery(table: string, operation: 'select' | 'insert' | 'update' | 'delete', options: {
+  select?: string;
+  data?: Record<string, unknown>;
+  filters?: Record<string, unknown>;
+  order?: { column: string; ascending?: boolean };
+  limit?: number;
+  single?: boolean;
+}): Promise<unknown> {
+  const client = supabase as unknown as {
+    from: (table: string) => {
+      select: (columns?: string) => unknown;
+      insert: (data: unknown) => unknown;
+      update: (data: unknown) => unknown;
+      delete: () => unknown;
+    };
+  };
+  
+  let query: unknown = client.from(table);
+  
+  if (operation === 'select') {
+    query = (query as { select: (c?: string) => unknown }).select(options.select || '*');
+  } else if (operation === 'insert' && options.data) {
+    query = (query as { insert: (d: unknown) => { select: (c?: string) => { single: () => unknown } } }).insert(options.data).select().single();
+  } else if (operation === 'update' && options.data) {
+    query = (query as { update: (d: unknown) => unknown }).update(options.data);
+  }
+  
+  // Apply filters
+  if (options.filters) {
+    for (const [key, value] of Object.entries(options.filters)) {
+      query = (query as { eq: (k: string, v: unknown) => unknown }).eq(key, value);
+    }
+  }
+  
+  // Apply ordering
+  if (options.order) {
+    query = (query as { order: (c: string, o: { ascending: boolean }) => unknown }).order(options.order.column, { ascending: options.order.ascending ?? true });
+  }
+  
+  // Apply limit
+  if (options.limit) {
+    query = (query as { limit: (n: number) => unknown }).limit(options.limit);
+  }
+  
+  // Single result
+  if (options.single) {
+    query = (query as { maybeSingle: () => unknown }).maybeSingle();
+  }
+  
+  const result = await (query as Promise<{ data: unknown; error: unknown }>);
+  if ((result as { error?: unknown }).error) {
+    throw (result as { error: Error }).error;
+  }
+  return (result as { data: unknown }).data;
+}
+
 class CreditScoringService {
   private static instance: CreditScoringService;
 
@@ -139,31 +196,37 @@ class CreditScoringService {
     default_probability: number;
     factors: ScoringFactors;
   }> {
-    const { data, error } = await supabase
-      .rpc('calculate_credit_score', {
-        p_counterparty_id: counterpartyId,
-        p_company_id: companyId
-      });
+    const { data, error } = await supabase.rpc('calculate_credit_score', {
+      p_counterparty_id: counterpartyId,
+      p_company_id: companyId
+    });
 
     if (error) throw error;
     
-    const result = (data as unknown[])?.[0] as Record<string, unknown> | undefined;
+    const results = data as unknown as Array<{
+      score: number;
+      rating: string;
+      risk_level: string;
+      default_probability: number;
+      factors: ScoringFactors;
+    }>;
+    
+    const result = results?.[0];
     return {
-      score: (result?.score as number) || 500,
-      rating: (result?.rating as string) || 'BBB',
-      risk_level: (result?.risk_level as string) || 'MEDIUM',
-      default_probability: (result?.default_probability as number) || 0.05,
-      factors: (result?.factors as ScoringFactors) || {} as ScoringFactors
+      score: result?.score || 500,
+      rating: result?.rating || 'BBB',
+      risk_level: result?.risk_level || 'MEDIUM',
+      default_probability: result?.default_probability || 0.05,
+      factors: result?.factors || {} as ScoringFactors
     };
   }
 
   // Update credit profile with new score
   async updateCreditProfile(counterpartyId: string, companyId: string): Promise<string> {
-    const { data, error } = await supabase
-      .rpc('update_credit_profile_score', {
-        p_counterparty_id: counterpartyId,
-        p_company_id: companyId
-      });
+    const { data, error } = await supabase.rpc('update_credit_profile_score', {
+      p_counterparty_id: counterpartyId,
+      p_company_id: companyId
+    });
 
     if (error) throw error;
     return data as string;
@@ -174,56 +237,22 @@ class CreditScoringService {
     riskLevel?: string;
     rating?: string;
     collectionStatus?: string;
-    search?: string;
   }): Promise<CreditProfile[]> {
-    // Use raw SQL query since types aren't generated yet
-    let query = `
-      SELECT cp.*, 
-             c.name as counterparty_name, 
-             c.document as counterparty_document, 
-             c.email as counterparty_email
-      FROM credit_profiles cp
-      LEFT JOIN counterparties c ON c.id = cp.counterparty_id
-      WHERE cp.company_id = $1
-    `;
-    const params: unknown[] = [companyId];
-    let paramIndex = 2;
-
+    const data = await executeQuery('credit_profiles', 'select', {
+      select: '*',
+      filters: { company_id: companyId },
+      order: { column: 'credit_score', ascending: false }
+    }) as Array<Record<string, unknown>>;
+    
+    let filtered = data || [];
     if (filters?.riskLevel) {
-      query += ` AND cp.risk_level = $${paramIndex}`;
-      params.push(filters.riskLevel);
-      paramIndex++;
+      filtered = filtered.filter(r => r.risk_level === filters.riskLevel);
     }
     if (filters?.rating) {
-      query += ` AND cp.credit_rating = $${paramIndex}`;
-      params.push(filters.rating);
-      paramIndex++;
-    }
-    if (filters?.collectionStatus) {
-      query += ` AND cp.collection_status = $${paramIndex}`;
-      params.push(filters.collectionStatus);
+      filtered = filtered.filter(r => r.credit_rating === filters.rating);
     }
     
-    query += ` ORDER BY cp.credit_score DESC`;
-
-    const { data, error } = await supabase.rpc('execute_sql', { 
-      sql_query: query, 
-      params: params 
-    }) as { data: unknown; error: unknown };
-
-    // Fallback: directly query without the RPC if it doesn't exist
-    if (error) {
-      const { data: directData, error: directError } = await supabase
-        .from('credit_profiles' as 'counterparties') // Type workaround
-        .select('*')
-        .eq('company_id', companyId)
-        .order('credit_score', { ascending: false });
-      
-      if (directError) throw directError;
-      return (directData || []).map(p => this.mapToProfile(p as Record<string, unknown>));
-    }
-
-    return ((data as unknown[]) || []).map(p => this.mapToProfile(p as Record<string, unknown>));
+    return filtered.map(row => this.mapToProfile(row));
   }
 
   private mapToProfile(row: Record<string, unknown>): CreditProfile {
@@ -231,17 +260,17 @@ class CreditScoringService {
       id: row.id as string,
       company_id: row.company_id as string,
       counterparty_id: row.counterparty_id as string,
-      credit_score: row.credit_score as number || 500,
-      credit_rating: row.credit_rating as string || 'BBB',
-      credit_limit: row.credit_limit as number || 0,
-      credit_utilized: row.credit_utilized as number || 0,
-      credit_available: row.credit_available as number || 0,
-      utilization_rate: row.utilization_rate as number || 0,
-      risk_level: row.risk_level as 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL' || 'MEDIUM',
-      default_probability: row.default_probability as number || 0.05,
-      expected_loss: row.expected_loss as number || 0,
-      scoring_factors: row.scoring_factors as ScoringFactors || {} as ScoringFactors,
-      collection_status: row.collection_status as 'ACTIVE' | 'SUSPENDED' | 'BLOCKED' | 'CLOSED' || 'ACTIVE',
+      credit_score: (row.credit_score as number) || 500,
+      credit_rating: (row.credit_rating as string) || 'BBB',
+      credit_limit: (row.credit_limit as number) || 0,
+      credit_utilized: (row.credit_utilized as number) || 0,
+      credit_available: (row.credit_available as number) || 0,
+      utilization_rate: (row.utilization_rate as number) || 0,
+      risk_level: (row.risk_level as 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL') || 'MEDIUM',
+      default_probability: (row.default_probability as number) || 0.05,
+      expected_loss: (row.expected_loss as number) || 0,
+      scoring_factors: (row.scoring_factors as ScoringFactors) || {} as ScoringFactors,
+      collection_status: (row.collection_status as 'ACTIVE' | 'SUSPENDED' | 'BLOCKED' | 'CLOSED') || 'ACTIVE',
       last_collection_action: row.last_collection_action as string | null,
       last_collection_date: row.last_collection_date as string | null,
       next_collection_date: row.next_collection_date as string | null,
@@ -259,27 +288,23 @@ class CreditScoringService {
 
   // Get single credit profile
   async getCreditProfile(profileId: string): Promise<CreditProfile | null> {
-    const { data, error } = await supabase
-      .from('credit_profiles' as 'counterparties')
-      .select('*')
-      .eq('id', profileId)
-      .single();
+    const data = await executeQuery('credit_profiles', 'select', {
+      filters: { id: profileId },
+      single: true
+    }) as Record<string, unknown> | null;
 
-    if (error) throw error;
-    return data ? this.mapToProfile(data as Record<string, unknown>) : null;
+    return data ? this.mapToProfile(data) : null;
   }
 
   // Get score history for a profile
   async getScoreHistory(profileId: string): Promise<ScoreHistoryEntry[]> {
-    const { data, error } = await supabase
-      .from('credit_score_history' as 'counterparties')
-      .select('*')
-      .eq('credit_profile_id', profileId)
-      .order('score_date', { ascending: false })
-      .limit(12);
-
-    if (error) throw error;
-    return ((data || []) as Record<string, unknown>[]).map(h => ({
+    const data = await executeQuery('credit_score_history', 'select', {
+      filters: { credit_profile_id: profileId },
+      order: { column: 'score_date', ascending: false },
+      limit: 12
+    }) as Array<Record<string, unknown>>;
+    
+    return (data || []).map(h => ({
       id: h.id as string,
       score_date: h.score_date as string,
       credit_score: h.credit_score as number,
@@ -292,17 +317,15 @@ class CreditScoringService {
   }
 
   // Update credit limit manually
-  async updateCreditLimit(profileId: string, newLimit: number, reason?: string): Promise<void> {
-    const { error } = await supabase
-      .from('credit_profiles' as 'counterparties')
-      .update({
+  async updateCreditLimit(profileId: string, newLimit: number): Promise<void> {
+    await executeQuery('credit_profiles', 'update', {
+      data: {
         credit_limit: newLimit,
         last_limit_review: new Date().toISOString(),
         updated_at: new Date().toISOString()
-      } as Record<string, unknown>)
-      .eq('id', profileId);
-
-    if (error) throw error;
+      },
+      filters: { id: profileId }
+    });
   }
 
   // Request credit limit change (for approval workflow)
@@ -313,20 +336,17 @@ class CreditScoringService {
     requestedLimit: number,
     reason: string
   ): Promise<string> {
-    const { data, error } = await supabase
-      .from('credit_limit_requests' as 'counterparties')
-      .insert({
+    const data = await executeQuery('credit_limit_requests', 'insert', {
+      data: {
         company_id: companyId,
         credit_profile_id: profileId,
         current_limit: currentLimit,
         requested_limit: requestedLimit,
         request_reason: reason
-      } as Record<string, unknown>)
-      .select('id')
-      .single();
+      }
+    }) as Record<string, unknown>;
 
-    if (error) throw error;
-    return (data as Record<string, unknown>).id as string;
+    return data.id as string;
   }
 
   // Approve/reject limit request
@@ -335,29 +355,25 @@ class CreditScoringService {
     approved: boolean,
     reviewNotes?: string
   ): Promise<void> {
-    const { error: updateError } = await supabase
-      .from('credit_limit_requests' as 'counterparties')
-      .update({
+    await executeQuery('credit_limit_requests', 'update', {
+      data: {
         status: approved ? 'approved' : 'rejected',
         reviewed_at: new Date().toISOString(),
         review_notes: reviewNotes
-      } as Record<string, unknown>)
-      .eq('id', requestId);
-
-    if (updateError) throw updateError;
+      },
+      filters: { id: requestId }
+    });
 
     if (approved) {
-      const { data: request } = await supabase
-        .from('credit_limit_requests' as 'counterparties')
-        .select('credit_profile_id, requested_limit')
-        .eq('id', requestId)
-        .single();
+      const request = await executeQuery('credit_limit_requests', 'select', {
+        filters: { id: requestId },
+        single: true
+      }) as Record<string, unknown> | null;
 
-      const reqData = request as Record<string, unknown> | null;
-      if (reqData) {
+      if (request) {
         await this.updateCreditLimit(
-          reqData.credit_profile_id as string, 
-          reqData.requested_limit as number
+          request.credit_profile_id as string, 
+          request.requested_limit as number
         );
       }
     }
@@ -365,15 +381,12 @@ class CreditScoringService {
 
   // Get pending limit requests
   async getPendingLimitRequests(companyId: string): Promise<CreditLimitRequest[]> {
-    const { data, error } = await supabase
-      .from('credit_limit_requests' as 'counterparties')
-      .select('*')
-      .eq('company_id', companyId)
-      .eq('status', 'pending')
-      .order('created_at', { ascending: false });
-
-    if (error) throw error;
-    return ((data || []) as Record<string, unknown>[]).map(r => ({
+    const data = await executeQuery('credit_limit_requests', 'select', {
+      filters: { company_id: companyId, status: 'pending' },
+      order: { column: 'created_at', ascending: false }
+    }) as Array<Record<string, unknown>>;
+    
+    return (data || []).map(r => ({
       id: r.id as string,
       credit_profile_id: r.credit_profile_id as string,
       current_limit: r.current_limit as number,
@@ -391,11 +404,10 @@ class CreditScoringService {
 
   // Schedule collection actions for a transaction
   async scheduleCollectionActions(transactionId: string, companyId: string): Promise<number> {
-    const { data, error } = await supabase
-      .rpc('schedule_collection_actions', {
-        p_transaction_id: transactionId,
-        p_company_id: companyId
-      });
+    const { data, error } = await supabase.rpc('schedule_collection_actions', {
+      p_transaction_id: transactionId,
+      p_company_id: companyId
+    });
 
     if (error) throw error;
     return data as number;
@@ -403,20 +415,15 @@ class CreditScoringService {
 
   // Get collection actions for a profile
   async getCollectionActions(profileId: string, status?: string): Promise<CollectionAction[]> {
-    let query = supabase
-      .from('collection_actions' as 'counterparties')
-      .select('*')
-      .eq('credit_profile_id', profileId)
-      .order('scheduled_for', { ascending: true });
-
-    if (status) {
-      query = query.eq('status', status);
-    }
-
-    const { data, error } = await query;
-    if (error) throw error;
+    const filters: Record<string, unknown> = { credit_profile_id: profileId };
+    if (status) filters.status = status;
     
-    return ((data || []) as Record<string, unknown>[]).map(a => ({
+    const data = await executeQuery('collection_actions', 'select', {
+      filters,
+      order: { column: 'scheduled_for', ascending: true }
+    }) as Array<Record<string, unknown>>;
+    
+    return (data || []).map(a => ({
       id: a.id as string,
       credit_profile_id: a.credit_profile_id as string,
       transaction_id: a.transaction_id as string | null,
@@ -432,76 +439,69 @@ class CreditScoringService {
 
   // Execute a collection action
   async executeCollectionAction(actionId: string, result: { success: boolean; data?: Record<string, unknown>; error?: string }): Promise<void> {
-    const { error } = await supabase
-      .from('collection_actions' as 'counterparties')
-      .update({
+    await executeQuery('collection_actions', 'update', {
+      data: {
         status: result.success ? 'success' : 'failed',
         executed_at: new Date().toISOString(),
         result_data: result.data || null,
         error_message: result.error || null,
         updated_at: new Date().toISOString()
-      } as Record<string, unknown>)
-      .eq('id', actionId);
-
-    if (error) throw error;
+      },
+      filters: { id: actionId }
+    });
   }
 
   // Update portfolio summary
   async updatePortfolioSummary(companyId: string): Promise<void> {
-    const { error } = await supabase
-      .rpc('update_credit_portfolio_summary', {
-        p_company_id: companyId
-      });
+    const { error } = await supabase.rpc('update_credit_portfolio_summary', {
+      p_company_id: companyId
+    });
 
     if (error) throw error;
   }
 
   // Get portfolio summary
   async getPortfolioSummary(companyId: string): Promise<PortfolioSummary | null> {
-    const { data, error } = await supabase
-      .from('credit_portfolio_summary' as 'counterparties')
-      .select('*')
-      .eq('company_id', companyId)
-      .order('summary_date', { ascending: false })
-      .limit(1)
-      .maybeSingle();
+    const data = await executeQuery('credit_portfolio_summary', 'select', {
+      filters: { company_id: companyId },
+      order: { column: 'summary_date', ascending: false },
+      limit: 1,
+      single: true
+    }) as Record<string, unknown> | null;
 
-    if (error) throw error;
     if (!data) return null;
 
-    const d = data as Record<string, unknown>;
     return {
-      total_customers: d.total_customers as number,
-      total_credit_limit: d.total_credit_limit as number,
-      total_utilized: d.total_utilized as number,
-      average_utilization: d.average_utilization as number,
-      customers_low_risk: d.customers_low_risk as number,
-      customers_medium_risk: d.customers_medium_risk as number,
-      customers_high_risk: d.customers_high_risk as number,
-      customers_critical_risk: d.customers_critical_risk as number,
-      customers_aaa: d.customers_aaa as number,
-      customers_aa: d.customers_aa as number,
-      customers_a: d.customers_a as number,
-      customers_bbb: d.customers_bbb as number,
-      customers_bb: d.customers_bb as number,
-      customers_b: d.customers_b as number,
-      customers_ccc: d.customers_ccc as number,
-      customers_cc: d.customers_cc as number,
-      customers_c: d.customers_c as number,
-      customers_d: d.customers_d as number,
-      total_expected_loss: d.total_expected_loss as number,
-      weighted_avg_default_prob: d.weighted_avg_default_prob as number
+      total_customers: (data.total_customers as number) || 0,
+      total_credit_limit: (data.total_credit_limit as number) || 0,
+      total_utilized: (data.total_utilized as number) || 0,
+      average_utilization: (data.average_utilization as number) || 0,
+      customers_low_risk: (data.customers_low_risk as number) || 0,
+      customers_medium_risk: (data.customers_medium_risk as number) || 0,
+      customers_high_risk: (data.customers_high_risk as number) || 0,
+      customers_critical_risk: (data.customers_critical_risk as number) || 0,
+      customers_aaa: (data.customers_aaa as number) || 0,
+      customers_aa: (data.customers_aa as number) || 0,
+      customers_a: (data.customers_a as number) || 0,
+      customers_bbb: (data.customers_bbb as number) || 0,
+      customers_bb: (data.customers_bb as number) || 0,
+      customers_b: (data.customers_b as number) || 0,
+      customers_ccc: (data.customers_ccc as number) || 0,
+      customers_cc: (data.customers_cc as number) || 0,
+      customers_c: (data.customers_c as number) || 0,
+      customers_d: (data.customers_d as number) || 0,
+      total_expected_loss: (data.total_expected_loss as number) || 0,
+      weighted_avg_default_prob: (data.weighted_avg_default_prob as number) || 0
     };
   }
 
   // Calculate loss provision
   async calculateLossProvision(companyId: string, periodStart: Date, periodEnd: Date): Promise<string> {
-    const { data, error } = await supabase
-      .rpc('calculate_loss_provision', {
-        p_company_id: companyId,
-        p_period_start: periodStart.toISOString().split('T')[0],
-        p_period_end: periodEnd.toISOString().split('T')[0]
-      });
+    const { data, error } = await supabase.rpc('calculate_loss_provision', {
+      p_company_id: companyId,
+      p_period_start: periodStart.toISOString().split('T')[0],
+      p_period_end: periodEnd.toISOString().split('T')[0]
+    });
 
     if (error) throw error;
     return data as string;
@@ -509,15 +509,13 @@ class CreditScoringService {
 
   // Get loss provisions
   async getLossProvisions(companyId: string): Promise<LossProvision[]> {
-    const { data, error } = await supabase
-      .from('loss_provisions' as 'counterparties')
-      .select('*')
-      .eq('company_id', companyId)
-      .order('provision_date', { ascending: false })
-      .limit(12);
-
-    if (error) throw error;
-    return ((data || []) as Record<string, unknown>[]).map(p => ({
+    const data = await executeQuery('loss_provisions', 'select', {
+      filters: { company_id: companyId },
+      order: { column: 'provision_date', ascending: false },
+      limit: 12
+    }) as Array<Record<string, unknown>>;
+    
+    return (data || []).map(p => ({
       id: p.id as string,
       provision_date: p.provision_date as string,
       period_start: p.period_start as string,
@@ -534,15 +532,13 @@ class CreditScoringService {
 
   // Update collection status
   async updateCollectionStatus(profileId: string, status: 'ACTIVE' | 'SUSPENDED' | 'BLOCKED' | 'CLOSED'): Promise<void> {
-    const { error } = await supabase
-      .from('credit_profiles' as 'counterparties')
-      .update({
+    await executeQuery('credit_profiles', 'update', {
+      data: {
         collection_status: status,
         updated_at: new Date().toISOString()
-      } as Record<string, unknown>)
-      .eq('id', profileId);
-
-    if (error) throw error;
+      },
+      filters: { id: profileId }
+    });
   }
 
   // Batch update all scores for a company (daily job)
@@ -551,12 +547,11 @@ class CreditScoringService {
       .from('transactions')
       .select('counterparty_id')
       .eq('company_id', companyId)
-      .eq('direction', 'receivable')
       .not('counterparty_id', 'is', null);
 
     if (error) throw error;
 
-    const uniqueCounterparties = [...new Set(counterparties?.map(t => t.counterparty_id))];
+    const uniqueCounterparties = [...new Set(counterparties?.map(t => t.counterparty_id).filter(Boolean))];
     let updated = 0;
     let errors = 0;
 

@@ -10,7 +10,6 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
 import { 
-  CreditCard, 
   RefreshCw, 
   Search,
   Users,
@@ -37,7 +36,7 @@ import {
   getRatingColor,
   getRiskColor
 } from '@/hooks/useCreditManagement';
-import { CreditProfile } from '@/services/CreditScoringService';
+import { CreditProfile, PortfolioSummary } from '@/services/CreditScoringService';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
@@ -46,6 +45,12 @@ const formatCurrency = (value: number) =>
 
 const formatPercent = (value: number) => 
   new Intl.NumberFormat('pt-BR', { style: 'percent', minimumFractionDigits: 1 }).format(value / 100);
+
+// Helper to get summary value safely
+const getSummaryValue = (summary: PortfolioSummary | null | undefined, key: keyof PortfolioSummary): number => {
+  if (!summary) return 0;
+  return (summary[key] as number) || 0;
+};
 
 export default function GestaoCredito() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -120,7 +125,7 @@ export default function GestaoCredito() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Clientes com Crédito</p>
-                <p className="text-2xl font-bold">{summary?.total_customers || 0}</p>
+                <p className="text-2xl font-bold">{getSummaryValue(summary, 'total_customers')}</p>
               </div>
               <Users className="h-8 w-8 text-primary opacity-50" />
             </div>
@@ -132,7 +137,7 @@ export default function GestaoCredito() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Limite Total</p>
-                <p className="text-2xl font-bold">{formatCurrency(summary?.total_credit_limit || 0)}</p>
+                <p className="text-2xl font-bold">{formatCurrency(getSummaryValue(summary, 'total_credit_limit'))}</p>
               </div>
               <DollarSign className="h-8 w-8 text-primary opacity-50" />
             </div>
@@ -144,11 +149,11 @@ export default function GestaoCredito() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Utilização Média</p>
-                <p className="text-2xl font-bold">{formatPercent(summary?.average_utilization || 0)}</p>
+                <p className="text-2xl font-bold">{formatPercent(getSummaryValue(summary, 'average_utilization'))}</p>
               </div>
               <Target className="h-8 w-8 text-primary opacity-50" />
             </div>
-            <Progress value={summary?.average_utilization || 0} className="mt-2" />
+            <Progress value={getSummaryValue(summary, 'average_utilization')} className="mt-2" />
           </CardContent>
         </Card>
 
@@ -157,7 +162,7 @@ export default function GestaoCredito() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Perda Esperada</p>
-                <p className="text-2xl font-bold">{formatCurrency(summary?.total_expected_loss || 0)}</p>
+                <p className="text-2xl font-bold">{formatCurrency(getSummaryValue(summary, 'total_expected_loss'))}</p>
               </div>
               <AlertTriangle className="h-8 w-8 text-destructive opacity-50" />
             </div>
@@ -176,22 +181,34 @@ export default function GestaoCredito() {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {[
-                { label: 'Baixo', key: 'customers_low_risk', color: 'bg-primary' },
-                { label: 'Médio', key: 'customers_medium_risk', color: 'bg-accent' },
-                { label: 'Alto', key: 'customers_high_risk', color: 'bg-secondary' },
-                { label: 'Crítico', key: 'customers_critical_risk', color: 'bg-destructive' }
-              ].map(item => (
-                <div key={item.key} className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className={`h-3 w-3 rounded-full ${item.color}`} />
-                    <span>{item.label}</span>
-                  </div>
-                  <Badge variant="secondary">
-                    {(summary as Record<string, number> | undefined)?.[item.key] || 0}
-                  </Badge>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="h-3 w-3 rounded-full bg-primary" />
+                  <span>Baixo</span>
                 </div>
-              ))}
+                <Badge variant="secondary">{getSummaryValue(summary, 'customers_low_risk')}</Badge>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="h-3 w-3 rounded-full bg-accent" />
+                  <span>Médio</span>
+                </div>
+                <Badge variant="secondary">{getSummaryValue(summary, 'customers_medium_risk')}</Badge>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="h-3 w-3 rounded-full bg-secondary" />
+                  <span>Alto</span>
+                </div>
+                <Badge variant="secondary">{getSummaryValue(summary, 'customers_high_risk')}</Badge>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="h-3 w-3 rounded-full bg-destructive" />
+                  <span>Crítico</span>
+                </div>
+                <Badge variant="secondary">{getSummaryValue(summary, 'customers_critical_risk')}</Badge>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -205,9 +222,9 @@ export default function GestaoCredito() {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-5 gap-2">
-              {['AAA', 'AA', 'A', 'BBB', 'BB', 'B', 'CCC', 'CC', 'C', 'D'].map(rating => {
-                const key = `customers_${rating.toLowerCase()}` as keyof typeof summary;
-                const count = summary ? (summary[key] as number) || 0 : 0;
+              {(['AAA', 'AA', 'A', 'BBB', 'BB', 'B', 'CCC', 'CC', 'C', 'D'] as const).map(rating => {
+                const key = `customers_${rating.toLowerCase()}` as keyof PortfolioSummary;
+                const count = getSummaryValue(summary, key);
                 return (
                   <div key={rating} className="text-center">
                     <div className={`h-8 w-8 rounded-full ${getRatingColor(rating)} mx-auto flex items-center justify-center text-white text-xs font-bold`}>
