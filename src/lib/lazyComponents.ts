@@ -48,6 +48,13 @@ export const SPED = React.lazy(() => import('@/pages/fiscal/SPED'));
 export const Conciliacao = React.lazy(() => import('@/pages/tesouraria/Conciliacao'));
 export const Contratos = React.lazy(() => import('@/pages/tesouraria/Contratos'));
 
+// Budget Advanced Module
+export const OrcamentoCenarios = React.lazy(() => import('@/pages/financeiro/orcamento/Cenarios'));
+export const OrcamentoAprovacoes = React.lazy(() => import('@/pages/financeiro/orcamento/Aprovacoes'));
+export const OrcamentoVariancia = React.lazy(() => import('@/pages/financeiro/orcamento/Variancia'));
+export const OrcamentoVersoes = React.lazy(() => import('@/pages/financeiro/orcamento/Versoes'));
+export const OrcamentoWhatIf = React.lazy(() => import('@/pages/financeiro/orcamento/WhatIf'));
+
 /**
  * Preload utility for anticipated navigation
  */

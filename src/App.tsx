@@ -141,6 +141,12 @@ import OrcamentoReal from "./pages/financeiro/OrcamentoReal";
 import RollingForecast from "./pages/financeiro/RollingForecast";
 import SimulacoesOrcamento from "./pages/financeiro/SimulacoesOrcamento";
 import Investimentos from "./pages/financeiro/Investimentos";
+// Orçamento Avançado
+import OrcamentoCenarios from "./pages/financeiro/orcamento/Cenarios";
+import OrcamentoAprovacoes from "./pages/financeiro/orcamento/Aprovacoes";
+import OrcamentoVariancia from "./pages/financeiro/orcamento/Variancia";
+import OrcamentoVersoes from "./pages/financeiro/orcamento/Versoes";
+import OrcamentoWhatIf from "./pages/financeiro/orcamento/WhatIf";
 import Moedas from "./pages/configuracoes/Moedas";
 import SettingsUsers from "./pages/settings/Users";
 import SettingsRoles from "./pages/settings/Roles";
@@ -362,6 +368,14 @@ const App = () => (
                 <Route path="/financeiro/rolling-forecast" element={<RollingForecast />} />
                 <Route path="/financeiro/simulacoes-orcamento" element={<SimulacoesOrcamento />} />
                 <Route path="/financeiro/investimentos" element={<Investimentos />} />
+                
+                {/* ============ ORÇAMENTO AVANÇADO ============ */}
+                <Route path="/financeiro/orcamento/cenarios" element={<OrcamentoCenarios />} />
+                <Route path="/financeiro/orcamento/aprovacoes" element={<OrcamentoAprovacoes />} />
+                <Route path="/financeiro/orcamento/variancia" element={<OrcamentoVariancia />} />
+                <Route path="/financeiro/orcamento/versoes" element={<OrcamentoVersoes />} />
+                <Route path="/financeiro/orcamento/what-if" element={<OrcamentoWhatIf />} />
+                
                 <Route path="/configuracoes/moedas" element={<Moedas />} />
                 
                 {/* ============ VENDAS ============ */}
