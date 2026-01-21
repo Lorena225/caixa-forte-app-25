@@ -257,7 +257,13 @@ const App = () => (
                 <Route path="/metas" element={<Metas />} />
                 <Route path="/cartoes" element={<Cartoes />} />
                 
-                {/* Settings */}
+                {/* Settings - Primary paths */}
+                <Route path="/settings/usuarios" element={<SettingsUsers />} />
+                <Route path="/settings/papeis" element={<SettingsRoles />} />
+                <Route path="/settings/papeis/:roleId" element={<SettingsRoleDetail />} />
+                <Route path="/settings/permissoes" element={<SettingsPermissions />} />
+                
+                {/* Settings - Portuguese paths (aliases) */}
                 <Route path="/configuracoes/usuarios" element={<SettingsUsers />} />
                 <Route path="/configuracoes/papeis" element={<SettingsRoles />} />
                 <Route path="/configuracoes/papeis/:roleId" element={<SettingsRoleDetail />} />

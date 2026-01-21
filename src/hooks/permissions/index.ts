@@ -54,3 +54,11 @@ export {
   useRevokeCustomPermission,
   useClearUserCustomPermissions,
 } from "@/hooks/useUsers";
+
+// Access Control Hooks
+export {
+  useCanAccess,
+  useCanAccessMultiple,
+  useCanAccessAny,
+  useCanAccessAll,
+} from "@/hooks/useCanAccess";
