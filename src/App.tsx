@@ -146,6 +146,7 @@ import SettingsUsers from "./pages/settings/Users";
 import SettingsRoles from "./pages/settings/Roles";
 import SettingsRoleDetail from "./pages/settings/RoleDetail";
 import SettingsPermissions from "./pages/settings/Permissions";
+import SettingsBackup from "./pages/settings/Backup";
 // CRM
 import CRMIndex from "./pages/crm/Index";
 import CRMPipeline from "./pages/crm/Pipeline";
@@ -267,12 +268,14 @@ const App = () => (
                 <Route path="/settings/papeis" element={<SettingsRoles />} />
                 <Route path="/settings/papeis/:roleId" element={<SettingsRoleDetail />} />
                 <Route path="/settings/permissoes" element={<SettingsPermissions />} />
+                <Route path="/settings/backup" element={<SettingsBackup />} />
                 
                 {/* Settings - Portuguese paths (aliases) */}
                 <Route path="/configuracoes/usuarios" element={<SettingsUsers />} />
                 <Route path="/configuracoes/papeis" element={<SettingsRoles />} />
                 <Route path="/configuracoes/papeis/:roleId" element={<SettingsRoleDetail />} />
                 <Route path="/configuracoes/permissoes" element={<SettingsPermissions />} />
+                <Route path="/configuracoes/backup" element={<SettingsBackup />} />
                 
                 {/* ERP Modules - Contabilidade */}
                 <Route path="/contabilidade" element={<ContabilidadeIndex />} />
