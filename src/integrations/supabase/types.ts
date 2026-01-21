@@ -4556,6 +4556,187 @@ export type Database = {
           },
         ]
       }
+      budget_approval_levels: {
+        Row: {
+          company_id: string
+          created_at: string
+          id: string
+          is_active: boolean | null
+          level_name: string
+          level_order: number
+          max_amount: number | null
+          min_amount: number | null
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          level_name: string
+          level_order: number
+          max_amount?: number | null
+          min_amount?: number | null
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          level_name?: string
+          level_order?: number
+          max_amount?: number | null
+          min_amount?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "budget_approval_levels_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_approval_levels_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "budget_approval_levels_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_security_dashboard"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "budget_approval_levels_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      budget_approval_requests: {
+        Row: {
+          budget_id: string
+          completed_at: string | null
+          created_at: string
+          current_level: number | null
+          id: string
+          notes: string | null
+          requested_at: string
+          requested_by: string | null
+          status: string
+          total_levels: number | null
+        }
+        Insert: {
+          budget_id: string
+          completed_at?: string | null
+          created_at?: string
+          current_level?: number | null
+          id?: string
+          notes?: string | null
+          requested_at?: string
+          requested_by?: string | null
+          status?: string
+          total_levels?: number | null
+        }
+        Update: {
+          budget_id?: string
+          completed_at?: string | null
+          created_at?: string
+          current_level?: number | null
+          id?: string
+          notes?: string | null
+          requested_at?: string
+          requested_by?: string | null
+          status?: string
+          total_levels?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "budget_approval_requests_budget_id_fkey"
+            columns: ["budget_id"]
+            isOneToOne: false
+            referencedRelation: "budget_master"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_approval_requests_budget_id_fkey"
+            columns: ["budget_id"]
+            isOneToOne: false
+            referencedRelation: "v_budget_master_analysis"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_approval_requests_budget_id_fkey"
+            columns: ["budget_id"]
+            isOneToOne: false
+            referencedRelation: "v_budget_variance_analysis"
+            referencedColumns: ["budget_id"]
+          },
+        ]
+      }
+      budget_approval_steps: {
+        Row: {
+          approver_id: string | null
+          comments: string | null
+          created_at: string
+          decision_at: string | null
+          id: string
+          level_id: string | null
+          level_order: number
+          request_id: string
+          status: string
+        }
+        Insert: {
+          approver_id?: string | null
+          comments?: string | null
+          created_at?: string
+          decision_at?: string | null
+          id?: string
+          level_id?: string | null
+          level_order: number
+          request_id: string
+          status?: string
+        }
+        Update: {
+          approver_id?: string | null
+          comments?: string | null
+          created_at?: string
+          decision_at?: string | null
+          id?: string
+          level_id?: string | null
+          level_order?: number
+          request_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "budget_approval_steps_level_id_fkey"
+            columns: ["level_id"]
+            isOneToOne: false
+            referencedRelation: "budget_approval_levels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_approval_steps_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "budget_approval_requests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_approval_steps_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "v_pending_budget_approvals"
+            referencedColumns: ["request_id"]
+          },
+        ]
+      }
       budget_forecasts: {
         Row: {
           account_id: string | null
@@ -4640,6 +4821,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_budget_master_analysis"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_forecasts_budget_id_fkey"
+            columns: ["budget_id"]
+            isOneToOne: false
+            referencedRelation: "v_budget_variance_analysis"
+            referencedColumns: ["budget_id"]
           },
           {
             foreignKeyName: "budget_forecasts_company_id_fkey"
@@ -4756,6 +4944,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "budget_lines_budget_id_fkey"
+            columns: ["budget_id"]
+            isOneToOne: false
+            referencedRelation: "v_budget_variance_analysis"
+            referencedColumns: ["budget_id"]
+          },
+          {
             foreignKeyName: "budget_lines_cost_center_id_fkey"
             columns: ["cost_center_id"]
             isOneToOne: false
@@ -4869,6 +5064,142 @@ export type Database = {
             referencedRelation: "v_budget_master_analysis"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "budget_master_parent_budget_id_fkey"
+            columns: ["parent_budget_id"]
+            isOneToOne: false
+            referencedRelation: "v_budget_variance_analysis"
+            referencedColumns: ["budget_id"]
+          },
+        ]
+      }
+      budget_reclassifications: {
+        Row: {
+          amount: number
+          approved_at: string | null
+          approved_by: string | null
+          budget_id: string
+          created_at: string
+          created_by: string | null
+          from_account_id: string | null
+          from_line_id: string | null
+          id: string
+          month: number | null
+          reason: string
+          status: string
+          to_account_id: string | null
+          to_line_id: string | null
+        }
+        Insert: {
+          amount: number
+          approved_at?: string | null
+          approved_by?: string | null
+          budget_id: string
+          created_at?: string
+          created_by?: string | null
+          from_account_id?: string | null
+          from_line_id?: string | null
+          id?: string
+          month?: number | null
+          reason: string
+          status?: string
+          to_account_id?: string | null
+          to_line_id?: string | null
+        }
+        Update: {
+          amount?: number
+          approved_at?: string | null
+          approved_by?: string | null
+          budget_id?: string
+          created_at?: string
+          created_by?: string | null
+          from_account_id?: string | null
+          from_line_id?: string | null
+          id?: string
+          month?: number | null
+          reason?: string
+          status?: string
+          to_account_id?: string | null
+          to_line_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "budget_reclassifications_budget_id_fkey"
+            columns: ["budget_id"]
+            isOneToOne: false
+            referencedRelation: "budget_master"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_reclassifications_budget_id_fkey"
+            columns: ["budget_id"]
+            isOneToOne: false
+            referencedRelation: "v_budget_master_analysis"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_reclassifications_budget_id_fkey"
+            columns: ["budget_id"]
+            isOneToOne: false
+            referencedRelation: "v_budget_variance_analysis"
+            referencedColumns: ["budget_id"]
+          },
+          {
+            foreignKeyName: "budget_reclassifications_from_account_id_fkey"
+            columns: ["from_account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_reclassifications_from_account_id_fkey"
+            columns: ["from_account_id"]
+            isOneToOne: false
+            referencedRelation: "v_rc_flow_by_account"
+            referencedColumns: ["account_id"]
+          },
+          {
+            foreignKeyName: "budget_reclassifications_from_account_id_fkey"
+            columns: ["from_account_id"]
+            isOneToOne: false
+            referencedRelation: "v_trial_balance"
+            referencedColumns: ["account_id"]
+          },
+          {
+            foreignKeyName: "budget_reclassifications_from_line_id_fkey"
+            columns: ["from_line_id"]
+            isOneToOne: false
+            referencedRelation: "budget_lines"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_reclassifications_to_account_id_fkey"
+            columns: ["to_account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_reclassifications_to_account_id_fkey"
+            columns: ["to_account_id"]
+            isOneToOne: false
+            referencedRelation: "v_rc_flow_by_account"
+            referencedColumns: ["account_id"]
+          },
+          {
+            foreignKeyName: "budget_reclassifications_to_account_id_fkey"
+            columns: ["to_account_id"]
+            isOneToOne: false
+            referencedRelation: "v_trial_balance"
+            referencedColumns: ["account_id"]
+          },
+          {
+            foreignKeyName: "budget_reclassifications_to_line_id_fkey"
+            columns: ["to_line_id"]
+            isOneToOne: false
+            referencedRelation: "budget_lines"
+            referencedColumns: ["id"]
+          },
         ]
       }
       budget_report_schedules: {
@@ -4928,6 +5259,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_budget_master_analysis"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_report_schedules_budget_id_fkey"
+            columns: ["budget_id"]
+            isOneToOne: false
+            referencedRelation: "v_budget_variance_analysis"
+            referencedColumns: ["budget_id"]
           },
           {
             foreignKeyName: "budget_report_schedules_company_id_fkey"
@@ -5005,6 +5343,200 @@ export type Database = {
             referencedRelation: "v_budget_master_analysis"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "budget_revisions_budget_id_fkey"
+            columns: ["budget_id"]
+            isOneToOne: false
+            referencedRelation: "v_budget_variance_analysis"
+            referencedColumns: ["budget_id"]
+          },
+        ]
+      }
+      budget_scenario_lines: {
+        Row: {
+          account_id: string | null
+          adjusted_amount: number
+          adjustment_reason: string | null
+          cost_center_id: string | null
+          created_at: string
+          id: string
+          month: number
+          original_amount: number
+          scenario_id: string
+          source_line_id: string | null
+        }
+        Insert: {
+          account_id?: string | null
+          adjusted_amount?: number
+          adjustment_reason?: string | null
+          cost_center_id?: string | null
+          created_at?: string
+          id?: string
+          month: number
+          original_amount?: number
+          scenario_id: string
+          source_line_id?: string | null
+        }
+        Update: {
+          account_id?: string | null
+          adjusted_amount?: number
+          adjustment_reason?: string | null
+          cost_center_id?: string | null
+          created_at?: string
+          id?: string
+          month?: number
+          original_amount?: number
+          scenario_id?: string
+          source_line_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "budget_scenario_lines_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_scenario_lines_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "v_rc_flow_by_account"
+            referencedColumns: ["account_id"]
+          },
+          {
+            foreignKeyName: "budget_scenario_lines_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "v_trial_balance"
+            referencedColumns: ["account_id"]
+          },
+          {
+            foreignKeyName: "budget_scenario_lines_cost_center_id_fkey"
+            columns: ["cost_center_id"]
+            isOneToOne: false
+            referencedRelation: "cost_centers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_scenario_lines_cost_center_id_fkey"
+            columns: ["cost_center_id"]
+            isOneToOne: false
+            referencedRelation: "v_cost_center_tree"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_scenario_lines_scenario_id_fkey"
+            columns: ["scenario_id"]
+            isOneToOne: false
+            referencedRelation: "budget_scenarios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_scenario_lines_source_line_id_fkey"
+            columns: ["source_line_id"]
+            isOneToOne: false
+            referencedRelation: "budget_lines"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      budget_scenarios: {
+        Row: {
+          adjustment_rules: Json
+          budget_id: string | null
+          company_id: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          is_template: boolean | null
+          name: string
+          probability: number | null
+          scenario_type: string
+          updated_at: string
+        }
+        Insert: {
+          adjustment_rules?: Json
+          budget_id?: string | null
+          company_id: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_template?: boolean | null
+          name: string
+          probability?: number | null
+          scenario_type?: string
+          updated_at?: string
+        }
+        Update: {
+          adjustment_rules?: Json
+          budget_id?: string | null
+          company_id?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_template?: boolean | null
+          name?: string
+          probability?: number | null
+          scenario_type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "budget_scenarios_budget_id_fkey"
+            columns: ["budget_id"]
+            isOneToOne: false
+            referencedRelation: "budget_master"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_scenarios_budget_id_fkey"
+            columns: ["budget_id"]
+            isOneToOne: false
+            referencedRelation: "v_budget_master_analysis"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_scenarios_budget_id_fkey"
+            columns: ["budget_id"]
+            isOneToOne: false
+            referencedRelation: "v_budget_variance_analysis"
+            referencedColumns: ["budget_id"]
+          },
+          {
+            foreignKeyName: "budget_scenarios_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_scenarios_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "budget_scenarios_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_security_dashboard"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "budget_scenarios_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
         ]
       }
       budget_simulations: {
@@ -5057,6 +5589,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "budget_simulations_budget_id_fkey"
+            columns: ["budget_id"]
+            isOneToOne: false
+            referencedRelation: "v_budget_variance_analysis"
+            referencedColumns: ["budget_id"]
+          },
+          {
             foreignKeyName: "budget_simulations_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
@@ -5083,6 +5622,233 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_security_status"
             referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      budget_variance_alerts: {
+        Row: {
+          account_id: string | null
+          acknowledged_at: string | null
+          acknowledged_by: string | null
+          actual_amount: number
+          alert_type: string
+          budget_amount: number
+          budget_id: string | null
+          company_id: string
+          cost_center_id: string | null
+          created_at: string
+          id: string
+          is_acknowledged: boolean | null
+          message: string
+          month: number | null
+          severity: string
+          variance_amount: number
+          variance_percent: number
+          year: number
+        }
+        Insert: {
+          account_id?: string | null
+          acknowledged_at?: string | null
+          acknowledged_by?: string | null
+          actual_amount: number
+          alert_type: string
+          budget_amount: number
+          budget_id?: string | null
+          company_id: string
+          cost_center_id?: string | null
+          created_at?: string
+          id?: string
+          is_acknowledged?: boolean | null
+          message: string
+          month?: number | null
+          severity: string
+          variance_amount: number
+          variance_percent: number
+          year: number
+        }
+        Update: {
+          account_id?: string | null
+          acknowledged_at?: string | null
+          acknowledged_by?: string | null
+          actual_amount?: number
+          alert_type?: string
+          budget_amount?: number
+          budget_id?: string | null
+          company_id?: string
+          cost_center_id?: string | null
+          created_at?: string
+          id?: string
+          is_acknowledged?: boolean | null
+          message?: string
+          month?: number | null
+          severity?: string
+          variance_amount?: number
+          variance_percent?: number
+          year?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "budget_variance_alerts_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_variance_alerts_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "v_rc_flow_by_account"
+            referencedColumns: ["account_id"]
+          },
+          {
+            foreignKeyName: "budget_variance_alerts_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "v_trial_balance"
+            referencedColumns: ["account_id"]
+          },
+          {
+            foreignKeyName: "budget_variance_alerts_budget_id_fkey"
+            columns: ["budget_id"]
+            isOneToOne: false
+            referencedRelation: "budget_master"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_variance_alerts_budget_id_fkey"
+            columns: ["budget_id"]
+            isOneToOne: false
+            referencedRelation: "v_budget_master_analysis"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_variance_alerts_budget_id_fkey"
+            columns: ["budget_id"]
+            isOneToOne: false
+            referencedRelation: "v_budget_variance_analysis"
+            referencedColumns: ["budget_id"]
+          },
+          {
+            foreignKeyName: "budget_variance_alerts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_variance_alerts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "budget_variance_alerts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_security_dashboard"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "budget_variance_alerts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "budget_variance_alerts_cost_center_id_fkey"
+            columns: ["cost_center_id"]
+            isOneToOne: false
+            referencedRelation: "cost_centers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_variance_alerts_cost_center_id_fkey"
+            columns: ["cost_center_id"]
+            isOneToOne: false
+            referencedRelation: "v_cost_center_tree"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      budget_version_comparisons: {
+        Row: {
+          company_id: string
+          comparison_data: Json
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          name: string
+          version_a_id: string
+          version_b_id: string
+        }
+        Insert: {
+          company_id: string
+          comparison_data?: Json
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          version_a_id: string
+          version_b_id: string
+        }
+        Update: {
+          company_id?: string
+          comparison_data?: Json
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          version_a_id?: string
+          version_b_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "budget_version_comparisons_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_version_comparisons_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "budget_version_comparisons_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_security_dashboard"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "budget_version_comparisons_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "budget_version_comparisons_version_a_id_fkey"
+            columns: ["version_a_id"]
+            isOneToOne: false
+            referencedRelation: "budget_revisions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_version_comparisons_version_b_id_fkey"
+            columns: ["version_b_id"]
+            isOneToOne: false
+            referencedRelation: "budget_revisions"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -30212,6 +30978,101 @@ export type Database = {
             referencedRelation: "v_budget_master_analysis"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "budget_master_parent_budget_id_fkey"
+            columns: ["parent_budget_id"]
+            isOneToOne: false
+            referencedRelation: "v_budget_variance_analysis"
+            referencedColumns: ["budget_id"]
+          },
+        ]
+      }
+      v_budget_variance_analysis: {
+        Row: {
+          account_code: string | null
+          account_id: string | null
+          account_name: string | null
+          actual_amount: number | null
+          budget_amount: number | null
+          budget_id: string | null
+          budget_name: string | null
+          category_type: Database["public"]["Enums"]["account_category"] | null
+          company_id: string | null
+          cost_center_id: string | null
+          cost_center_name: string | null
+          is_active: boolean | null
+          month: number | null
+          scenario_type: string | null
+          variance_amount: number | null
+          variance_percent: number | null
+          variance_status: string | null
+          version: number | null
+          year: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "budget_lines_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_lines_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "v_rc_flow_by_account"
+            referencedColumns: ["account_id"]
+          },
+          {
+            foreignKeyName: "budget_lines_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "v_trial_balance"
+            referencedColumns: ["account_id"]
+          },
+          {
+            foreignKeyName: "budget_lines_cost_center_id_fkey"
+            columns: ["cost_center_id"]
+            isOneToOne: false
+            referencedRelation: "cost_centers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_lines_cost_center_id_fkey"
+            columns: ["cost_center_id"]
+            isOneToOne: false
+            referencedRelation: "v_cost_center_tree"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_master_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_master_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "budget_master_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_security_dashboard"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "budget_master_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
         ]
       }
       v_budget_vs_actual_monthly: {
@@ -31066,6 +31927,75 @@ export type Database = {
           },
           {
             foreignKeyName: "approval_requests_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      v_pending_budget_approvals: {
+        Row: {
+          approver_id: string | null
+          budget_id: string | null
+          budget_name: string | null
+          company_id: string | null
+          current_level: number | null
+          level_name: string | null
+          level_order: number | null
+          request_id: string | null
+          request_status: string | null
+          requested_at: string | null
+          step_id: string | null
+          step_status: string | null
+          total_levels: number | null
+          year: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "budget_approval_requests_budget_id_fkey"
+            columns: ["budget_id"]
+            isOneToOne: false
+            referencedRelation: "budget_master"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_approval_requests_budget_id_fkey"
+            columns: ["budget_id"]
+            isOneToOne: false
+            referencedRelation: "v_budget_master_analysis"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_approval_requests_budget_id_fkey"
+            columns: ["budget_id"]
+            isOneToOne: false
+            referencedRelation: "v_budget_variance_analysis"
+            referencedColumns: ["budget_id"]
+          },
+          {
+            foreignKeyName: "budget_master_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_master_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "budget_master_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_security_dashboard"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "budget_master_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "v_security_status"
