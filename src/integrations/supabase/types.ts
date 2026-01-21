@@ -2365,57 +2365,194 @@ export type Database = {
           },
         ]
       }
+      audit_integrity_checks: {
+        Row: {
+          broken_at_record_id: string | null
+          broken_at_timestamp: string | null
+          checked_at: string
+          checked_by: string | null
+          company_id: string
+          expected_hash: string | null
+          first_record_id: string | null
+          first_record_timestamp: string | null
+          found_hash: string | null
+          id: string
+          is_valid: boolean
+          last_record_id: string | null
+          last_record_timestamp: string | null
+          notes: string | null
+          records_checked: number
+          verification_duration_ms: number | null
+        }
+        Insert: {
+          broken_at_record_id?: string | null
+          broken_at_timestamp?: string | null
+          checked_at?: string
+          checked_by?: string | null
+          company_id: string
+          expected_hash?: string | null
+          first_record_id?: string | null
+          first_record_timestamp?: string | null
+          found_hash?: string | null
+          id?: string
+          is_valid: boolean
+          last_record_id?: string | null
+          last_record_timestamp?: string | null
+          notes?: string | null
+          records_checked?: number
+          verification_duration_ms?: number | null
+        }
+        Update: {
+          broken_at_record_id?: string | null
+          broken_at_timestamp?: string | null
+          checked_at?: string
+          checked_by?: string | null
+          company_id?: string
+          expected_hash?: string | null
+          first_record_id?: string | null
+          first_record_timestamp?: string | null
+          found_hash?: string | null
+          id?: string
+          is_valid?: boolean
+          last_record_id?: string | null
+          last_record_timestamp?: string | null
+          notes?: string | null
+          records_checked?: number
+          verification_duration_ms?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_integrity_checks_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "audit_integrity_checks_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "audit_integrity_checks_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_security_dashboard"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "audit_integrity_checks_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
       audit_logs: {
         Row: {
           action: string
+          certificate_serial_number: string | null
           company_id: string
+          compliance_tags: string[] | null
           correlation_id: string | null
           created_at: string | null
           entry_hash: string | null
+          error_code: string | null
+          field_changes: Json | null
+          geolocation: Json | null
           id: string
           ip_address: unknown
+          is_critical_operation: boolean | null
           new_data: Json | null
           old_data: Json | null
+          operation_type: string | null
           prev_hash: string | null
+          reason: string | null
           record_id: string | null
+          requires_signature: boolean | null
           sensitivity_level: string | null
+          session_id: string | null
+          signature_hash: string | null
+          signed_at: string | null
+          signed_by_cpf: string | null
+          signed_by_name: string | null
+          status: string | null
           table_name: string
           user_agent: string | null
           user_id: string | null
+          user_role: string | null
+          username: string | null
         }
         Insert: {
           action: string
+          certificate_serial_number?: string | null
           company_id: string
+          compliance_tags?: string[] | null
           correlation_id?: string | null
           created_at?: string | null
           entry_hash?: string | null
+          error_code?: string | null
+          field_changes?: Json | null
+          geolocation?: Json | null
           id?: string
           ip_address?: unknown
+          is_critical_operation?: boolean | null
           new_data?: Json | null
           old_data?: Json | null
+          operation_type?: string | null
           prev_hash?: string | null
+          reason?: string | null
           record_id?: string | null
+          requires_signature?: boolean | null
           sensitivity_level?: string | null
+          session_id?: string | null
+          signature_hash?: string | null
+          signed_at?: string | null
+          signed_by_cpf?: string | null
+          signed_by_name?: string | null
+          status?: string | null
           table_name: string
           user_agent?: string | null
           user_id?: string | null
+          user_role?: string | null
+          username?: string | null
         }
         Update: {
           action?: string
+          certificate_serial_number?: string | null
           company_id?: string
+          compliance_tags?: string[] | null
           correlation_id?: string | null
           created_at?: string | null
           entry_hash?: string | null
+          error_code?: string | null
+          field_changes?: Json | null
+          geolocation?: Json | null
           id?: string
           ip_address?: unknown
+          is_critical_operation?: boolean | null
           new_data?: Json | null
           old_data?: Json | null
+          operation_type?: string | null
           prev_hash?: string | null
+          reason?: string | null
           record_id?: string | null
+          requires_signature?: boolean | null
           sensitivity_level?: string | null
+          session_id?: string | null
+          signature_hash?: string | null
+          signed_at?: string | null
+          signed_by_cpf?: string | null
+          signed_by_name?: string | null
+          status?: string | null
           table_name?: string
           user_agent?: string | null
           user_id?: string | null
+          user_role?: string | null
+          username?: string | null
         }
         Relationships: [
           {
@@ -9522,6 +9659,109 @@ export type Database = {
           },
         ]
       }
+      compliance_reports: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          company_id: string
+          created_at: string
+          file_url: string | null
+          findings_json: Json | null
+          generated_at: string
+          generated_by: string | null
+          id: string
+          recommendations_json: Json | null
+          report_period_end: string
+          report_period_start: string
+          report_type: string
+          signature_id: string | null
+          signed_file_url: string | null
+          status: string | null
+          summary_json: Json | null
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          company_id: string
+          created_at?: string
+          file_url?: string | null
+          findings_json?: Json | null
+          generated_at?: string
+          generated_by?: string | null
+          id?: string
+          recommendations_json?: Json | null
+          report_period_end: string
+          report_period_start: string
+          report_type: string
+          signature_id?: string | null
+          signed_file_url?: string | null
+          status?: string | null
+          summary_json?: Json | null
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          company_id?: string
+          created_at?: string
+          file_url?: string | null
+          findings_json?: Json | null
+          generated_at?: string
+          generated_by?: string | null
+          id?: string
+          recommendations_json?: Json | null
+          report_period_end?: string
+          report_period_start?: string
+          report_type?: string
+          signature_id?: string | null
+          signed_file_url?: string | null
+          status?: string | null
+          summary_json?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "compliance_reports_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "compliance_reports_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "compliance_reports_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_security_dashboard"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "compliance_reports_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "compliance_reports_signature_id_fkey"
+            columns: ["signature_id"]
+            isOneToOne: false
+            referencedRelation: "digital_signatures"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "compliance_reports_signature_id_fkey"
+            columns: ["signature_id"]
+            isOneToOne: false
+            referencedRelation: "v_audit_logs_complete"
+            referencedColumns: ["signature_id"]
+          },
+        ]
+      }
       compras: {
         Row: {
           condicao_pagamento_id: string | null
@@ -11340,6 +11580,83 @@ export type Database = {
           },
         ]
       }
+      critical_operations: {
+        Row: {
+          company_id: string
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean | null
+          notification_emails: string[] | null
+          operation_code: string
+          operation_name: string
+          requires_dual_approval: boolean | null
+          requires_signature: boolean | null
+          signature_timeout_minutes: number | null
+          threshold_amount: number | null
+          updated_at: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          notification_emails?: string[] | null
+          operation_code: string
+          operation_name: string
+          requires_dual_approval?: boolean | null
+          requires_signature?: boolean | null
+          signature_timeout_minutes?: number | null
+          threshold_amount?: number | null
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          notification_emails?: string[] | null
+          operation_code?: string
+          operation_name?: string
+          requires_dual_approval?: boolean | null
+          requires_signature?: boolean | null
+          signature_timeout_minutes?: number | null
+          threshold_amount?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "critical_operations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "critical_operations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "critical_operations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_security_dashboard"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "critical_operations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
       crm_activities: {
         Row: {
           activity_type: string
@@ -12180,6 +12497,125 @@ export type Database = {
             columns: ["funcionario_id"]
             isOneToOne: false
             referencedRelation: "funcionarios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      digital_signatures: {
+        Row: {
+          audit_log_id: string
+          certificate_issuer: string | null
+          certificate_serial_number: string | null
+          certificate_subject: string | null
+          certificate_valid_from: string | null
+          certificate_valid_until: string | null
+          company_id: string
+          created_at: string
+          id: string
+          is_valid: boolean | null
+          signature_algorithm: string | null
+          signature_value: string
+          signed_data_hash: string
+          signer_cpf: string
+          signer_name: string
+          signer_user_id: string | null
+          timestamp_at: string | null
+          timestamp_authority: string | null
+          timestamp_token: string | null
+          validation_errors: Json | null
+        }
+        Insert: {
+          audit_log_id: string
+          certificate_issuer?: string | null
+          certificate_serial_number?: string | null
+          certificate_subject?: string | null
+          certificate_valid_from?: string | null
+          certificate_valid_until?: string | null
+          company_id: string
+          created_at?: string
+          id?: string
+          is_valid?: boolean | null
+          signature_algorithm?: string | null
+          signature_value: string
+          signed_data_hash: string
+          signer_cpf: string
+          signer_name: string
+          signer_user_id?: string | null
+          timestamp_at?: string | null
+          timestamp_authority?: string | null
+          timestamp_token?: string | null
+          validation_errors?: Json | null
+        }
+        Update: {
+          audit_log_id?: string
+          certificate_issuer?: string | null
+          certificate_serial_number?: string | null
+          certificate_subject?: string | null
+          certificate_valid_from?: string | null
+          certificate_valid_until?: string | null
+          company_id?: string
+          created_at?: string
+          id?: string
+          is_valid?: boolean | null
+          signature_algorithm?: string | null
+          signature_value?: string
+          signed_data_hash?: string
+          signer_cpf?: string
+          signer_name?: string
+          signer_user_id?: string | null
+          timestamp_at?: string | null
+          timestamp_authority?: string | null
+          timestamp_token?: string | null
+          validation_errors?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "digital_signatures_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "digital_signatures_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "digital_signatures_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_security_dashboard"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "digital_signatures_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "fk_digital_signatures_audit_log"
+            columns: ["audit_log_id"]
+            isOneToOne: false
+            referencedRelation: "audit_logs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_digital_signatures_audit_log"
+            columns: ["audit_log_id"]
+            isOneToOne: false
+            referencedRelation: "audit_logs_safe"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_digital_signatures_audit_log"
+            columns: ["audit_log_id"]
+            isOneToOne: false
+            referencedRelation: "v_audit_logs_complete"
             referencedColumns: ["id"]
           },
         ]
@@ -21467,6 +21903,130 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "produtos"
             referencedColumns: ["id"]
+          },
+        ]
+      }
+      pending_signatures: {
+        Row: {
+          amount: number | null
+          audit_log_id: string
+          company_id: string
+          expires_at: string
+          id: string
+          metadata_json: Json | null
+          notification_sent: boolean | null
+          operation_description: string | null
+          operation_type: string
+          rejection_reason: string | null
+          reminder_sent_at: string | null
+          requested_at: string
+          requested_by: string | null
+          signature_id: string | null
+          signed_at: string | null
+          signed_by: string | null
+          status: string | null
+        }
+        Insert: {
+          amount?: number | null
+          audit_log_id: string
+          company_id: string
+          expires_at: string
+          id?: string
+          metadata_json?: Json | null
+          notification_sent?: boolean | null
+          operation_description?: string | null
+          operation_type: string
+          rejection_reason?: string | null
+          reminder_sent_at?: string | null
+          requested_at?: string
+          requested_by?: string | null
+          signature_id?: string | null
+          signed_at?: string | null
+          signed_by?: string | null
+          status?: string | null
+        }
+        Update: {
+          amount?: number | null
+          audit_log_id?: string
+          company_id?: string
+          expires_at?: string
+          id?: string
+          metadata_json?: Json | null
+          notification_sent?: boolean | null
+          operation_description?: string | null
+          operation_type?: string
+          rejection_reason?: string | null
+          reminder_sent_at?: string | null
+          requested_at?: string
+          requested_by?: string | null
+          signature_id?: string | null
+          signed_at?: string | null
+          signed_by?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pending_signatures_audit_log_id_fkey"
+            columns: ["audit_log_id"]
+            isOneToOne: false
+            referencedRelation: "audit_logs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pending_signatures_audit_log_id_fkey"
+            columns: ["audit_log_id"]
+            isOneToOne: false
+            referencedRelation: "audit_logs_safe"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pending_signatures_audit_log_id_fkey"
+            columns: ["audit_log_id"]
+            isOneToOne: false
+            referencedRelation: "v_audit_logs_complete"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pending_signatures_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pending_signatures_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "pending_signatures_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_security_dashboard"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "pending_signatures_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "pending_signatures_signature_id_fkey"
+            columns: ["signature_id"]
+            isOneToOne: false
+            referencedRelation: "digital_signatures"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pending_signatures_signature_id_fkey"
+            columns: ["signature_id"]
+            isOneToOne: false
+            referencedRelation: "v_audit_logs_complete"
+            referencedColumns: ["signature_id"]
           },
         ]
       }
@@ -30792,6 +31352,72 @@ export type Database = {
           },
         ]
       }
+      v_audit_logs_complete: {
+        Row: {
+          action: string | null
+          certificate_issuer: string | null
+          company_id: string | null
+          compliance_tags: string[] | null
+          created_at: string | null
+          entry_hash: string | null
+          error_code: string | null
+          field_changes: Json | null
+          id: string | null
+          ip_address: unknown
+          is_critical_operation: boolean | null
+          new_data: Json | null
+          old_data: Json | null
+          prev_hash: string | null
+          reason: string | null
+          record_id: string | null
+          requires_signature: boolean | null
+          sensitivity_level: string | null
+          session_id: string | null
+          signature_id: string | null
+          signature_valid: boolean | null
+          signature_value: string | null
+          signed_at: string | null
+          signed_by_cpf: string | null
+          signed_by_name: string | null
+          status: string | null
+          table_name: string | null
+          timestamp_at: string | null
+          user_agent: string | null
+          user_id: string | null
+          user_role: string | null
+          username: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_logs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "audit_logs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "audit_logs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_security_dashboard"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "audit_logs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
       v_bank_reconciliation_status: {
         Row: {
           company_id: string | null
@@ -32804,6 +33430,14 @@ export type Database = {
       }
       has_role: { Args: { _role: string; _user_id: string }; Returns: boolean }
       hash_api_key: { Args: { key: string }; Returns: string }
+      is_critical_operation: {
+        Args: {
+          p_amount?: number
+          p_company_id: string
+          p_operation_code: string
+        }
+        Returns: boolean
+      }
       is_feature_enabled: {
         Args: { p_company_id: string; p_feature_key: string }
         Returns: boolean
@@ -32885,6 +33519,16 @@ export type Database = {
       }
       refresh_dashboard_cache: { Args: never; Returns: undefined }
       refresh_security_dashboard: { Args: never; Returns: undefined }
+      request_digital_signature: {
+        Args: {
+          p_amount?: number
+          p_audit_log_id: string
+          p_operation_description: string
+          p_operation_type: string
+          p_timeout_minutes?: number
+        }
+        Returns: string
+      }
       reservar_estoque: {
         Args: {
           p_empresa_id: string
@@ -32938,6 +33582,10 @@ export type Database = {
           p_user_id?: string
         }
         Returns: Json
+      }
+      verify_digital_signature: {
+        Args: { p_signature_id: string }
+        Returns: boolean
       }
     }
     Enums: {

@@ -176,6 +176,7 @@ import AdminSoDRules from "./pages/admin/SoDRules";
 import AdminUserLimits from "./pages/admin/UserLimits";
 import AdminJobsMonitor from "./pages/admin/JobsMonitor";
 import AdminAuditLogs from "./pages/admin/AuditLogs";
+import AdminAuditCompliance from "./pages/admin/AuditCompliance";
 import AdminSecurityDashboard from "./pages/admin/SecurityDashboard";
 import AdminSystemHealth from "./pages/admin/SystemHealth";
 import AdminGoLive from "./pages/admin/GoLiveChecklist";
@@ -504,6 +505,7 @@ const App = () => (
                 <Route path="/admin/seguranca" element={<AdminSecurity />} />
                 <Route path="/admin/painel-seguranca" element={<AdminSecurityDashboard />} />
                 <Route path="/admin/logs-auditoria" element={<AdminAuditLogs />} />
+                <Route path="/admin/auditoria-compliance" element={<AdminAuditCompliance />} />
                 <Route path="/admin/regras-sod" element={<AdminSoDRules />} />
                 <Route path="/admin/limites-usuario" element={<AdminUserLimits />} />
                 <Route path="/admin/saude-sistema" element={<AdminSystemHealth />} />
