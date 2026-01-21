@@ -6,7 +6,6 @@ import {
   ChevronRight,
   Home,
   Star,
-  Bot,
   ShoppingCart,
   Package,
   Briefcase,
@@ -30,12 +29,8 @@ import {
   BookOpen,
   Landmark,
   FileSpreadsheet,
-  Scale,
   ClipboardList,
-  Network,
   Building2,
-  FolderTree,
-  UserCheck,
   ArrowRightLeft,
   FileCheck,
   Banknote,
@@ -44,16 +39,21 @@ import {
   MessageSquare,
   BellRing,
   Brain,
-  Lightbulb,
-  Globe,
-  Zap,
-  AlertTriangle,
-  Gauge,
-  Coins,
   Target,
   Shield,
-  UserCog,
   Key,
+  Bot,
+  Zap,
+  LineChart,
+  Activity,
+  FileSearch,
+  Lock,
+  History,
+  AlertTriangle,
+  CheckCircle,
+  Globe,
+  Cpu,
+  Layers,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -69,9 +69,13 @@ interface MenuItem {
 }
 
 const menuItems: MenuItem[] = [
+  // 1. Início
   { key: 'inicio', label: 'Início', icon: Home, route: '/' },
+  
+  // 2. Favoritos
   { key: 'favoritos', label: 'Favoritos', icon: Star, route: '/favoritos' },
-  { key: 'ai-captura', label: 'Conta AI Captura', icon: Bot, route: '/autopiloto/caixa-entrada' },
+  
+  // 3. Frente de Caixa (PDV, Vendas)
   { 
     key: 'frente-caixa', 
     label: 'Frente de Caixa', 
@@ -79,25 +83,25 @@ const menuItems: MenuItem[] = [
     children: [
       { key: 'pdv', label: 'PDV', icon: CreditCard, route: '/frente-caixa' },
       { key: 'nova-venda', label: 'Nova Venda', icon: Receipt, route: '/vendas/nova' },
+      { key: 'pedidos-venda', label: 'Pedidos', icon: FileText, route: '/vendas/pedidos' },
+      { key: 'orcamentos', label: 'Orçamentos', icon: Calculator, route: '/vendas/orcamentos' },
     ]
   },
+  
+  // 4. Catálogo (Produtos + Serviços)
   { 
-    key: 'produtos', 
-    label: 'Produtos', 
+    key: 'catalogo', 
+    label: 'Catálogo', 
     icon: Package,
     children: [
-      { key: 'lista-produtos', label: 'Lista de Produtos', icon: Package, route: '/cadastros/produtos' },
+      { key: 'produtos', label: 'Produtos', icon: Package, route: '/cadastros/produtos' },
+      { key: 'servicos', label: 'Serviços', icon: Briefcase, route: '/cadastros/servicos' },
       { key: 'categorias', label: 'Categorias', icon: Boxes, route: '/cadastros/dimensoes' },
+      { key: 'estoque', label: 'Estoque', icon: Boxes, route: '/estoque' },
     ]
   },
-  { 
-    key: 'servicos', 
-    label: 'Serviços', 
-    icon: Briefcase,
-    children: [
-      { key: 'lista-servicos', label: 'Lista de Serviços', icon: FileText, route: '/cadastros/servicos' },
-    ]
-  },
+  
+  // 5. Compras (Pedidos, Cotações, Fornecedores)
   { 
     key: 'compras', 
     label: 'Compras', 
@@ -105,26 +109,13 @@ const menuItems: MenuItem[] = [
     children: [
       { key: 'pedidos-compra', label: 'Pedidos', icon: FileText, route: '/compras/pedidos' },
       { key: 'cotacoes', label: 'Cotações', icon: Calculator, route: '/compras/cotacoes' },
+      { key: 'entradas', label: 'Entradas', icon: ArrowRightLeft, route: '/compras/entradas' },
       { key: 'fornecedores', label: 'Fornecedores', icon: Users, route: '/cadastros/clientes-fornecedores' },
     ]
   },
+  
+  // 6. Financeiro (Contas a Pagar/Receber, Fluxo, Tesouraria)
   { 
-    key: 'cadastros', 
-    label: 'Cadastros', 
-    icon: ClipboardList,
-    children: [
-      { key: 'clientes-fornecedores', label: 'Clientes/Fornecedores', icon: Users, route: '/cadastros/clientes-fornecedores' },
-      { key: 'produtos-cad', label: 'Produtos', icon: Package, route: '/cadastros/produtos' },
-      { key: 'servicos-cad', label: 'Serviços', icon: Briefcase, route: '/cadastros/servicos' },
-      { key: 'plano-contas-cad', label: 'Plano de Contas', icon: ClipboardList, route: '/cadastros/plano-contas' },
-      { key: 'centros-custo-cad', label: 'Centros de Custo', icon: Landmark, route: '/cadastros/centros-custo' },
-      { key: 'contas-bancarias-cad', label: 'Contas Bancárias', icon: Building2, route: '/cadastros/contas-bancarias' },
-      { key: 'bancos-ref', label: 'Bancos (Referência)', icon: Landmark, route: '/cadastros/bancos-referencia' },
-      { key: 'agencias', label: 'Agências', icon: Building2, route: '/cadastros/agencias' },
-      { key: 'carteiras', label: 'Carteiras', icon: Wallet, route: '/cadastros/carteiras' },
-    ]
-  },
-{ 
     key: 'financeiro', 
     label: 'Financeiro', 
     icon: DollarSign,
@@ -133,7 +124,6 @@ const menuItems: MenuItem[] = [
       { key: 'contas-receber', label: 'Contas a Receber', icon: Wallet, route: '/ar' },
       { key: 'fluxo-caixa', label: 'Fluxo de Caixa', icon: TrendingUp, route: '/fluxo-caixa' },
       { key: 'tesouraria', label: 'Tesouraria', icon: CreditCard, route: '/tesouraria' },
-      { key: 'contas-bancarias', label: 'Contas Bancárias', icon: Building2, route: '/cadastros/contas-bancarias' },
       { key: 'conciliacao', label: 'Conciliação Bancária', icon: RefreshCw, route: '/tesouraria/conciliacao' },
       { key: 'posicao-caixa', label: 'Posição de Caixa', icon: Wallet, route: '/tesouraria/posicao' },
       { key: 'transferencias', label: 'Transferências', icon: ArrowRightLeft, route: '/tesouraria/transferencias' },
@@ -141,141 +131,99 @@ const menuItems: MenuItem[] = [
       { key: 'cheques', label: 'Cheques', icon: FileCheck, route: '/tesouraria/cheques' },
       { key: 'caixa-fisica', label: 'Caixa Física', icon: Banknote, route: '/tesouraria/caixa-fisica' },
       { key: 'orcamento-real', label: 'Orçamento vs Real', icon: Target, route: '/financeiro/orcamento-real' },
-      { key: 'rolling-forecast', label: 'Rolling Forecast', icon: TrendingUp, route: '/financeiro/rolling-forecast' },
-      { key: 'simulacoes', label: 'Simulações What-If', icon: Calculator, route: '/financeiro/simulacoes-orcamento' },
     ]
   },
+  
+  // 7. Cadastros (Clientes, Plano, Bancos & Contas)
   { 
-    key: 'contabil', 
-    label: 'Contábil', 
-    icon: BookOpen,
+    key: 'cadastros', 
+    label: 'Cadastros', 
+    icon: ClipboardList,
     children: [
-      { key: 'plano-contas', label: 'Plano de Contas', icon: ClipboardList, route: '/cadastros/plano-contas' },
-      { key: 'centros-custo', label: 'Centro de Custo', icon: Landmark, route: '/cadastros/centros-custo' },
-      { key: 'lancamentos-contabeis', label: 'Lançamentos Contábeis', icon: FileText, route: '/contabilidade/lancamentos' },
-      { key: 'reclassificacao', label: 'Reclassificação', icon: Scale, route: '/contabilidade/reclassificacao' },
+      { key: 'clientes-fornecedores', label: 'Clientes/Fornecedores', icon: Users, route: '/cadastros/clientes-fornecedores' },
+      { key: 'plano-contas', label: 'Plano de Contas', icon: BookOpen, route: '/cadastros/plano-contas' },
+      { key: 'centros-custo', label: 'Centros de Custo', icon: Landmark, route: '/cadastros/centros-custo' },
+      { key: 'contas-bancarias', label: 'Contas Bancárias', icon: Building2, route: '/cadastros/contas-bancarias' },
+      { key: 'bancos-ref', label: 'Bancos (Referência)', icon: Landmark, route: '/cadastros/bancos-referencia' },
+      { key: 'agencias', label: 'Agências', icon: Building2, route: '/cadastros/agencias' },
+      { key: 'carteiras', label: 'Carteiras', icon: Wallet, route: '/cadastros/carteiras' },
     ]
   },
+  
+  // 8. 🤖 IA & AUTOMAÇÃO
   { 
-    key: 'operacional', 
-    label: 'Operacional', 
-    icon: Network,
-    children: [
-      { key: 'estrutura-org', label: 'Estrutura Organizacional', icon: Network, route: '/operacional/estrutura' },
-      { key: 'centros-custodia', label: 'Centros de Custódia', icon: FolderTree, route: '/operacional/centros-custodia' },
-      { key: 'departamentos', label: 'Seções e Departamentos', icon: Building2, route: '/operacional/departamentos' },
-      { key: 'responsaveis', label: 'Responsáveis por CC', icon: UserCheck, route: '/operacional/responsaveis' },
-    ]
-  },
-  {
-    key: 'estoque', 
-    label: 'Estoque', 
-    icon: Boxes,
-    children: [
-      { key: 'inventario', label: 'Inventário', icon: Package, route: '/estoque/inventario' },
-      { key: 'movimentacoes', label: 'Movimentações', icon: TrendingUp, route: '/estoque/movimentacoes' },
-    ]
-  },
-  { 
-    key: 'fiscal', 
-    label: 'Fiscal', 
-    icon: FileSpreadsheet,
-    children: [
-      { key: 'nfe', label: 'NF-e', icon: FileText, route: '/fiscal/nfe' },
-      { key: 'nfce', label: 'NFC-e', icon: Receipt, route: '/fiscal/nfce' },
-      { key: 'cupom-fiscal', label: 'Cupom Fiscal', icon: Receipt, route: '/fiscal/cupom-fiscal' },
-      { key: 'danfe', label: 'DANFE', icon: FileText, route: '/fiscal/danfe' },
-      { key: 'analise-fiscal', label: 'Análise Fiscal', icon: PieChart, route: '/fiscal/analise' },
-    ]
-  },
-  { 
-    key: 'relatorios', 
-    label: 'Relatórios', 
-    icon: BarChart3,
-    children: [
-      { key: 'dre', label: 'DRE', icon: PieChart, route: '/dre' },
-      { key: 'balanco', label: 'Balanço Patrimonial', icon: Scale, route: '/relatorios/balanco' },
-      { key: 'balancete', label: 'Balancete', icon: FileText, route: '/relatorios/balancete' },
-      { key: 'livro-razao', label: 'Livro Razão', icon: BookOpen, route: '/relatorios/livro-razao' },
-      { key: 'livro-diario', label: 'Livro Diário', icon: BookOpen, route: '/relatorios/livro-diario' },
-      { key: 'ecf', label: 'ECF', icon: FileSpreadsheet, route: '/relatorios/ecf' },
-      { key: 'analise-vendas', label: 'Análise de Vendas', icon: TrendingUp, route: '/relatorios/analise-vendas' },
-      { key: 'analise-compras', label: 'Análise de Compras', icon: Truck, route: '/relatorios/analise-compras' },
-      { key: 'dashboards', label: 'Dashboards', icon: BarChart3, route: '/paineis' },
-    ]
-  },
-  { 
-    key: 'ia-chatgpt', 
-    label: 'IA & ChatGPT', 
+    key: 'ia-automacao', 
+    label: '🤖 IA & Automação', 
     icon: Bot,
     children: [
-      { key: 'ia-config', label: 'Configurações de IA', icon: Settings, route: '/ia/configuracoes' },
+      { key: 'ia-inbox', label: 'Conta AI Captura', icon: MessageSquare, route: '/autopiloto/caixa-entrada' },
+      { key: 'ia-assistente', label: 'Assistente IA', icon: Brain, route: '/ia/analista' },
+      { key: 'ia-classificacao', label: 'Classificação Auto', icon: Cpu, route: '/ia/configuracoes' },
+      { key: 'ia-previsao', label: 'Previsão & Forecast', icon: TrendingUp, route: '/financeiro/rolling-forecast' },
       { key: 'ia-whatsapp', label: 'Agente WhatsApp', icon: MessageSquare, route: '/ia/whatsapp' },
-      { key: 'ia-monitor', label: 'Monitor Financeiro', icon: BellRing, route: '/ia/alertas' },
-      { key: 'ia-analista', label: 'Analista Inteligente', icon: Brain, route: '/ia/analista' },
+      { key: 'ia-alertas', label: 'Monitor & Alertas', icon: BellRing, route: '/ia/alertas' },
       { key: 'ia-cfo', label: 'CFO Virtual', icon: Target, route: '/ia/cfo-virtual' },
-      { key: 'ia-logs', label: 'Logs & Auditoria', icon: FileText, route: '/ia/logs' },
+      { key: 'automacoes', label: 'Automações', icon: Zap, route: '/automacoes' },
+      { key: 'jobs', label: 'Jobs & Processos', icon: Activity, route: '/admin/jobs' },
     ]
   },
-  {
-    key: 'inovacao',
-    label: 'Inovação',
-    icon: Lightbulb,
-    children: [
-      { key: 'roadmap', label: 'Roadmap IA & Finance', icon: Sparkles, route: '/inovacao' },
-      { key: 'simulacoes', label: 'Simulações & Cenários', icon: Calculator, route: '/financeiro/simulacoes' },
-      { key: 'tempo-real', label: 'Finanças Tempo Real', icon: Gauge, route: '/financeiro/tempo-real' },
-      { key: 'anomalias', label: 'Monitor Anomalias', icon: AlertTriangle, route: '/compliance/anomalias' },
-    ]
-  },
-  {
-    key: 'openfinance',
-    label: 'Open Finance',
-    icon: Globe,
-    children: [
-      { key: 'of-conexoes', label: 'Conexões Bancárias', icon: Link2, route: '/openfinance/conexoes' },
-      { key: 'of-pagamentos', label: 'Pagamentos Pix', icon: Zap, route: '/openfinance/pagamentos' },
-    ]
-  },
-  {
-    key: 'embedded',
-    label: 'Serviços Financeiros',
-    icon: Coins,
-    children: [
-      { key: 'emb-servicos', label: 'Hub de Serviços', icon: Briefcase, route: '/embedded/servicos' },
-      { key: 'emb-antecipacao', label: 'Antecipação', icon: Wallet, route: '/embedded/antecipacao' },
-    ]
-  },
+  
+  // 9. 📊 RELATÓRIOS & BI
   { 
-    key: 'integracoes', 
-    label: 'Integrações', 
-    icon: Plug,
+    key: 'relatorios-bi', 
+    label: '📊 Relatórios & BI', 
+    icon: BarChart3,
     children: [
-      { key: 'conexoes', label: 'Conexões', icon: Link2, route: '/integracoes/conexoes' },
-      { key: 'config-integracoes', label: 'Configurar', icon: Settings, route: '/integracoes/configurar' },
+      { key: 'central-relatorios', label: 'Central de Relatórios', icon: FileText, route: '/relatorios' },
+      { key: 'dre', label: 'DRE', icon: PieChart, route: '/dre' },
+      { key: 'balanco', label: 'Balanço Patrimonial', icon: Layers, route: '/relatorios/balanco' },
+      { key: 'balancete', label: 'Balancete', icon: FileSpreadsheet, route: '/relatorios/balancete' },
+      { key: 'livro-razao', label: 'Livro Razão', icon: BookOpen, route: '/relatorios/livro-razao' },
+      { key: 'livro-diario', label: 'Livro Diário', icon: BookOpen, route: '/relatorios/livro-diario' },
+      { key: 'analise-vendas', label: 'Análise de Vendas', icon: TrendingUp, route: '/relatorios/analise-vendas' },
+      { key: 'analise-compras', label: 'Análise de Compras', icon: Truck, route: '/relatorios/analise-compras' },
+      { key: 'dashboards', label: 'Dashboards', icon: LineChart, route: '/paineis' },
+      { key: 'performance', label: 'Performance', icon: Activity, route: '/admin/performance' },
     ]
   },
-{
-    key: 'configuracoes',
-    label: 'Configurações',
+  
+  // 10. 🔒 SEGURANÇA & AUDITORIA
+  { 
+    key: 'seguranca-auditoria', 
+    label: '🔒 Segurança & Auditoria', 
+    icon: Shield,
+    children: [
+      { key: 'audit-logs', label: 'Logs de Auditoria', icon: History, route: '/admin/audit-logs' },
+      { key: 'compliance', label: 'Compliance', icon: CheckCircle, route: '/admin/audit-compliance' },
+      { key: 'integridade', label: 'Integridade de Dados', icon: FileSearch, route: '/admin/seguranca' },
+      { key: 'anomalias', label: 'Detecção de Anomalias', icon: AlertTriangle, route: '/compliance/anomalias' },
+      { key: 'security-dashboard', label: 'Dashboard Segurança', icon: Lock, route: '/admin/security-dashboard' },
+      { key: 'ia-logs', label: 'Logs IA', icon: Bot, route: '/ia/logs' },
+    ]
+  },
+  
+  // 11. ⚙️ CONFIGURAÇÕES (5 abas)
+  { 
+    key: 'configuracoes', 
+    label: '⚙️ Configurações', 
     icon: Settings,
     children: [
+      // Empresa
+      { key: 'config-empresa', label: 'Empresa', icon: Building2, route: '/admin/empresa' },
+      { key: 'config-branding', label: 'Marca & Aparência', icon: Sparkles, route: '/admin/branding' },
+      // Acesso
       { key: 'config-usuarios', label: 'Usuários', icon: Users, route: '/settings/usuarios' },
       { key: 'config-papeis', label: 'Papéis', icon: Shield, route: '/settings/papeis' },
       { key: 'config-permissoes', label: 'Permissões', icon: Key, route: '/settings/permissoes' },
-      { key: 'config-empresa', label: 'Empresa', icon: Building2, route: '/admin/empresa' },
-      { key: 'config-seguranca', label: 'Segurança', icon: Shield, route: '/admin/seguranca' },
-    ]
-  },
-  {
-    key: 'admin',
-    label: 'Administração',
-    icon: Shield,
-    children: [
-      { key: 'gestao-usuarios', label: 'Gestão de Usuários', icon: UserCog, route: '/admin/gestao-usuarios' },
-      { key: 'admin-papeis', label: 'Papéis e Permissões', icon: Shield, route: '/admin/permissoes' },
-      { key: 'admin-seguranca', label: 'Segurança', icon: Shield, route: '/admin/seguranca' },
-      { key: 'admin-config', label: 'Todas Configurações', icon: Settings, route: '/admin' },
+      // Fiscal
+      { key: 'config-fiscal', label: 'Fiscal', icon: FileSpreadsheet, route: '/admin/fiscal' },
+      { key: 'config-certificados', label: 'Certificados', icon: Lock, route: '/fiscal/certificados' },
+      // Sistema
+      { key: 'config-sistema', label: 'Sistema', icon: Cpu, route: '/admin' },
+      { key: 'config-backup', label: 'Backup', icon: History, route: '/admin/backup' },
+      // Integrações
+      { key: 'config-integracoes', label: 'Integrações', icon: Plug, route: '/integracoes/conexoes' },
+      { key: 'config-api', label: 'API & Webhooks', icon: Globe, route: '/desenvolvedores' },
     ]
   },
 ];
@@ -310,8 +258,8 @@ const SidebarContent = memo(function SidebarContent({ collapsed = false, onNavig
   return (
     <div className="flex h-full flex-col bg-sidebar">
       <div className="flex h-16 items-center gap-3 border-b border-sidebar-border px-4">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#0085FF]">
-          <Sparkles className="h-5 w-5 text-white" />
+        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
+          <Sparkles className="h-5 w-5 text-primary-foreground" />
         </div>
         {!collapsed && (
           <span className="text-lg font-bold text-sidebar-foreground">Caixa Forte</span>
@@ -380,16 +328,6 @@ const SidebarContent = memo(function SidebarContent({ collapsed = false, onNavig
           })}
         </div>
       </ScrollArea>
-
-      <div className="border-t border-sidebar-border p-3">
-        <button
-          onClick={() => handleNavigate('/admin')}
-          className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-foreground transition-colors"
-        >
-          <Settings className="h-5 w-5 shrink-0" />
-          {!collapsed && <span>Configurações</span>}
-        </button>
-      </div>
     </div>
   );
 });
