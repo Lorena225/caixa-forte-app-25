@@ -8087,6 +8087,71 @@ export type Database = {
           },
         ]
       }
+      company_assets: {
+        Row: {
+          asset_name: string
+          asset_size_bytes: number | null
+          asset_type: string
+          asset_url: string
+          company_id: string
+          file_type: string | null
+          id: string
+          upload_date: string | null
+          uploaded_by: string | null
+        }
+        Insert: {
+          asset_name: string
+          asset_size_bytes?: number | null
+          asset_type: string
+          asset_url: string
+          company_id: string
+          file_type?: string | null
+          id?: string
+          upload_date?: string | null
+          uploaded_by?: string | null
+        }
+        Update: {
+          asset_name?: string
+          asset_size_bytes?: number | null
+          asset_type?: string
+          asset_url?: string
+          company_id?: string
+          file_type?: string | null
+          id?: string
+          upload_date?: string | null
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_assets_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_assets_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "company_assets_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_security_dashboard"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "company_assets_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
       company_bank_accounts: {
         Row: {
           account_digit: string | null
@@ -8283,6 +8348,116 @@ export type Database = {
             foreignKeyName: "company_bank_branches_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      company_branding: {
+        Row: {
+          accent_color: string | null
+          app_name: string | null
+          app_tagline: string | null
+          banner_url: string | null
+          company_id: string
+          created_at: string | null
+          danger_color: string | null
+          default_theme: string | null
+          favicon_url: string | null
+          font_family_body: string | null
+          font_family_heading: string | null
+          footer_text: string | null
+          id: string
+          logo_dark_url: string | null
+          logo_url: string | null
+          navbar_style: string | null
+          primary_color: string | null
+          secondary_color: string | null
+          show_branding_footer: boolean | null
+          show_logo_navbar: boolean | null
+          sidebar_theme: string | null
+          success_color: string | null
+          updated_at: string | null
+          warning_color: string | null
+        }
+        Insert: {
+          accent_color?: string | null
+          app_name?: string | null
+          app_tagline?: string | null
+          banner_url?: string | null
+          company_id: string
+          created_at?: string | null
+          danger_color?: string | null
+          default_theme?: string | null
+          favicon_url?: string | null
+          font_family_body?: string | null
+          font_family_heading?: string | null
+          footer_text?: string | null
+          id?: string
+          logo_dark_url?: string | null
+          logo_url?: string | null
+          navbar_style?: string | null
+          primary_color?: string | null
+          secondary_color?: string | null
+          show_branding_footer?: boolean | null
+          show_logo_navbar?: boolean | null
+          sidebar_theme?: string | null
+          success_color?: string | null
+          updated_at?: string | null
+          warning_color?: string | null
+        }
+        Update: {
+          accent_color?: string | null
+          app_name?: string | null
+          app_tagline?: string | null
+          banner_url?: string | null
+          company_id?: string
+          created_at?: string | null
+          danger_color?: string | null
+          default_theme?: string | null
+          favicon_url?: string | null
+          font_family_body?: string | null
+          font_family_heading?: string | null
+          footer_text?: string | null
+          id?: string
+          logo_dark_url?: string | null
+          logo_url?: string | null
+          navbar_style?: string | null
+          primary_color?: string | null
+          secondary_color?: string | null
+          show_branding_footer?: boolean | null
+          show_logo_navbar?: boolean | null
+          sidebar_theme?: string | null
+          success_color?: string | null
+          updated_at?: string | null
+          warning_color?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_branding_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_branding_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "company_branding_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "mv_security_dashboard"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "company_branding_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
             referencedRelation: "v_security_status"
             referencedColumns: ["company_id"]
           },
@@ -26537,6 +26712,80 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "tax_codes"
             referencedColumns: ["id"]
+          },
+        ]
+      }
+      theme_configs: {
+        Row: {
+          bg_primary: string | null
+          bg_secondary: string | null
+          bg_tertiary: string | null
+          border_color: string | null
+          company_id: string
+          created_at: string | null
+          custom_css: string | null
+          id: string
+          is_active: boolean | null
+          text_primary: string | null
+          text_secondary: string | null
+          theme_name: string
+        }
+        Insert: {
+          bg_primary?: string | null
+          bg_secondary?: string | null
+          bg_tertiary?: string | null
+          border_color?: string | null
+          company_id: string
+          created_at?: string | null
+          custom_css?: string | null
+          id?: string
+          is_active?: boolean | null
+          text_primary?: string | null
+          text_secondary?: string | null
+          theme_name: string
+        }
+        Update: {
+          bg_primary?: string | null
+          bg_secondary?: string | null
+          bg_tertiary?: string | null
+          border_color?: string | null
+          company_id?: string
+          created_at?: string | null
+          custom_css?: string | null
+          id?: string
+          is_active?: boolean | null
+          text_primary?: string | null
+          text_secondary?: string | null
+          theme_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "theme_configs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "theme_configs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "theme_configs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_security_dashboard"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "theme_configs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
           },
         ]
       }
