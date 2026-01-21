@@ -42,7 +42,6 @@ import {
 import { REPORT_CATEGORIES, ReportCategory, ReportDefinition } from '@/types/advancedReports';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { formatCurrency } from '@/lib/formatters';
 
 const CATEGORY_ICONS: Record<ReportCategory, React.ReactNode> = {
   financeiro: <TrendingUp className="h-5 w-5" />,
@@ -123,7 +122,7 @@ export default function CentralRelatorios() {
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-yellow-500/10 text-yellow-600">
+                <div className="p-2 rounded-lg bg-accent text-accent-foreground">
                   <Star className="h-5 w-5" />
                 </div>
                 <div>
@@ -137,7 +136,7 @@ export default function CentralRelatorios() {
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-green-500/10 text-green-600">
+                <div className="p-2 rounded-lg bg-secondary text-secondary-foreground">
                   <Play className="h-5 w-5" />
                 </div>
                 <div>
@@ -151,7 +150,7 @@ export default function CentralRelatorios() {
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-blue-500/10 text-blue-600">
+                <div className="p-2 rounded-lg bg-muted text-muted-foreground">
                   <Calendar className="h-5 w-5" />
                 </div>
                 <div>
@@ -218,7 +217,7 @@ export default function CentralRelatorios() {
                   className="w-full justify-start"
                   onClick={() => setSelectedCategory('favorites')}
                 >
-                  <Star className="h-4 w-4 mr-2 text-yellow-500" />
+                  <Star className="h-4 w-4 mr-2 text-primary" />
                   Favoritos
                   <Badge variant="secondary" className="ml-auto">{favorites.length}</Badge>
                 </Button>
@@ -282,7 +281,7 @@ export default function CentralRelatorios() {
                             onClick={() => handleToggleFavorite(report.code)}
                           >
                             {favoriteSet.has(report.code) ? (
-                              <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
+                              <Star className="h-4 w-4 fill-primary text-primary" />
                             ) : (
                               <StarOff className="h-4 w-4" />
                             )}
@@ -338,7 +337,7 @@ export default function CentralRelatorios() {
                               onClick={() => handleToggleFavorite(report.code)}
                             >
                               {favoriteSet.has(report.code) ? (
-                                <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
+                                <Star className="h-4 w-4 fill-primary text-primary" />
                               ) : (
                                 <StarOff className="h-4 w-4 text-muted-foreground" />
                               )}

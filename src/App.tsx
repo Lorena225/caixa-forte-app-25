@@ -216,6 +216,9 @@ import LivroDiario from "./pages/relatorios/LivroDiario";
 import ECF from "./pages/relatorios/ECF";
 import AnaliseVendas from "./pages/relatorios/AnaliseVendas";
 import AnaliseCompras from "./pages/relatorios/AnaliseCompras";
+import CentralRelatorios from "./pages/relatorios/Central";
+import HistoricoRelatorios from "./pages/relatorios/Historico";
+import AgendamentosRelatorios from "./pages/relatorios/Agendamentos";
 // Fiscal expandido
 import NFCe from "./pages/fiscal/NFCe";
 import CupomFiscal from "./pages/fiscal/CupomFiscal";
@@ -471,6 +474,9 @@ const App = () => (
                 
                 {/* ============ RELATÓRIOS ============ */}
                 <Route path="/relatorios" element={<ReportsIndex />} />
+                <Route path="/relatorios/central" element={<CentralRelatorios />} />
+                <Route path="/relatorios/historico" element={<HistoricoRelatorios />} />
+                <Route path="/relatorios/agendamentos" element={<AgendamentosRelatorios />} />
                 <Route path="/relatorios/drilldown" element={<DrilldownPage />} />
                 <Route path="/relatorios/balanco" element={<BalancoPatrimonial />} />
                 <Route path="/relatorios/balancete" element={<Balancete />} />
