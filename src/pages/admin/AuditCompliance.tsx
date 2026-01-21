@@ -10,7 +10,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Progress } from "@/components/ui/progress";
@@ -33,13 +32,13 @@ import { ptBR } from "date-fns/locale";
 import {
   RefreshCw, Eye, FileText, Search, Edit, Trash2, Plus,
   Download, Shield, AlertTriangle, CheckCircle, XCircle,
-  Activity, Clock, BarChart3, Lock, Fingerprint, FileSignature,
-  Scale, Building2, Calendar, FileCheck, Stamp, ChevronRight
+  Activity, Lock, Fingerprint, FileSignature,
+  Scale, Building2, FileCheck, Stamp, ChevronRight
 } from "lucide-react";
 import { toast } from "sonner";
 
 export default function AuditCompliance() {
-  const { currentCompany, user } = useAuth();
+  const { currentCompany } = useAuth();
   const [filters, setFilters] = useState<AuditLogFilters>({});
   const { data: logs, isLoading, refetch } = useAuditLogs(filters);
   const { data: tables } = useAuditLogTables();
@@ -684,9 +683,9 @@ export default function AuditCompliance() {
                   <>
                     {lastIntegrity.is_valid ? (
                       <>
-                        <CheckCircle className="h-12 w-12 text-green-500" />
+                        <CheckCircle className="h-12 w-12 text-accent" />
                         <div>
-                          <p className="text-xl font-medium text-green-700">Integridade OK</p>
+                          <p className="text-xl font-medium text-accent-foreground">Integridade OK</p>
                           <p className="text-sm text-muted-foreground">
                             {lastIntegrity.records_checked} registros verificados em{" "}
                             {lastIntegrity.verification_duration_ms}ms
@@ -750,7 +749,7 @@ export default function AuditCompliance() {
                         <TableCell>{check.verification_duration_ms}ms</TableCell>
                         <TableCell>
                           {check.is_valid ? (
-                            <Badge className="bg-green-100 text-green-700">OK</Badge>
+                            <Badge className="bg-accent text-accent-foreground">OK</Badge>
                           ) : (
                             <Badge variant="destructive">Falha</Badge>
                           )}

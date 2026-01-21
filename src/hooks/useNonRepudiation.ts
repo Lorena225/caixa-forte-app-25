@@ -4,7 +4,13 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
-import { NonRepudiationService, DigitalSignatureRequest, CriticalOperation } from "@/services/NonRepudiationService";
+import { 
+  NonRepudiationService, 
+  DigitalSignatureRequest, 
+  CriticalOperation,
+  IntegrityCheck,
+  ComplianceReport 
+} from "@/services/NonRepudiationService";
 import { toast } from "sonner";
 
 // ==================== PENDING SIGNATURES ====================
@@ -25,9 +31,9 @@ export function useSignOperation() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: (request: DigitalSignatureRequest) =>
+    mutationFn: (request: DigitalSignatureRequest): Promise<{ success: boolean; signatureId?: string; error?: string }> =>
       NonRepudiationService.signOperation(currentCompany!.id, request),
-    onSuccess: (result) => {
+    onSuccess: (result: { success: boolean; signatureId?: string; error?: string }) => {
       if (result.success) {
         toast.success("Operação assinada digitalmente");
         queryClient.invalidateQueries({ queryKey: ["pending-signatures"] });
@@ -36,8 +42,8 @@ export function useSignOperation() {
         toast.error(result.error || "Erro ao assinar operação");
       }
     },
-    onError: (error) => {
-      toast.error(`Erro: ${(error as Error).message}`);
+    onError: (error: Error) => {
+      toast.error(`Erro: ${error.message}`);
     },
   });
 }
@@ -46,9 +52,9 @@ export function useRejectSignature() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: ({ pendingId, reason }: { pendingId: string; reason: string }) =>
+    mutationFn: ({ pendingId, reason }: { pendingId: string; reason: string }): Promise<{ success: boolean; error?: string }> =>
       NonRepudiationService.rejectSignature(pendingId, reason),
-    onSuccess: (result) => {
+    onSuccess: (result: { success: boolean; error?: string }) => {
       if (result.success) {
         toast.success("Assinatura rejeitada");
         queryClient.invalidateQueries({ queryKey: ["pending-signatures"] });
@@ -76,9 +82,9 @@ export function useConfigureCriticalOperation() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: (config: Partial<CriticalOperation>) =>
+    mutationFn: (config: Partial<CriticalOperation>): Promise<{ success: boolean; id?: string; error?: string }> =>
       NonRepudiationService.configureCriticalOperation(currentCompany!.id, config),
-    onSuccess: (result) => {
+    onSuccess: (result: { success: boolean; id?: string; error?: string }) => {
       if (result.success) {
         toast.success("Operação crítica configurada");
         queryClient.invalidateQueries({ queryKey: ["critical-operations"] });
@@ -95,9 +101,9 @@ export function useIntegrityCheck() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: (limit?: number) =>
+    mutationFn: (limit?: number): Promise<IntegrityCheck> =>
       NonRepudiationService.verifyIntegrity(currentCompany!.id, limit),
-    onSuccess: (result) => {
+    onSuccess: (result: IntegrityCheck) => {
       if (result.is_valid) {
         toast.success(`Integridade OK - ${result.records_checked} registros verificados`);
       } else {
@@ -144,19 +150,19 @@ export function useGenerateComplianceReport() {
       reportType: 'LGPD' | 'SOX' | 'BASILEIA' | 'ISO27001';
       periodStart: string;
       periodEnd: string;
-    }) =>
+    }): Promise<ComplianceReport> =>
       NonRepudiationService.generateComplianceReport(
         currentCompany!.id,
         reportType,
         periodStart,
         periodEnd
       ),
-    onSuccess: (report) => {
+    onSuccess: (report: ComplianceReport) => {
       toast.success(`Relatório ${report.report_type} gerado com sucesso`);
       queryClient.invalidateQueries({ queryKey: ["compliance-reports"] });
     },
-    onError: (error) => {
-      toast.error(`Erro ao gerar relatório: ${(error as Error).message}`);
+    onError: (error: Error) => {
+      toast.error(`Erro ao gerar relatório: ${error.message}`);
     },
   });
 }
@@ -183,14 +189,14 @@ export function useExportAuditTrail() {
       startDate: string;
       endDate: string;
       format: 'CSV' | 'JSON' | 'XML';
-    }) =>
+    }): Promise<string> =>
       NonRepudiationService.exportAuditTrail(
         currentCompany!.id,
         startDate,
         endDate,
         format
       ),
-    onSuccess: (data, variables) => {
+    onSuccess: (data: string, variables) => {
       // Create download
       const blob = new Blob([data], { type: 'text/plain;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
@@ -204,8 +210,8 @@ export function useExportAuditTrail() {
       
       toast.success(`Trilha de auditoria exportada em ${variables.format}`);
     },
-    onError: (error) => {
-      toast.error(`Erro ao exportar: ${(error as Error).message}`);
+    onError: (error: Error) => {
+      toast.error(`Erro ao exportar: ${error.message}`);
     },
   });
 }
