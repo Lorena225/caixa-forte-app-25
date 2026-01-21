@@ -505,3 +505,62 @@ export function useDuplicateAutomation() {
     },
   });
 }
+
+// =====================================================
+// COMBINED HOOK FOR CONVENIENCE
+// =====================================================
+
+interface UseAutomationsManagementOptions {
+  filters?: AutomationFilters;
+  automationId?: string;
+  logsPage?: number;
+  logsLimit?: number;
+}
+
+/**
+ * Hook combinado que expõe queries e mutations para gerenciamento de automações
+ */
+export function useAutomationsManagement(options: UseAutomationsManagementOptions = {}) {
+  const { filters, automationId, logsPage = 1, logsLimit = 20 } = options;
+
+  // Queries
+  const automationsQuery = useAutomationsList(filters);
+  const automationQuery = useAutomation(automationId || null);
+  const logsQuery = useAutomationLogs(automationId || null, logsPage, logsLimit);
+
+  // Mutations
+  const createAutomation = useCreateAutomation();
+  const updateAutomation = useUpdateAutomation();
+  const deleteAutomation = useDeleteAutomation();
+  const hardDeleteAutomation = useHardDeleteAutomation();
+  const toggleAutomation = useToggleAutomation();
+  const testAutomation = useTestAutomation();
+  const duplicateAutomation = useDuplicateAutomation();
+
+  return {
+    // List data
+    automations: automationsQuery.data || [],
+    isLoading: automationsQuery.isLoading,
+    refetchAutomations: automationsQuery.refetch,
+
+    // Single automation data
+    automation: automationQuery.data,
+    isLoadingAutomation: automationQuery.isLoading,
+    refetchAutomation: automationQuery.refetch,
+
+    // Logs data
+    automationLogs: logsQuery.data?.logs || [],
+    logsTotal: logsQuery.data?.total || 0,
+    logsPages: logsQuery.data?.pages || 0,
+    isLoadingLogs: logsQuery.isLoading,
+
+    // Mutations
+    createAutomation,
+    updateAutomation,
+    deleteAutomation,
+    hardDeleteAutomation,
+    toggleAutomation,
+    testAutomation,
+    duplicateAutomation,
+  };
+}
