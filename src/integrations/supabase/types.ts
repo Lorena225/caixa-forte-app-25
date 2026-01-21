@@ -3415,6 +3415,180 @@ export type Database = {
           },
         ]
       }
+      bank_matches: {
+        Row: {
+          bank_transaction_id: string
+          caixa_register_id: string | null
+          confidence: number
+          confirmed_at: string | null
+          confirmed_by: string | null
+          created_at: string
+          id: string
+          is_auto_matched: boolean
+          is_confirmed: boolean
+          match_score: number
+          match_type: string
+          reconciliation_id: string
+          suggested_action: string | null
+        }
+        Insert: {
+          bank_transaction_id: string
+          caixa_register_id?: string | null
+          confidence?: number
+          confirmed_at?: string | null
+          confirmed_by?: string | null
+          created_at?: string
+          id?: string
+          is_auto_matched?: boolean
+          is_confirmed?: boolean
+          match_score?: number
+          match_type?: string
+          reconciliation_id: string
+          suggested_action?: string | null
+        }
+        Update: {
+          bank_transaction_id?: string
+          caixa_register_id?: string | null
+          confidence?: number
+          confirmed_at?: string | null
+          confirmed_by?: string | null
+          created_at?: string
+          id?: string
+          is_auto_matched?: boolean
+          is_confirmed?: boolean
+          match_score?: number
+          match_type?: string
+          reconciliation_id?: string
+          suggested_action?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bank_matches_caixa_register_id_fkey"
+            columns: ["caixa_register_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bank_matches_caixa_register_id_fkey"
+            columns: ["caixa_register_id"]
+            isOneToOne: false
+            referencedRelation: "v_ap_open"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bank_matches_caixa_register_id_fkey"
+            columns: ["caixa_register_id"]
+            isOneToOne: false
+            referencedRelation: "v_ar_open"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bank_matches_reconciliation_id_fkey"
+            columns: ["reconciliation_id"]
+            isOneToOne: false
+            referencedRelation: "bank_reconciliations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bank_reconciliations: {
+        Row: {
+          bank_account_id: string | null
+          closing_balance: number | null
+          company_id: string
+          created_at: string
+          differences: number | null
+          id: string
+          notes: string | null
+          opening_balance: number | null
+          reconciled_at: string | null
+          reconciled_by: string | null
+          reconciliation_date: string
+          status: string
+          total_matched: number | null
+          total_unmatched: number | null
+          updated_at: string
+        }
+        Insert: {
+          bank_account_id?: string | null
+          closing_balance?: number | null
+          company_id: string
+          created_at?: string
+          differences?: number | null
+          id?: string
+          notes?: string | null
+          opening_balance?: number | null
+          reconciled_at?: string | null
+          reconciled_by?: string | null
+          reconciliation_date?: string
+          status?: string
+          total_matched?: number | null
+          total_unmatched?: number | null
+          updated_at?: string
+        }
+        Update: {
+          bank_account_id?: string | null
+          closing_balance?: number | null
+          company_id?: string
+          created_at?: string
+          differences?: number | null
+          id?: string
+          notes?: string | null
+          opening_balance?: number | null
+          reconciled_at?: string | null
+          reconciled_by?: string | null
+          reconciliation_date?: string
+          status?: string
+          total_matched?: number | null
+          total_unmatched?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bank_reconciliations_bank_account_id_fkey"
+            columns: ["bank_account_id"]
+            isOneToOne: false
+            referencedRelation: "v_cash_position_daily"
+            referencedColumns: ["wallet_id"]
+          },
+          {
+            foreignKeyName: "bank_reconciliations_bank_account_id_fkey"
+            columns: ["bank_account_id"]
+            isOneToOne: false
+            referencedRelation: "wallets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bank_reconciliations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bank_reconciliations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "bank_reconciliations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_security_dashboard"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "bank_reconciliations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
       bank_requests: {
         Row: {
           admin_notes: string | null
