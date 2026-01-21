@@ -85,13 +85,12 @@ export default function AutomationsIndex() {
         <PageHeader
           title="Automações"
           description="Configure workflows automáticos para otimizar seus processos"
-          actions={
-            <Button onClick={() => navigate('/automacoes/nova')}>
-              <Plus className="h-4 w-4 mr-2" />
-              Nova Automação
-            </Button>
-          }
-        />
+        >
+          <Button onClick={() => navigate('/automacoes/nova')}>
+            <Plus className="h-4 w-4 mr-2" />
+            Nova Automação
+          </Button>
+        </PageHeader>
 
         {/* Filters */}
         <div className="flex flex-col sm:flex-row gap-4">

@@ -214,6 +214,9 @@ import DANFE from "./pages/fiscal/DANFE";
 import AnaliseFiscal from "./pages/fiscal/AnaliseFiscal";
 // Contabil
 import Reclassificacao from "./pages/contabilidade/Reclassificacao";
+// Automações
+import AutomationsIndex from "./pages/automations/Index";
+import AutomationDetail from "./pages/automations/AutomationDetail";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -430,6 +433,11 @@ const App = () => (
                 <Route path="/financeiro/simulacoes" element={<FinanceiroSimulacoes />} />
                 <Route path="/financeiro/tempo-real" element={<FinanceiroTempoReal />} />
                 <Route path="/compliance/anomalias" element={<ComplianceAnomalias />} />
+                
+                {/* ============ AUTOMAÇÕES ============ */}
+                <Route path="/automacoes" element={<AutomationsIndex />} />
+                <Route path="/automacoes/nova" element={<AutomationDetail />} />
+                <Route path="/automacoes/:id" element={<AutomationDetail />} />
                 
                 {/* Redirects integrações antigas */}
                 <Route path="/integracoes/connections" element={<Navigate to="/integracoes/conexoes" replace />} />
