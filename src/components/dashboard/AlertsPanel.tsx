@@ -1,4 +1,4 @@
-import { memo, useMemo } from 'react';
+import { memo, useMemo, forwardRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -57,62 +57,65 @@ const alertTypeIcons: Record<string, typeof AlertTriangle> = {
   permissoes_pendentes: Shield,
 };
 
-const AlertItem = memo(function AlertItem({ alert }: { alert: AlertaDashboard }) {
-  const navigate = useNavigate();
-  const config = urgencyConfig[alert.urgencia];
-  const Icon = alertTypeIcons[alert.tipo] || config.icon;
+const AlertItem = memo(forwardRef<HTMLDivElement, { alert: AlertaDashboard }>(
+  function AlertItem({ alert }, ref) {
+    const navigate = useNavigate();
+    const config = urgencyConfig[alert.urgencia];
+    const Icon = alertTypeIcons[alert.tipo] || config.icon;
 
-  const handleAction = () => {
-    if (alert.actionCallback) {
-      alert.actionCallback();
-    } else if (alert.actionRoute) {
-      navigate(alert.actionRoute);
-    }
-  };
+    const handleAction = () => {
+      if (alert.actionCallback) {
+        alert.actionCallback();
+      } else if (alert.actionRoute) {
+        navigate(alert.actionRoute);
+      }
+    };
 
-  return (
-    <div
-      className={cn(
-        'flex items-start gap-3 p-3 rounded-lg border transition-colors',
-        config.bgClass,
-        alert.actionRoute && 'cursor-pointer hover:bg-accent/50'
-      )}
-      onClick={alert.actionRoute ? handleAction : undefined}
-    >
-      <div className={cn('mt-0.5 shrink-0', config.iconClass)}>
-        <Icon className="h-4 w-4" />
-      </div>
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 mb-1">
-          <span className="font-medium text-sm truncate">{alert.titulo}</span>
-          <Badge variant={config.badge} className="text-[10px] px-1.5 py-0 shrink-0">
-            {alert.urgencia === 'alta' ? 'Urgente' : alert.urgencia === 'media' ? 'Atenção' : 'Info'}
-          </Badge>
+    return (
+      <div
+        ref={ref}
+        className={cn(
+          'flex items-start gap-3 p-3 rounded-lg border transition-colors',
+          config.bgClass,
+          alert.actionRoute && 'cursor-pointer hover:bg-accent/50'
+        )}
+        onClick={alert.actionRoute ? handleAction : undefined}
+      >
+        <div className={cn('mt-0.5 shrink-0', config.iconClass)}>
+          <Icon className="h-4 w-4" />
         </div>
-        <p className="text-xs text-muted-foreground line-clamp-2">{alert.mensagem}</p>
-        {alert.valor !== undefined && (
-          <p className="text-xs font-medium mt-1">
-            {formatCurrency(Math.abs(alert.valor))}
-          </p>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="font-medium text-sm truncate">{alert.titulo}</span>
+            <Badge variant={config.badge} className="text-[10px] px-1.5 py-0 shrink-0">
+              {alert.urgencia === 'alta' ? 'Urgente' : alert.urgencia === 'media' ? 'Atenção' : 'Info'}
+            </Badge>
+          </div>
+          <p className="text-xs text-muted-foreground line-clamp-2">{alert.mensagem}</p>
+          {alert.valor !== undefined && (
+            <p className="text-xs font-medium mt-1">
+              {formatCurrency(Math.abs(alert.valor))}
+            </p>
+          )}
+        </div>
+        {alert.actionLabel && (
+          <Button
+            variant="ghost"
+            size="sm"
+            className="shrink-0 h-7 px-2 text-xs"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleAction();
+            }}
+          >
+            {alert.actionLabel}
+            <ArrowRight className="h-3 w-3 ml-1" />
+          </Button>
         )}
       </div>
-      {alert.actionLabel && (
-        <Button
-          variant="ghost"
-          size="sm"
-          className="shrink-0 h-7 px-2 text-xs"
-          onClick={(e) => {
-            e.stopPropagation();
-            handleAction();
-          }}
-        >
-          {alert.actionLabel}
-          <ArrowRight className="h-3 w-3 ml-1" />
-        </Button>
-      )}
-    </div>
-  );
-});
+    );
+  }
+));
 
 AlertItem.displayName = 'AlertItem';
 
