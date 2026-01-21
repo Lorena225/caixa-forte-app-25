@@ -390,14 +390,14 @@ export class AutomationEngine {
         automation_id: automationId,
         triggered_at: new Date().toISOString(),
         trigger_type: triggerType,
-        trigger_data: triggerData,
-        actions_executed: actionsExecuted as unknown as Record<string, unknown>,
+        trigger_data: JSON.parse(JSON.stringify(triggerData)),
+        actions_executed: JSON.parse(JSON.stringify(actionsExecuted)),
         status,
         error: extra?.error,
         duration_ms: extra?.duration_ms,
       };
 
-      await supabase.from('automation_logs').insert([logData]);
+      await supabase.from('automation_logs').insert(logData);
     } catch (err) {
       console.error('[AutomationEngine] Failed to log execution:', err);
     }
