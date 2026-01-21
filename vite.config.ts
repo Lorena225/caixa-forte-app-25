@@ -42,15 +42,8 @@ export default defineConfig(({ mode }) => ({
         },
       },
     },
-    chunkSizeWarningLimit: 1000,
-    // Enable minification and tree-shaking
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: mode === 'production',
-        drop_debugger: mode === 'production',
-      },
-    },
+    // Enable esbuild minification (built-in, no extra dependency)
+    minify: 'esbuild',
     // Generate source maps only in development
     sourcemap: mode !== 'production',
   },
