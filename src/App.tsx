@@ -51,6 +51,8 @@ import VendasOrcamentos from "./pages/vendas/Orcamentos";
 // Developer Portal & Marketplace
 import DeveloperPortal from "./pages/developers/Index";
 import Marketplace from "./pages/marketplace/Index";
+import APIDocs from "./pages/api/docs";
+import APIKeysPage from "./pages/settings/APIKeys";
 // ERP Modules
 import ContabilidadeIndex from "./pages/contabilidade/Index";
 import ContabilidadeLancamentos from "./pages/contabilidade/Lancamentos";
@@ -524,6 +526,9 @@ const App = () => (
                 {/* ============ DEVELOPER PORTAL & MARKETPLACE ============ */}
                 <Route path="/developers" element={<DeveloperPortal />} />
                 <Route path="/marketplace" element={<Marketplace />} />
+                <Route path="/api/docs" element={<APIDocs />} />
+                <Route path="/settings/api-keys" element={<APIKeysPage />} />
+                <Route path="/configuracoes/api-keys" element={<APIKeysPage />} />
                 
                 {/* ============ AUTOPILOTO (PT-BR) ============ */}
                 <Route path="/autopiloto/caixa-entrada" element={<Inbox />} />
