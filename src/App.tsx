@@ -93,6 +93,7 @@ import CobrancaBoletos from "./pages/cobranca/Boletos";
 import CobrancaReguas from "./pages/cobranca/Reguas";
 import CobrancaNegativacao from "./pages/cobranca/Negativacao";
 import CobrancaSerasa from "./pages/cobranca/Serasa";
+import CobrancaGestaoCredito from "./pages/cobranca/GestaoCredito";
 import TesourariaIndex from "./pages/tesouraria/Index";
 import TesourariaPosicao from "./pages/tesouraria/Posicao";
 import TesourariaConciliacao from "./pages/tesouraria/Conciliacao";
@@ -343,6 +344,7 @@ const App = () => (
                 <Route path="/cobranca/boletos" element={<CobrancaBoletos />} />
                 <Route path="/cobranca/reguas" element={<CobrancaReguas />} />
                 <Route path="/cobranca/negativacao" element={<CobrancaNegativacao />} />
+                <Route path="/cobranca/gestao-credito" element={<CobrancaGestaoCredito />} />
                 
 {/* ERP Modules - Tesouraria */}
                 <Route path="/tesouraria" element={<TesourariaIndex />} />

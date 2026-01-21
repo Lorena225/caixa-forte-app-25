@@ -105,8 +105,8 @@ export function useUpdateCreditLimit() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async ({ profileId, newLimit, reason }: { profileId: string; newLimit: number; reason?: string }) => {
-      return creditScoringService.updateCreditLimit(profileId, newLimit, reason);
+    mutationFn: async ({ profileId, newLimit }: { profileId: string; newLimit: number; reason?: string }) => {
+      return creditScoringService.updateCreditLimit(profileId, newLimit);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['credit-profiles'] });
