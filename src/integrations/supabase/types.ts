@@ -3340,6 +3340,214 @@ export type Database = {
           },
         ]
       }
+      bank_sync_jobs: {
+        Row: {
+          bank_account_id: string
+          company_id: string
+          completed_at: string | null
+          created_at: string | null
+          date_from: string | null
+          date_to: string | null
+          errors: Json | null
+          id: string
+          started_at: string | null
+          status: string
+          sync_type: string
+          transactions_created: number | null
+          transactions_fetched: number | null
+          transactions_skipped: number | null
+          transactions_updated: number | null
+          triggered_by: string
+        }
+        Insert: {
+          bank_account_id: string
+          company_id: string
+          completed_at?: string | null
+          created_at?: string | null
+          date_from?: string | null
+          date_to?: string | null
+          errors?: Json | null
+          id?: string
+          started_at?: string | null
+          status?: string
+          sync_type?: string
+          transactions_created?: number | null
+          transactions_fetched?: number | null
+          transactions_skipped?: number | null
+          transactions_updated?: number | null
+          triggered_by?: string
+        }
+        Update: {
+          bank_account_id?: string
+          company_id?: string
+          completed_at?: string | null
+          created_at?: string | null
+          date_from?: string | null
+          date_to?: string | null
+          errors?: Json | null
+          id?: string
+          started_at?: string | null
+          status?: string
+          sync_type?: string
+          transactions_created?: number | null
+          transactions_fetched?: number | null
+          transactions_skipped?: number | null
+          transactions_updated?: number | null
+          triggered_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bank_sync_jobs_bank_account_id_fkey"
+            columns: ["bank_account_id"]
+            isOneToOne: false
+            referencedRelation: "bank_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bank_sync_jobs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bank_sync_jobs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_security_dashboard"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "bank_sync_jobs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      bank_transactions: {
+        Row: {
+          amount: number
+          bank_account_id: string
+          category_code: string | null
+          category_name: string | null
+          company_id: string
+          counterparty_account: string | null
+          counterparty_agency: string | null
+          counterparty_bank_code: string | null
+          counterparty_cpf_cnpj: string | null
+          counterparty_name: string | null
+          created_at: string | null
+          description: string | null
+          direction: string
+          external_id: string
+          external_ref: string | null
+          id: string
+          match_confidence: number | null
+          matched_at: string | null
+          matched_by: string | null
+          matched_transaction_id: string | null
+          memo: string | null
+          pix_end_to_end_id: string | null
+          pix_key: string | null
+          posting_date: string | null
+          raw_data: Json | null
+          reconciliation_status: string | null
+          transaction_date: string
+          updated_at: string | null
+        }
+        Insert: {
+          amount: number
+          bank_account_id: string
+          category_code?: string | null
+          category_name?: string | null
+          company_id: string
+          counterparty_account?: string | null
+          counterparty_agency?: string | null
+          counterparty_bank_code?: string | null
+          counterparty_cpf_cnpj?: string | null
+          counterparty_name?: string | null
+          created_at?: string | null
+          description?: string | null
+          direction: string
+          external_id: string
+          external_ref?: string | null
+          id?: string
+          match_confidence?: number | null
+          matched_at?: string | null
+          matched_by?: string | null
+          matched_transaction_id?: string | null
+          memo?: string | null
+          pix_end_to_end_id?: string | null
+          pix_key?: string | null
+          posting_date?: string | null
+          raw_data?: Json | null
+          reconciliation_status?: string | null
+          transaction_date: string
+          updated_at?: string | null
+        }
+        Update: {
+          amount?: number
+          bank_account_id?: string
+          category_code?: string | null
+          category_name?: string | null
+          company_id?: string
+          counterparty_account?: string | null
+          counterparty_agency?: string | null
+          counterparty_bank_code?: string | null
+          counterparty_cpf_cnpj?: string | null
+          counterparty_name?: string | null
+          created_at?: string | null
+          description?: string | null
+          direction?: string
+          external_id?: string
+          external_ref?: string | null
+          id?: string
+          match_confidence?: number | null
+          matched_at?: string | null
+          matched_by?: string | null
+          matched_transaction_id?: string | null
+          memo?: string | null
+          pix_end_to_end_id?: string | null
+          pix_key?: string | null
+          posting_date?: string | null
+          raw_data?: Json | null
+          reconciliation_status?: string | null
+          transaction_date?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bank_transactions_bank_account_id_fkey"
+            columns: ["bank_account_id"]
+            isOneToOne: false
+            referencedRelation: "bank_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bank_transactions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bank_transactions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_security_dashboard"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "bank_transactions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
       bank_transfers: {
         Row: {
           amount: number
@@ -21276,6 +21484,73 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_ar_open"
             referencedColumns: ["id"]
+          },
+        ]
+      }
+      reconciliation_rules: {
+        Row: {
+          action: Json
+          company_id: string
+          created_at: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          last_match_at: string | null
+          match_criteria: Json
+          matches_count: number | null
+          name: string
+          priority: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          action?: Json
+          company_id: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_match_at?: string | null
+          match_criteria?: Json
+          matches_count?: number | null
+          name: string
+          priority?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          action?: Json
+          company_id?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_match_at?: string | null
+          match_criteria?: Json
+          matches_count?: number | null
+          name?: string
+          priority?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reconciliation_rules_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reconciliation_rules_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_security_dashboard"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "reconciliation_rules_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
           },
         ]
       }
