@@ -87,6 +87,7 @@ export interface AutomationLog {
   actions_executed: AutomationActionLog[];
   status: AutomationLogStatus;
   error?: string;
+  duration_ms?: number;
   created_at: string;
 }
 
