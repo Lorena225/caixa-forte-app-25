@@ -408,3 +408,143 @@ export function useBackupStats() {
     enabled: !!currentCompany?.id,
   });
 }
+
+// ============= Recovery Logs =============
+export interface RecoveryLog {
+  id: string;
+  company_id: string;
+  backup_execution_id: string | null;
+  initiated_by: string | null;
+  status: 'pending' | 'in_progress' | 'success' | 'failed' | 'cancelled';
+  error_message: string | null;
+  recovered_tables: string[] | null;
+  recovered_records: number;
+  recovery_duration_seconds: number | null;
+  dry_run: boolean;
+  started_at: string;
+  completed_at: string | null;
+  created_at: string;
+}
+
+export function useRecoveryLogs() {
+  const { currentCompany } = useAuth();
+
+  return useQuery({
+    queryKey: ['recovery-logs', currentCompany?.id],
+    queryFn: async () => {
+      if (!currentCompany?.id) return [];
+      const { data, error } = await supabase
+        .from('recovery_logs')
+        .select('*')
+        .eq('company_id', currentCompany.id)
+        .order('started_at', { ascending: false })
+        .limit(50);
+      if (error) throw error;
+      return data as RecoveryLog[];
+    },
+    enabled: !!currentCompany?.id,
+  });
+}
+
+export function useInitiateRestore() {
+  const queryClient = useQueryClient();
+  const { currentCompany, user } = useAuth();
+
+  return useMutation({
+    mutationFn: async (data: {
+      backupExecutionId: string;
+      dryRun?: boolean;
+      targetTables?: string[];
+    }) => {
+      if (!currentCompany?.id) throw new Error('Empresa não selecionada');
+      
+      // Create recovery log with status 'pending'
+      const { data: result, error } = await supabase
+        .from('recovery_logs')
+        .insert({
+          company_id: currentCompany.id,
+          backup_execution_id: data.backupExecutionId,
+          initiated_by: user?.id,
+          status: 'pending',
+          dry_run: data.dryRun || false,
+          recovered_tables: data.targetTables || null,
+        })
+        .select()
+        .single();
+      if (error) throw error;
+      return result;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['recovery-logs'] });
+      toast.success('Restauração iniciada - aguardando processamento');
+    },
+    onError: (error: Error) => {
+      toast.error('Erro ao iniciar restauração: ' + error.message);
+    },
+  });
+}
+
+export function useUpdateRecoveryStatus() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (data: {
+      id: string;
+      status: RecoveryLog['status'];
+      errorMessage?: string;
+      recoveredRecords?: number;
+      durationSeconds?: number;
+    }) => {
+      const updateData: Record<string, unknown> = {
+        status: data.status,
+      };
+      
+      if (data.errorMessage) updateData.error_message = data.errorMessage;
+      if (data.recoveredRecords !== undefined) updateData.recovered_records = data.recoveredRecords;
+      if (data.durationSeconds !== undefined) updateData.recovery_duration_seconds = data.durationSeconds;
+      if (data.status === 'success' || data.status === 'failed') {
+        updateData.completed_at = new Date().toISOString();
+      }
+      
+      const { data: result, error } = await supabase
+        .from('recovery_logs')
+        .update(updateData)
+        .eq('id', data.id)
+        .select()
+        .single();
+      if (error) throw error;
+      return result;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['recovery-logs'] });
+    },
+    onError: (error: Error) => {
+      toast.error('Erro ao atualizar status: ' + error.message);
+    },
+  });
+}
+
+export function useCancelRecovery() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (recoveryId: string) => {
+      const { error } = await supabase
+        .from('recovery_logs')
+        .update({ 
+          status: 'cancelled', 
+          completed_at: new Date().toISOString() 
+        })
+        .eq('id', recoveryId)
+        .in('status', ['pending', 'in_progress']);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['recovery-logs'] });
+      toast.success('Restauração cancelada');
+    },
+    onError: (error: Error) => {
+      toast.error('Erro ao cancelar: ' + error.message);
+    },
+  });
+}

@@ -2563,14 +2563,17 @@ export type Database = {
         Row: {
           arquivos_processados: number | null
           backup_job_id: string
+          checksum: string | null
           company_id: string | null
           detalhes: Json | null
           erro_mensagem: string | null
           finalizado_em: string | null
           id: string
           iniciado_em: string
+          is_verified: boolean | null
           local_armazenamento: string | null
           status: string
+          storage_url: string | null
           tamanho_bytes: number | null
           trigger_type: string | null
           triggered_by: string | null
@@ -2578,14 +2581,17 @@ export type Database = {
         Insert: {
           arquivos_processados?: number | null
           backup_job_id: string
+          checksum?: string | null
           company_id?: string | null
           detalhes?: Json | null
           erro_mensagem?: string | null
           finalizado_em?: string | null
           id?: string
           iniciado_em?: string
+          is_verified?: boolean | null
           local_armazenamento?: string | null
           status?: string
+          storage_url?: string | null
           tamanho_bytes?: number | null
           trigger_type?: string | null
           triggered_by?: string | null
@@ -2593,14 +2599,17 @@ export type Database = {
         Update: {
           arquivos_processados?: number | null
           backup_job_id?: string
+          checksum?: string | null
           company_id?: string | null
           detalhes?: Json | null
           erro_mensagem?: string | null
           finalizado_em?: string | null
           id?: string
           iniciado_em?: string
+          is_verified?: boolean | null
           local_armazenamento?: string | null
           status?: string
+          storage_url?: string | null
           tamanho_bytes?: number | null
           trigger_type?: string | null
           triggered_by?: string | null
@@ -21675,6 +21684,83 @@ export type Database = {
           },
           {
             foreignKeyName: "reconciliation_tolerances_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      recovery_logs: {
+        Row: {
+          backup_execution_id: string | null
+          company_id: string
+          completed_at: string | null
+          created_at: string | null
+          dry_run: boolean | null
+          error_message: string | null
+          id: string
+          initiated_by: string | null
+          recovered_records: number | null
+          recovered_tables: string[] | null
+          recovery_duration_seconds: number | null
+          started_at: string | null
+          status: string
+        }
+        Insert: {
+          backup_execution_id?: string | null
+          company_id: string
+          completed_at?: string | null
+          created_at?: string | null
+          dry_run?: boolean | null
+          error_message?: string | null
+          id?: string
+          initiated_by?: string | null
+          recovered_records?: number | null
+          recovered_tables?: string[] | null
+          recovery_duration_seconds?: number | null
+          started_at?: string | null
+          status?: string
+        }
+        Update: {
+          backup_execution_id?: string | null
+          company_id?: string
+          completed_at?: string | null
+          created_at?: string | null
+          dry_run?: boolean | null
+          error_message?: string | null
+          id?: string
+          initiated_by?: string | null
+          recovered_records?: number | null
+          recovered_tables?: string[] | null
+          recovery_duration_seconds?: number | null
+          started_at?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recovery_logs_backup_execution_id_fkey"
+            columns: ["backup_execution_id"]
+            isOneToOne: false
+            referencedRelation: "backup_executions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recovery_logs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recovery_logs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_security_dashboard"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "recovery_logs_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "v_security_status"
