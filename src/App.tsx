@@ -242,8 +242,8 @@ const queryClient = new QueryClient({
 });
 
 const App = () => (
-  <ErrorBoundary>
-    <QueryClientProvider client={queryClient}>
+  <QueryClientProvider client={queryClient}>
+    <ErrorBoundary>
       <TooltipProvider>
         <Toaster />
         <Sonner />
@@ -551,8 +551,8 @@ const App = () => (
           </AuthProvider>
         </BrowserRouter>
       </TooltipProvider>
-    </QueryClientProvider>
-  </ErrorBoundary>
+    </ErrorBoundary>
+  </QueryClientProvider>
 );
 
 export default App;
