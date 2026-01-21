@@ -211,14 +211,14 @@ export function useCreateAutomation() {
         name: data.name,
         description: data.description || null,
         is_active: data.is_active ?? true,
-        triggers: data.triggers as unknown as Record<string, unknown>,
-        actions: data.actions as unknown as Record<string, unknown>,
+        triggers: JSON.parse(JSON.stringify(data.triggers)),
+        actions: JSON.parse(JSON.stringify(data.actions)),
         created_by: user.id,
       };
 
       const { data: automation, error } = await supabase
         .from('automations')
-        .insert([insertData])
+        .insert(insertData)
         .select()
         .single();
 
@@ -421,13 +421,13 @@ export function useTestAutomation() {
         automation_id: automationId,
         triggered_at: new Date().toISOString(),
         trigger_type: triggers[0]?.type || 'webhook',
-        trigger_data: { test: true, simulated: true },
-        actions_executed: actionsResults as unknown as Record<string, unknown>,
+        trigger_data: JSON.parse(JSON.stringify({ test: true, simulated: true })),
+        actions_executed: JSON.parse(JSON.stringify(actionsResults)),
         status: 'success' as const,
         duration_ms,
       };
 
-      await supabase.from('automation_logs').insert([logData]);
+      await supabase.from('automation_logs').insert(logData);
 
       return {
         success: true,
