@@ -21579,6 +21579,236 @@ export type Database = {
           },
         ]
       }
+      report_exports: {
+        Row: {
+          company_id: string
+          created_at: string | null
+          download_count: number | null
+          expires_at: string | null
+          file_path: string | null
+          file_size_bytes: number | null
+          format: string
+          id: string
+          report_id: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string | null
+          download_count?: number | null
+          expires_at?: string | null
+          file_path?: string | null
+          file_size_bytes?: number | null
+          format: string
+          id?: string
+          report_id: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string | null
+          download_count?: number | null
+          expires_at?: string | null
+          file_path?: string | null
+          file_size_bytes?: number | null
+          format?: string
+          id?: string
+          report_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "report_exports_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "report_exports_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_security_dashboard"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "report_exports_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "report_exports_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "reports_generated"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      report_templates: {
+        Row: {
+          columns_config: Json | null
+          company_id: string
+          config: Json
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          filters_config: Json | null
+          grouping_config: Json | null
+          id: string
+          is_favorite: boolean | null
+          is_public: boolean | null
+          last_generated_at: string | null
+          name: string
+          schedule_cron: string | null
+          type: string
+          updated_at: string | null
+        }
+        Insert: {
+          columns_config?: Json | null
+          company_id: string
+          config?: Json
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          filters_config?: Json | null
+          grouping_config?: Json | null
+          id?: string
+          is_favorite?: boolean | null
+          is_public?: boolean | null
+          last_generated_at?: string | null
+          name: string
+          schedule_cron?: string | null
+          type: string
+          updated_at?: string | null
+        }
+        Update: {
+          columns_config?: Json | null
+          company_id?: string
+          config?: Json
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          filters_config?: Json | null
+          grouping_config?: Json | null
+          id?: string
+          is_favorite?: boolean | null
+          is_public?: boolean | null
+          last_generated_at?: string | null
+          name?: string
+          schedule_cron?: string | null
+          type?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "report_templates_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "report_templates_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_security_dashboard"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "report_templates_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      reports_generated: {
+        Row: {
+          company_id: string
+          data: Json
+          expires_at: string | null
+          file_size_bytes: number | null
+          generated_at: string | null
+          generated_by: string | null
+          generation_time_ms: number | null
+          id: string
+          metadata: Json | null
+          periodo_fim: string
+          periodo_inicio: string
+          report_name: string
+          report_type: string
+          row_count: number | null
+          summary: Json | null
+          template_id: string | null
+        }
+        Insert: {
+          company_id: string
+          data?: Json
+          expires_at?: string | null
+          file_size_bytes?: number | null
+          generated_at?: string | null
+          generated_by?: string | null
+          generation_time_ms?: number | null
+          id?: string
+          metadata?: Json | null
+          periodo_fim: string
+          periodo_inicio: string
+          report_name: string
+          report_type: string
+          row_count?: number | null
+          summary?: Json | null
+          template_id?: string | null
+        }
+        Update: {
+          company_id?: string
+          data?: Json
+          expires_at?: string | null
+          file_size_bytes?: number | null
+          generated_at?: string | null
+          generated_by?: string | null
+          generation_time_ms?: number | null
+          id?: string
+          metadata?: Json | null
+          periodo_fim?: string
+          periodo_inicio?: string
+          report_name?: string
+          report_type?: string
+          row_count?: number | null
+          summary?: Json | null
+          template_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reports_generated_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reports_generated_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_security_dashboard"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "reports_generated_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "reports_generated_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "report_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       return_items: {
         Row: {
           created_at: string | null
@@ -28842,6 +29072,7 @@ export type Database = {
           violation_reason: string
         }[]
       }
+      cleanup_expired_reports: { Args: never; Returns: number }
       cleanup_old_data: {
         Args: {
           p_company_id: string
