@@ -929,6 +929,681 @@ export class AIBankMatcher {
   }
 }
 
+// ============= BankReconciliationService Class (New Interface) =============
+
+export interface BankTransaction {
+  id: string;
+  company_id: string;
+  bank_account_id: string;
+  date: Date | string;
+  amount: number;
+  description: string;
+  reference?: string;
+  direction: 'entrada' | 'saida';
+  balance?: number;
+  fit_id?: string;
+}
+
+export interface BankReconciliationMatch {
+  bankTransaction: BankTransaction;
+  caixaRegister?: CaixaRegister;
+  matchScore: number; // 0-100
+  matchType: 'EXACT' | 'DATE_FUZZY' | 'AMOUNT_FUZZY' | 'DESCRIPTION_FUZZY' | 'NONE';
+  confidence: number; // 0-1
+  suggestedAction: 'AUTO_MATCH' | 'MANUAL_REVIEW' | 'FRAUD_ALERT';
+}
+
+export interface AnomalyAlert {
+  id: string;
+  type: 'duplicate_payment' | 'unusual_amount' | 'suspicious_timing' | 'pattern_anomaly' | 'velocity_spike' | 'round_number_pattern';
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  description: string;
+  affectedTransactionIds: string[];
+  detectedAt: Date;
+  details: Record<string, unknown>;
+}
+
+export interface ReconciliationResult {
+  id: string;
+  status: 'success' | 'partial' | 'failed';
+  totalProcessed: number;
+  autoMatched: number;
+  manualReviewRequired: number;
+  fraudAlerts: number;
+  difference: number;
+  matches: BankReconciliationMatch[];
+  unmatchedBank: BankTransaction[];
+  unmatchedSystem: CaixaRegister[];
+  generatedAt: Date;
+}
+
+export class BankReconciliationService {
+  private companyId: string;
+
+  constructor(companyId: string) {
+    this.companyId = companyId;
+  }
+
+  // ============= Import Bank Statement =============
+
+  async importBankStatement(
+    file: Buffer | ArrayBuffer | string,
+    format: 'OFX' | 'CNAB' | 'CSV'
+  ): Promise<BankTransaction[]> {
+    const transactions: BankTransaction[] = [];
+    
+    let content: string;
+    if (typeof file === 'string') {
+      content = file;
+    } else if (file instanceof ArrayBuffer) {
+      content = new TextDecoder('utf-8').decode(file);
+    } else {
+      content = file.toString('utf-8');
+    }
+
+    switch (format) {
+      case 'OFX':
+        return this.parseOFX(content);
+      case 'CNAB':
+        return this.parseCNAB(content);
+      case 'CSV':
+        return this.parseCSV(content);
+      default:
+        throw new Error(`Unsupported format: ${format}`);
+    }
+  }
+
+  private parseOFX(content: string): BankTransaction[] {
+    const transactions: BankTransaction[] = [];
+    
+    // Extract STMTTRN blocks
+    const stmttrnRegex = /<STMTTRN>([\s\S]*?)<\/STMTTRN>/gi;
+    let match;
+
+    while ((match = stmttrnRegex.exec(content)) !== null) {
+      const block = match[1];
+      
+      const getValue = (tag: string): string => {
+        const regex = new RegExp(`<${tag}>([^<\\n]+)`, 'i');
+        const m = block.match(regex);
+        return m ? m[1].trim() : '';
+      };
+
+      const trntype = getValue('TRNTYPE');
+      const dtposted = getValue('DTPOSTED');
+      const trnamt = parseFloat(getValue('TRNAMT').replace(',', '.')) || 0;
+      const fitid = getValue('FITID');
+      const memo = getValue('MEMO') || getValue('NAME');
+      const checknum = getValue('CHECKNUM');
+
+      // Parse date (YYYYMMDD or YYYYMMDDHHMMSS format)
+      let date = new Date();
+      if (dtposted) {
+        const year = parseInt(dtposted.substring(0, 4));
+        const month = parseInt(dtposted.substring(4, 6)) - 1;
+        const day = parseInt(dtposted.substring(6, 8));
+        date = new Date(year, month, day);
+      }
+
+      transactions.push({
+        id: fitid || crypto.randomUUID(),
+        company_id: this.companyId,
+        bank_account_id: '',
+        date,
+        amount: Math.abs(trnamt),
+        description: memo,
+        reference: checknum || fitid,
+        direction: trnamt >= 0 ? 'entrada' : 'saida',
+        fit_id: fitid,
+      });
+    }
+
+    return transactions;
+  }
+
+  private parseCNAB(content: string): BankTransaction[] {
+    const transactions: BankTransaction[] = [];
+    const lines = content.split('\n');
+
+    for (const line of lines) {
+      if (line.length < 240) continue; // CNAB 240 format
+
+      const recordType = line.substring(7, 8);
+      if (recordType !== '3') continue; // Detail record
+
+      const segmentType = line.substring(13, 14);
+      if (segmentType !== 'A' && segmentType !== 'J') continue;
+
+      try {
+        const dateStr = line.substring(93, 101);
+        const year = parseInt(dateStr.substring(4, 8));
+        const month = parseInt(dateStr.substring(2, 4)) - 1;
+        const day = parseInt(dateStr.substring(0, 2));
+        const date = new Date(year, month, day);
+
+        const amountStr = line.substring(119, 134);
+        const amount = parseInt(amountStr) / 100;
+
+        const description = line.substring(73, 93).trim();
+        const docNumber = line.substring(58, 73).trim();
+
+        transactions.push({
+          id: crypto.randomUUID(),
+          company_id: this.companyId,
+          bank_account_id: '',
+          date,
+          amount: Math.abs(amount),
+          description,
+          reference: docNumber,
+          direction: amount >= 0 ? 'entrada' : 'saida',
+        });
+      } catch {
+        continue;
+      }
+    }
+
+    return transactions;
+  }
+
+  private parseCSV(content: string): BankTransaction[] {
+    const transactions: BankTransaction[] = [];
+    const lines = content.split('\n');
+    
+    // Skip header
+    for (let i = 1; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (!line) continue;
+
+      const cols = line.split(/[,;]/).map(c => c.trim().replace(/^"|"$/g, ''));
+      
+      if (cols.length >= 3) {
+        const dateStr = cols[0];
+        const description = cols[1];
+        const amountStr = cols[2].replace(/[^\d,.-]/g, '').replace(',', '.');
+        const amount = parseFloat(amountStr) || 0;
+
+        // Try to parse date
+        let date = new Date();
+        const dateParts = dateStr.split(/[\/\-]/);
+        if (dateParts.length === 3) {
+          if (dateParts[2].length === 4) {
+            // DD/MM/YYYY
+            date = new Date(parseInt(dateParts[2]), parseInt(dateParts[1]) - 1, parseInt(dateParts[0]));
+          } else if (dateParts[0].length === 4) {
+            // YYYY-MM-DD
+            date = new Date(parseInt(dateParts[0]), parseInt(dateParts[1]) - 1, parseInt(dateParts[2]));
+          }
+        }
+
+        transactions.push({
+          id: crypto.randomUUID(),
+          company_id: this.companyId,
+          bank_account_id: '',
+          date,
+          amount: Math.abs(amount),
+          description,
+          reference: cols[3] || undefined,
+          direction: amount >= 0 ? 'entrada' : 'saida',
+        });
+      }
+    }
+
+    return transactions;
+  }
+
+  // ============= Auto Match Transactions =============
+
+  async autoMatchTransactions(
+    bankTransactions: BankTransaction[],
+    caixaRegisters: CaixaRegister[],
+    tolerancePercent: number = 5,
+    toleranceDays: number = 2
+  ): Promise<BankReconciliationMatch[]> {
+    const matches: BankReconciliationMatch[] = [];
+    const usedCaixaIds = new Set<string>();
+
+    // Sort by amount descending for better matching
+    const sortedBankTxns = [...bankTransactions].sort((a, b) => 
+      Math.abs(b.amount) - Math.abs(a.amount)
+    );
+
+    for (const bankTxn of sortedBankTxns) {
+      let bestMatch: BankReconciliationMatch | null = null;
+      let bestScore = 0;
+
+      for (const caixaReg of caixaRegisters) {
+        if (usedCaixaIds.has(caixaReg.id)) continue;
+
+        // Direction must match
+        const caixaDirection = caixaReg.type === 'receita' ? 'entrada' : 'saida';
+        if (bankTxn.direction !== caixaDirection) continue;
+
+        const score = this.calculateMatchScore(bankTxn, caixaReg);
+        
+        if (score > bestScore) {
+          bestScore = score;
+          const matchType = this.determineMatchType(bankTxn, caixaReg, tolerancePercent, toleranceDays);
+          const suggestedAction = this.determineSuggestedAction(score, matchType);
+
+          bestMatch = {
+            bankTransaction: bankTxn,
+            caixaRegister: caixaReg,
+            matchScore: score,
+            matchType,
+            confidence: score / 100,
+            suggestedAction,
+          };
+        }
+      }
+
+      if (bestMatch) {
+        matches.push(bestMatch);
+        if (bestMatch.caixaRegister) {
+          usedCaixaIds.add(bestMatch.caixaRegister.id);
+        }
+      } else {
+        // No match found
+        matches.push({
+          bankTransaction: bankTxn,
+          caixaRegister: undefined,
+          matchScore: 0,
+          matchType: 'NONE',
+          confidence: 0,
+          suggestedAction: 'MANUAL_REVIEW',
+        });
+      }
+    }
+
+    return matches;
+  }
+
+  // ============= Detailed Match Score Calculation =============
+
+  private calculateMatchScore(
+    bankTxn: BankTransaction,
+    caixaTxn: CaixaRegister
+  ): number {
+    let score = 0;
+
+    // Valor: 40 pontos máximo
+    const amountDiff = Math.abs(bankTxn.amount - caixaTxn.amount) / Math.max(bankTxn.amount, caixaTxn.amount);
+    if (amountDiff === 0) score += 40;
+    else if (amountDiff <= 0.05) score += 35;
+    else if (amountDiff <= 0.10) score += 25;
+
+    // Data: 30 pontos máximo
+    const bankDate = new Date(bankTxn.date);
+    const caixaDate = new Date(caixaTxn.payment_date || caixaTxn.due_date);
+    const daysDiff = Math.abs(Math.floor((bankDate.getTime() - caixaDate.getTime()) / (1000 * 60 * 60 * 24)));
+    if (daysDiff === 0) score += 30;
+    else if (daysDiff <= 2) score += 25;
+    else if (daysDiff <= 5) score += 15;
+
+    // Descrição: 20 pontos máximo (usando Levenshtein distance)
+    const similarity = this.calculateStringSimilarity(
+      bankTxn.description || '',
+      caixaTxn.description || ''
+    );
+    score += similarity * 20;
+
+    // Referência: 10 pontos máximo
+    if (bankTxn.reference && caixaTxn.document_number) {
+      if (bankTxn.reference === caixaTxn.document_number) {
+        score += 10;
+      } else if (bankTxn.reference.includes(caixaTxn.document_number) ||
+                 caixaTxn.document_number.includes(bankTxn.reference)) {
+        score += 7;
+      }
+    }
+
+    return Math.min(score, 100);
+  }
+
+  private calculateStringSimilarity(str1: string, str2: string): number {
+    const s1 = str1.toLowerCase().replace(/\s+/g, '');
+    const s2 = str2.toLowerCase().replace(/\s+/g, '');
+    const longer = s1.length > s2.length ? s1 : s2;
+    const shorter = s1.length > s2.length ? s2 : s1;
+
+    if (longer.length === 0) return 1.0;
+    const editDistance = this.levenshteinDistance(longer, shorter);
+    return (longer.length - editDistance) / longer.length;
+  }
+
+  private levenshteinDistance(str1: string, str2: string): number {
+    const m = str1.length;
+    const n = str2.length;
+    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+
+    for (let i = 0; i <= m; i++) dp[i][0] = i;
+    for (let j = 0; j <= n; j++) dp[0][j] = j;
+
+    for (let i = 1; i <= m; i++) {
+      for (let j = 1; j <= n; j++) {
+        if (str1[i - 1] === str2[j - 1]) {
+          dp[i][j] = dp[i - 1][j - 1];
+        } else {
+          dp[i][j] = 1 + Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]);
+        }
+      }
+    }
+
+    return dp[m][n];
+  }
+
+  private determineMatchType(
+    bankTxn: BankTransaction,
+    caixaTxn: CaixaRegister,
+    tolerancePercent: number,
+    toleranceDays: number
+  ): BankReconciliationMatch['matchType'] {
+    const amountDiff = Math.abs(bankTxn.amount - caixaTxn.amount);
+    const amountTolerance = caixaTxn.amount * (tolerancePercent / 100);
+    const isExactAmount = amountDiff === 0;
+    const isWithinAmountTolerance = amountDiff <= amountTolerance;
+
+    const bankDate = new Date(bankTxn.date);
+    const caixaDate = new Date(caixaTxn.payment_date || caixaTxn.due_date);
+    const daysDiff = Math.abs(Math.floor((bankDate.getTime() - caixaDate.getTime()) / (1000 * 60 * 60 * 24)));
+    const isExactDate = daysDiff === 0;
+    const isWithinDateTolerance = daysDiff <= toleranceDays;
+
+    const descSimilarity = this.calculateStringSimilarity(
+      bankTxn.description || '',
+      caixaTxn.description || ''
+    );
+
+    // Exact match: amount exact, date exact or within 1 day
+    if (isExactAmount && (isExactDate || daysDiff <= 1)) {
+      return 'EXACT';
+    }
+
+    // Date fuzzy: amount matches but date is fuzzy
+    if (isWithinAmountTolerance && !isExactDate && isWithinDateTolerance) {
+      return 'DATE_FUZZY';
+    }
+
+    // Amount fuzzy: date matches but amount is fuzzy
+    if (!isExactAmount && isWithinAmountTolerance && isExactDate) {
+      return 'AMOUNT_FUZZY';
+    }
+
+    // Description fuzzy: high description similarity
+    if (descSimilarity > 0.7 && isWithinAmountTolerance) {
+      return 'DESCRIPTION_FUZZY';
+    }
+
+    return 'NONE';
+  }
+
+  private determineSuggestedAction(
+    score: number,
+    matchType: BankReconciliationMatch['matchType']
+  ): BankReconciliationMatch['suggestedAction'] {
+    if (matchType === 'EXACT' && score >= 95) {
+      return 'AUTO_MATCH';
+    }
+    if (score >= 80) {
+      return 'AUTO_MATCH';
+    }
+    if (score >= 60) {
+      return 'MANUAL_REVIEW';
+    }
+    // Very low scores on suspicious patterns
+    if (matchType === 'NONE' && score < 30) {
+      return 'FRAUD_ALERT';
+    }
+    return 'MANUAL_REVIEW';
+  }
+
+  // ============= Anomaly Detection =============
+
+  async detectAnomalies(transactions: BankTransaction[]): Promise<AnomalyAlert[]> {
+    const alerts: AnomalyAlert[] = [];
+    const now = new Date();
+
+    // Calculate statistics
+    const amounts = transactions.map(t => t.amount);
+    const mean = amounts.reduce((a, b) => a + b, 0) / amounts.length;
+    const stdDev = Math.sqrt(
+      amounts.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b, 0) / amounts.length
+    );
+
+    // 1. Unusual amounts (statistical outliers)
+    for (const txn of transactions) {
+      const zscore = stdDev > 0 ? (txn.amount - mean) / stdDev : 0;
+      
+      if (Math.abs(zscore) > 3) {
+        alerts.push({
+          id: `anomaly-amount-${txn.id}`,
+          type: 'unusual_amount',
+          severity: Math.abs(zscore) > 4 ? 'high' : 'medium',
+          description: `Valor atípico: R$ ${txn.amount.toFixed(2)} (${zscore.toFixed(1)} desvios da média)`,
+          affectedTransactionIds: [txn.id],
+          detectedAt: now,
+          details: { amount: txn.amount, mean, stdDev, zscore },
+        });
+      }
+    }
+
+    // 2. Duplicate payments
+    const seenSignatures = new Map<string, BankTransaction>();
+    for (const txn of transactions) {
+      const signature = `${txn.amount.toFixed(2)}_${new Date(txn.date).toISOString().split('T')[0]}_${txn.direction}`;
+      
+      if (seenSignatures.has(signature)) {
+        const original = seenSignatures.get(signature)!;
+        alerts.push({
+          id: `anomaly-duplicate-${txn.id}`,
+          type: 'duplicate_payment',
+          severity: 'high',
+          description: `Possível pagamento duplicado: R$ ${txn.amount.toFixed(2)}`,
+          affectedTransactionIds: [original.id, txn.id],
+          detectedAt: now,
+          details: { originalId: original.id, duplicateId: txn.id, amount: txn.amount },
+        });
+      } else {
+        seenSignatures.set(signature, txn);
+      }
+    }
+
+    // 3. Suspicious timing (weekend/holiday transactions)
+    for (const txn of transactions) {
+      const date = new Date(txn.date);
+      const dayOfWeek = date.getDay();
+      
+      if ((dayOfWeek === 0 || dayOfWeek === 6) && txn.amount > mean * 2) {
+        alerts.push({
+          id: `anomaly-timing-${txn.id}`,
+          type: 'suspicious_timing',
+          severity: 'medium',
+          description: `Transação de alto valor em fim de semana: R$ ${txn.amount.toFixed(2)}`,
+          affectedTransactionIds: [txn.id],
+          detectedAt: now,
+          details: { dayOfWeek, date: date.toISOString(), amount: txn.amount },
+        });
+      }
+    }
+
+    // 4. Round number pattern (potential fraud indicator)
+    const roundNumberTxns = transactions.filter(t => 
+      t.amount >= 1000 && t.amount % 1000 === 0
+    );
+    if (roundNumberTxns.length >= 3) {
+      alerts.push({
+        id: `anomaly-round-pattern-${now.getTime()}`,
+        type: 'round_number_pattern',
+        severity: 'low',
+        description: `Padrão de valores redondos: ${roundNumberTxns.length} transações múltiplas de R$ 1.000`,
+        affectedTransactionIds: roundNumberTxns.map(t => t.id),
+        detectedAt: now,
+        details: { 
+          count: roundNumberTxns.length, 
+          amounts: roundNumberTxns.map(t => t.amount),
+        },
+      });
+    }
+
+    // 5. Velocity spike (too many transactions in short period)
+    const txnsByDate = new Map<string, BankTransaction[]>();
+    for (const txn of transactions) {
+      const dateKey = new Date(txn.date).toISOString().split('T')[0];
+      if (!txnsByDate.has(dateKey)) {
+        txnsByDate.set(dateKey, []);
+      }
+      txnsByDate.get(dateKey)!.push(txn);
+    }
+
+    const dailyCounts = Array.from(txnsByDate.values()).map(list => list.length);
+    const avgDaily = dailyCounts.reduce((a, b) => a + b, 0) / dailyCounts.length;
+
+    for (const [dateKey, dayTxns] of txnsByDate) {
+      if (dayTxns.length > avgDaily * 3 && dayTxns.length >= 5) {
+        alerts.push({
+          id: `anomaly-velocity-${dateKey}`,
+          type: 'velocity_spike',
+          severity: 'medium',
+          description: `Volume atípico de transações em ${dateKey}: ${dayTxns.length} (média: ${avgDaily.toFixed(1)}/dia)`,
+          affectedTransactionIds: dayTxns.map(t => t.id),
+          detectedAt: now,
+          details: { date: dateKey, count: dayTxns.length, average: avgDaily },
+        });
+      }
+    }
+
+    return alerts;
+  }
+
+  // ============= Reconcile =============
+
+  async reconcile(matches: BankReconciliationMatch[]): Promise<ReconciliationResult> {
+    const autoMatched = matches.filter(m => m.suggestedAction === 'AUTO_MATCH');
+    const manualReview = matches.filter(m => m.suggestedAction === 'MANUAL_REVIEW');
+    const fraudAlerts = matches.filter(m => m.suggestedAction === 'FRAUD_ALERT');
+    const unmatched = matches.filter(m => m.matchType === 'NONE');
+
+    // Calculate difference
+    const bankTotal = matches.reduce((sum, m) => {
+      const amount = m.bankTransaction.amount;
+      return sum + (m.bankTransaction.direction === 'entrada' ? amount : -amount);
+    }, 0);
+
+    const systemTotal = matches
+      .filter(m => m.caixaRegister)
+      .reduce((sum, m) => {
+        const amount = m.caixaRegister!.amount;
+        return sum + (m.caixaRegister!.type === 'receita' ? amount : -amount);
+      }, 0);
+
+    // Persist auto-matched items
+    for (const match of autoMatched) {
+      if (match.caixaRegister) {
+        try {
+          await supabase
+            .from('reconciliation_suggestions')
+            .insert({
+              company_id: this.companyId,
+              statement_line_id: match.bankTransaction.id,
+              candidate_id: match.caixaRegister.id,
+              candidate_type: 'transaction',
+              score: match.matchScore / 100, // score is 0-1 in DB
+              is_selected: true,
+              match_reasons_json: [match.matchType.toLowerCase()],
+            });
+        } catch (err) {
+          console.error('Failed to persist match:', err);
+        }
+      }
+    }
+
+    return {
+      id: crypto.randomUUID(),
+      status: unmatched.length === 0 ? 'success' : autoMatched.length > 0 ? 'partial' : 'failed',
+      totalProcessed: matches.length,
+      autoMatched: autoMatched.length,
+      manualReviewRequired: manualReview.length,
+      fraudAlerts: fraudAlerts.length,
+      difference: bankTotal - systemTotal,
+      matches,
+      unmatchedBank: unmatched.map(m => m.bankTransaction),
+      unmatchedSystem: matches
+        .filter(m => m.matchType === 'NONE' && m.caixaRegister)
+        .map(m => m.caixaRegister!),
+      generatedAt: new Date(),
+    };
+  }
+
+  // ============= Generate Adjustments =============
+
+  async generateAdjustments(matches: BankReconciliationMatch[]): Promise<JournalEntry[]> {
+    const adjustments: JournalEntry[] = [];
+    const today = new Date().toISOString().split('T')[0];
+
+    // Unmatched bank transactions that need adjustment entries
+    const unmatchedEntradas = matches
+      .filter(m => m.matchType === 'NONE' && m.bankTransaction.direction === 'entrada')
+      .reduce((sum, m) => sum + m.bankTransaction.amount, 0);
+
+    const unmatchedSaidas = matches
+      .filter(m => m.matchType === 'NONE' && m.bankTransaction.direction === 'saida')
+      .reduce((sum, m) => sum + m.bankTransaction.amount, 0);
+
+    if (unmatchedEntradas > 0) {
+      adjustments.push({
+        id: crypto.randomUUID(),
+        entry_date: today,
+        description: 'Ajuste de conciliação - Créditos bancários não identificados',
+        reference: `CONC-CR-${today}`,
+        source: 'reconciliation',
+        lines: [
+          {
+            account_code: '1.1.1.01',
+            account_name: 'Banco c/Movimento',
+            debit: unmatchedEntradas,
+            credit: 0,
+            description: 'Créditos pendentes de identificação',
+          },
+          {
+            account_code: '2.1.9.99',
+            account_name: 'Valores a Classificar - Créditos',
+            debit: 0,
+            credit: unmatchedEntradas,
+            description: 'Créditos bancários a classificar',
+          },
+        ],
+      });
+    }
+
+    if (unmatchedSaidas > 0) {
+      adjustments.push({
+        id: crypto.randomUUID(),
+        entry_date: today,
+        description: 'Ajuste de conciliação - Débitos bancários não identificados',
+        reference: `CONC-DB-${today}`,
+        source: 'reconciliation',
+        lines: [
+          {
+            account_code: '1.1.9.99',
+            account_name: 'Valores a Classificar - Débitos',
+            debit: unmatchedSaidas,
+            credit: 0,
+            description: 'Débitos bancários a classificar',
+          },
+          {
+            account_code: '1.1.1.01',
+            account_name: 'Banco c/Movimento',
+            debit: 0,
+            credit: unmatchedSaidas,
+            description: 'Débitos pendentes de identificação',
+          },
+        ],
+      });
+    }
+
+    return adjustments;
+  }
+}
+
 // ============= Factory Function =============
 
 export function createBankReconciliation(
@@ -941,4 +1616,8 @@ export function createBankReconciliation(
 
 export function createAIBankMatcher(companyId: string): AIBankMatcher {
   return new AIBankMatcher(companyId);
+}
+
+export function createBankReconciliationService(companyId: string): BankReconciliationService {
+  return new BankReconciliationService(companyId);
 }
