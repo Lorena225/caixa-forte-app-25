@@ -1,149 +1,207 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /* 
-  SISTEMA GERENCIAL FINANCEIRO - Design System
-  Tema: Corporativo Financeiro com Verde/Vermelho para indicadores
-  Versão: 2.0 - Responsivo
+  CAIXA FORTE ERP - Design System v3.0
+  Nova Paleta de Cores e Tipografia Completa
+  Tema: Corporativo Profissional com sidebar branca
 */
 
 @layer base {
   :root {
-    /* Cores de fundo */
-    --background: 220 20% 97%;
-    --foreground: 220 25% 10%;
+    /* ===== CORES PRIMÁRIAS ===== */
+    --primary: 210 100% 40%; /* #0066CC */
+    --primary-foreground: 0 0% 100%;
+    --primary-dark: 210 100% 32%; /* #0052A3 */
+    --primary-light: 210 100% 90%; /* #CCE5FF */
+    --primary-very-light: 210 100% 95%; /* #E6F0FF */
 
-    /* Cards e superfícies */
+    /* ===== CORES SECUNDÁRIAS (Roxo) ===== */
+    --secondary-purple: 262 83% 58%; /* #7C3AED */
+    --secondary-purple-dark: 263 70% 50%; /* #6D28D9 */
+    --secondary-purple-light: 263 90% 96%; /* #EDE9FE */
+    --secondary-purple-very-light: 270 100% 98%; /* #FAF5FF */
+
+    /* ===== CORES DE ESTADO ===== */
+    /* Sucesso (Verde) */
+    --success: 160 84% 39%; /* #10B981 */
+    --success-dark: 161 94% 30%; /* #059669 */
+    --success-light: 152 81% 91%; /* #D1FAE5 */
+    --success-foreground: 0 0% 100%;
+
+    /* Alerta (Âmbar/Amarelo) */
+    --warning: 38 92% 50%; /* #F59E0B */
+    --warning-dark: 33 90% 44%; /* #D97706 */
+    --warning-light: 48 96% 89%; /* #FEF3C7 */
+    --warning-foreground: 0 0% 10%;
+
+    /* Erro (Vermelho) */
+    --destructive: 0 84% 60%; /* #EF4444 */
+    --destructive-dark: 0 72% 51%; /* #DC2626 */
+    --destructive-light: 0 93% 94%; /* #FEE2E2 */
+    --destructive-foreground: 0 0% 100%;
+
+    /* Info (Ciano) */
+    --info: 189 94% 43%; /* #06B6D4 */
+    --info-dark: 188 91% 36%; /* #0891B2 */
+    --info-light: 183 100% 90%; /* #CFFAFE */
+    --info-foreground: 0 0% 100%;
+
+    /* Disabled (Cinza) */
+    --disabled: 220 9% 64%; /* #9CA3AF */
+    --disabled-dark: 220 9% 46%; /* #6B7280 */
+    --disabled-light: 220 14% 84%; /* #D1D5DB */
+    --disabled-very-light: 220 14% 91%; /* #E5E7EB */
+
+    /* ===== CORES NEUTRAS (Escala de Cinza) ===== */
+    --gray-50: 210 40% 98%; /* #F9FAFB */
+    --gray-100: 220 14% 96%; /* #F3F4F6 */
+    --gray-200: 220 13% 91%; /* #E5E7EB */
+    --gray-300: 216 12% 84%; /* #D1D5DB */
+    --gray-400: 218 11% 65%; /* #9CA3AF */
+    --gray-500: 220 9% 46%; /* #6B7280 */
+    --gray-600: 215 14% 34%; /* #4B5563 */
+    --gray-700: 217 19% 27%; /* #374151 */
+    --gray-800: 215 28% 17%; /* #1F2937 */
+    --gray-900: 221 39% 11%; /* #111827 */
+
+    /* ===== BACKGROUNDS ===== */
+    --background: 0 0% 100%; /* #FFFFFF branco puro */
+    --background-secondary: 210 20% 98%; /* #F8F9FA */
+    --background-tertiary: 220 14% 96%; /* #F3F4F6 */
+    --foreground: 221 39% 11%; /* #111827 */
+
+    /* Cards e Superfícies */
     --card: 0 0% 100%;
-    --card-foreground: 220 25% 10%;
+    --card-foreground: 221 39% 11%;
 
     /* Popover/Dropdown */
     --popover: 0 0% 100%;
-    --popover-foreground: 220 25% 10%;
+    --popover-foreground: 221 39% 11%;
 
-    /* Cor primária - Azul corporativo */
-    --primary: 217 91% 40%;
-    --primary-foreground: 0 0% 100%;
-
-    /* Secundária - Cinza elegante */
+    /* Secondary - Para botões secundários */
     --secondary: 220 14% 96%;
-    --secondary-foreground: 220 25% 20%;
+    --secondary-foreground: 217 19% 27%;
 
     /* Muted - Neutro suave */
     --muted: 220 14% 96%;
-    --muted-foreground: 220 10% 45%;
+    --muted-foreground: 220 9% 46%;
 
     /* Accent - Azul claro */
-    --accent: 217 91% 95%;
-    --accent-foreground: 217 91% 35%;
+    --accent: 210 100% 95%;
+    --accent-foreground: 210 100% 32%;
 
-    /* Destructive - Vermelho para alertas/despesas */
-    --destructive: 0 84% 55%;
-    --destructive-foreground: 0 0% 100%;
-
-    /* Sucesso - Verde para receitas */
-    --success: 142 76% 36%;
-    --success-foreground: 0 0% 100%;
-
-    /* Warning - Amarelo para atenção */
-    --warning: 38 92% 50%;
-    --warning-foreground: 0 0% 10%;
-
-    /* Info */
-    --info: 199 89% 48%;
-    --info-foreground: 0 0% 100%;
-
-    /* Bordas e inputs */
-    --border: 220 13% 91%;
+    /* ===== BORDAS ===== */
+    --border: 220 13% 91%; /* #E5E7EB */
+    --border-light: 220 14% 96%; /* #F3F4F6 */
+    --border-dark: 216 12% 84%; /* #D1D5DB */
     --input: 220 13% 91%;
-    --ring: 217 91% 40%;
+    --ring: 210 100% 40%;
 
-    --radius: 0.625rem;
+    --radius: 0.5rem;
 
-    /* Sidebar - Escura para contraste */
-    --sidebar-background: 220 25% 12%;
-    --sidebar-foreground: 220 10% 85%;
-    --sidebar-primary: 217 91% 60%;
+    /* ===== SIDEBAR - BRANCA ===== */
+    --sidebar-background: 0 0% 100%; /* #FFFFFF */
+    --sidebar-foreground: 210 18% 18%; /* #2C3E50 */
+    --sidebar-primary: 210 100% 40%; /* #0066CC */
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 25% 18%;
-    --sidebar-accent-foreground: 220 10% 95%;
-    --sidebar-border: 220 20% 20%;
-    --sidebar-ring: 217 91% 60%;
+    --sidebar-accent: 210 20% 98%; /* #F8F9FA hover */
+    --sidebar-accent-foreground: 215 28% 17%; /* #1F2937 */
+    --sidebar-border: 220 13% 91%; /* #E5E7EB */
+    --sidebar-ring: 210 100% 40%;
+    --sidebar-muted: 215 14% 34%; /* #4B5563 */
 
-    /* Cores financeiras específicas */
-    --finance-positive: 142 76% 36%;
+    /* ===== CORES POR CATEGORIA DE MENU ===== */
+    --menu-inicio: 210 100% 40%; /* #0066CC Azul */
+    --menu-favoritos: 262 83% 58%; /* #7C3AED Roxo */
+    --menu-operacoes: 160 84% 39%; /* #10B981 Verde Esmeralda */
+    --menu-catalogo: 24 94% 53%; /* #F97316 Laranja */
+    --menu-compras: 0 84% 60%; /* #EF4444 Vermelho */
+    --menu-financeiro: 161 94% 30%; /* #059669 Verde Escuro */
+    --menu-contabil: 38 92% 50%; /* #F59E0B Âmbar */
+    --menu-relatorios: 189 94% 43%; /* #06B6D4 Ciano */
+    --menu-cadastros: 330 81% 60%; /* #EC4899 Rosa */
+    --menu-ia: 270 91% 65%; /* #A855F7 Roxo Vibrante */
+    --menu-servicos: 243 75% 59%; /* #4F46E5 Índigo */
+    --menu-integracoes: 174 72% 40%; /* #14B8A6 Teal */
+    --menu-config: 220 9% 46%; /* #6B7280 Cinza */
+
+    /* ===== CORES FINANCEIRAS ===== */
+    --finance-positive: 160 84% 39%;
     --finance-positive-foreground: 0 0% 100%;
-    --finance-negative: 0 84% 55%;
+    --finance-negative: 0 84% 60%;
     --finance-negative-foreground: 0 0% 100%;
-    --finance-neutral: 220 10% 50%;
+    --finance-neutral: 220 9% 46%;
     --finance-overdue: 25 95% 53%;
 
-    /* Gradientes */
-    --gradient-primary: linear-gradient(135deg, hsl(217 91% 40%) 0%, hsl(217 91% 50%) 100%);
-    --gradient-success: linear-gradient(135deg, hsl(142 76% 36%) 0%, hsl(142 76% 46%) 100%);
-    --gradient-danger: linear-gradient(135deg, hsl(0 84% 55%) 0%, hsl(0 84% 65%) 100%);
-    --gradient-sidebar: linear-gradient(180deg, hsl(220 25% 12%) 0%, hsl(220 25% 8%) 100%);
-    
-    /* Sombras */
-    --shadow-sm: 0 1px 2px 0 hsl(220 25% 10% / 0.05);
-    --shadow-md: 0 4px 6px -1px hsl(220 25% 10% / 0.1), 0 2px 4px -2px hsl(220 25% 10% / 0.1);
-    --shadow-lg: 0 10px 15px -3px hsl(220 25% 10% / 0.1), 0 4px 6px -4px hsl(220 25% 10% / 0.1);
-    --shadow-card: 0 1px 3px 0 hsl(220 25% 10% / 0.1), 0 1px 2px -1px hsl(220 25% 10% / 0.1);
+    /* ===== SOMBRAS ===== */
+    --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    --shadow-sidebar: 0 2px 4px rgba(0, 0, 0, 0.05);
+    --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+
+    /* ===== FOCUS RINGS ===== */
+    --focus-ring: 0 0 0 3px rgba(0, 102, 204, 0.1);
 
     /* Sidebar width tokens */
-    --sidebar-width: 16rem;
+    --sidebar-width: 16rem; /* 256px */
     --sidebar-width-collapsed: 4rem;
+    --header-height: 4rem; /* 64px */
   }
 
   .dark {
-    --background: 220 25% 8%;
-    --foreground: 220 10% 95%;
+    --background: 222 47% 11%;
+    --foreground: 210 40% 98%;
 
-    --card: 220 25% 12%;
-    --card-foreground: 220 10% 95%;
+    --card: 222 47% 14%;
+    --card-foreground: 210 40% 98%;
 
-    --popover: 220 25% 12%;
-    --popover-foreground: 220 10% 95%;
+    --popover: 222 47% 14%;
+    --popover-foreground: 210 40% 98%;
 
-    --primary: 217 91% 60%;
+    --primary: 210 100% 50%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 20% 18%;
-    --secondary-foreground: 220 10% 90%;
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 98%;
 
-    --muted: 220 20% 18%;
-    --muted-foreground: 220 10% 55%;
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
 
-    --accent: 217 91% 20%;
-    --accent-foreground: 217 91% 70%;
+    --accent: 217 33% 17%;
+    --accent-foreground: 210 40% 98%;
 
-    --destructive: 0 70% 50%;
+    --destructive: 0 63% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --success: 142 60% 45%;
+    --success: 160 60% 45%;
     --success-foreground: 0 0% 100%;
 
-    --warning: 38 80% 55%;
+    --warning: 38 92% 50%;
     --warning-foreground: 0 0% 10%;
 
-    --border: 220 20% 20%;
-    --input: 220 20% 20%;
-    --ring: 217 91% 60%;
+    --border: 217 33% 17%;
+    --input: 217 33% 17%;
+    --ring: 210 100% 50%;
 
-    --sidebar-background: 220 25% 6%;
-    --sidebar-foreground: 220 10% 85%;
-    --sidebar-primary: 217 91% 60%;
+    --sidebar-background: 222 47% 11%;
+    --sidebar-foreground: 210 40% 85%;
+    --sidebar-primary: 210 100% 50%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 25% 12%;
-    --sidebar-accent-foreground: 220 10% 95%;
-    --sidebar-border: 220 20% 15%;
-    --sidebar-ring: 217 91% 60%;
+    --sidebar-accent: 217 33% 17%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 217 33% 20%;
+    --sidebar-ring: 210 100% 50%;
 
-    --finance-positive: 142 60% 45%;
-    --finance-negative: 0 70% 50%;
+    --finance-positive: 160 60% 45%;
+    --finance-negative: 0 63% 51%;
   }
 }
 
@@ -161,53 +219,370 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased text-sm leading-relaxed;
+    @apply bg-background text-foreground font-sans antialiased;
+    font-size: 14px;
+    line-height: 1.5;
     min-height: 100vh;
     min-height: 100dvh;
   }
 
-  /* Responsive Typography Base */
+  /* ===== TIPOGRAFIA HIERÁRQUICA ===== */
   h1 {
-    @apply text-xl font-bold tracking-tight md:text-2xl;
+    @apply text-2xl font-bold tracking-tight md:text-3xl;
+    color: hsl(var(--gray-800));
+    line-height: 1.2;
+    letter-spacing: -0.02em;
   }
 
   h2 {
-    @apply text-lg font-semibold tracking-tight md:text-xl;
+    @apply text-xl font-semibold tracking-tight md:text-2xl;
+    color: hsl(var(--gray-800));
+    line-height: 1.25;
+    letter-spacing: -0.01em;
   }
 
   h3 {
-    @apply text-base font-semibold md:text-lg;
+    @apply text-lg font-semibold md:text-xl;
+    color: hsl(var(--gray-800));
+    line-height: 1.3;
   }
 
   h4 {
-    @apply text-sm font-medium md:text-base;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.44;
+    color: hsl(var(--gray-700));
   }
 
-  /* Scrollbar personalizada */
+  h5 {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.5;
+    color: hsl(var(--gray-700));
+  }
+
+  /* Body Large */
+  .text-body-lg {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: hsl(var(--gray-700));
+  }
+
+  /* Body Regular (default) */
+  .text-body {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: hsl(var(--gray-600));
+  }
+
+  /* Body Small */
+  .text-body-sm {
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.54;
+    color: hsl(var(--gray-500));
+  }
+
+  /* Caption */
+  .text-caption {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: 0.3px;
+    color: hsl(var(--gray-500));
+  }
+
+  /* Badge/Label */
+  .text-badge {
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.45;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: hsl(var(--gray-700));
+  }
+
+  /* Code/Mono */
+  .text-code {
+    font-family: 'JetBrains Mono', 'SF Mono', 'Monaco', 'Courier New', monospace;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.54;
+    color: hsl(var(--gray-700));
+    background: hsl(var(--gray-50));
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  /* ===== SCROLLBAR PERSONALIZADA ===== */
   ::-webkit-scrollbar {
-    @apply w-2 h-2;
+    width: 4px;
+    height: 4px;
   }
 
   ::-webkit-scrollbar-track {
-    @apply bg-transparent;
+    background: transparent;
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-border rounded-full;
+    background: hsl(var(--gray-300));
+    border-radius: 4px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-muted-foreground/50;
+    background: hsl(var(--gray-400));
+  }
+
+  /* Sidebar scrollbar específica */
+  .sidebar-scroll::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .sidebar-scroll::-webkit-scrollbar-track {
+    background: transparent;
+    margin: 2px;
+  }
+
+  .sidebar-scroll::-webkit-scrollbar-thumb {
+    background: hsl(var(--gray-300));
+    border-radius: 4px;
+  }
+
+  .sidebar-scroll::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--gray-400));
   }
 }
 
 @layer components {
-  /* App Container - Responsive */
+  /* ===== SIDEBAR STYLES ===== */
+  .sidebar-container {
+    background: hsl(var(--sidebar-background));
+    width: var(--sidebar-width);
+    border-right: 1px solid hsl(var(--sidebar-border));
+    box-shadow: var(--shadow-sidebar);
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    height: calc(100vh - var(--header-height));
+    overflow: auto;
+    z-index: 40;
+  }
+
+  .sidebar-header {
+    height: 64px;
+    padding: 16px;
+    background: hsl(var(--sidebar-background));
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid hsl(var(--sidebar-border));
+  }
+
+  .sidebar-logo {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  /* Menu Item Base */
+  .sidebar-menu-item {
+    height: 44px;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 200ms ease-in-out;
+    border-left: 4px solid transparent;
+    margin: 0;
+  }
+
+  .sidebar-menu-item:hover {
+    background: hsl(var(--gray-50));
+  }
+
+  .sidebar-menu-item:hover .sidebar-menu-text {
+    color: hsl(var(--gray-800));
+  }
+
+  .sidebar-menu-item.active {
+    padding-left: 12px;
+  }
+
+  /* Menu Icon */
+  .sidebar-menu-icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    transition: color 200ms;
+  }
+
+  /* Menu Text */
+  .sidebar-menu-text {
+    font-size: 14px;
+    font-weight: 500;
+    color: hsl(var(--gray-700));
+    line-height: 1.4;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 200ms;
+  }
+
+  /* Submenu Items */
+  .sidebar-submenu-item {
+    height: 40px;
+    padding-left: 52px;
+    padding-right: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 200ms ease-in-out;
+  }
+
+  .sidebar-submenu-item:hover {
+    background: hsl(var(--gray-100));
+  }
+
+  .sidebar-submenu-text {
+    font-size: 13px;
+    font-weight: 400;
+    color: hsl(var(--gray-600));
+    transition: color 200ms;
+  }
+
+  .sidebar-submenu-item:hover .sidebar-submenu-text {
+    color: hsl(var(--gray-700));
+  }
+
+  .sidebar-submenu-item.active .sidebar-submenu-text {
+    font-weight: 600;
+  }
+
+  /* Separator */
+  .sidebar-separator {
+    margin: 8px 0;
+    height: 1px;
+    background: hsl(var(--gray-200));
+  }
+
+  /* ===== TOPBAR/HEADER STYLES ===== */
+  .topbar {
+    height: 64px;
+    background: hsl(var(--background));
+    border-bottom: 1px solid hsl(var(--border));
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .topbar-search {
+    width: 340px;
+    height: 40px;
+    padding: 10px 16px 10px 40px;
+    border: 1px solid hsl(var(--gray-200));
+    border-radius: 8px;
+    background: hsl(var(--gray-50));
+    font-size: 14px;
+    color: hsl(var(--gray-700));
+    transition: all 200ms;
+  }
+
+  .topbar-search::placeholder {
+    color: hsl(var(--gray-400));
+  }
+
+  .topbar-search:hover {
+    border-color: hsl(var(--gray-300));
+    background: hsl(var(--background));
+    box-shadow: var(--shadow-sm);
+  }
+
+  .topbar-search:focus {
+    border: 2px solid hsl(var(--primary));
+    background: hsl(var(--background));
+    box-shadow: var(--focus-ring);
+    outline: none;
+  }
+
+  .topbar-btn-primary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: hsl(var(--primary));
+    color: white;
+    padding: 10px 16px;
+    height: 40px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 200ms;
+  }
+
+  .topbar-btn-primary:hover {
+    background: hsl(var(--primary-dark));
+    box-shadow: 0 4px 8px rgba(0, 102, 204, 0.2);
+  }
+
+  .topbar-btn-primary:active {
+    background: hsl(210 100% 26%);
+  }
+
+  .notification-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: hsl(var(--destructive));
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    position: absolute;
+    top: -6px;
+    right: -6px;
+  }
+
+  .user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid hsl(var(--gray-200));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+    transition: all 200ms;
+  }
+
+  .user-avatar:hover {
+    border-color: hsl(var(--primary));
+    box-shadow: 0 2px 8px rgba(0, 102, 204, 0.15);
+  }
+
+  /* ===== APP CONTAINER ===== */
   .app-container {
     @apply mx-auto w-full max-w-screen-2xl px-4 sm:px-6 lg:px-8;
   }
 
-  /* Page Content Area */
   .page-content {
     @apply min-h-screen py-4 sm:py-6;
   }
@@ -234,7 +609,7 @@
     @apply bg-muted text-muted-foreground border-border;
   }
 
-  /* Valores financeiros */
+  /* Financial values */
   .value-positive {
     @apply text-success font-semibold;
   }
@@ -247,7 +622,7 @@
     @apply text-muted-foreground;
   }
 
-  /* KPI Cards - Responsive */
+  /* KPI Cards */
   .kpi-card {
     @apply relative overflow-hidden rounded-xl border bg-card p-4 shadow-sm sm:p-5;
   }
@@ -273,7 +648,7 @@
     @apply bg-warning;
   }
 
-  /* Animações */
+  /* Animations */
   .fade-in {
     animation: fadeIn 0.3s ease-in-out;
   }
@@ -324,7 +699,7 @@
     @apply min-w-[640px];
   }
 
-  /* Form Grid - Responsive */
+  /* Form Grid */
   .form-grid {
     @apply grid gap-4 grid-cols-1 sm:grid-cols-2;
   }
@@ -333,17 +708,17 @@
     @apply grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3;
   }
 
-  /* Button Group - Responsive */
+  /* Button Group */
   .button-group {
     @apply flex flex-wrap gap-2;
   }
 
-  /* Filter Bar - Responsive */
+  /* Filter Bar */
   .filter-bar {
     @apply flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center;
   }
 
-  /* Mobile Action Menu Trigger */
+  /* Mobile/Desktop Actions */
   .mobile-actions {
     @apply sm:hidden;
   }
@@ -352,7 +727,7 @@
     @apply hidden sm:flex;
   }
 
-  /* Truncate text with tooltip support */
+  /* Truncate text */
   .truncate-text {
     @apply truncate max-w-[200px] sm:max-w-none;
   }
