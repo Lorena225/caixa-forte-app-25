@@ -1,6 +1,6 @@
 import { memo } from 'react';
-import { LucideIcon } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { LucideIcon, TrendingUp, TrendingDown, ArrowRight, Info } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
 interface KPICardProps {
@@ -17,34 +17,28 @@ interface KPICardProps {
 
 const variantStyles = {
   default: {
-    card: '',
-    icon: 'text-muted-foreground',
-    value: '',
+    iconBg: 'bg-gray-100',
+    iconColor: 'text-gray-500',
   },
   success: {
-    card: 'kpi-card-success',
-    icon: 'text-success',
-    value: 'text-success',
+    iconBg: 'bg-emerald-50',
+    iconColor: 'text-emerald-500',
   },
   danger: {
-    card: 'kpi-card-danger',
-    icon: 'text-destructive',
-    value: 'text-destructive',
+    iconBg: 'bg-red-50',
+    iconColor: 'text-red-500',
   },
   warning: {
-    card: 'kpi-card-warning',
-    icon: 'text-warning',
-    value: 'text-warning',
+    iconBg: 'bg-amber-50',
+    iconColor: 'text-amber-500',
   },
   primary: {
-    card: 'kpi-card-primary',
-    icon: 'text-primary',
-    value: 'text-primary',
+    iconBg: 'bg-blue-50',
+    iconColor: 'text-[#0066CC]',
   },
   info: {
-    card: '',
-    icon: 'text-info',
-    value: 'text-info',
+    iconBg: 'bg-cyan-50',
+    iconColor: 'text-cyan-500',
   },
 };
 
@@ -64,47 +58,81 @@ export const KPICard = memo(function KPICard({
   return (
     <Card 
       className={cn(
-        'kpi-card transition-all duration-200',
-        styles.card,
-        onClick && 'cursor-pointer hover:shadow-md hover:scale-[1.02]'
+        'relative bg-white border border-gray-200 rounded-xl p-5 transition-all duration-200',
+        'shadow-[0_1px_3px_rgba(0,0,0,0.05)]',
+        onClick && 'cursor-pointer hover:shadow-[0_4px_6px_rgba(0,0,0,0.1)] hover:-translate-y-0.5 hover:border-gray-300'
       )}
       onClick={onClick}
     >
-      <CardHeader className="flex flex-row items-center justify-between pb-1 sm:pb-2">
-        <CardTitle className="text-xs font-medium text-muted-foreground sm:text-sm truncate pr-2">
+      {/* Icon in top right */}
+      {Icon && (
+        <div className={cn(
+          'absolute top-4 right-4 w-8 h-8 rounded-lg flex items-center justify-center transition-colors duration-200',
+          styles.iconBg
+        )}>
+          <Icon className={cn('h-[18px] w-[18px]', styles.iconColor)} />
+        </div>
+      )}
+
+      {/* Info icon */}
+      <button 
+        className="absolute top-4 right-14 text-gray-400 hover:text-[#0066CC] transition-colors"
+        onClick={(e) => { e.stopPropagation(); }}
+        aria-label="Mais informações"
+      >
+        <Info className="h-5 w-5" />
+      </button>
+
+      <CardContent className="p-0 space-y-2">
+        {/* Label */}
+        <p className="text-xs font-medium text-gray-500 uppercase tracking-wider leading-[18px]">
           {title}
-        </CardTitle>
-        {Icon && <Icon className={cn('h-4 w-4 shrink-0', styles.icon)} />}
-      </CardHeader>
-      <CardContent className="pt-0">
+        </p>
+
+        {/* Value */}
         {isLoading ? (
-          <div className="h-7 w-20 bg-muted animate-pulse rounded sm:h-8 sm:w-24" />
+          <div className="h-9 w-28 bg-gray-100 animate-pulse rounded" />
         ) : (
-          <div className={cn(
-            'text-lg font-bold sm:text-xl md:text-2xl truncate',
-            styles.value
-          )}>
+          <p className="text-[28px] font-bold text-gray-900 font-mono leading-9 tracking-tight">
             {value}
+          </p>
+        )}
+
+        {/* Variation/Status */}
+        {change && (
+          <div className="flex items-center gap-1">
+            {trend === 'up' && (
+              <>
+                <TrendingUp className="h-4 w-4 text-emerald-500" />
+                <span className="text-[13px] font-semibold text-emerald-500 leading-5">
+                  {change}
+                </span>
+              </>
+            )}
+            {trend === 'down' && (
+              <>
+                <TrendingDown className="h-4 w-4 text-red-500" />
+                <span className="text-[13px] font-semibold text-red-500 leading-5">
+                  {change}
+                </span>
+              </>
+            )}
+            {trend === 'neutral' && (
+              <>
+                <ArrowRight className="h-4 w-4 text-gray-500" />
+                <span className="text-[13px] font-semibold text-gray-500 leading-5">
+                  {change}
+                </span>
+              </>
+            )}
           </div>
         )}
-        {(change || subtitle) && (
-          <div className="flex flex-wrap items-center gap-1.5 mt-1">
-            {change && (
-              <span className={cn(
-                'text-[10px] font-medium sm:text-xs',
-                trend === 'up' && 'text-success',
-                trend === 'down' && 'text-destructive',
-                trend === 'neutral' && 'text-muted-foreground'
-              )}>
-                {change}
-              </span>
-            )}
-            {subtitle && (
-              <span className="text-[10px] text-muted-foreground sm:text-xs truncate">
-                {subtitle}
-              </span>
-            )}
-          </div>
+
+        {/* Subtitle/Description */}
+        {subtitle && (
+          <p className="text-xs text-gray-400 leading-[18px]">
+            {subtitle}
+          </p>
         )}
       </CardContent>
     </Card>
@@ -119,16 +147,15 @@ interface KPIGridProps {
 }
 
 export function KPIGrid({ children, columns = 4 }: KPIGridProps) {
-  const gridCols = {
-    2: 'grid-cols-1 xs:grid-cols-2',
-    3: 'grid-cols-1 xs:grid-cols-2 md:grid-cols-3',
-    4: 'grid-cols-1 xs:grid-cols-2 lg:grid-cols-4',
-    5: 'grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-5',
-    6: 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-6',
-  };
-
   return (
-    <div className={cn('grid gap-3 sm:gap-4', gridCols[columns])}>
+    <div className={cn(
+      'grid gap-4',
+      'grid-cols-1 sm:grid-cols-2',
+      columns >= 3 && 'lg:grid-cols-3',
+      columns >= 4 && 'xl:grid-cols-4',
+      columns >= 5 && '2xl:grid-cols-5',
+      columns >= 6 && '2xl:grid-cols-6'
+    )}>
       {children}
     </div>
   );
