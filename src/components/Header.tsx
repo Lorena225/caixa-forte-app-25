@@ -61,33 +61,48 @@ export const Header = memo(function Header() {
   const avatarColor = user?.email ? generateAvatarColor(user.email) : 'bg-primary';
 
   return (
-    <header className="fixed top-0 right-0 left-0 z-50 h-16 border-b border-gray-200 bg-white shadow-sm">
-      <div className="flex h-full items-center justify-between gap-4 px-4 md:px-6">
+    <header 
+      className="fixed top-0 right-0 left-0 z-50 h-14 sm:h-16 border-b border-gray-200 bg-white shadow-sm"
+      role="banner"
+      aria-label="Barra de navegação principal"
+    >
+      <div className="flex h-full items-center justify-between gap-2 sm:gap-4 px-3 sm:px-4 md:px-6">
         {/* Logo (mobile) + Desktop offset for sidebar */}
-        <div className="flex items-center gap-3 md:ml-64">
+        <div className="flex items-center gap-2 sm:gap-3 md:ml-64">
           {/* Mobile logo */}
-          <div className="flex items-center gap-2 md:hidden ml-12">
+          <div className="flex items-center gap-2 md:hidden ml-10 sm:ml-12">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-              <Sparkles className="h-4 w-4 text-white" />
+              <Sparkles className="h-4 w-4 text-white" aria-hidden="true" />
             </div>
           </div>
 
           {/* Search - Desktop */}
-          <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-xl">
+          <form 
+            onSubmit={handleSearch} 
+            className="hidden md:flex flex-1 max-w-xl"
+            role="search"
+            aria-label="Busca global"
+          >
             <div className="relative w-full">
-              <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400 pointer-events-none" />
+              <Search 
+                className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400 pointer-events-none" 
+                aria-hidden="true"
+              />
               <input
-                type="text"
+                id="search"
+                type="search"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
                 placeholder="Buscar produtos, clientes, vendas..."
+                aria-label="Buscar produtos, clientes, vendas"
                 className={cn(
                   'w-full h-10 pl-10 pr-4 rounded-lg text-sm',
                   'bg-gray-50 border border-gray-200 text-gray-700',
                   'placeholder:text-gray-400',
                   'transition-all duration-200',
                   'hover:border-gray-300 hover:bg-white hover:shadow-sm',
-                  'focus:border-primary focus:border-2 focus:bg-white focus:shadow-focus focus:outline-none'
+                  'focus:border-primary focus:border-2 focus:bg-white focus:shadow-focus focus:outline-none',
+                  'focus-visible:outline-none focus-visible:ring-0'
                 )}
               />
             </div>
@@ -95,22 +110,25 @@ export const Header = memo(function Header() {
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-3" role="group" aria-label="Ações rápidas">
           {/* Novo Registro Button with Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button 
                 className={cn(
-                  'gap-2 h-10 px-4 rounded-lg font-semibold text-sm',
+                  'gap-1 sm:gap-2 h-9 sm:h-10 px-2.5 sm:px-4 rounded-lg font-semibold text-xs sm:text-sm',
                   'bg-primary text-white',
                   'hover:bg-primary-dark hover:shadow-md',
                   'active:bg-[hsl(210,100%,26%)]',
-                  'transition-all duration-200'
+                  'transition-all duration-200',
+                  'min-w-[44px] min-h-[44px] sm:min-w-0 sm:min-h-0'
                 )}
+                aria-label="Criar novo registro"
+                aria-haspopup="menu"
               >
-                <Plus className="h-[18px] w-[18px]" />
+                <Plus className="h-4 w-4 sm:h-[18px] sm:w-[18px]" aria-hidden="true" />
                 <span className="hidden sm:inline">Novo Registro</span>
-                <ChevronDown className="h-[18px] w-[18px]" />
+                <ChevronDown className="h-3.5 w-3.5 sm:h-[18px] sm:w-[18px]" aria-hidden="true" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56 bg-white border-gray-200 shadow-lg">
@@ -120,9 +138,9 @@ export const Header = memo(function Header() {
                 <DropdownMenuItem
                   key={option.key}
                   onClick={() => navigate(option.route)}
-                  className="gap-3 cursor-pointer text-gray-700 hover:bg-gray-50 hover:text-gray-900 focus:bg-gray-50"
+                  className="gap-3 cursor-pointer text-gray-700 hover:bg-gray-50 hover:text-gray-900 focus:bg-gray-50 min-h-[44px]"
                 >
-                  <span>{option.icon}</span>
+                  <span aria-hidden="true">{option.icon}</span>
                   <span>{option.label}</span>
                 </DropdownMenuItem>
               ))}
@@ -133,10 +151,14 @@ export const Header = memo(function Header() {
           <Button 
             variant="ghost" 
             size="icon" 
-            className="relative h-10 w-10 rounded-lg text-gray-500 hover:text-primary hover:bg-gray-50 transition-colors duration-200"
+            className="relative h-10 w-10 min-w-[44px] min-h-[44px] rounded-lg text-gray-500 hover:text-primary hover:bg-gray-50 transition-colors duration-200"
+            aria-label="Notificações (3 novas)"
           >
-            <Bell className="h-6 w-6" />
-            <span className="absolute -top-1.5 -right-1.5 flex h-[18px] w-[18px] items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-white">
+            <Bell className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
+            <span 
+              className="absolute -top-1 -right-1 sm:-top-1.5 sm:-right-1.5 flex h-4 w-4 sm:h-[18px] sm:w-[18px] items-center justify-center rounded-full bg-destructive text-[9px] sm:text-[10px] font-bold text-white"
+              aria-hidden="true"
+            >
               3
             </span>
           </Button>
@@ -144,13 +166,18 @@ export const Header = memo(function Header() {
           {/* User Avatar Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-10 w-10 rounded-full p-0 hover:bg-transparent">
+              <Button 
+                variant="ghost" 
+                className="relative h-10 w-10 min-w-[44px] min-h-[44px] rounded-full p-0 hover:bg-transparent"
+                aria-label={`Menu do usuário: ${user?.email || 'Usuário'}`}
+                aria-haspopup="menu"
+              >
                 <Avatar className={cn(
-                  'h-10 w-10 border-2 border-gray-200 transition-all duration-200',
+                  'h-9 w-9 sm:h-10 sm:w-10 border-2 border-gray-200 transition-all duration-200',
                   'hover:border-primary hover:shadow-md'
                 )}>
                   <AvatarImage src="" alt={user?.email || 'User'} />
-                  <AvatarFallback className={cn(avatarColor, 'text-white font-semibold text-sm')}>
+                  <AvatarFallback className={cn(avatarColor, 'text-white font-semibold text-xs sm:text-sm')}>
                     {userInitials}
                   </AvatarFallback>
                 </Avatar>
@@ -168,24 +195,24 @@ export const Header = memo(function Header() {
               <DropdownMenuSeparator className="bg-gray-200" />
               <DropdownMenuItem 
                 onClick={() => navigate('/admin')} 
-                className="gap-2 cursor-pointer text-gray-700 hover:bg-gray-50 hover:text-gray-900 focus:bg-gray-50"
+                className="gap-2 cursor-pointer text-gray-700 hover:bg-gray-50 hover:text-gray-900 focus:bg-gray-50 min-h-[44px]"
               >
-                <Settings className="h-4 w-4" />
+                <Settings className="h-4 w-4" aria-hidden="true" />
                 Configurações
               </DropdownMenuItem>
               <DropdownMenuItem 
                 onClick={() => navigate('/admin/users')} 
-                className="gap-2 cursor-pointer text-gray-700 hover:bg-gray-50 hover:text-gray-900 focus:bg-gray-50"
+                className="gap-2 cursor-pointer text-gray-700 hover:bg-gray-50 hover:text-gray-900 focus:bg-gray-50 min-h-[44px]"
               >
-                <User className="h-4 w-4" />
+                <User className="h-4 w-4" aria-hidden="true" />
                 Meu Perfil
               </DropdownMenuItem>
               <DropdownMenuSeparator className="bg-gray-200" />
               <DropdownMenuItem 
                 onClick={signOut} 
-                className="gap-2 cursor-pointer text-destructive hover:bg-destructive-light hover:text-destructive focus:bg-destructive-light"
+                className="gap-2 cursor-pointer text-destructive hover:bg-destructive-light hover:text-destructive focus:bg-destructive-light min-h-[44px]"
               >
-                <LogOut className="h-4 w-4" />
+                <LogOut className="h-4 w-4" aria-hidden="true" />
                 Sair
               </DropdownMenuItem>
             </DropdownMenuContent>
