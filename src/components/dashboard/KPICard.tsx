@@ -1,4 +1,4 @@
-import { memo, ReactNode } from 'react';
+import { memo, ReactNode, isValidElement } from 'react';
 import { LucideIcon, TrendingUp, TrendingDown, ArrowRight } from 'lucide-react';
 import { TooltipIcon } from '@/components/common/TooltipIcon';
 import { cn } from '@/lib/utils';
@@ -9,7 +9,7 @@ interface KPICardProps {
   subtitle?: string;
   change?: string;
   trend?: 'up' | 'down' | 'neutral';
-  icon?: LucideIcon | ReactNode;
+  icon?: LucideIcon;
   tooltip?: string;
   variant?: 'default' | 'success' | 'danger' | 'warning' | 'primary' | 'info';
   onClick?: () => void;
@@ -65,24 +65,10 @@ export const KPICard = memo(function KPICard({
   const styles = variantStyles[variant];
   const tooltipContent = tooltip || tooltipTexts[title] || `Informações sobre ${title}`;
 
-  // Render icon based on type
-  const renderIcon = () => {
-    if (!Icon) return null;
-    
-    // If it's a Lucide icon component
-    if (typeof Icon === 'function') {
-      const IconComponent = Icon as LucideIcon;
-      return <IconComponent className={cn('h-5 w-5', styles.iconColor)} />;
-    }
-    
-    // If it's a ReactNode (emoji or custom element)
-    return <span className="text-xl">{Icon}</span>;
-  };
-
   return (
     <div 
       className={cn(
-        'kpi-card relative bg-white border border-gray-200 rounded-xl',
+        'relative bg-white border border-gray-200 rounded-xl',
         'h-[160px] p-5 flex flex-col justify-between',
         'shadow-[0_1px_3px_rgba(0,0,0,0.05)]',
         'transition-all duration-200',
@@ -91,11 +77,12 @@ export const KPICard = memo(function KPICard({
       onClick={onClick}
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
+      onKeyDown={onClick ? (e) => { if (e.key === 'Enter' || e.key === ' ') onClick(); } : undefined}
     >
       {/* Header: Label + Tooltip + Icon */}
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-2">
-          <span className="kpi-label text-[13px] font-semibold text-gray-500 uppercase tracking-[0.5px]">
+          <span className="text-[13px] font-semibold text-gray-500 uppercase tracking-[0.5px] leading-tight">
             {title}
           </span>
           <TooltipIcon content={tooltipContent} position="top" />
@@ -103,10 +90,10 @@ export const KPICard = memo(function KPICard({
         
         {Icon && (
           <div className={cn(
-            'w-10 h-10 rounded-lg flex items-center justify-center',
+            'w-10 h-10 rounded-lg flex items-center justify-center shrink-0',
             styles.iconBg
           )}>
-            {renderIcon()}
+            <Icon className={cn('h-5 w-5', styles.iconColor)} />
           </div>
         )}
       </div>
@@ -116,7 +103,7 @@ export const KPICard = memo(function KPICard({
         {isLoading ? (
           <div className="h-10 w-32 bg-gray-100 animate-pulse rounded" />
         ) : (
-          <p className="kpi-value text-[32px] font-bold text-gray-900 font-mono leading-tight tracking-tight">
+          <p className="text-[32px] font-bold text-gray-900 font-mono leading-tight tracking-tight">
             {value}
           </p>
         )}
