@@ -232,6 +232,15 @@ import Reclassificacao from "./pages/contabilidade/Reclassificacao";
 // Automações
 import AutomationsIndex from "./pages/automations/Index";
 import AutomationDetail from "./pages/automations/AutomationDetail";
+// Controladoria & Open Banking
+import ComplianceDashboard from "./pages/controladoria/ComplianceDashboard";
+import TaxMappingPage from "./pages/controladoria/TaxMappingPage";
+import ComplianceAlertsPage from "./pages/controladoria/ComplianceAlertsPage";
+import ComplianceAuditPage from "./pages/controladoria/ComplianceAuditPage";
+import OpenBankingPage from "./pages/openbanking/OpenBankingPage";
+import AutomaticReconciliationPage from "./pages/openbanking/AutomaticReconciliationPage";
+import NFXMLUploadPage from "./pages/openbanking/NFXMLUploadPage";
+import CashComplianceDashboardPage from "./pages/openbanking/CashComplianceDashboardPage";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -460,6 +469,16 @@ const App = () => (
                 <Route path="/financeiro/simulacoes" element={<FinanceiroSimulacoes />} />
                 <Route path="/financeiro/tempo-real" element={<FinanceiroTempoReal />} />
                 <Route path="/compliance/anomalias" element={<ComplianceAnomalias />} />
+                
+                {/* ============ CONTROLADORIA & OPEN BANKING ============ */}
+                <Route path="/controladoria-obrigacoes" element={<ComplianceDashboard />} />
+                <Route path="/controladoria-mapeamento" element={<TaxMappingPage />} />
+                <Route path="/controladoria-alertas" element={<ComplianceAlertsPage />} />
+                <Route path="/controladoria-auditoria" element={<ComplianceAuditPage />} />
+                <Route path="/open-banking" element={<OpenBankingPage />} />
+                <Route path="/conciliacao-automatica" element={<AutomaticReconciliationPage />} />
+                <Route path="/nf-xml-auto" element={<NFXMLUploadPage />} />
+                <Route path="/dashboard-caixa-compliance" element={<CashComplianceDashboardPage />} />
                 
                 {/* ============ AUTOMAÇÕES ============ */}
                 <Route path="/automacoes" element={<AutomationsIndex />} />

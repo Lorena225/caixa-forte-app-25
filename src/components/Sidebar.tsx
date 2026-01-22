@@ -165,6 +165,10 @@ const menuItems: MenuItem[] = [
       { key: 'cupom-fiscal', label: 'Cupom Fiscal', icon: Receipt, route: '/fiscal/cupom-fiscal' },
       { key: 'danfe', label: 'DANFE', icon: FileText, route: '/fiscal/danfe' },
       { key: 'analise-fiscal', label: 'Análise Fiscal', icon: PieChart, route: '/fiscal/analise' },
+      { key: 'obrigacoes-fiscais', label: 'Obrigações Fiscais', icon: ClipboardList, route: '/controladoria-obrigacoes' },
+      { key: 'mapeamento-contabil', label: 'Mapeamento Contábil', icon: Network, route: '/controladoria-mapeamento' },
+      { key: 'alertas-compliance', label: 'Alertas Compliance', icon: AlertTriangle, route: '/controladoria-alertas' },
+      { key: 'auditoria', label: 'Histórico & Auditoria', icon: Shield, route: '/controladoria-auditoria' },
     ]
   },
   
@@ -235,6 +239,10 @@ const menuItems: MenuItem[] = [
       { key: 'antecipacao', label: 'Antecipação', icon: Wallet, route: '/embedded/antecipacao' },
       { key: 'of-conexoes', label: 'Conexões Bancárias', icon: Link2, route: '/openfinance/conexoes' },
       { key: 'of-pagamentos', label: 'Pagamentos Pix', icon: Zap, route: '/openfinance/pagamentos' },
+      { key: 'open-banking', label: 'Open Banking', icon: Landmark, route: '/open-banking' },
+      { key: 'conciliacao-auto', label: 'Conciliação Automática', icon: RefreshCw, route: '/conciliacao-automatica' },
+      { key: 'nf-xml-auto', label: 'NF-e XML Auto', icon: FileText, route: '/nf-xml-auto' },
+      { key: 'dashboard-compliance', label: 'Dashboard Caixa+Compliance', icon: Gauge, route: '/dashboard-caixa-compliance' },
     ]
   },
   
