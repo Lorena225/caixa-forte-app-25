@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { PageHeader } from '@/components/common/PageHeader';
 import { Card, CardContent } from '@/components/ui/card';
@@ -6,11 +6,14 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { 
+  Globe, 
   Building2, 
   CheckCircle, 
   RefreshCw,
   Clock,
-  Link2
+  Link2,
+  Plus,
+  Shield
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
@@ -35,10 +38,10 @@ interface ConexaoBanco extends Banco {
 const bancosDisponiveis: Banco[] = [
   { id: 'bb', nome: 'Banco do Brasil', codigo: '001', cor: '#FFCC00' },
   { id: 'bradesco', nome: 'Bradesco', codigo: '237', cor: '#CC092F' },
-  { id: 'itau', nome: 'Itaú', codigo: '341', cor: '#EC7000' },
-  { id: 'caixa', nome: 'Caixa', codigo: '104', cor: '#005CA9' },
+  { id: 'itau', nome: 'Itaú', codigo: '341', cor: '#003399' },
+  { id: 'caixa', nome: 'Caixa Econômica', codigo: '104', cor: '#0066B3' },
   { id: 'santander', nome: 'Santander', codigo: '033', cor: '#EC0000' },
-  { id: 'nubank', nome: 'Nubank', codigo: '260', cor: '#8A05BE' },
+  { id: 'nubank', nome: 'Nubank', codigo: '260', cor: '#820AD1' },
 ];
 
 export default function OpenBankingPage() {
@@ -50,19 +53,25 @@ export default function OpenBankingPage() {
       contas: { corrente: true, poupanca: false, investimento: false }
     }))
   );
+  const [connecting, setConnecting] = useState<string | null>(null);
 
   const handleConectar = (bancoId: string) => {
-    setConexoes(prev => prev.map(c => {
-      if (c.id === bancoId) {
-        return {
-          ...c,
-          conectado: true,
-          ultimaSync: 'Há 2 minutos',
-        };
-      }
-      return c;
-    }));
-    toast.success(`Conectado ao ${conexoes.find(c => c.id === bancoId)?.nome} com sucesso!`);
+    setConnecting(bancoId);
+    
+    setTimeout(() => {
+      setConexoes(prev => prev.map(c => {
+        if (c.id === bancoId) {
+          return {
+            ...c,
+            conectado: true,
+            ultimaSync: 'Há 2 minutos',
+          };
+        }
+        return c;
+      }));
+      setConnecting(null);
+      toast.success(`Conectado ao ${conexoes.find(c => c.id === bancoId)?.nome} via Open Banking!`);
+    }, 1500);
   };
 
   const handleSincronizar = async (bancoId: string) => {
@@ -103,25 +112,60 @@ export default function OpenBankingPage() {
     toast.info(`Banco desconectado`);
   };
 
+  const connectedCount = conexoes.filter(c => c.conectado).length;
+  const availableCount = conexoes.filter(c => !c.conectado).length;
+
   return (
     <MainLayout>
       <div className="p-6 space-y-6">
-        <PageHeader title="Conexão com Bancos (Open Banking)" />
+        <PageHeader 
+          title="Open Banking - Conexão com Bancos" 
+          description="Sincronize suas contas bancárias automaticamente via Open Banking Brasil"
+        />
 
-        {/* Resumo */}
-        <div className="flex gap-4">
-          <div className="flex items-center gap-2 px-4 py-2 bg-green-50 rounded-lg border border-green-200">
-            <CheckCircle className="h-5 w-5 text-green-600" />
-            <span className="text-sm font-medium text-green-700">
-              {conexoes.filter(c => c.conectado).length} bancos conectados
-            </span>
-          </div>
-          <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-lg border border-gray-200">
-            <Building2 className="h-5 w-5 text-gray-600" />
-            <span className="text-sm font-medium text-gray-700">
-              {conexoes.filter(c => !c.conectado).length} disponíveis
-            </span>
-          </div>
+        {/* Summary Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Card className="border-l-4 border-l-green-500">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <div className="p-3 bg-green-100 rounded-lg">
+                  <CheckCircle className="h-6 w-6 text-green-600" />
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Bancos Conectados</p>
+                  <p className="text-2xl font-bold font-mono">{connectedCount}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card className="border-l-4 border-l-blue-500">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <div className="p-3 bg-blue-100 rounded-lg">
+                  <Building2 className="h-6 w-6 text-blue-600" />
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Disponíveis</p>
+                  <p className="text-2xl font-bold font-mono">{availableCount}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card className="border-l-4 border-l-primary">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <div className="p-3 bg-primary/10 rounded-lg">
+                  <RefreshCw className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Última Sincronização</p>
+                  <p className="text-2xl font-bold font-mono">Há 2 min</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Grid de Bancos */}
@@ -130,23 +174,26 @@ export default function OpenBankingPage() {
             <Card 
               key={banco.id}
               className={cn(
-                'transition-all duration-200',
+                'transition-all duration-200 overflow-hidden',
                 banco.conectado && 'ring-2 ring-green-500 ring-offset-2'
               )}
             >
+              {/* Color Bar */}
+              <div className="h-2" style={{ backgroundColor: banco.cor }} />
+              
               <CardContent className="p-6">
                 {/* Header do Banco */}
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
                     <div 
-                      className="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-lg"
+                      className="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-sm"
                       style={{ backgroundColor: banco.cor }}
                     >
                       {banco.codigo}
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-900">{banco.nome}</h3>
-                      <p className="text-sm text-gray-500">Código: {banco.codigo}</p>
+                      <h3 className="font-semibold text-foreground">{banco.nome}</h3>
+                      <p className="text-sm text-muted-foreground">Código: {banco.codigo}</p>
                     </div>
                   </div>
                   {banco.conectado && (
@@ -161,16 +208,18 @@ export default function OpenBankingPage() {
                 {banco.conectado ? (
                   <div className="space-y-4">
                     {/* Última Sync */}
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/50 px-3 py-2 rounded-lg">
                       <Clock className="h-4 w-4" />
                       Última sync: {banco.ultimaSync}
                     </div>
 
                     {/* Checkboxes de Contas */}
                     <div className="space-y-2">
-                      <p className="text-sm font-medium text-gray-700">Contas sincronizadas:</p>
+                      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                        Contas sincronizadas:
+                      </p>
                       <div className="space-y-2">
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 p-2 hover:bg-muted/50 rounded-lg transition-colors">
                           <Checkbox 
                             id={`${banco.id}-corrente`}
                             checked={banco.contas.corrente}
@@ -180,7 +229,7 @@ export default function OpenBankingPage() {
                             Conta Corrente
                           </label>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 p-2 hover:bg-muted/50 rounded-lg transition-colors">
                           <Checkbox 
                             id={`${banco.id}-poupanca`}
                             checked={banco.contas.poupanca}
@@ -190,7 +239,7 @@ export default function OpenBankingPage() {
                             Conta Poupança
                           </label>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 p-2 hover:bg-muted/50 rounded-lg transition-colors">
                           <Checkbox 
                             id={`${banco.id}-investimento`}
                             checked={banco.contas.investimento}
@@ -217,7 +266,7 @@ export default function OpenBankingPage() {
                         variant="ghost"
                         size="sm"
                         onClick={() => handleDesconectar(banco.id)}
-                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                        className="text-destructive hover:text-destructive hover:bg-destructive/10"
                       >
                         Desconectar
                       </Button>
@@ -228,11 +277,21 @@ export default function OpenBankingPage() {
                   <div className="pt-4">
                     <Button 
                       onClick={() => handleConectar(banco.id)}
+                      disabled={connecting === banco.id}
                       className="w-full gap-2"
                       variant="outline"
                     >
-                      <Link2 className="h-4 w-4" />
-                      Conectar
+                      {connecting === banco.id ? (
+                        <>
+                          <RefreshCw className="h-4 w-4 animate-spin" />
+                          Conectando...
+                        </>
+                      ) : (
+                        <>
+                          <Plus className="h-4 w-4" />
+                          Conectar via Open Banking
+                        </>
+                      )}
                     </Button>
                   </div>
                 )}
@@ -240,6 +299,25 @@ export default function OpenBankingPage() {
             </Card>
           ))}
         </div>
+
+        {/* Info Box */}
+        <Card className="bg-blue-50 border-blue-200">
+          <CardContent className="p-6">
+            <div className="flex items-start gap-4">
+              <div className="p-3 bg-blue-100 rounded-lg">
+                <Shield className="h-6 w-6 text-blue-600" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-blue-900 mb-1">Sobre Open Banking</h3>
+                <p className="text-sm text-blue-700">
+                  O Open Banking é regulamentado pelo Banco Central e permite compartilhar seus dados bancários 
+                  de forma segura. Suas credenciais nunca são armazenadas - utilizamos autenticação OAuth 2.0 
+                  diretamente com seu banco.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </MainLayout>
   );
