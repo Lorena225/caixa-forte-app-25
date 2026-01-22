@@ -849,9 +849,57 @@
     @apply text-muted-foreground;
   }
 
-  /* KPI Cards */
+  /* ===== KPI CARDS - Professional Styling ===== */
   .kpi-card {
-    @apply relative overflow-hidden rounded-xl border bg-card p-4 shadow-sm sm:p-5;
+    height: 160px;
+    padding: 20px 24px;
+    background: white;
+    border: 1px solid hsl(var(--gray-200));
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+    transition: all 200ms ease;
+  }
+
+  .kpi-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+    border-color: hsl(var(--gray-300));
+  }
+
+  .kpi-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: hsl(var(--gray-500));
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    display: block;
+    line-height: 1.3;
+  }
+
+  .kpi-value {
+    font-size: 32px;
+    font-weight: 700;
+    color: hsl(var(--gray-800));
+    font-family: 'JetBrains Mono', monospace;
+    line-height: 1.2;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+  }
+
+  /* Responsive KPI value */
+  @media (max-width: 639px) {
+    .kpi-value {
+      font-size: 26px;
+    }
+    .kpi-card {
+      height: 140px;
+      padding: 16px 20px;
+    }
   }
 
   .kpi-card::before {
