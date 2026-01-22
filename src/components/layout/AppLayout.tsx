@@ -13,8 +13,8 @@ interface AppLayoutProps {
 /**
  * AppLayout - Complete layout wrapper with Header, Sidebar, and CopilotWidget
  * Provides:
- * - Fixed Header at top
- * - Responsive Sidebar (drawer on mobile, collapsible on desktop)
+ * - Fixed Header at top (64px height)
+ * - Responsive Sidebar (drawer on mobile, fixed on desktop)
  * - Main content area with proper padding
  * - CopilotWidget fixed at bottom-right
  * - Command palette for quick navigation
@@ -24,31 +24,30 @@ export function AppLayout({ children }: AppLayoutProps) {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {/* Fixed Header */}
+      {/* Fixed Header - Always on top */}
       <Header />
       
-      <div className="flex flex-1 pt-14">
-        {/* Sidebar */}
-        <Sidebar />
-        
-        {/* Command Palette */}
-        <CommandPalette />
-        
-        {/* Main Content Area */}
-        <main
-          className={cn(
-            'flex-1 min-h-[calc(100vh-3.5rem)] transition-all duration-300',
-            // On mobile, full width (sidebar is overlay)
-            // On desktop, offset by sidebar width
-            !isMobile && (collapsed ? 'md:pl-16' : 'md:pl-64')
-          )}
-        >
-          {/* Responsive Container */}
-          <div className="p-4 md:p-6 lg:p-8">
-            {children}
-          </div>
-        </main>
-      </div>
+      {/* Sidebar - Fixed position, below header */}
+      <Sidebar />
+      
+      {/* Command Palette */}
+      <CommandPalette />
+      
+      {/* Main Content Area - Offset for header and sidebar */}
+      <main
+        className={cn(
+          'flex-1 min-h-[calc(100vh-4rem)] transition-all duration-300',
+          'pt-16', // Offset for fixed header (64px)
+          // On mobile, full width (sidebar is overlay)
+          // On desktop, offset by sidebar width (256px)
+          !isMobile && 'md:pl-64'
+        )}
+      >
+        {/* Responsive Container */}
+        <div className="p-4 md:p-6 lg:p-8">
+          {children}
+        </div>
+      </main>
       
       {/* CopilotWidget - Always visible, fixed bottom-right */}
       <CopilotWidget />
