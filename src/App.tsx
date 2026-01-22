@@ -344,6 +344,7 @@ const App = () => (
                 <Route path="/cobranca/boletos" element={<CobrancaBoletos />} />
                 <Route path="/cobranca/reguas" element={<CobrancaReguas />} />
                 <Route path="/cobranca/negativacao" element={<CobrancaNegativacao />} />
+                <Route path="/cobranca/serasa" element={<CobrancaSerasa />} />
                 <Route path="/cobranca/gestao-credito" element={<CobrancaGestaoCredito />} />
                 
 {/* ERP Modules - Tesouraria */}
