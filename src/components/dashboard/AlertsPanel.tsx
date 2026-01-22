@@ -1,8 +1,7 @@
 import { memo, useMemo, forwardRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AlertaDashboard } from '@/types/dashboard';
@@ -30,21 +29,18 @@ interface AlertsPanelProps {
 const urgencyConfig = {
   alta: {
     icon: AlertTriangle,
-    badge: 'destructive' as const,
-    bgClass: 'bg-destructive/5 border-destructive/20',
-    iconClass: 'text-destructive',
+    badgeBg: 'bg-destructive/10',
+    badgeColor: 'text-destructive',
   },
   media: {
     icon: AlertCircle,
-    badge: 'secondary' as const,
-    bgClass: 'bg-warning/5 border-warning/20',
-    iconClass: 'text-warning',
+    badgeBg: 'bg-warning/10',
+    badgeColor: 'text-warning',
   },
   baixa: {
     icon: Info,
-    badge: 'outline' as const,
-    bgClass: 'bg-muted/50',
-    iconClass: 'text-muted-foreground',
+    badgeBg: 'bg-info/10',
+    badgeColor: 'text-info',
   },
 };
 
@@ -75,34 +71,40 @@ const AlertItem = memo(forwardRef<HTMLDivElement, { alert: AlertaDashboard }>(
       <div
         ref={ref}
         className={cn(
-          'flex items-start gap-3 p-3 rounded-lg border transition-colors',
-          config.bgClass,
-          alert.actionRoute && 'cursor-pointer hover:bg-accent/50'
+          'flex items-start gap-3 py-2 border-b border-border/50 last:border-b-0',
+          alert.actionRoute && 'cursor-pointer hover:bg-muted/50 rounded-lg px-2 -mx-2'
         )}
         onClick={alert.actionRoute ? handleAction : undefined}
       >
-        <div className={cn('mt-0.5 shrink-0', config.iconClass)}>
-          <Icon className="h-4 w-4" />
+        {/* Badge Icon */}
+        <div className={cn(
+          'w-6 h-6 rounded-full flex items-center justify-center shrink-0',
+          config.badgeBg
+        )}>
+          <Icon className={cn('h-3.5 w-3.5', config.badgeColor)} />
         </div>
+
+        {/* Text Content */}
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="font-medium text-sm truncate">{alert.titulo}</span>
-            <Badge variant={config.badge} className="text-[10px] px-1.5 py-0 shrink-0">
-              {alert.urgencia === 'alta' ? 'Urgente' : alert.urgencia === 'media' ? 'Atenção' : 'Info'}
-            </Badge>
-          </div>
-          <p className="text-xs text-muted-foreground line-clamp-2">{alert.mensagem}</p>
+          <p className="text-[13px] font-medium text-foreground leading-5">
+            {alert.titulo}
+          </p>
+          <p className="text-[11px] text-muted-foreground">
+            {alert.mensagem ? alert.mensagem.slice(0, 50) : 'há 2 horas'}
+          </p>
           {alert.valor !== undefined && (
-            <p className="text-xs font-medium mt-1">
+            <p className="text-xs font-medium text-muted-foreground mt-0.5">
               {formatCurrency(Math.abs(alert.valor))}
             </p>
           )}
         </div>
+
+        {/* Action Button */}
         {alert.actionLabel && (
           <Button
             variant="ghost"
             size="sm"
-            className="shrink-0 h-7 px-2 text-xs"
+            className="shrink-0 h-6 px-2 text-xs text-muted-foreground hover:text-primary"
             onClick={(e) => {
               e.stopPropagation();
               handleAction();
@@ -121,14 +123,11 @@ AlertItem.displayName = 'AlertItem';
 
 function AlertSkeleton() {
   return (
-    <div className="flex items-start gap-3 p-3 rounded-lg border bg-muted/30">
-      <Skeleton className="h-4 w-4 rounded shrink-0" />
-      <div className="flex-1 space-y-2">
-        <div className="flex items-center gap-2">
-          <Skeleton className="h-4 w-32" />
-          <Skeleton className="h-4 w-14" />
-        </div>
-        <Skeleton className="h-3 w-full" />
+    <div className="flex items-start gap-3 py-2">
+      <Skeleton className="h-6 w-6 rounded-full shrink-0" />
+      <div className="flex-1 space-y-1.5">
+        <Skeleton className="h-4 w-32" />
+        <Skeleton className="h-3 w-20" />
       </div>
     </div>
   );
@@ -146,29 +145,24 @@ export const AlertsPanel = memo(function AlertsPanel({
   const hasMore = alerts.length > maxVisible;
 
   return (
-    <Card className={className}>
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <div className="flex items-center gap-2">
-          <Bell className="h-4 w-4 text-muted-foreground" />
-          <CardTitle className="text-base">Alertas</CardTitle>
-          {alerts.length > 0 && (
-            <Badge variant="secondary" className="h-5 px-1.5 text-xs">
-              {alerts.length}
-            </Badge>
-          )}
-        </div>
-        {hasMore && (
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-xs h-7"
-            onClick={() => navigate('/autopilot/inbox')}
-          >
-            Ver todos
-            <ArrowRight className="h-3 w-3 ml-1" />
-          </Button>
+    <Card className={cn(
+      'bg-white border border-border border-l-4 border-l-warning rounded-xl',
+      'shadow-xs hover:shadow-md transition-shadow',
+      'min-h-[240px]',
+      className
+    )}>
+      <CardHeader className="flex flex-row items-center gap-3 pb-4 mb-4 border-b border-border">
+        <AlertTriangle className="h-5 w-5 text-warning" />
+        <h3 className="text-base font-semibold text-foreground flex-1">
+          Alertas e Avisos
+        </h3>
+        {alerts.length > 0 && (
+          <span className="text-xs text-muted-foreground">
+            {alerts.length} alerta{alerts.length > 1 ? 's' : ''}
+          </span>
         )}
       </CardHeader>
+
       <CardContent className="pt-0">
         {isLoading ? (
           <div className="space-y-2">
@@ -181,19 +175,31 @@ export const AlertsPanel = memo(function AlertsPanel({
             <div className="rounded-full bg-success/10 p-3 mb-3">
               <Bell className="h-5 w-5 text-success" />
             </div>
-            <p className="text-sm font-medium">Tudo em dia!</p>
+            <p className="text-sm font-medium text-foreground">Tudo em dia!</p>
             <p className="text-xs text-muted-foreground mt-1">
-              Nenhum alerta pendente no momento
+              Nenhum alerta pendente
             </p>
           </div>
         ) : (
-          <ScrollArea className="max-h-[320px]">
-            <div className="space-y-2 pr-2">
+          <ScrollArea className="max-h-[200px]">
+            <div className="space-y-1">
               {visibleAlerts.map((alert) => (
                 <AlertItem key={alert.id} alert={alert} />
               ))}
             </div>
           </ScrollArea>
+        )}
+
+        {hasMore && (
+          <Button
+            variant="ghost"
+            size="sm"
+            className="w-full mt-3 text-xs text-muted-foreground hover:text-primary"
+            onClick={() => navigate('/autopilot/inbox')}
+          >
+            Ver todos os alertas
+            <ArrowRight className="h-3 w-3 ml-1" />
+          </Button>
         )}
       </CardContent>
     </Card>
