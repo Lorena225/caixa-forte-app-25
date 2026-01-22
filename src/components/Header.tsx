@@ -1,6 +1,6 @@
-import { memo, useState } from 'react';
+import { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Plus, ChevronDown, User, LogOut, Settings, Bell, Sparkles } from 'lucide-react';
+import { Plus, ChevronDown, User, LogOut, Settings, Bell } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useAuth } from '@/contexts/AuthContext';
+import { BrandLogo } from '@/components/common/BrandLogo';
 import { cn } from '@/lib/utils';
 
 const novoRegistroOptions = [
@@ -44,15 +45,6 @@ function generateAvatarColor(email: string): string {
 export const Header = memo(function Header() {
   const navigate = useNavigate();
   const { user, signOut, currentCompany } = useAuth();
-  const [searchValue, setSearchValue] = useState('');
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchValue.trim()) {
-      // TODO: Implement global search
-      console.log('Searching for:', searchValue);
-    }
-  };
 
   const userInitials = user?.email
     ? user.email.substring(0, 2).toUpperCase()
@@ -62,76 +54,48 @@ export const Header = memo(function Header() {
 
   return (
     <header 
-      className="fixed top-0 right-0 left-0 z-50 h-14 sm:h-16 border-b border-gray-200 bg-white shadow-sm"
+      className="fixed top-0 right-0 left-0 z-50 h-16 border-b border-gray-200 bg-white"
       role="banner"
       aria-label="Barra de navegação principal"
     >
-      <div className="flex h-full items-center justify-between gap-2 sm:gap-4 px-3 sm:px-4 md:px-6">
-        {/* Logo (mobile) + Desktop offset for sidebar */}
-        <div className="flex items-center gap-2 sm:gap-3 md:ml-64">
-          {/* Mobile logo */}
-          <div className="flex items-center gap-2 md:hidden ml-10 sm:ml-12">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-              <Sparkles className="h-4 w-4 text-white" aria-hidden="true" />
-            </div>
-          </div>
-
-          {/* Search - Desktop */}
-          <form 
-            onSubmit={handleSearch} 
-            className="hidden md:flex flex-1 max-w-xl"
-            role="search"
-            aria-label="Busca global"
-          >
-            <div className="relative w-full">
-              <Search 
-                className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400 pointer-events-none" 
-                aria-hidden="true"
-              />
-              <input
-                id="search"
-                type="search"
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-                placeholder="Buscar produtos, clientes, vendas..."
-                aria-label="Buscar produtos, clientes, vendas"
-                className={cn(
-                  'w-full h-10 pl-10 pr-4 rounded-lg text-sm',
-                  'bg-gray-50 border border-gray-200 text-gray-700',
-                  'placeholder:text-gray-400',
-                  'transition-all duration-200',
-                  'hover:border-gray-300 hover:bg-white hover:shadow-sm',
-                  'focus:border-primary focus:border-2 focus:bg-white focus:shadow-focus focus:outline-none',
-                  'focus-visible:outline-none focus-visible:ring-0'
-                )}
-              />
-            </div>
-          </form>
+      <div className="flex h-full items-center justify-between px-4 md:px-6">
+        {/* Left Section - Brand Logo */}
+        <div className="flex items-center gap-4 md:ml-64">
+          {/* Mobile hamburger space */}
+          <div className="w-10 md:hidden" />
+          
+          {/* Brand Logo with Company Selector */}
+          <BrandLogo />
         </div>
 
-        {/* Actions */}
-        <div className="flex items-center gap-1.5 sm:gap-3" role="group" aria-label="Ações rápidas">
+        {/* Center Section - Breadcrumb (optional, empty for now) */}
+        <div className="hidden lg:flex flex-1 justify-center">
+          {/* Reserved for breadcrumbs */}
+        </div>
+
+        {/* Right Section - Actions */}
+        <div className="flex items-center gap-2 sm:gap-3" role="group" aria-label="Ações rápidas">
           {/* Novo Registro Button with Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button 
                 className={cn(
-                  'gap-1 sm:gap-2 h-9 sm:h-10 px-2.5 sm:px-4 rounded-lg font-semibold text-xs sm:text-sm',
+                  'gap-1 sm:gap-2 h-10 px-3 sm:px-4 rounded-lg font-semibold text-sm',
                   'bg-primary text-white',
                   'hover:bg-primary-dark hover:shadow-md',
                   'active:bg-[hsl(210,100%,26%)]',
                   'transition-all duration-200',
-                  'min-w-[44px] min-h-[44px] sm:min-w-0 sm:min-h-0'
+                  'min-w-[44px] min-h-[44px]'
                 )}
                 aria-label="Criar novo registro"
                 aria-haspopup="menu"
               >
                 <Plus className="h-4 w-4 sm:h-[18px] sm:w-[18px]" aria-hidden="true" />
                 <span className="hidden sm:inline">Novo Registro</span>
-                <ChevronDown className="h-3.5 w-3.5 sm:h-[18px] sm:w-[18px]" aria-hidden="true" />
+                <ChevronDown className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden="true" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56 bg-white border-gray-200 shadow-lg">
+            <DropdownMenuContent align="end" className="w-56 bg-white border-gray-200 shadow-lg z-[100]">
               <DropdownMenuLabel className="text-gray-700">Criar novo</DropdownMenuLabel>
               <DropdownMenuSeparator className="bg-gray-200" />
               {novoRegistroOptions.map((option) => (
@@ -154,9 +118,9 @@ export const Header = memo(function Header() {
             className="relative h-10 w-10 min-w-[44px] min-h-[44px] rounded-lg text-gray-500 hover:text-primary hover:bg-gray-50 transition-colors duration-200"
             aria-label="Notificações (3 novas)"
           >
-            <Bell className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
+            <Bell className="h-5 w-5" aria-hidden="true" />
             <span 
-              className="absolute -top-1 -right-1 sm:-top-1.5 sm:-right-1.5 flex h-4 w-4 sm:h-[18px] sm:w-[18px] items-center justify-center rounded-full bg-destructive text-[9px] sm:text-[10px] font-bold text-white"
+              className="absolute -top-1 -right-1 flex h-[18px] w-[18px] items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-white"
               aria-hidden="true"
             >
               3
@@ -173,17 +137,17 @@ export const Header = memo(function Header() {
                 aria-haspopup="menu"
               >
                 <Avatar className={cn(
-                  'h-9 w-9 sm:h-10 sm:w-10 border-2 border-gray-200 transition-all duration-200',
+                  'h-10 w-10 border-2 border-gray-200 transition-all duration-200',
                   'hover:border-primary hover:shadow-md'
                 )}>
                   <AvatarImage src="" alt={user?.email || 'User'} />
-                  <AvatarFallback className={cn(avatarColor, 'text-white font-semibold text-xs sm:text-sm')}>
+                  <AvatarFallback className={cn(avatarColor, 'text-white font-semibold text-sm')}>
                     {userInitials}
                   </AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56 bg-white border-gray-200 shadow-lg">
+            <DropdownMenuContent align="end" className="w-56 bg-white border-gray-200 shadow-lg z-[100]">
               <DropdownMenuLabel className="font-normal">
                 <div className="flex flex-col space-y-1">
                   <p className="text-sm font-semibold text-gray-800 leading-none">{user?.email}</p>

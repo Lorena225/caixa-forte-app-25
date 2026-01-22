@@ -45,15 +45,15 @@ export const DashboardHeader = memo(function DashboardHeader({
   return (
     <div className={cn(
       'flex flex-col gap-4 md:flex-row md:items-center md:justify-between',
-      'pb-6 mb-8 border-b border-border',
+      'pb-6 mb-8 border-b border-gray-200',
       className
     )}>
       {/* Left Section - Greeting */}
       <div className="flex flex-col gap-2">
-        <h1 className="text-[32px] font-bold text-foreground leading-10 tracking-tight">
+        <h1 className="text-[32px] font-bold text-gray-900 leading-[1.2] tracking-tight">
           Bem-vindo, {userName}
         </h1>
-        <p className="text-sm text-muted-foreground leading-[21px]">
+        <p className="text-sm text-gray-500 leading-[1.5]">
           {companyName ? `${companyName} • ${periodLabel}` : periodLabel}
         </p>
       </div>
@@ -63,13 +63,13 @@ export const DashboardHeader = memo(function DashboardHeader({
         {/* Period Selector */}
         <Select value={periodType} onValueChange={(v) => onPeriodChange(v as PeriodType)}>
           <SelectTrigger 
-            className="w-[160px] h-10 px-3 bg-background border border-border rounded-md text-sm text-foreground hover:border-muted-foreground/30 hover:bg-muted/50 focus:border-primary focus:ring-2 focus:ring-primary/10"
+            className="w-[160px] h-10 px-3 bg-white border border-gray-200 rounded-lg text-sm text-gray-700 hover:border-gray-300 hover:bg-gray-50 focus:border-primary focus:ring-2 focus:ring-primary/10"
             aria-label="Selecionar período"
           >
-            <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
+            <Calendar className="h-4 w-4 mr-2 text-gray-400" />
             <SelectValue />
           </SelectTrigger>
-          <SelectContent className="bg-background border border-border shadow-lg rounded-md z-50">
+          <SelectContent className="bg-white border border-gray-200 shadow-lg rounded-lg z-[100]">
             <SelectItem value="today">Hoje</SelectItem>
             <SelectItem value="week">Esta Semana</SelectItem>
             <SelectItem value="month">Este Mês</SelectItem>
@@ -80,38 +80,40 @@ export const DashboardHeader = memo(function DashboardHeader({
         </Select>
 
         {/* Auto-refresh Toggle */}
-        <div 
+        <button 
           className={cn(
-            'flex items-center justify-center w-10 h-10 rounded-md border cursor-pointer transition-all',
+            'flex items-center justify-center w-10 h-10 rounded-lg border cursor-pointer transition-all',
             autoRefresh 
-              ? 'bg-background border-primary text-primary' 
-              : 'bg-background border-border text-muted-foreground hover:border-muted-foreground/30'
+              ? 'bg-blue-50 border-primary text-primary' 
+              : 'bg-white border-gray-200 text-gray-400 hover:border-gray-300 hover:bg-gray-50'
           )}
           onClick={() => onAutoRefreshChange(!autoRefresh)}
-          title="Auto-atualizar a cada 30 segundos"
+          title="Auto-atualizar a cada 5 minutos"
+          aria-label={autoRefresh ? 'Desativar auto-atualização' : 'Ativar auto-atualização'}
         >
           <RefreshCw className={cn('h-4 w-4', autoRefresh && 'animate-spin')} style={{ animationDuration: '3s' }} />
-        </div>
+        </button>
 
         {/* Manual Refresh Button */}
         <Button
           variant="ghost"
           size="icon"
           className={cn(
-            'w-10 h-10 text-muted-foreground hover:text-primary',
+            'w-10 h-10 rounded-lg text-gray-400 hover:text-primary hover:bg-gray-50',
             isRefreshing && 'animate-spin'
           )}
           onClick={onRefresh}
           disabled={isRefreshing}
           title="Atualizar agora"
+          aria-label="Atualizar dados"
         >
           <RefreshCw className="h-4 w-4" />
         </Button>
 
         {/* Last Update Time */}
         {lastRefresh && (
-          <div className="flex items-center gap-1 text-xs text-muted-foreground">
-            <Clock className="h-3 w-3" />
+          <div className="flex items-center gap-1.5 text-xs text-gray-400 px-2">
+            <Clock className="h-3.5 w-3.5" />
             <span>{format(lastRefresh, 'HH:mm', { locale: ptBR })}</span>
           </div>
         )}
@@ -121,7 +123,7 @@ export const DashboardHeader = memo(function DashboardHeader({
           <Button
             variant="outline"
             size="sm"
-            className="h-10 px-3 bg-background border border-border rounded-md text-sm text-foreground hover:border-muted-foreground/30 hover:bg-muted/50"
+            className="h-10 px-4 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:border-gray-300 hover:bg-gray-50"
             onClick={onEditDashboard}
           >
             <Pencil className="h-4 w-4 mr-2" />
