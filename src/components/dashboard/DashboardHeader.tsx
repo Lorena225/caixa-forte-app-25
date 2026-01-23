@@ -43,95 +43,31 @@ export const DashboardHeader = memo(function DashboardHeader({
   className,
 }: DashboardHeaderProps) {
   return (
-    <div className={cn(
-      'flex flex-col gap-4 md:flex-row md:items-center md:justify-between',
-      'pb-6 mb-8 border-b border-border',
-      className
-    )}>
-      {/* Left Section - Greeting */}
-      <div className="flex flex-col gap-1.5">
-        <h1 className="text-2xl sm:text-[28px] font-bold text-foreground leading-tight tracking-tight">
-          Bem-vindo, {userName}
-        </h1>
-        <p className="text-sm text-muted-foreground leading-normal">
-          {companyName ? `${companyName} • ${periodLabel}` : periodLabel}
-        </p>
+    <div className="flex flex-row h-16 items-center justify-between px-4 py-2 bg-card border-b border-border gap-3 w-full">
+      <div className="flex flex-row items-center gap-3 flex-shrink-0">
+        <div className="flex items-center gap-2 pl-1">
+          <div className="w-7 h-7 bg-gradient-to-br from-primary to-primary/80 rounded-md flex items-center justify-center text-white font-bold text-xs">CF</div>
+          <span className="font-semibold text-foreground text-sm hidden md:inline">Caixa Forte</span>
+        </div>
+        <button className="p-2 hover:bg-muted/50 rounded-lg transition-all">☰</button>
+        <div className="h-8 w-px bg-border/30"></div>
+        <button className="px-3 py-1.5 bg-primary text-white rounded-lg font-medium text-sm hover:bg-primary/90 transition-all">ED</button>
       </div>
 
-      {/* Right Section - Controls */}
-      <div className="flex flex-wrap items-center gap-2">
-        {/* Period Selector */}
-        <Select value={periodType} onValueChange={(v) => onPeriodChange(v as PeriodType)}>
-          <SelectTrigger 
-            className="w-[140px] sm:w-[160px] h-9 sm:h-10 px-3 bg-card border border-border rounded-lg text-sm text-foreground hover:border-primary/50 hover:bg-muted/50 focus:border-primary focus:ring-2 focus:ring-primary/10 transition-colors"
-            aria-label="Selecionar período"
-          >
-            <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent className="bg-card border border-border shadow-lg rounded-lg z-[100]">
-            <SelectItem value="today">Hoje</SelectItem>
-            <SelectItem value="week">Esta Semana</SelectItem>
-            <SelectItem value="month">Este Mês</SelectItem>
-            <SelectItem value="quarter">Últimos 3 Meses</SelectItem>
-            <SelectItem value="year">Este Ano</SelectItem>
-            <SelectItem value="custom">Período Customizado</SelectItem>
-          </SelectContent>
-        </Select>
+      <div className="flex-grow max-w-md mx-2">
+        <div className="relative">
+          <input placeholder="Buscar..." className="w-full px-3 py-2 bg-muted border border-border/50 rounded-lg text-sm placeholder-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all" />
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">🔍</span>
+        </div>
+      </div>
 
-        {/* Auto-refresh Toggle */}
-        <Button
-          variant="outline"
-          size="icon"
-          className={cn(
-            'h-9 w-9 sm:h-10 sm:w-10 rounded-lg transition-all',
-            autoRefresh 
-              ? 'bg-primary/10 border-primary text-primary hover:bg-primary/20' 
-              : 'border-border text-muted-foreground hover:border-primary/50 hover:bg-muted/50'
-          )}
-          onClick={() => onAutoRefreshChange(!autoRefresh)}
-          title="Auto-atualizar a cada 5 minutos"
-          aria-label={autoRefresh ? 'Desativar auto-atualização' : 'Ativar auto-atualização'}
-        >
-          <RefreshCw className={cn('h-4 w-4', autoRefresh && 'animate-spin')} style={{ animationDuration: '3s' }} />
-        </Button>
-
-        {/* Manual Refresh Button */}
-        <Button
-          variant="ghost"
-          size="icon"
-          className={cn(
-            'h-9 w-9 sm:h-10 sm:w-10 rounded-lg text-muted-foreground hover:text-primary hover:bg-muted/50',
-            isRefreshing && 'animate-spin'
-          )}
-          onClick={onRefresh}
-          disabled={isRefreshing}
-          title="Atualizar agora"
-          aria-label="Atualizar dados"
-        >
-          <RefreshCw className="h-4 w-4" />
-        </Button>
-
-        {/* Last Update Time */}
-        {lastRefresh && (
-          <div className="hidden sm:flex items-center gap-1.5 text-xs text-muted-foreground px-2 py-1 rounded bg-muted/30">
-            <Clock className="h-3.5 w-3.5" />
-            <span>{format(lastRefresh, 'HH:mm', { locale: ptBR })}</span>
-          </div>
-        )}
-
-        {/* Edit Dashboard Button */}
-        {onEditDashboard && (
-          <Button
-            variant="outline"
-            size="sm"
-            className="h-9 sm:h-10 px-3 sm:px-4 border-border text-sm font-medium text-foreground hover:border-primary/50 hover:bg-muted/50 transition-colors"
-            onClick={onEditDashboard}
-          >
-            <Pencil className="h-4 w-4 sm:mr-2" />
-            <span className="hidden sm:inline">Editar</span>
-          </Button>
-        )}
+      <div className="flex flex-row items-center gap-2 flex-shrink-0">
+        <button className="px-3 py-2 bg-primary text-primary-foreground rounded-lg font-medium text-xs hover:bg-primary/90 transition-all whitespace-nowrap">+ Novo</button>
+        <button className="relative p-2 hover:bg-muted/50 rounded-lg transition-all">🔔<span className="absolute -top-1 -right-1 w-5 h-5 bg-destructive text-destructive-foreground text-xs rounded-full flex items-center justify-center font-bold">2</span></button>
+        <button className="p-2 hover:bg-muted/50 rounded-lg transition-all">❓</button>
+        <button className="p-2 hover:bg-muted/50 rounded-lg transition-all">
+          <div className="w-7 h-7 bg-gradient-to-br from-accent to-accent/80 text-accent-foreground rounded-full flex items-center justify-center font-bold text-xs">LO</div>
+        </button>
       </div>
     </div>
   );
