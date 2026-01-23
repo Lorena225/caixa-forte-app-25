@@ -3,7 +3,6 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import {
-  Plus,
   Settings,
   X,
   GripVertical,
@@ -22,10 +21,8 @@ interface Widget {
 interface CustomizableWidgetsSectionProps {
   widgets?: Widget[];
   isEditMode?: boolean;
-  onAddWidget?: () => void;
   onRemoveWidget?: (id: string) => void;
   onConfigureWidget?: (id: string) => void;
-  onRefreshWidget?: (id: string) => void;
   className?: string;
 }
 
@@ -44,7 +41,6 @@ const widgetIcons = {
 export const CustomizableWidgetsSection = memo(function CustomizableWidgetsSection({
   widgets = defaultWidgets,
   isEditMode = false,
-  onAddWidget,
   onRemoveWidget,
   onConfigureWidget,
   className,
@@ -56,17 +52,6 @@ export const CustomizableWidgetsSection = memo(function CustomizableWidgetsSecti
         <h2 className="text-sm font-semibold text-foreground">
           Widgets Personalizados
         </h2>
-        {onAddWidget && isEditMode && (
-          <Button
-            onClick={onAddWidget}
-            size="sm"
-            variant="outline"
-            className="h-8 px-3 text-xs"
-          >
-            <Plus className="h-3.5 w-3.5 mr-1.5" />
-            Adicionar
-          </Button>
-        )}
       </div>
 
       {/* Widgets Grid */}
