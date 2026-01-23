@@ -241,6 +241,11 @@ import OpenBankingPage from "./pages/openbanking/OpenBankingPage";
 import AutomaticReconciliationPage from "./pages/openbanking/AutomaticReconciliationPage";
 import NFXMLUploadPage from "./pages/openbanking/NFXMLUploadPage";
 import CashComplianceDashboardPage from "./pages/openbanking/CashComplianceDashboardPage";
+// Controladoria AI Pages
+import { ControladoriaLivroDiarioPage } from "./pages/ControladoriaLivroDiarioPage";
+import { ControladoriaDREPage } from "./pages/ControladoriaDREPage";
+import { ControladoriaBalancetePage } from "./pages/ControladoriaBalancetePage";
+import { ControladoriaBalancoPage } from "./pages/ControladoriaBalancoPage";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -479,6 +484,12 @@ const App = () => (
                 <Route path="/conciliacao-automatica" element={<AutomaticReconciliationPage />} />
                 <Route path="/nf-xml-auto" element={<NFXMLUploadPage />} />
                 <Route path="/dashboard-caixa-compliance" element={<CashComplianceDashboardPage />} />
+                
+                {/* ============ CONTROLADORIA AI ============ */}
+                <Route path="/controladoria-livro-diario" element={<ControladoriaLivroDiarioPage />} />
+                <Route path="/controladoria-dre" element={<ControladoriaDREPage />} />
+                <Route path="/controladoria-balancete" element={<ControladoriaBalancetePage />} />
+                <Route path="/controladoria-balanco" element={<ControladoriaBalancoPage />} />
                 
                 {/* ============ AUTOMAÇÕES ============ */}
                 <Route path="/automacoes" element={<AutomationsIndex />} />

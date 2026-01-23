@@ -158,6 +158,10 @@ const menuItems: MenuItem[] = [
     icon: BookOpen,
     colorClass: 'text-menu-contabil',
     children: [
+      { key: 'livro-diario-ai', label: '📖 Livro Diário', icon: BookOpen, route: '/controladoria-livro-diario' },
+      { key: 'balanco-ai', label: '📊 Balanço Patrimonial', icon: Scale, route: '/controladoria-balanco' },
+      { key: 'dre-ai', label: '📈 DRE (Resultado)', icon: PieChart, route: '/controladoria-dre' },
+      { key: 'balancete-ai', label: '✓ Balancete', icon: FileText, route: '/controladoria-balancete' },
       { key: 'lancamentos-contabeis', label: 'Lançamentos Contábeis', icon: FileText, route: '/contabilidade/lancamentos' },
       { key: 'reclassificacao', label: 'Reclassificação', icon: Scale, route: '/contabilidade/reclassificacao' },
       { key: 'nfe', label: 'NF-e', icon: FileText, route: '/fiscal/nfe' },
