@@ -183,8 +183,8 @@ export default function Dashboard() {
 
   return (
     <MainLayout>
-      <div className="min-h-screen bg-gray-50">
-        <div className="px-6 md:px-8 py-6 max-w-[1400px] mx-auto">
+      <div className="min-h-screen bg-background">
+        <div className="px-4 sm:px-6 lg:px-8 py-6 max-w-[1400px] mx-auto">
           {/* Dashboard Header */}
           <DashboardHeader
             userName={userName}
@@ -204,25 +204,25 @@ export default function Dashboard() {
           {isInitialLoading ? (
             <DashboardSkeleton kpiCount={4} showCharts showTable={false} />
           ) : (
-            <div className="space-y-8">
+            <div className="space-y-6">
               {/* Budget Overflow Alert */}
               {budgetOverflow && (
                 <div className={cn(
                   'flex items-center gap-3 p-4 rounded-xl',
-                  'bg-red-50 border border-red-200 text-red-700',
-                  'animate-scale-in'
+                  'bg-destructive/10 border border-destructive/20 text-destructive',
+                  'animate-in fade-in slide-in-from-top-2 duration-300'
                 )}>
                   <AlertTriangle className="h-5 w-5 shrink-0" />
                   <div className="flex-1">
                     <p className="font-medium text-sm">Execução orçamentária acima de 120%</p>
                     <p className="text-xs opacity-80 mt-0.5">
-                      O orçamento atual está em {metrics?.execucaoOrcamento?.detalhe?.percentual?.toFixed(0)}% de execução. Revise os gastos.
+                      O orçamento atual está em {metrics?.execucaoOrcamento?.detalhe?.percentual?.toFixed(0)}% de execução.
                     </p>
                   </div>
                   <Button 
                     variant="outline" 
                     size="sm" 
-                    className="shrink-0 border-red-300 text-red-700 hover:bg-red-100" 
+                    className="shrink-0 border-destructive/30 text-destructive hover:bg-destructive/10" 
                     onClick={() => navigate('/paineis/orcamento')}
                   >
                     Ver Orçamento
@@ -237,9 +237,10 @@ export default function Dashboard() {
                     title="Saldo em Caixa"
                     value={formatCurrency(metrics?.saldoCaixa?.valor || 0)}
                     icon={Wallet}
-                    tooltip="Saldo disponível em conta + títulos a receber - títulos a pagar. Representa sua liquidez real."
+                    tooltip="Saldo disponível em conta + títulos a receber - títulos a pagar."
                     variant="primary"
                     isLoading={metricsLoading}
+                    isEditMode={isEditMode}
                     onClick={() => navigate('/tesouraria/posicao')}
                     change={metrics?.saldoCaixa?.variacao ? `${metrics.saldoCaixa.variacao > 0 ? '+' : ''}${metrics.saldoCaixa.variacao.toFixed(0)}%` : undefined}
                     trend={metrics?.saldoCaixa?.variacao ? (metrics.saldoCaixa.variacao > 0 ? 'up' : metrics.saldoCaixa.variacao < 0 ? 'down' : 'neutral') : undefined}
@@ -249,12 +250,13 @@ export default function Dashboard() {
                     value={formatCurrency(metrics?.contasReceber?.valor || 0)}
                     subtitle={metrics?.contasReceber?.detalhe 
                       ? `${metrics.contasReceber.detalhe.vencidoPercentual.toFixed(0)}% vencido`
-                      : '0% vencido'
+                      : undefined
                     }
                     icon={ArrowDownCircle}
-                    tooltip="Total de títulos abertos para cobrar. Inclui faturas, boletos e recebíveis com vencimento até 60 dias."
+                    tooltip="Total de títulos abertos para cobrar."
                     variant={metrics?.contasReceber?.detalhe?.vencidoPercentual > 20 ? 'warning' : 'success'}
                     isLoading={metricsLoading}
+                    isEditMode={isEditMode}
                     onClick={() => navigate('/ar')}
                   />
                   <KPICard
@@ -262,12 +264,13 @@ export default function Dashboard() {
                     value={formatCurrency(metrics?.contasPagar?.valor || 0)}
                     subtitle={metrics?.contasPagar?.detalhe 
                       ? `${metrics.contasPagar.detalhe.vencidoPercentual.toFixed(0)}% vencido`
-                      : '0% vencido'
+                      : undefined
                     }
                     icon={ArrowUpCircle}
-                    tooltip="Total de compromissos financeiros. Inclui faturas de fornecedores, boletos, cheques e outras obrigações."
+                    tooltip="Total de compromissos financeiros a pagar."
                     variant={metrics?.contasPagar?.detalhe?.vencidoPercentual > 10 ? 'danger' : 'default'}
                     isLoading={metricsLoading}
+                    isEditMode={isEditMode}
                     onClick={() => navigate('/ap')}
                   />
                   <KPICard
@@ -278,9 +281,10 @@ export default function Dashboard() {
                       : undefined
                     }
                     icon={Target}
-                    tooltip="Percentual de execução do orçamento. Compara despesas realizadas vs. orçadas para o período."
+                    tooltip="Percentual de execução do orçamento do período."
                     variant={metrics?.execucaoOrcamento?.status || 'default'}
                     isLoading={metricsLoading}
+                    isEditMode={isEditMode}
                     onClick={() => navigate('/paineis/orcamento')}
                   />
                 </KPIGrid>
@@ -289,7 +293,7 @@ export default function Dashboard() {
               {/* Section 2: 3-Column Layout - Alerts, Quick Actions, Cash Flow Projection */}
               <section 
                 aria-label="Alertas, ações e projeção" 
-                className="grid grid-cols-1 md:grid-cols-3 gap-6"
+                className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6"
               >
                 <AlertsPanel
                   alerts={alerts}
@@ -306,12 +310,11 @@ export default function Dashboard() {
               </section>
 
               {/* Section 3: Charts Row - 2 columns */}
-              <section aria-label="Gráficos" className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <section aria-label="Gráficos" className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                 {/* Budget vs Actual Chart */}
                 <BudgetVsActualChart
                   data={budgetChartData}
                   isLoading={budgetLoading}
-                  onRefresh={refetchBudget}
                   onConfigure={() => navigate('/financeiro/orcamento-real')}
                 />
 
@@ -321,20 +324,19 @@ export default function Dashboard() {
                   onAddWidget={() => {/* Open widget modal */}}
                   onRemoveWidget={(id) => console.log('Remove widget:', id)}
                   onConfigureWidget={(id) => console.log('Configure widget:', id)}
-                  onRefreshWidget={(id) => console.log('Refresh widget:', id)}
                 />
               </section>
 
               {/* Empty State */}
               {!hasData && !metricsLoading && (
-                <Card className="border-dashed border-2 border-gray-200 animate-fade-in">
+                <Card className="border-dashed border-2 border-border animate-in fade-in duration-300">
                   <CardContent className="flex flex-col items-center justify-center py-12 text-center">
-                    <div className="rounded-full bg-blue-50 p-4 mb-4">
+                    <div className="rounded-full bg-primary/10 p-4 mb-4">
                       <BarChart3 className="h-8 w-8 text-primary" />
                     </div>
-                    <CardTitle className="text-xl mb-2 text-gray-900">Configure seu sistema</CardTitle>
-                    <CardDescription className="max-w-md mb-4 text-gray-500">
-                      Cadastre suas contas bancárias, clientes e fornecedores para começar a ver seus dados financeiros em tempo real.
+                    <CardTitle className="text-lg mb-2 text-foreground">Configure seu sistema</CardTitle>
+                    <CardDescription className="max-w-md mb-4 text-muted-foreground">
+                      Cadastre suas contas bancárias, clientes e fornecedores para ver seus dados financeiros.
                     </CardDescription>
                     <div className="flex flex-wrap gap-2 justify-center">
                       <Button onClick={() => navigate('/cadastros/contas-bancarias')}>
