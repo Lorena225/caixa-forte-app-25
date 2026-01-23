@@ -504,6 +504,9 @@ const App = () => (
                 {/* Importar/Exportar */}
                 <Route path="/importar-exportar" element={<ImportExportIndex />} />
                 <Route path="/importar-exportar/wizard" element={<ImportWizard />} />
+                <Route path="/importar-exportar/importar/:entity" element={<ImportWizard />} />
+                <Route path="/importar-exportar/exportar/:entity" element={<ExportData />} />
+                <Route path="/importar-exportar/exportar/report/:report" element={<ExportData />} />
                 <Route path="/importar-exportar/historico" element={<ImportHistory />} />
                 <Route path="/importar-exportar/exportar" element={<ExportData />} />
                 

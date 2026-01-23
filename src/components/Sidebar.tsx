@@ -60,6 +60,8 @@ import {
   Layers,
   CircleDollarSign,
   Activity,
+  Upload,
+  Download,
 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
@@ -207,6 +209,7 @@ const menuItems: MenuItem[] = [
       { key: 'centros-custo', label: 'Centros de Custo', icon: Landmark, route: '/cadastros/centros-custo' },
       { key: 'contas-bancarias-cad', label: 'Contas Bancárias', icon: Building2, route: '/cadastros/contas-bancarias' },
       { key: 'bancos-ref', label: 'Bancos (Referência)', icon: Landmark, route: '/cadastros/bancos-referencia' },
+      { key: 'importar-exportar', label: 'Importar/Exportar', icon: Upload, route: '/importar-exportar' },
     ]
   },
   
