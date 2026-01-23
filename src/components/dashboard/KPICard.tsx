@@ -1,6 +1,8 @@
-import { memo, ReactNode, isValidElement } from 'react';
-import { LucideIcon, TrendingUp, TrendingDown, ArrowRight } from 'lucide-react';
+import { memo, useState } from 'react';
+import { LucideIcon, TrendingUp, TrendingDown, ArrowRight, Pencil, Check, X } from 'lucide-react';
 import { TooltipIcon } from '@/components/common/TooltipIcon';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 interface KPICardProps {
@@ -14,32 +16,40 @@ interface KPICardProps {
   variant?: 'default' | 'success' | 'danger' | 'warning' | 'primary' | 'info';
   onClick?: () => void;
   isLoading?: boolean;
+  isEditMode?: boolean;
+  onEditSave?: (updates: { title?: string; tooltip?: string }) => void;
 }
 
 const variantStyles = {
   default: {
-    iconBg: 'bg-gray-100',
-    iconColor: 'text-gray-500',
+    iconBg: 'bg-muted',
+    iconColor: 'text-muted-foreground',
+    border: 'border-border',
   },
   success: {
-    iconBg: 'bg-emerald-50',
-    iconColor: 'text-emerald-500',
+    iconBg: 'bg-emerald-500/10',
+    iconColor: 'text-emerald-600',
+    border: 'border-emerald-200',
   },
   danger: {
-    iconBg: 'bg-red-50',
-    iconColor: 'text-red-500',
+    iconBg: 'bg-destructive/10',
+    iconColor: 'text-destructive',
+    border: 'border-destructive/20',
   },
   warning: {
-    iconBg: 'bg-amber-50',
-    iconColor: 'text-amber-500',
+    iconBg: 'bg-amber-500/10',
+    iconColor: 'text-amber-600',
+    border: 'border-amber-200',
   },
   primary: {
-    iconBg: 'bg-blue-50',
+    iconBg: 'bg-primary/10',
     iconColor: 'text-primary',
+    border: 'border-primary/20',
   },
   info: {
-    iconBg: 'bg-cyan-50',
-    iconColor: 'text-cyan-500',
+    iconBg: 'bg-cyan-500/10',
+    iconColor: 'text-cyan-600',
+    border: 'border-cyan-200',
   },
 };
 
@@ -61,28 +71,88 @@ export const KPICard = memo(function KPICard({
   variant = 'default',
   onClick,
   isLoading,
+  isEditMode = false,
+  onEditSave,
 }: KPICardProps) {
   const styles = variantStyles[variant];
   const tooltipContent = tooltip || tooltipTexts[title] || `Informações sobre ${title}`;
+  
+  const [isEditing, setIsEditing] = useState(false);
+  const [editTitle, setEditTitle] = useState(title);
+  const [editTooltip, setEditTooltip] = useState(tooltipContent);
+
+  const handleSave = () => {
+    onEditSave?.({ title: editTitle, tooltip: editTooltip });
+    setIsEditing(false);
+  };
+
+  const handleCancel = () => {
+    setEditTitle(title);
+    setEditTooltip(tooltipContent);
+    setIsEditing(false);
+  };
 
   return (
     <div 
       className={cn(
-        'relative bg-white border border-gray-200 rounded-xl',
+        'relative bg-card border rounded-xl',
         'h-[160px] p-5 flex flex-col justify-between',
-        'shadow-[0_1px_3px_rgba(0,0,0,0.05)]',
+        'shadow-sm',
         'transition-all duration-200',
-        onClick && 'cursor-pointer hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:-translate-y-0.5 hover:border-gray-300'
+        styles.border,
+        onClick && !isEditMode && 'cursor-pointer hover:shadow-md hover:-translate-y-0.5 hover:border-primary/30',
+        isEditMode && 'ring-2 ring-primary/20 ring-offset-2'
       )}
-      onClick={onClick}
-      role={onClick ? 'button' : undefined}
-      tabIndex={onClick ? 0 : undefined}
-      onKeyDown={onClick ? (e) => { if (e.key === 'Enter' || e.key === ' ') onClick(); } : undefined}
+      onClick={!isEditMode && !isEditing ? onClick : undefined}
+      role={onClick && !isEditMode ? 'button' : undefined}
+      tabIndex={onClick && !isEditMode ? 0 : undefined}
+      onKeyDown={onClick && !isEditMode ? (e) => { if (e.key === 'Enter' || e.key === ' ') onClick(); } : undefined}
     >
+      {/* Edit Mode Overlay */}
+      {isEditMode && !isEditing && (
+        <Button
+          variant="ghost"
+          size="icon"
+          className="absolute top-2 right-2 h-7 w-7 bg-primary/10 hover:bg-primary/20 text-primary z-10"
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsEditing(true);
+          }}
+        >
+          <Pencil className="h-3.5 w-3.5" />
+        </Button>
+      )}
+
+      {/* Inline Edit Form */}
+      {isEditing && (
+        <div className="absolute inset-0 bg-card rounded-xl p-4 z-20 flex flex-col gap-3">
+          <Input
+            value={editTitle}
+            onChange={(e) => setEditTitle(e.target.value)}
+            placeholder="Título do KPI"
+            className="h-9 text-sm font-semibold"
+          />
+          <Input
+            value={editTooltip}
+            onChange={(e) => setEditTooltip(e.target.value)}
+            placeholder="Descrição / Tooltip"
+            className="h-9 text-sm flex-1"
+          />
+          <div className="flex gap-2 mt-auto">
+            <Button size="sm" className="flex-1 h-8" onClick={handleSave}>
+              <Check className="h-3.5 w-3.5 mr-1" /> Salvar
+            </Button>
+            <Button size="sm" variant="outline" className="flex-1 h-8" onClick={handleCancel}>
+              <X className="h-3.5 w-3.5 mr-1" /> Cancelar
+            </Button>
+          </div>
+        </div>
+      )}
+
       {/* Header: Label + Tooltip + Icon */}
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-2">
-          <span className="text-[13px] font-semibold text-gray-500 uppercase tracking-[0.5px] leading-tight">
+          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide leading-tight">
             {title}
           </span>
           <TooltipIcon content={tooltipContent} position="top" />
@@ -101,9 +171,9 @@ export const KPICard = memo(function KPICard({
       {/* Value */}
       <div className="flex-1 flex items-center">
         {isLoading ? (
-          <div className="h-10 w-32 bg-gray-100 animate-pulse rounded" />
+          <div className="h-10 w-32 bg-muted animate-pulse rounded" />
         ) : (
-          <p className="text-[32px] font-bold text-gray-900 font-mono leading-tight tracking-tight">
+          <p className="text-3xl font-bold text-foreground font-mono leading-tight tracking-tight">
             {value}
           </p>
         )}
@@ -115,24 +185,24 @@ export const KPICard = memo(function KPICard({
           <div className="flex items-center gap-1">
             {trend === 'up' && (
               <>
-                <TrendingUp className="h-4 w-4 text-emerald-500" />
-                <span className="text-[13px] font-semibold text-emerald-500">
+                <TrendingUp className="h-4 w-4 text-emerald-600" />
+                <span className="text-xs font-semibold text-emerald-600">
                   {change}
                 </span>
               </>
             )}
             {trend === 'down' && (
               <>
-                <TrendingDown className="h-4 w-4 text-red-500" />
-                <span className="text-[13px] font-semibold text-red-500">
+                <TrendingDown className="h-4 w-4 text-destructive" />
+                <span className="text-xs font-semibold text-destructive">
                   {change}
                 </span>
               </>
             )}
             {trend === 'neutral' && (
               <>
-                <ArrowRight className="h-4 w-4 text-gray-500" />
-                <span className="text-[13px] font-semibold text-gray-500">
+                <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                <span className="text-xs font-semibold text-muted-foreground">
                   {change}
                 </span>
               </>
@@ -141,11 +211,11 @@ export const KPICard = memo(function KPICard({
         )}
         
         {subtitle && !change && (
-          <span className="text-xs text-gray-400">{subtitle}</span>
+          <span className="text-xs text-muted-foreground">{subtitle}</span>
         )}
         
         {subtitle && change && (
-          <span className="text-xs text-gray-400 ml-2">{subtitle}</span>
+          <span className="text-xs text-muted-foreground ml-2">{subtitle}</span>
         )}
       </div>
     </div>
@@ -162,7 +232,7 @@ interface KPIGridProps {
 export function KPIGrid({ children, columns = 4 }: KPIGridProps) {
   return (
     <div className={cn(
-      'grid gap-6',
+      'grid gap-4 sm:gap-6',
       'grid-cols-1 sm:grid-cols-2',
       columns >= 3 && 'lg:grid-cols-3',
       columns >= 4 && 'xl:grid-cols-4',

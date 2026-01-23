@@ -5,15 +5,13 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { formatCurrency } from '@/lib/formatters';
 import { cn } from '@/lib/utils';
-import { RefreshCw, Settings, BarChart3 } from 'lucide-react';
+import { Settings, BarChart3, ExternalLink } from 'lucide-react';
 import {
   Bar,
   BarChart,
   XAxis,
   YAxis,
   CartesianGrid,
-  Legend,
-  ResponsiveContainer,
 } from 'recharts';
 
 interface BudgetData {
@@ -31,77 +29,68 @@ interface BudgetVsActualChartProps {
 }
 
 const chartConfig = {
-  orcado: { label: 'Orçado', color: '#06B6D4' }, // Cyan
-  realizado: { label: 'Real', color: '#0066CC' }, // Primary Blue
+  orcado: { label: 'Orçado', color: 'hsl(var(--primary))' },
+  realizado: { label: 'Real', color: 'hsl(187, 85%, 43%)' }, // Cyan
 };
 
 export const BudgetVsActualChart = memo(function BudgetVsActualChart({
   data,
   isLoading = false,
-  onRefresh,
   onConfigure,
   className,
 }: BudgetVsActualChartProps) {
   return (
     <Card className={cn(
-      'bg-white border border-gray-200 rounded-xl',
-      'shadow-[0_1px_3px_rgba(0,0,0,0.05)] hover:shadow-[0_4px_6px_rgba(0,0,0,0.1)] transition-shadow',
+      'bg-card border border-border rounded-xl',
+      'shadow-sm hover:shadow-md transition-shadow',
       'h-[320px] flex flex-col',
       className
     )}>
       {/* Header */}
-      <CardHeader className="flex flex-row items-center justify-between pb-4 mb-4 border-b border-gray-100">
-        <h3 className="text-base font-semibold text-gray-900">
-          Orçado vs Real - Mês Corrente
+      <CardHeader className="flex flex-row items-center justify-between pb-3 border-b border-border">
+        <h3 className="text-sm font-semibold text-foreground">
+          Orçado vs Real
         </h3>
-        <div className="flex items-center gap-2">
-          {onRefresh && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-8 w-8 p-0 text-gray-400 hover:text-[#0066CC]"
-              onClick={onRefresh}
-            >
-              <RefreshCw className="h-4 w-4" />
-            </Button>
-          )}
+        <div className="flex items-center gap-1">
           {onConfigure && (
             <Button
               variant="ghost"
-              size="sm"
-              className="h-8 w-8 p-0 text-gray-400 hover:text-[#0066CC]"
+              size="icon"
+              className="h-7 w-7 text-muted-foreground hover:text-primary"
               onClick={onConfigure}
+              title="Ver detalhes"
             >
-              <Settings className="h-4 w-4" />
+              <ExternalLink className="h-3.5 w-3.5" />
             </Button>
           )}
         </div>
       </CardHeader>
 
       {/* Chart Content */}
-      <CardContent className="pt-0 flex-1 flex flex-col">
+      <CardContent className="pt-4 flex-1 flex flex-col">
         {isLoading ? (
           <Skeleton className="flex-1 w-full" />
         ) : data.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center text-center">
-            <BarChart3 className="h-12 w-12 text-gray-300 mb-3" />
-            <p className="text-sm text-gray-500">Nenhum dado disponível</p>
+            <BarChart3 className="h-10 w-10 text-muted-foreground/30 mb-3" />
+            <p className="text-sm text-muted-foreground">Nenhum dado disponível</p>
           </div>
         ) : (
-          <ChartContainer config={chartConfig} className="flex-1 w-full min-h-[180px]">
-            <BarChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" />
+          <ChartContainer config={chartConfig} className="flex-1 w-full min-h-[160px]">
+            <BarChart data={data} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
               <XAxis 
                 dataKey="month" 
-                tick={{ fontSize: 12, fill: '#6B7280' }} 
+                tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }} 
                 tickLine={false} 
                 axisLine={false}
               />
               <YAxis 
-                tick={{ fontSize: 11, fill: '#6B7280' }} 
-                tickFormatter={(v) => `R$ ${(v / 1000).toFixed(0)}k`}
+                tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} 
+                tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`}
                 tickLine={false}
                 axisLine={false}
+                width={40}
               />
               <ChartTooltip
                 content={
@@ -110,22 +99,20 @@ export const BudgetVsActualChart = memo(function BudgetVsActualChart({
                       formatCurrency(Number(value)), 
                       chartConfig[name as keyof typeof chartConfig]?.label || name
                     ]}
-                    wrapperClassName="!bg-gray-900 !border-0 !rounded-md !shadow-lg"
-                    labelClassName="!text-white"
                   />
                 }
               />
               <Bar 
                 dataKey="orcado" 
-                fill="#06B6D4" 
-                radius={[4, 4, 0, 0]} 
-                barSize={30}
+                fill="hsl(var(--primary))" 
+                radius={[3, 3, 0, 0]} 
+                barSize={24}
               />
               <Bar 
                 dataKey="realizado" 
-                fill="#0066CC" 
-                radius={[4, 4, 0, 0]} 
-                barSize={30}
+                fill="hsl(187, 85%, 43%)" 
+                radius={[3, 3, 0, 0]} 
+                barSize={24}
               />
             </BarChart>
           </ChartContainer>
@@ -133,14 +120,14 @@ export const BudgetVsActualChart = memo(function BudgetVsActualChart({
 
         {/* Legend */}
         {data.length > 0 && (
-          <div className="flex items-center gap-6 pt-3 border-t border-gray-100 mt-auto">
-            <div className="flex items-center gap-2 text-xs text-gray-600">
-              <div className="w-3 h-3 rounded-sm bg-cyan-500" />
+          <div className="flex items-center justify-center gap-6 pt-3 border-t border-border mt-auto">
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <div className="w-2.5 h-2.5 rounded-sm bg-primary" />
               <span>Orçado</span>
             </div>
-            <div className="flex items-center gap-2 text-xs text-gray-600">
-              <div className="w-3 h-3 rounded-sm bg-[#0066CC]" />
-              <span>Real</span>
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <div className="w-2.5 h-2.5 rounded-sm bg-[hsl(187,85%,43%)]" />
+              <span>Realizado</span>
             </div>
           </div>
         )}
