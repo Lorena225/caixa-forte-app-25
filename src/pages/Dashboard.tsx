@@ -11,6 +11,7 @@ import { BudgetVsActualChart } from '@/components/dashboard/BudgetVsActualChart'
 import { CashFlowProjection } from '@/components/dashboard/CashFlowProjection';
 import { CustomizableWidgetsSection } from '@/components/dashboard/CustomizableWidgetsSection';
 import { EditModeToolbar } from '@/components/dashboard/EditModeToolbar';
+import { WidgetManagementPanel } from '@/components/dashboard/WidgetManagementPanel';
 import { DashboardSkeleton } from '@/components/common/DashboardSkeleton';
 import { Card, CardContent, CardDescription, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -20,6 +21,7 @@ import { useDashboardMetrics } from '@/hooks/useDashboardMetrics';
 import { useDashboardAlerts } from '@/hooks/useDashboardAlerts';
 import { useDashboardFluxo } from '@/hooks/useDashboardFluxo';
 import { useBudgetVsActual } from '@/hooks/useDashboardData';
+import { useDashboardWidgets } from '@/hooks/useDashboardWidgets';
 import { cn } from '@/lib/utils';
 import {
   Wallet,
@@ -96,6 +98,23 @@ export default function Dashboard() {
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [lastRefresh, setLastRefresh] = useState(new Date());
   const [isEditMode, setIsEditMode] = useState(false);
+  const [showWidgetPanel, setShowWidgetPanel] = useState(false);
+
+  // Widget management hook
+  const {
+    widgets,
+    hasChanges,
+    canUndo,
+    canRedo,
+    toggleWidget,
+    reorderWidgets,
+    undo,
+    redo,
+    save: saveWidgets,
+    cancel: cancelWidgets,
+    resetToDefaults,
+    isWidgetEnabled,
+  } = useDashboardWidgets();
 
   // Memoized period dates
   const periodConfig = useMemo(() => getPeriodDates(periodType), [periodType]);
@@ -174,11 +193,20 @@ export default function Dashboard() {
 
   // Edit mode handlers
   const handleSaveEdits = () => {
+    saveWidgets();
     setIsEditMode(false);
+    setShowWidgetPanel(false);
   };
 
   const handleCancelEdits = () => {
+    cancelWidgets();
     setIsEditMode(false);
+    setShowWidgetPanel(false);
+  };
+
+  const handleEnterEditMode = () => {
+    setIsEditMode(true);
+    setShowWidgetPanel(true);
   };
 
   return (
@@ -195,7 +223,7 @@ export default function Dashboard() {
             autoRefresh={autoRefresh}
             onAutoRefreshChange={setAutoRefresh}
             onRefresh={handleRefresh}
-            onEditDashboard={() => setIsEditMode(true)}
+            onEditDashboard={handleEnterEditMode}
             isRefreshing={metricsLoading}
             lastRefresh={lastRefresh}
           />
@@ -230,102 +258,133 @@ export default function Dashboard() {
                 </div>
               )}
 
-              {/* Section 1: KPI Grid - 4 columns */}
-              <section aria-label="Indicadores principais">
-                <KPIGrid columns={4}>
-                  <KPICard
-                    title="Saldo em Caixa"
-                    value={formatCurrency(metrics?.saldoCaixa?.valor || 0)}
-                    icon={Wallet}
-                    tooltip="Saldo disponível em conta + títulos a receber - títulos a pagar."
-                    variant="primary"
-                    isLoading={metricsLoading}
-                    isEditMode={isEditMode}
-                    onClick={() => navigate('/tesouraria/posicao')}
-                    change={metrics?.saldoCaixa?.variacao ? `${metrics.saldoCaixa.variacao > 0 ? '+' : ''}${metrics.saldoCaixa.variacao.toFixed(0)}%` : undefined}
-                    trend={metrics?.saldoCaixa?.variacao ? (metrics.saldoCaixa.variacao > 0 ? 'up' : metrics.saldoCaixa.variacao < 0 ? 'down' : 'neutral') : undefined}
-                  />
-                  <KPICard
-                    title="Contas a Receber"
-                    value={formatCurrency(metrics?.contasReceber?.valor || 0)}
-                    subtitle={metrics?.contasReceber?.detalhe 
-                      ? `${metrics.contasReceber.detalhe.vencidoPercentual.toFixed(0)}% vencido`
-                      : undefined
-                    }
-                    icon={ArrowDownCircle}
-                    tooltip="Total de títulos abertos para cobrar."
-                    variant={metrics?.contasReceber?.detalhe?.vencidoPercentual > 20 ? 'warning' : 'success'}
-                    isLoading={metricsLoading}
-                    isEditMode={isEditMode}
-                    onClick={() => navigate('/ar')}
-                  />
-                  <KPICard
-                    title="Contas a Pagar"
-                    value={formatCurrency(metrics?.contasPagar?.valor || 0)}
-                    subtitle={metrics?.contasPagar?.detalhe 
-                      ? `${metrics.contasPagar.detalhe.vencidoPercentual.toFixed(0)}% vencido`
-                      : undefined
-                    }
-                    icon={ArrowUpCircle}
-                    tooltip="Total de compromissos financeiros a pagar."
-                    variant={metrics?.contasPagar?.detalhe?.vencidoPercentual > 10 ? 'danger' : 'default'}
-                    isLoading={metricsLoading}
-                    isEditMode={isEditMode}
-                    onClick={() => navigate('/ap')}
-                  />
-                  <KPICard
-                    title="Execução Orçamentária"
-                    value={metrics?.execucaoOrcamento?.valorFormatado || '0%'}
-                    subtitle={metrics?.execucaoOrcamento?.detalhe 
-                      ? `${formatCurrency(metrics.execucaoOrcamento.detalhe.realizado)} / ${formatCurrency(metrics.execucaoOrcamento.detalhe.orcado)}`
-                      : undefined
-                    }
-                    icon={Target}
-                    tooltip="Percentual de execução do orçamento do período."
-                    variant={metrics?.execucaoOrcamento?.status || 'default'}
-                    isLoading={metricsLoading}
-                    isEditMode={isEditMode}
-                    onClick={() => navigate('/paineis/orcamento')}
-                  />
-                </KPIGrid>
-              </section>
+              {/* Section 1: KPI Grid - 4 columns (if enabled) */}
+              {(isWidgetEnabled('saldo-caixa') || isWidgetEnabled('contas-receber') || 
+                isWidgetEnabled('contas-pagar') || isWidgetEnabled('execucao-orcamentaria')) && (
+                <section aria-label="Indicadores principais">
+                  <KPIGrid columns={4}>
+                    {isWidgetEnabled('saldo-caixa') && (
+                      <KPICard
+                        title="Saldo em Caixa"
+                        value={formatCurrency(metrics?.saldoCaixa?.valor || 0)}
+                        icon={Wallet}
+                        tooltip="Saldo disponível em conta + títulos a receber - títulos a pagar."
+                        variant="primary"
+                        isLoading={metricsLoading}
+                        isEditMode={isEditMode}
+                        onClick={() => navigate('/tesouraria/posicao')}
+                        change={metrics?.saldoCaixa?.variacao ? `${metrics.saldoCaixa.variacao > 0 ? '+' : ''}${metrics.saldoCaixa.variacao.toFixed(0)}%` : undefined}
+                        trend={metrics?.saldoCaixa?.variacao ? (metrics.saldoCaixa.variacao > 0 ? 'up' : metrics.saldoCaixa.variacao < 0 ? 'down' : 'neutral') : undefined}
+                      />
+                    )}
+                    {isWidgetEnabled('contas-receber') && (
+                      <KPICard
+                        title="Contas a Receber"
+                        value={formatCurrency(metrics?.contasReceber?.valor || 0)}
+                        subtitle={metrics?.contasReceber?.detalhe 
+                          ? `${metrics.contasReceber.detalhe.vencidoPercentual.toFixed(0)}% vencido`
+                          : undefined
+                        }
+                        icon={ArrowDownCircle}
+                        tooltip="Total de títulos abertos para cobrar."
+                        variant={metrics?.contasReceber?.detalhe?.vencidoPercentual > 20 ? 'warning' : 'success'}
+                        isLoading={metricsLoading}
+                        isEditMode={isEditMode}
+                        onClick={() => navigate('/ar')}
+                      />
+                    )}
+                    {isWidgetEnabled('contas-pagar') && (
+                      <KPICard
+                        title="Contas a Pagar"
+                        value={formatCurrency(metrics?.contasPagar?.valor || 0)}
+                        subtitle={metrics?.contasPagar?.detalhe 
+                          ? `${metrics.contasPagar.detalhe.vencidoPercentual.toFixed(0)}% vencido`
+                          : undefined
+                        }
+                        icon={ArrowUpCircle}
+                        tooltip="Total de compromissos financeiros a pagar."
+                        variant={metrics?.contasPagar?.detalhe?.vencidoPercentual > 10 ? 'danger' : 'default'}
+                        isLoading={metricsLoading}
+                        isEditMode={isEditMode}
+                        onClick={() => navigate('/ap')}
+                      />
+                    )}
+                    {isWidgetEnabled('execucao-orcamentaria') && (
+                      <KPICard
+                        title="Execução Orçamentária"
+                        value={metrics?.execucaoOrcamento?.valorFormatado || '0%'}
+                        subtitle={metrics?.execucaoOrcamento?.detalhe 
+                          ? `${formatCurrency(metrics.execucaoOrcamento.detalhe.realizado)} / ${formatCurrency(metrics.execucaoOrcamento.detalhe.orcado)}`
+                          : undefined
+                        }
+                        icon={Target}
+                        tooltip="Percentual de execução do orçamento do período."
+                        variant={metrics?.execucaoOrcamento?.status || 'default'}
+                        isLoading={metricsLoading}
+                        isEditMode={isEditMode}
+                        onClick={() => navigate('/paineis/orcamento')}
+                      />
+                    )}
+                  </KPIGrid>
+                </section>
+              )}
 
               {/* Section 2: 3-Column Layout - Alerts, Quick Actions, Cash Flow Projection */}
-              <section 
-                aria-label="Alertas, ações e projeção" 
-                className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6"
-              >
-                <AlertsPanel
-                  alerts={alerts}
-                  isLoading={alertsLoading}
-                  maxVisible={5}
-                />
-                <QuickActionsPanel />
-                <CashFlowProjection
-                  data={fluxoProjetado}
-                  isLoading={fluxoLoading}
-                  title="Projeção de Fluxo de Caixa"
-                  showBars
-                />
-              </section>
+              {(isWidgetEnabled('alertas') || isWidgetEnabled('acoes-rapidas') || isWidgetEnabled('projecao-fluxo')) && (
+                <section 
+                  aria-label="Alertas, ações e projeção" 
+                  className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6"
+                >
+                  {isWidgetEnabled('alertas') && (
+                    <AlertsPanel
+                      alerts={alerts}
+                      isLoading={alertsLoading}
+                      maxVisible={5}
+                    />
+                  )}
+                  {isWidgetEnabled('acoes-rapidas') && <QuickActionsPanel />}
+                  {isWidgetEnabled('projecao-fluxo') && (
+                    <CashFlowProjection
+                      data={fluxoProjetado}
+                      isLoading={fluxoLoading}
+                      title="Projeção de Fluxo de Caixa"
+                      showBars
+                    />
+                  )}
+                </section>
+              )}
 
               {/* Section 3: Charts Row - 2 columns */}
-              <section aria-label="Gráficos" className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-                {/* Budget vs Actual Chart */}
-                <BudgetVsActualChart
-                  data={budgetChartData}
-                  isLoading={budgetLoading}
-                  onConfigure={() => navigate('/financeiro/orcamento-real')}
-                />
+              {(isWidgetEnabled('orcado-realizado') || isWidgetEnabled('top-clientes') || 
+                isWidgetEnabled('margem-lucro') || isWidgetEnabled('fluxo-semanal')) && (
+                <section aria-label="Gráficos" className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+                  {/* Budget vs Actual Chart */}
+                  {isWidgetEnabled('orcado-realizado') && (
+                    <BudgetVsActualChart
+                      data={budgetChartData}
+                      isLoading={budgetLoading}
+                      onConfigure={() => navigate('/financeiro/orcamento-real')}
+                    />
+                  )}
 
-                {/* Customizable Widgets Section */}
-                <CustomizableWidgetsSection
-                  isEditMode={isEditMode}
-                  onAddWidget={() => {/* Open widget modal */}}
-                  onRemoveWidget={(id) => console.log('Remove widget:', id)}
-                  onConfigureWidget={(id) => console.log('Configure widget:', id)}
-                />
-              </section>
+                  {/* Customizable Widgets Section */}
+                  {(isWidgetEnabled('top-clientes') || isWidgetEnabled('margem-lucro') || isWidgetEnabled('fluxo-semanal')) && (
+                    <CustomizableWidgetsSection
+                      isEditMode={isEditMode}
+                      widgets={widgets.filter(w => 
+                        ['top-clientes', 'margem-lucro', 'fluxo-semanal'].includes(w.key) && w.enabled
+                      ).map(w => ({
+                        id: w.id,
+                        title: w.title,
+                        type: w.type as 'chart' | 'list' | 'kpi',
+                        lastUpdated: 'há 2 min',
+                      }))}
+                      onRemoveWidget={(id) => toggleWidget(id)}
+                      onConfigureWidget={(id) => console.log('Configure widget:', id)}
+                    />
+                  )}
+                </section>
+              )}
 
               {/* Empty State */}
               {!hasData && !metricsLoading && (
@@ -353,12 +412,29 @@ export default function Dashboard() {
           )}
         </div>
 
+        {/* Widget Management Panel */}
+        {isEditMode && showWidgetPanel && (
+          <WidgetManagementPanel
+            widgets={widgets}
+            onToggle={toggleWidget}
+            onReorder={reorderWidgets}
+            onResetToDefaults={resetToDefaults}
+            onClose={() => setShowWidgetPanel(false)}
+          />
+        )}
+
         {/* Edit Mode Toolbar */}
         {isEditMode && (
           <EditModeToolbar
             onSave={handleSaveEdits}
             onCancel={handleCancelEdits}
-            onAddWidget={() => {/* Open widget modal */}}
+            onManageWidgets={() => setShowWidgetPanel(!showWidgetPanel)}
+            onUndo={undo}
+            onRedo={redo}
+            onResetToDefaults={resetToDefaults}
+            canUndo={canUndo}
+            canRedo={canRedo}
+            hasChanges={hasChanges}
           />
         )}
       </div>
