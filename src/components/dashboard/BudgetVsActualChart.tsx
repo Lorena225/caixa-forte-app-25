@@ -5,7 +5,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { formatCurrency } from '@/lib/formatters';
 import { cn } from '@/lib/utils';
-import { Settings, BarChart3, ExternalLink } from 'lucide-react';
+import { BarChart3, ExternalLink } from 'lucide-react';
 import {
   Bar,
   BarChart,

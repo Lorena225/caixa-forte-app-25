@@ -1,5 +1,5 @@
 import { memo, useState } from 'react';
-import { Bell, Check, CheckCheck, X, AlertTriangle, Info, TrendingUp } from 'lucide-react';
+import { Bell, CheckCheck, X, AlertTriangle, Info, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
-import { format, formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
 type NotificationType = 'info' | 'warning' | 'success' | 'alert';

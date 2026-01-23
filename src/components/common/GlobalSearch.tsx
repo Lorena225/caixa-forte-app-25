@@ -1,4 +1,4 @@
-import { memo, useState, useCallback } from 'react';
+import { memo, useCallback } from 'react';
 import { Search, Command } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
