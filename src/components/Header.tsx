@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, ChevronDown, User, LogOut, Settings } from 'lucide-react';
+import { Plus, ChevronDown, User, LogOut, Settings, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -16,6 +16,7 @@ import { BrandLogo } from '@/components/common/BrandLogo';
 import { HelpMenu } from '@/components/common/HelpMenu';
 import { NotificationCenter } from '@/components/common/NotificationCenter';
 import { GlobalSearch } from '@/components/common/GlobalSearch';
+import { useSidebarCollapse } from '@/components/Sidebar';
 import { cn } from '@/lib/utils';
 
 const novoRegistroOptions = [
@@ -48,6 +49,7 @@ function generateAvatarColor(email: string): string {
 export const Header = memo(function Header() {
   const navigate = useNavigate();
   const { user, signOut, currentCompany } = useAuth();
+  const { collapsed } = useSidebarCollapse();
 
   const userInitials = user?.email
     ? user.email.substring(0, 2).toUpperCase()
@@ -62,10 +64,24 @@ export const Header = memo(function Header() {
       aria-label="Barra de navegação principal"
     >
       <div className="flex h-full items-center justify-between px-4 md:px-6">
-        {/* Left Section - Brand Logo + Company Selector */}
-        <div className="flex items-center gap-3 md:ml-64">
+        {/* Left Section - Logo + Brand Logo + Company Selector */}
+        <div className={cn(
+          'flex items-center gap-3 transition-all duration-300',
+          collapsed ? 'md:ml-16' : 'md:ml-64'
+        )}>
           {/* Mobile hamburger space */}
           <div className="w-10 md:hidden" />
+          
+          {/* App Logo - Desktop only */}
+          <div className="hidden md:flex items-center gap-2.5 mr-2">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary shadow-sm">
+              <Sparkles className="h-4.5 w-4.5 text-white" />
+            </div>
+            <span className="text-lg font-bold text-foreground tracking-tight">Caixa Forte</span>
+          </div>
+          
+          {/* Divider */}
+          <div className="hidden md:block h-8 w-px bg-border" />
           
           {/* Brand Logo with Company Selector */}
           <BrandLogo />
