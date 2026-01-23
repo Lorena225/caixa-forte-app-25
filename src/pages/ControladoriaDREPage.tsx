@@ -6,7 +6,7 @@ import { RealTimeIndicator } from '@/components/controladoria/RealTimeIndicator'
 import { useAIAnalysis } from '@/hooks/useAIAnalysis';
 import { useRealTimeInsights } from '@/hooks/useRealTimeInsights';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { TrendingUp, TrendingDown, Target, BarChart3, Lightbulb, LineChart } from 'lucide-react';
+import { TrendingUp, Target, BarChart3, Lightbulb, LineChart } from 'lucide-react';
 
 export const ControladoriaDREPage: React.FC = () => {
   const indices = useAIAnalysis([]).calculateIndices(1500000, 330000, 420000, 500000, 200000, 100000);
