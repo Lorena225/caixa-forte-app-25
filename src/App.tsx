@@ -529,6 +529,7 @@ const App = () => (
                 
                 {/* ============ ADMINISTRAÇÃO (PT-BR) ============ */}
                 <Route path="/admin" element={<AdminIndex />} />
+                <Route path="/admin/maturidade-erp" element={<ModuleMaturityReport />} />
                 <Route path="/admin/empresa" element={<AdminCompany />} />
                 <Route path="/admin/filiais" element={<AdminBranches />} />
                 <Route path="/admin/usuarios" element={<AdminUsers />} />
