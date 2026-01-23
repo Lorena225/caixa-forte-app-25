@@ -45,31 +45,31 @@ export const DashboardHeader = memo(function DashboardHeader({
   return (
     <div className={cn(
       'flex flex-col gap-4 md:flex-row md:items-center md:justify-between',
-      'pb-6 mb-8 border-b border-gray-200',
+      'pb-6 mb-8 border-b border-border',
       className
     )}>
       {/* Left Section - Greeting */}
-      <div className="flex flex-col gap-2">
-        <h1 className="text-[32px] font-bold text-gray-900 leading-[1.2] tracking-tight">
+      <div className="flex flex-col gap-1.5">
+        <h1 className="text-2xl sm:text-[28px] font-bold text-foreground leading-tight tracking-tight">
           Bem-vindo, {userName}
         </h1>
-        <p className="text-sm text-gray-500 leading-[1.5]">
+        <p className="text-sm text-muted-foreground leading-normal">
           {companyName ? `${companyName} • ${periodLabel}` : periodLabel}
         </p>
       </div>
 
       {/* Right Section - Controls */}
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="flex flex-wrap items-center gap-2">
         {/* Period Selector */}
         <Select value={periodType} onValueChange={(v) => onPeriodChange(v as PeriodType)}>
           <SelectTrigger 
-            className="w-[160px] h-10 px-3 bg-white border border-gray-200 rounded-lg text-sm text-gray-700 hover:border-gray-300 hover:bg-gray-50 focus:border-primary focus:ring-2 focus:ring-primary/10"
+            className="w-[140px] sm:w-[160px] h-9 sm:h-10 px-3 bg-card border border-border rounded-lg text-sm text-foreground hover:border-primary/50 hover:bg-muted/50 focus:border-primary focus:ring-2 focus:ring-primary/10 transition-colors"
             aria-label="Selecionar período"
           >
-            <Calendar className="h-4 w-4 mr-2 text-gray-400" />
+            <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
             <SelectValue />
           </SelectTrigger>
-          <SelectContent className="bg-white border border-gray-200 shadow-lg rounded-lg z-[100]">
+          <SelectContent className="bg-card border border-border shadow-lg rounded-lg z-[100]">
             <SelectItem value="today">Hoje</SelectItem>
             <SelectItem value="week">Esta Semana</SelectItem>
             <SelectItem value="month">Este Mês</SelectItem>
@@ -80,26 +80,28 @@ export const DashboardHeader = memo(function DashboardHeader({
         </Select>
 
         {/* Auto-refresh Toggle */}
-        <button 
+        <Button
+          variant="outline"
+          size="icon"
           className={cn(
-            'flex items-center justify-center w-10 h-10 rounded-lg border cursor-pointer transition-all',
+            'h-9 w-9 sm:h-10 sm:w-10 rounded-lg transition-all',
             autoRefresh 
-              ? 'bg-blue-50 border-primary text-primary' 
-              : 'bg-white border-gray-200 text-gray-400 hover:border-gray-300 hover:bg-gray-50'
+              ? 'bg-primary/10 border-primary text-primary hover:bg-primary/20' 
+              : 'border-border text-muted-foreground hover:border-primary/50 hover:bg-muted/50'
           )}
           onClick={() => onAutoRefreshChange(!autoRefresh)}
           title="Auto-atualizar a cada 5 minutos"
           aria-label={autoRefresh ? 'Desativar auto-atualização' : 'Ativar auto-atualização'}
         >
           <RefreshCw className={cn('h-4 w-4', autoRefresh && 'animate-spin')} style={{ animationDuration: '3s' }} />
-        </button>
+        </Button>
 
         {/* Manual Refresh Button */}
         <Button
           variant="ghost"
           size="icon"
           className={cn(
-            'w-10 h-10 rounded-lg text-gray-400 hover:text-primary hover:bg-gray-50',
+            'h-9 w-9 sm:h-10 sm:w-10 rounded-lg text-muted-foreground hover:text-primary hover:bg-muted/50',
             isRefreshing && 'animate-spin'
           )}
           onClick={onRefresh}
@@ -112,7 +114,7 @@ export const DashboardHeader = memo(function DashboardHeader({
 
         {/* Last Update Time */}
         {lastRefresh && (
-          <div className="flex items-center gap-1.5 text-xs text-gray-400 px-2">
+          <div className="hidden sm:flex items-center gap-1.5 text-xs text-muted-foreground px-2 py-1 rounded bg-muted/30">
             <Clock className="h-3.5 w-3.5" />
             <span>{format(lastRefresh, 'HH:mm', { locale: ptBR })}</span>
           </div>
@@ -123,11 +125,11 @@ export const DashboardHeader = memo(function DashboardHeader({
           <Button
             variant="outline"
             size="sm"
-            className="h-10 px-4 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:border-gray-300 hover:bg-gray-50"
+            className="h-9 sm:h-10 px-3 sm:px-4 border-border text-sm font-medium text-foreground hover:border-primary/50 hover:bg-muted/50 transition-colors"
             onClick={onEditDashboard}
           >
-            <Pencil className="h-4 w-4 mr-2" />
-            Editar
+            <Pencil className="h-4 w-4 sm:mr-2" />
+            <span className="hidden sm:inline">Editar</span>
           </Button>
         )}
       </div>
