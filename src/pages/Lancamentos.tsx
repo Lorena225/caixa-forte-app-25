@@ -11,7 +11,7 @@ import { ptBR } from 'date-fns/locale';
 import { formatCurrency } from '@/lib/formatters';
 import { Plus, Pencil, Trash2, ArrowUpCircle, ArrowDownCircle, Filter, FileText, Sparkles, Loader2 } from 'lucide-react';
 import { useAICategorySuggestion } from '@/hooks/useAICategorySuggestion';
-import { AIAnalysisBadge } from '@/components/transactions/AIAnalysisBadge';
+import { AISuggestionBadge } from '@/components/transactions/AISuggestionBadge';
 import { ReceiptUpload } from '@/components/transactions/ReceiptUpload';
 import { useRealtimeTransactions } from '@/hooks/useRealtimeTransactions';
 import { Button } from '@/components/ui/button';
@@ -95,7 +95,7 @@ export default function Lancamentos() {
   const [filterYear, setFilterYear] = useState<number>(new Date().getFullYear());
   
   // AI suggestion state
-  const [aiSuggestion, setAiSuggestion] = useState<{ categoryId: string; confidence: number; reason: string } | null>(null);
+  const [aiSuggestion, setAiSuggestion] = useState<{ categoryId: string; confidence: number; reason: string; isLearned?: boolean } | null>(null);
   const [receiptFile, setReceiptFile] = useState<File | null>(null);
   
   // Loading and submission states
@@ -116,8 +116,8 @@ export default function Lancamentos() {
   const { data: counterparties = [] } = useCounterparties();
   const { data: costCenters = [] } = useCostCenters();
   
-  // AI Category suggestion hook
-  const { suggestCategory } = useAICategorySuggestion(categories, formData.direction);
+  // AI Category suggestion hook with learning capability
+  const { suggestCategory, learnFromSelection } = useAICategorySuggestion(categories, formData.direction);
 
   // Filter categories based on direction
   const filteredCategories = useMemo(() => {
@@ -149,7 +149,7 @@ export default function Lancamentos() {
     }
   }, [formData.account_id, formData.category_id, accounts]);
   
-  // AI-powered category suggestion based on description
+  // AI-powered category suggestion based on description with debounce
   const handleDescriptionChange = useCallback((description: string) => {
     setFormData(prev => ({ ...prev, description }));
     
@@ -160,14 +160,40 @@ export default function Lancamentos() {
         setAiSuggestion(suggestion);
         // Auto-apply the suggestion
         setFormData(prev => ({ ...prev, category_id: suggestion.categoryId }));
-        toast.info('Categoria sugerida pela IA', {
+        toast.info(suggestion.isLearned ? '✨ Categoria aprendida aplicada' : '✨ Categoria sugerida pela IA', {
           description: suggestion.reason,
           icon: <Sparkles className="h-4 w-4" />,
           duration: 3000,
         });
+      } else {
+        // Clear suggestion if no match found
+        setAiSuggestion(null);
       }
     }
   }, [formData.category_id, suggestCategory]);
+  
+  // Handle manual category change and learn from it
+  const handleCategoryChange = useCallback((newCategoryId: string) => {
+    const actualCategoryId = newCategoryId === "__none__" ? "" : newCategoryId;
+    
+    // Learn from manual selection if user changed from AI suggestion
+    if (actualCategoryId && formData.description.length >= 3) {
+      if (!aiSuggestion || aiSuggestion.categoryId !== actualCategoryId) {
+        learnFromSelection(formData.description, actualCategoryId);
+      }
+    }
+    
+    setFormData(prev => ({ 
+      ...prev, 
+      category_id: actualCategoryId,
+      account_id: '' // Reset account when category changes
+    }));
+    
+    // Clear AI suggestion if user manually changes to different category
+    if (aiSuggestion && actualCategoryId !== aiSuggestion.categoryId) {
+      setAiSuggestion(null);
+    }
+  }, [aiSuggestion, formData.description, learnFromSelection]);
 
   const openNewDialog = (direction: TransactionDirection = 'entrada') => {
     setEditingTransaction(null);
@@ -637,9 +663,10 @@ export default function Lancamentos() {
               <div className="flex items-center justify-between">
                 <Label>Descrição *</Label>
                 {aiSuggestion && (
-                  <AIAnalysisBadge 
+                  <AISuggestionBadge 
                     confidence={aiSuggestion.confidence} 
-                    reason={aiSuggestion.reason} 
+                    reason={aiSuggestion.reason}
+                    isLearned={aiSuggestion.isLearned}
                   />
                 )}
               </div>
@@ -662,26 +689,16 @@ export default function Lancamentos() {
                 <div className="flex items-center justify-between">
                   <Label>Categoria *</Label>
                   {aiSuggestion && formData.category_id === aiSuggestion.categoryId && (
-                    <AIAnalysisBadge 
+                    <AISuggestionBadge 
                       confidence={aiSuggestion.confidence} 
-                      reason={aiSuggestion.reason} 
+                      reason={aiSuggestion.reason}
+                      isLearned={aiSuggestion.isLearned}
                     />
                   )}
                 </div>
                 <Select
                   value={formData.category_id || "__none__"}
-                  onValueChange={(v) => {
-                    const newCategoryId = v === "__none__" ? "" : v;
-                    setFormData({ 
-                      ...formData, 
-                      category_id: newCategoryId,
-                      account_id: '' // Reset account when category changes
-                    });
-                    // Clear AI suggestion if user manually changes
-                    if (aiSuggestion && newCategoryId !== aiSuggestion.categoryId) {
-                      setAiSuggestion(null);
-                    }
-                  }}
+                  onValueChange={handleCategoryChange}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Selecione..." />
@@ -729,15 +746,7 @@ export default function Lancamentos() {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <Label>Valor Original *</Label>
-                  {formData.original_amount && aiSuggestion && (
-                    <AIAnalysisBadge 
-                      confidence={0.95} 
-                      reason="Valor extraído automaticamente" 
-                    />
-                  )}
-                </div>
+                <Label>Valor Original *</Label>
                 <Input
                   value={formData.original_amount}
                   onChange={(e) => {
@@ -753,15 +762,7 @@ export default function Lancamentos() {
               </div>
 
               <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <Label>Valor Total</Label>
-                  {formData.total_amount && aiSuggestion && (
-                    <AIAnalysisBadge 
-                      confidence={0.92} 
-                      reason="Calculado automaticamente" 
-                    />
-                  )}
-                </div>
+                <Label>Valor Total</Label>
                 <Input
                   value={formData.total_amount}
                   onChange={(e) => setFormData({ ...formData, total_amount: e.target.value })}
@@ -769,7 +770,6 @@ export default function Lancamentos() {
                 />
               </div>
             </div>
-
             <div className="grid grid-cols-3 gap-4">
               <div className="space-y-2">
                 <Label>Data Lançamento</Label>
