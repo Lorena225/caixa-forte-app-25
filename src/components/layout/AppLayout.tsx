@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import SidebarEnterprise, { useSidebarCollapse } from '@/components/SidebarEnterprise';
+import SidebarMinimalist, { useSidebarCollapse } from '@/components/SidebarMinimalist';
 import { Header } from '@/components/Header';
 import CopilotWidget from '@/components/CopilotWidget';
 import { CommandPalette } from '@/components/navigation/CommandPalette';
@@ -31,7 +31,7 @@ export function AppLayout({ children }: AppLayoutProps) {
       <Header />
       
       {/* Sidebar Navigation - Fixed position, below header */}
-      <SidebarEnterprise />
+      <SidebarMinimalist />
       
       {/* Command Palette */}
       <CommandPalette />
