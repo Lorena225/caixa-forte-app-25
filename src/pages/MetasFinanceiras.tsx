@@ -119,12 +119,11 @@ export default function MetasFinanceiras() {
       <PageHeader
         title="Metas Financeiras"
         description="Planeje e acompanhe seus objetivos financeiros"
-        actions={
-          <Button onClick={() => setIsFormOpen(true)} className="gap-2">
-            <Plus className="h-4 w-4" />
-            Nova Meta
-          </Button>
-        }
+        action={{
+          label: "Nova Meta",
+          onClick: () => setIsFormOpen(true),
+          icon: <Plus className="h-4 w-4" />,
+        }}
       />
       
       {/* Summary Cards */}
