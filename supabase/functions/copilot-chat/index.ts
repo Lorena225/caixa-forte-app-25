@@ -85,15 +85,15 @@ serve(async (req) => {
     console.log("Sending request to OpenAI with messages:", JSON.stringify(messages.slice(-2)));
 
     if (stream) {
-      // Streaming response
+      // Streaming response with GPT-4o
       const completion = await openai.chat.completions.create({
-        model: "gpt-4o-mini",
+        model: "gpt-4o",
         messages: [
           { role: "system", content: knowledgeBaseContext },
           ...messages,
         ],
         stream: true,
-        max_tokens: 1024,
+        max_tokens: 2048,
         temperature: 0.7,
       });
 
@@ -129,14 +129,14 @@ serve(async (req) => {
         },
       });
     } else {
-      // Non-streaming response
+      // Non-streaming response with GPT-4o
       const completion = await openai.chat.completions.create({
-        model: "gpt-4o-mini",
+        model: "gpt-4o",
         messages: [
           { role: "system", content: knowledgeBaseContext },
           ...messages,
         ],
-        max_tokens: 1024,
+        max_tokens: 2048,
         temperature: 0.7,
       });
 

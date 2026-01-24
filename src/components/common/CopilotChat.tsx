@@ -112,13 +112,22 @@ export const CopilotChat = memo(function CopilotChat() {
       }
     } catch (error) {
       console.error('Copilot error:', error);
+      const errorMessage = error instanceof Error ? error.message : '';
+      const isConnectionError = errorMessage.includes('API') || 
+                                errorMessage.includes('key') || 
+                                errorMessage.includes('quota') ||
+                                errorMessage.includes('rate') ||
+                                errorMessage.includes('401') ||
+                                errorMessage.includes('402') ||
+                                errorMessage.includes('429');
+      
       setMessages(prev => [
         ...prev.filter(m => m.content !== ''),
         { 
           role: 'assistant', 
-          content: error instanceof Error 
-            ? `❌ ${error.message}` 
-            : '❌ Ocorreu um erro. Tente novamente.'
+          content: isConnectionError 
+            ? '💤 O Copilot está descansando no momento. Verifique a conexão com a inteligência central.' 
+            : '❌ Ocorreu um erro inesperado. Por favor, tente novamente em alguns instantes.'
         }
       ]);
     } finally {
@@ -259,12 +268,13 @@ export const CopilotChat = memo(function CopilotChat() {
                   </div>
                 ))}
                 {isLoading && messages[messages.length - 1]?.role === 'user' && (
-                  <div className="flex gap-2">
-                    <div className="h-7 w-7 rounded-full bg-gradient-to-br from-primary to-violet-600 flex items-center justify-center">
+                  <div className="flex gap-2 items-start">
+                    <div className="h-7 w-7 rounded-full bg-gradient-to-br from-primary to-violet-600 flex items-center justify-center shrink-0">
                       <Bot className="h-4 w-4 text-primary-foreground" />
                     </div>
-                    <div className="bg-muted px-3 py-2 rounded-2xl rounded-bl-md">
-                      <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                    <div className="bg-muted px-3 py-2 rounded-2xl rounded-bl-md flex items-center gap-2">
+                      <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                      <span className="text-sm text-muted-foreground italic">Digitando...</span>
                     </div>
                   </div>
                 )}
