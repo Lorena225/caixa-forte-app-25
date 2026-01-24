@@ -17,7 +17,7 @@ import { HelpMenu } from '@/components/common/HelpMenu';
 import { SmartHelpPanel } from '@/components/common/SmartHelpPanel';
 import { NotificationCenter } from '@/components/common/NotificationCenter';
 import { GlobalSearch } from '@/components/common/GlobalSearch';
-import { useSidebarCollapse } from '@/components/Sidebar';
+import { useSidebarCollapse } from '@/components/SidebarEnterprise';
 import { cn } from '@/lib/utils';
 
 const novoRegistroOptions = [
@@ -68,7 +68,7 @@ export const Header = memo(function Header() {
         {/* Left Section - Logo + Brand Logo + Company Selector */}
         <div className={cn(
           'flex items-center gap-3 transition-all duration-300',
-          collapsed ? 'md:ml-16' : 'md:ml-64'
+          collapsed ? 'md:ml-16' : 'md:ml-[280px]'
         )}>
           {/* Mobile hamburger space */}
           <div className="w-10 md:hidden" />

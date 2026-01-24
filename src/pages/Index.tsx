@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import Dashboard from "@/pages/Dashboard";
+import DashboardModern from "@/pages/DashboardModern";
 import { Loader2 } from "lucide-react";
 
 export default function Index() {
@@ -26,5 +26,5 @@ export default function Index() {
     return null;
   }
 
-  return <Dashboard />;
+  return <DashboardModern />;
 }
