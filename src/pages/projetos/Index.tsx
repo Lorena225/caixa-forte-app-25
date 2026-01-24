@@ -166,7 +166,7 @@ export default function ProjetosIndex() {
           action={{
             label: 'Novo Projeto',
             onClick: () => navigate('/projetos/novo'),
-            icon: Plus,
+            icon: <Plus className="h-4 w-4" />,
           }}
         />
 

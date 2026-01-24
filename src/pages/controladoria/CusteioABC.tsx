@@ -65,7 +65,7 @@ export default function CusteioABC() {
           action={{
             label: 'Nova Atividade',
             onClick: () => {},
-            icon: Plus,
+            icon: <Plus className="h-4 w-4" />,
           }}
         />
 

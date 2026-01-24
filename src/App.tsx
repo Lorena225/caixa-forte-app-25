@@ -186,6 +186,7 @@ import AdminNavigationSettings from "./pages/admin/NavigationSettings";
 import AdminSecurityReport from "./pages/admin/SecurityReport";
 import UserManagement from "./pages/admin/UserManagement";
 import PerformanceDashboard from "./pages/admin/PerformanceDashboard";
+import ModuleMaturityReport from "./pages/admin/ModuleMaturityReport";
 // Backup & Recovery
 import BackupIndex from "./pages/admin/backup/Index";
 import BackupJobs from "./pages/admin/backup/Jobs";
