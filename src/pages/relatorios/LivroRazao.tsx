@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { FileDown, Printer, Search } from 'lucide-react';
 import { useState } from 'react';
+import { showExportToast, showPrintToast } from '@/utils/devFeedback';
 
 const razaoData = [
   { data: '2026-01-02', lote: 'LT001', historico: 'Saldo inicial', debito: 100000, credito: 0, saldo: 100000 },
@@ -57,11 +58,11 @@ export default function LivroRazao() {
             </Select>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline">
+            <Button variant="outline" onClick={() => showPrintToast()}>
               <Printer className="h-4 w-4 mr-2" />
               Imprimir
             </Button>
-            <Button variant="outline">
+            <Button variant="outline" onClick={() => showExportToast('PDF')}>
               <FileDown className="h-4 w-4 mr-2" />
               Exportar
             </Button>

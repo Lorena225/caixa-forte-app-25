@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { FileDown, Printer } from 'lucide-react';
+import { showExportToast, showPrintToast } from '@/utils/devFeedback';
 
 const ativoCirculante = [
   { conta: 'Caixa e Equivalentes', valor: 125000 },
@@ -71,11 +72,11 @@ export default function BalancoPatrimonial() {
             </Select>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline">
+            <Button variant="outline" onClick={() => showPrintToast()}>
               <Printer className="h-4 w-4 mr-2" />
               Imprimir
             </Button>
-            <Button variant="outline">
+            <Button variant="outline" onClick={() => showExportToast('PDF')}>
               <FileDown className="h-4 w-4 mr-2" />
               Exportar PDF
             </Button>

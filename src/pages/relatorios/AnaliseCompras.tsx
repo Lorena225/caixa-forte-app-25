@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { FileDown, TrendingDown, Truck, Package, Clock } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { showExportToast } from '@/utils/devFeedback';
 
 const comprasMes = [
   { mes: 'Ago', valor: 85000 },
@@ -56,7 +57,7 @@ export default function AnaliseCompras() {
               </SelectContent>
             </Select>
           </div>
-          <Button variant="outline">
+          <Button variant="outline" onClick={() => showExportToast('Excel')}>
             <FileDown className="h-4 w-4 mr-2" />
             Exportar Relatório
           </Button>
