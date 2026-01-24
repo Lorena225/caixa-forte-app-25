@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { PageHeader } from '@/components/common/PageHeader';
 import { useAuth } from '@/contexts/AuthContext';
@@ -9,7 +9,10 @@ import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { formatCurrency } from '@/lib/formatters';
-import { Plus, Pencil, Trash2, ArrowUpCircle, ArrowDownCircle, Filter, FileText } from 'lucide-react';
+import { Plus, Pencil, Trash2, ArrowUpCircle, ArrowDownCircle, Filter, FileText, Sparkles } from 'lucide-react';
+import { useAICategorySuggestion } from '@/hooks/useAICategorySuggestion';
+import { AIAnalysisBadge } from '@/components/transactions/AIAnalysisBadge';
+import { ReceiptUpload } from '@/components/transactions/ReceiptUpload';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -89,6 +92,10 @@ export default function Lancamentos() {
   const [activeTab, setActiveTab] = useState<string>('todos');
   const [filterMonth, setFilterMonth] = useState<number>(new Date().getMonth() + 1);
   const [filterYear, setFilterYear] = useState<number>(new Date().getFullYear());
+  
+  // AI suggestion state
+  const [aiSuggestion, setAiSuggestion] = useState<{ categoryId: string; confidence: number; reason: string } | null>(null);
+  const [receiptFile, setReceiptFile] = useState<File | null>(null);
 
   const { data: transactions = [], isLoading } = useTransactions({
     month: filterMonth,
@@ -100,6 +107,9 @@ export default function Lancamentos() {
   const { data: wallets = [] } = useWallets();
   const { data: counterparties = [] } = useCounterparties();
   const { data: costCenters = [] } = useCostCenters();
+  
+  // AI Category suggestion hook
+  const { suggestCategory } = useAICategorySuggestion(categories, formData.direction);
 
   // Filter categories based on direction
   const filteredCategories = useMemo(() => {
@@ -130,10 +140,32 @@ export default function Lancamentos() {
       }
     }
   }, [formData.account_id, formData.category_id, accounts]);
+  
+  // AI-powered category suggestion based on description
+  const handleDescriptionChange = useCallback((description: string) => {
+    setFormData(prev => ({ ...prev, description }));
+    
+    // Only suggest if category not already selected and description is meaningful
+    if (!formData.category_id && description.length >= 3) {
+      const suggestion = suggestCategory(description);
+      if (suggestion) {
+        setAiSuggestion(suggestion);
+        // Auto-apply the suggestion
+        setFormData(prev => ({ ...prev, category_id: suggestion.categoryId }));
+        toast.info('Categoria sugerida pela IA', {
+          description: suggestion.reason,
+          icon: <Sparkles className="h-4 w-4" />,
+          duration: 3000,
+        });
+      }
+    }
+  }, [formData.category_id, suggestCategory]);
 
   const openNewDialog = (direction: TransactionDirection = 'entrada') => {
     setEditingTransaction(null);
     setFormData({ ...initialFormData, direction });
+    setAiSuggestion(null);
+    setReceiptFile(null);
     setIsDialogOpen(true);
   };
 
@@ -517,18 +549,40 @@ export default function Lancamentos() {
             </div>
 
             <div className="space-y-2">
-              <Label>Descrição *</Label>
+              <div className="flex items-center justify-between">
+                <Label>Descrição *</Label>
+                {aiSuggestion && (
+                  <AIAnalysisBadge 
+                    confidence={aiSuggestion.confidence} 
+                    reason={aiSuggestion.reason} 
+                  />
+                )}
+              </div>
               <Input
                 value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                placeholder="Ex: Venda de produto, Pagamento de aluguel..."
+                onChange={(e) => handleDescriptionChange(e.target.value)}
+                placeholder="Ex: Uber, Almoço, Aluguel, Venda de produto..."
               />
+              {!aiSuggestion && formData.description.length >= 3 && !formData.category_id && (
+                <p className="text-xs text-muted-foreground flex items-center gap-1">
+                  <Sparkles className="h-3 w-3" />
+                  Digite mais detalhes para sugestão automática
+                </p>
+              )}
             </div>
 
             {/* Categoria e Conta */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Categoria *</Label>
+                <div className="flex items-center justify-between">
+                  <Label>Categoria *</Label>
+                  {aiSuggestion && formData.category_id === aiSuggestion.categoryId && (
+                    <AIAnalysisBadge 
+                      confidence={aiSuggestion.confidence} 
+                      reason={aiSuggestion.reason} 
+                    />
+                  )}
+                </div>
                 <Select
                   value={formData.category_id || "__none__"}
                   onValueChange={(v) => {
@@ -538,6 +592,10 @@ export default function Lancamentos() {
                       category_id: newCategoryId,
                       account_id: '' // Reset account when category changes
                     });
+                    // Clear AI suggestion if user manually changes
+                    if (aiSuggestion && newCategoryId !== aiSuggestion.categoryId) {
+                      setAiSuggestion(null);
+                    }
                   }}
                 >
                   <SelectTrigger>
@@ -586,7 +644,15 @@ export default function Lancamentos() {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Valor Original *</Label>
+                <div className="flex items-center justify-between">
+                  <Label>Valor Original *</Label>
+                  {formData.original_amount && aiSuggestion && (
+                    <AIAnalysisBadge 
+                      confidence={0.95} 
+                      reason="Valor extraído automaticamente" 
+                    />
+                  )}
+                </div>
                 <Input
                   value={formData.original_amount}
                   onChange={(e) => {
@@ -602,7 +668,15 @@ export default function Lancamentos() {
               </div>
 
               <div className="space-y-2">
-                <Label>Valor Total</Label>
+                <div className="flex items-center justify-between">
+                  <Label>Valor Total</Label>
+                  {formData.total_amount && aiSuggestion && (
+                    <AIAnalysisBadge 
+                      confidence={0.92} 
+                      reason="Calculado automaticamente" 
+                    />
+                  )}
+                </div>
                 <Input
                   value={formData.total_amount}
                   onChange={(e) => setFormData({ ...formData, total_amount: e.target.value })}
@@ -799,6 +873,12 @@ export default function Lancamentos() {
                 </SelectContent>
               </Select>
             </div>
+
+            {/* Receipt Upload */}
+            <ReceiptUpload 
+              onUpload={(file) => setReceiptFile(file)}
+              onRemove={() => setReceiptFile(null)}
+            />
 
             <div className="space-y-2">
               <Label>Observações</Label>
