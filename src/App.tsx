@@ -9,6 +9,7 @@ import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
+import Documentacao from "./pages/Documentacao";
 import Favoritos from "./pages/Favoritos";
 import FrenteCaixa from "./pages/FrenteCaixa";
 import PlanoContas from "./pages/cadastros/PlanoContas";
@@ -604,6 +605,12 @@ const App = () => (
                 <Route path="/autopiloto/regras" element={<AutomationRules />} />
                 <Route path="/autopiloto/whatsapp" element={<WhatsAppConfig />} />
                 <Route path="/autopiloto/decisoes" element={<Decisoes />} />
+                
+                {/* ============ DOCUMENTAÇÃO ============ */}
+                <Route path="/documentacao" element={<Documentacao />} />
+                <Route path="/ajuda" element={<Navigate to="/documentacao" replace />} />
+                <Route path="/docs" element={<Navigate to="/documentacao" replace />} />
+                <Route path="/help" element={<Navigate to="/documentacao" replace />} />
                 
                 {/* Redirects autopilot antigas */}
                 <Route path="/autopilot/inbox" element={<Navigate to="/autopiloto/caixa-entrada" replace />} />
