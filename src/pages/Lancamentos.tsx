@@ -9,7 +9,8 @@ import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { formatCurrency } from '@/lib/formatters';
-import { Plus, Pencil, Trash2, ArrowUpCircle, ArrowDownCircle, Filter, FileText, Sparkles, Loader2 } from 'lucide-react';
+import { Plus, Pencil, Trash2, ArrowUpCircle, ArrowDownCircle, Filter, FileText, Sparkles, Loader2, Upload } from 'lucide-react';
+import { CSVImportDialog } from '@/components/transactions/CSVImportDialog';
 import { useAICategorySuggestion } from '@/hooks/useAICategorySuggestion';
 import { AISuggestionBadge } from '@/components/transactions/AISuggestionBadge';
 import { ReceiptUpload } from '@/components/transactions/ReceiptUpload';
@@ -88,6 +89,7 @@ export default function Lancamentos() {
   const { currentCompany } = useAuth();
   const queryClient = useQueryClient();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isCSVImportOpen, setIsCSVImportOpen] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState<any>(null);
   const [formData, setFormData] = useState<TransactionFormData>(initialFormData);
   const [activeTab, setActiveTab] = useState<string>('todos');
@@ -457,6 +459,10 @@ export default function Lancamentos() {
           </div>
 
           <div className="flex gap-2">
+            <Button variant="outline" onClick={() => setIsCSVImportOpen(true)}>
+              <Upload className="mr-2 h-4 w-4" />
+              Importar CSV
+            </Button>
             <Button onClick={() => openNewDialog('entrada')} className="bg-green-600 hover:bg-green-700">
               <ArrowDownCircle className="mr-2 h-4 w-4" />
               Nova Receita
@@ -467,6 +473,8 @@ export default function Lancamentos() {
             </Button>
           </div>
         </div>
+        
+        <CSVImportDialog open={isCSVImportOpen} onOpenChange={setIsCSVImportOpen} />
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
