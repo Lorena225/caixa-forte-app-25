@@ -14,10 +14,9 @@ interface Message {
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/copilot-chat`;
 
 const suggestedQuestions = [
-  'Como configurar uma nova meta?',
-  'O que é Rolling Forecast?',
-  'Como emitir uma NF-e?',
-  'Como funciona o CFO Virtual?',
+  'Como está meu fluxo de caixa hoje?',
+  'Quais contas vencem esta semana?',
+  'Ajuda com o fechamento mensal.',
 ];
 
 export const CopilotChat = memo(function CopilotChat() {
