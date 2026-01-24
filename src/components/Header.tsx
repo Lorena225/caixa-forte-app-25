@@ -14,6 +14,7 @@ import {
 import { useAuth } from '@/contexts/AuthContext';
 import { BrandLogo } from '@/components/common/BrandLogo';
 import { HelpMenu } from '@/components/common/HelpMenu';
+import { SmartHelpPanel } from '@/components/common/SmartHelpPanel';
 import { NotificationCenter } from '@/components/common/NotificationCenter';
 import { GlobalSearch } from '@/components/common/GlobalSearch';
 import { useSidebarCollapse } from '@/components/Sidebar';
@@ -141,7 +142,10 @@ export const Header = memo(function Header() {
           {/* Notification Center */}
           <NotificationCenter />
 
-          {/* Help Menu */}
+          {/* Smart Help Panel - Manual do Usuário */}
+          <SmartHelpPanel />
+
+          {/* Help Menu - Suporte */}
           <HelpMenu />
 
           {/* User Avatar Dropdown */}
