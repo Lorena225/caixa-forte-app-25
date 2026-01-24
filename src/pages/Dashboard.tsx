@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { format, startOfMonth, endOfMonth, startOfQuarter, endOfQuarter, startOfYear, endOfYear, startOfWeek, endOfWeek } from 'date-fns';
+import { format, subMonths, startOfMonth, endOfMonth, startOfQuarter, endOfQuarter, startOfYear, endOfYear, startOfWeek, endOfWeek } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { DashboardHeader } from '@/components/dashboard/DashboardHeader';
@@ -13,6 +13,9 @@ import { CustomizableWidgetsSection } from '@/components/dashboard/CustomizableW
 import { EditModeToolbar } from '@/components/dashboard/EditModeToolbar';
 import { WidgetManagementPanel } from '@/components/dashboard/WidgetManagementPanel';
 import { DashboardSkeleton } from '@/components/common/DashboardSkeleton';
+import { RevenueExpensesAreaChart } from '@/components/dashboard/RevenueExpensesAreaChart';
+import { ExpensesByCategoryChart } from '@/components/dashboard/ExpensesByCategoryChart';
+import { DateRangeFilter } from '@/components/dashboard/DateRangeFilter';
 import { Card, CardContent, CardDescription, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { formatCurrency } from '@/lib/formatters';
@@ -23,7 +26,11 @@ import { useDashboardFluxo } from '@/hooks/useDashboardFluxo';
 import { useBudgetVsActual } from '@/hooks/useDashboardData';
 import { useDashboardWidgets } from '@/hooks/useDashboardWidgets';
 import { useRealtimeTransactions, useSupabaseConnectionStatus } from '@/hooks/useRealtimeTransactions';
+import { useRevenueExpensesData, useExpensesByCategory, useRecentTransactions } from '@/hooks/useAnalyticsData';
+import { exportMonthlyReportPDF } from '@/utils/pdfExport';
+import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+import type { DateRange } from 'react-day-picker';
 import {
   Wallet,
   Target,
@@ -31,6 +38,8 @@ import {
   ArrowUpCircle,
   BarChart3,
   AlertTriangle,
+  FileDown,
+  Loader2,
 } from 'lucide-react';
 
 type PeriodType = 'today' | 'week' | 'month' | 'quarter' | 'year' | 'custom';
@@ -100,6 +109,13 @@ export default function Dashboard() {
   const [lastRefresh, setLastRefresh] = useState(new Date());
   const [isEditMode, setIsEditMode] = useState(false);
   const [showWidgetPanel, setShowWidgetPanel] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+  
+  // Date range filter state
+  const [dateRange, setDateRange] = useState<DateRange | undefined>(() => ({
+    from: startOfMonth(subMonths(new Date(), 5)),
+    to: endOfMonth(new Date()),
+  }));
 
   // Widget management hook
   const {
@@ -154,6 +170,21 @@ export default function Dashboard() {
     isLoading: budgetLoading,
     refetch: refetchBudget 
   } = useBudgetVsActual(currentYear);
+  
+  // Analytics data hooks
+  const { 
+    data: revenueExpensesData = [], 
+    isLoading: revenueExpensesLoading 
+  } = useRevenueExpensesData(dateRange);
+  
+  const { 
+    data: categoryData = [], 
+    isLoading: categoryLoading 
+  } = useExpensesByCategory(dateRange);
+  
+  const { 
+    data: recentTransactions = [] 
+  } = useRecentTransactions(10);
 
   // Refresh all data
   const handleRefresh = useCallback(() => {
@@ -214,6 +245,48 @@ export default function Dashboard() {
     setShowWidgetPanel(true);
   };
 
+  // PDF Export handler
+  const handleExportPDF = async () => {
+    if (!currentCompany) {
+      toast.error('Selecione uma empresa para exportar');
+      return;
+    }
+
+    setIsExporting(true);
+    
+    try {
+      // Calculate totals from revenueExpensesData
+      const totalReceitas = revenueExpensesData.reduce((sum, d) => sum + d.receitas, 0);
+      const totalDespesas = revenueExpensesData.reduce((sum, d) => sum + d.despesas, 0);
+
+      await exportMonthlyReportPDF({
+        companyName: currentCompany.name,
+        period: dateRange?.from && dateRange?.to 
+          ? `${format(dateRange.from, 'dd/MM/yyyy')} a ${format(dateRange.to, 'dd/MM/yyyy')}`
+          : format(new Date(), "MMMM 'de' yyyy", { locale: ptBR }),
+        saldoCaixa: metrics?.saldoCaixa?.valor || 0,
+        contasReceber: metrics?.contasReceber?.valor || 0,
+        contasPagar: metrics?.contasPagar?.valor || 0,
+        totalReceitas,
+        totalDespesas,
+        transactions: recentTransactions as any[],
+        categoriesData: categoryData,
+      });
+
+      toast.success('Relatório exportado', {
+        description: 'PDF gerado com sucesso!',
+        icon: '📄',
+      });
+    } catch (error) {
+      console.error('Erro ao exportar PDF:', error);
+      toast.error('Erro ao exportar', {
+        description: 'Tente novamente em alguns instantes.',
+      });
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return (
     <MainLayout>
       <div className="min-h-screen bg-background">
@@ -262,6 +335,31 @@ export default function Dashboard() {
                   </Button>
                 </div>
               )}
+
+              {/* Date Range Filter and Export */}
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <DateRangeFilter 
+                  dateRange={dateRange}
+                  onDateRangeChange={setDateRange}
+                />
+                <Button 
+                  onClick={handleExportPDF}
+                  disabled={isExporting}
+                  className="min-w-[180px]"
+                >
+                  {isExporting ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Gerando PDF...
+                    </>
+                  ) : (
+                    <>
+                      <FileDown className="mr-2 h-4 w-4" />
+                      Exportar Relatório
+                    </>
+                  )}
+                </Button>
+              </div>
 
               {/* Section 1: KPI Grid - 4 columns (if enabled) */}
               {(isWidgetEnabled('saldo-caixa') || isWidgetEnabled('contas-receber') || 
@@ -359,7 +457,21 @@ export default function Dashboard() {
                 </section>
               )}
 
-              {/* Section 3: Charts Row - 2 columns */}
+              {/* Section 3: Advanced Analytics Charts - 2 columns */}
+              <section aria-label="Analytics Avançados" className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+                <RevenueExpensesAreaChart
+                  data={revenueExpensesData}
+                  isLoading={revenueExpensesLoading}
+                  className="h-[380px]"
+                />
+                <ExpensesByCategoryChart
+                  data={categoryData}
+                  isLoading={categoryLoading}
+                  className="h-[380px]"
+                />
+              </section>
+
+              {/* Section 4: Charts Row - 2 columns */}
               {(isWidgetEnabled('orcado-realizado') || isWidgetEnabled('top-clientes') || 
                 isWidgetEnabled('margem-lucro') || isWidgetEnabled('fluxo-semanal')) && (
                 <section aria-label="Gráficos" className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
