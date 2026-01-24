@@ -14461,6 +14461,80 @@ export type Database = {
           },
         ]
       }
+      financial_goals: {
+        Row: {
+          color: string | null
+          company_id: string
+          created_at: string
+          current_amount: number
+          description: string | null
+          icon: string | null
+          id: string
+          name: string
+          status: string
+          target_amount: number
+          target_date: string
+          updated_at: string
+        }
+        Insert: {
+          color?: string | null
+          company_id: string
+          created_at?: string
+          current_amount?: number
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name: string
+          status?: string
+          target_amount: number
+          target_date: string
+          updated_at?: string
+        }
+        Update: {
+          color?: string | null
+          company_id?: string
+          created_at?: string
+          current_amount?: number
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name?: string
+          status?: string
+          target_amount?: number
+          target_date?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "financial_goals_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "financial_goals_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_dashboard_metrics"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "financial_goals_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_security_dashboard"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "financial_goals_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
       financial_scenarios: {
         Row: {
           ai_analysis: string | null
