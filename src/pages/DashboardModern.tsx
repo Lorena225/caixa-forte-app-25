@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, LayoutGroup } from 'framer-motion';
 import { format, subMonths, startOfMonth, endOfMonth, startOfQuarter, endOfQuarter, startOfYear, endOfYear, startOfWeek, endOfWeek } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { MainLayout } from '@/components/layout/MainLayout';
@@ -17,6 +17,7 @@ import { BentoGrid, BentoCard } from '@/components/dashboard/BentoGrid';
 import { ModernKPICard } from '@/components/dashboard/ModernKPICard';
 import { FloatingQuickActions } from '@/components/dashboard/FloatingQuickActions';
 import { WidgetCustomizationDrawer } from '@/components/dashboard/WidgetCustomizationDrawer';
+import { ViewModeSelector } from '@/components/dashboard/ViewModeSelector';
 import { 
   WidgetVendas, WidgetFluxo, WidgetPendencias, WidgetIAInsight, WidgetFeedIA,
   WidgetSimulacao, WidgetEstoqueCritico, WidgetAgingCobranca, WidgetRankingVendas, WidgetComplianceFiscal,
@@ -32,23 +33,15 @@ import { useBudgetVsActual } from '@/hooks/useDashboardData';
 import { useDashboardWidgets } from '@/hooks/useDashboardWidgets';
 import { useModularWidgets } from '@/hooks/useModularWidgets';
 import { useWidgetData } from '@/hooks/useWidgetData';
+import { useViewMode } from '@/hooks/useViewMode';
 import { useFinancialHealthMetrics } from '@/hooks/useFinancialHealthMetrics';
 import { useRealtimeTransactions, useSupabaseConnectionStatus } from '@/hooks/useRealtimeTransactions';
 import { useRevenueExpensesData, useExpensesByCategory, useRecentTransactions } from '@/hooks/useAnalyticsData';
 import { cn } from '@/lib/utils';
 import type { DateRange } from 'react-day-picker';
 import {
-  Wallet,
-  Target,
-  ArrowDownCircle,
-  ArrowUpCircle,
-  BarChart3,
-  AlertTriangle,
-  FileDown,
-  TrendingUp,
-  PieChart,
-  Activity,
-  Settings,
+  Wallet, Target, ArrowDownCircle, ArrowUpCircle, BarChart3,
+  AlertTriangle, FileDown, TrendingUp, PieChart, Activity, Settings,
 } from 'lucide-react';
 
 type PeriodType = 'today' | 'week' | 'month' | 'quarter' | 'year' | 'custom';
@@ -125,13 +118,23 @@ export default function DashboardModern() {
     to: endOfMonth(new Date()),
   }));
 
-  // Modular widgets system
+  // View Mode System
+  const {
+    viewMode,
+    changeViewMode,
+    isWidgetEnabled: isViewModeWidgetEnabled,
+    getCFOMessage,
+    customWidgets,
+    updateCustomWidgets,
+    isCustomMode,
+  } = useViewMode();
+
+  // Modular widgets system (for custom mode)
   const { 
     widgets: modularWidgets, 
     updateWidgets, 
     saveWidgets: saveModularWidgets, 
     resetToDefaults: resetModularWidgets,
-    isWidgetEnabled,
   } = useModularWidgets();
   
   // Widget data
@@ -141,12 +144,16 @@ export default function DashboardModern() {
     aiInsights, triggerRefresh, isLoading: widgetLoading,
   } = useWidgetData();
 
-  // Widget removal handler
+  // Use view mode widget visibility
+  const isWidgetEnabled = isViewModeWidgetEnabled;
+
+  // Widget removal handler (only works in custom mode)
   const handleRemoveWidget = useCallback((widgetKey: string) => {
-    const updated = modularWidgets.map(w => w.key === widgetKey ? { ...w, enabled: false } : w);
-    updateWidgets(updated);
-    saveModularWidgets();
-  }, [modularWidgets, updateWidgets, saveModularWidgets]);
+    if (!isCustomMode) return;
+    const updated = customWidgets.map(w => w.key === widgetKey ? { ...w, enabled: false } : w);
+    updateCustomWidgets(updated);
+  }, [isCustomMode, customWidgets, updateCustomWidgets]);
+
 
   // Memoized period dates
   const periodConfig = useMemo(() => getPeriodDates(periodType), [periodType]);
@@ -232,6 +239,14 @@ export default function DashboardModern() {
 
   // User display name
   const userName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Usuário';
+
+  // CFO message based on view mode
+  const cfoModeMessage = useMemo(() => {
+    return getCFOMessage(userName, {
+      produtosCriticos: estoqueCritico.length,
+      obrigacoesPendentes: complianceFiscal.filter(o => o.status !== 'entregue').length,
+    });
+  }, [getCFOMessage, userName, estoqueCritico, complianceFiscal]);
 
   // Calculate health status for CFO Hero
   const healthStatus = useMemo(() => {
@@ -339,84 +354,109 @@ export default function DashboardModern() {
                 />
               </section>
 
-              {/* Date Range Filter and Actions */}
+              {/* View Mode Selector and Actions */}
               <motion.div 
                 className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
               >
-                <DateRangeFilter 
-                  dateRange={dateRange}
-                  onDateRangeChange={setDateRange}
-                />
+                <div className="flex flex-wrap items-center gap-3">
+                  <ViewModeSelector currentMode={viewMode} onModeChange={changeViewMode} />
+                  <DateRangeFilter dateRange={dateRange} onDateRangeChange={setDateRange} />
+                </div>
                 <div className="flex items-center gap-3">
-                  <Button 
-                    onClick={() => setIsCustomizeOpen(true)}
-                    variant="outline"
-                    className="rounded-xl"
-                  >
-                    <Settings className="mr-2 h-4 w-4" />
-                    Personalizar Dashboard
-                  </Button>
-                  <Button 
-                    onClick={() => setIsExportDialogOpen(true)}
-                    variant="outline"
-                    className="rounded-xl"
-                  >
+                  {isCustomMode && (
+                    <Button onClick={() => setIsCustomizeOpen(true)} variant="outline" className="rounded-xl">
+                      <Settings className="mr-2 h-4 w-4" />
+                      Personalizar
+                    </Button>
+                  )}
+                  <Button onClick={() => setIsExportDialogOpen(true)} variant="outline" className="rounded-xl">
                     <FileDown className="mr-2 h-4 w-4" />
                     Exportar
                   </Button>
                 </div>
               </motion.div>
 
-              {/* Modular Widgets Section */}
-              <section aria-label="Widgets Modulares">
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6">
-                  {isWidgetEnabled('vendas') && (
-                    <WidgetVendas totalVendas={vendasData.totalVendas} ticketMedio={vendasData.ticketMedio} variacaoVendas={vendasData.variacaoVendas} variacaoTicket={vendasData.variacaoTicket} isLoading={widgetLoading.vendas} aiInsight={aiInsights.vendas} />
-                  )}
-                  {isWidgetEnabled('fluxo') && (
-                    <WidgetFluxo data={fluxoData} isLoading={widgetLoading.fluxo} aiInsight={aiInsights.fluxo} />
-                  )}
-                  {isWidgetEnabled('pendencias') && (
-                    <WidgetPendencias pendencias={pendencias} isLoading={widgetLoading.pendencias} aiInsight={aiInsights.pendencias} />
-                  )}
-                </div>
-              </section>
+              {/* View Mode CFO Message */}
+              {cfoModeMessage && (
+                <motion.div
+                  key={viewMode}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  transition={{ duration: 0.3 }}
+                  className="bg-gradient-to-r from-violet-500/10 via-purple-500/5 to-transparent rounded-xl p-4 border border-violet-500/20"
+                >
+                  <p className="text-sm text-foreground">
+                    <span className="font-semibold text-violet-600">💡 CFO Virtual:</span>{' '}
+                    {cfoModeMessage}
+                  </p>
+                </motion.div>
+              )}
 
-              {/* AI Widgets Section */}
-              <section aria-label="Widgets de IA">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
-                  {isWidgetEnabled('ia-insight') && (
-                    <WidgetIAInsight recommendations={iaRecommendations} isLoading={widgetLoading.iaInsight} />
-                  )}
-                  {isWidgetEnabled('feed-ia') && (
-                    <WidgetFeedIA notificacoes={iaNotificacoes} isLoading={widgetLoading.feedIA} aiInsight={aiInsights.feedIA} />
-                  )}
-                </div>
-              </section>
-
-              {/* New Widgets Section */}
-              <section aria-label="Widgets Adicionais">
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6">
-                  {isWidgetEnabled('simulacao') && (
-                    <WidgetSimulacao saldoAtual={simulacaoData.saldoAtual} receitaMensal={simulacaoData.receitaMensal} isLoading={widgetLoading.simulacao} aiInsight={aiInsights.simulacao} onRefresh={triggerRefresh} onViewDetails={() => navigate('/orcamento/projecoes')} onRemove={() => handleRemoveWidget('simulacao')} />
-                  )}
-                  {isWidgetEnabled('estoque-critico') && (
-                    <WidgetEstoqueCritico produtos={estoqueCritico} isLoading={widgetLoading.estoqueCritico} aiInsight={aiInsights.estoqueCritico} onRefresh={triggerRefresh} onViewDetails={() => navigate('/suprimentos/estoque')} onRemove={() => handleRemoveWidget('estoque-critico')} />
-                  )}
-                  {isWidgetEnabled('aging-cobranca') && (
-                    <WidgetAgingCobranca data={agingCobranca} isLoading={widgetLoading.agingCobranca} aiInsight={aiInsights.agingCobranca} onRefresh={triggerRefresh} onViewDetails={() => navigate('/ar/aging')} onRemove={() => handleRemoveWidget('aging-cobranca')} />
-                  )}
-                  {isWidgetEnabled('ranking-vendas') && (
-                    <WidgetRankingVendas produtos={rankingVendas} isLoading={widgetLoading.rankingVendas} aiInsight={aiInsights.rankingVendas} onRefresh={triggerRefresh} onViewDetails={() => navigate('/vendas')} onRemove={() => handleRemoveWidget('ranking-vendas')} />
-                  )}
-                  {isWidgetEnabled('compliance-fiscal') && (
-                    <WidgetComplianceFiscal obrigacoes={complianceFiscal} isLoading={widgetLoading.complianceFiscal} aiInsight={aiInsights.complianceFiscal} onRefresh={triggerRefresh} onViewDetails={() => navigate('/controladoria/compliance')} onRemove={() => handleRemoveWidget('compliance-fiscal')} />
-                  )}
-                </div>
-              </section>
+              {/* Widgets Grid with Layout Transitions */}
+              <LayoutGroup>
+                <motion.section 
+                  aria-label="Widgets do Dashboard"
+                  layout
+                  className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6"
+                >
+                  <AnimatePresence mode="popLayout">
+                    {isWidgetEnabled('vendas') && (
+                      <motion.div key="vendas" layout initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ duration: 0.3 }}>
+                        <WidgetVendas totalVendas={vendasData.totalVendas} ticketMedio={vendasData.ticketMedio} variacaoVendas={vendasData.variacaoVendas} variacaoTicket={vendasData.variacaoTicket} isLoading={widgetLoading.vendas} aiInsight={aiInsights.vendas} />
+                      </motion.div>
+                    )}
+                    {isWidgetEnabled('fluxo') && (
+                      <motion.div key="fluxo" layout initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ duration: 0.3 }}>
+                        <WidgetFluxo data={fluxoData} isLoading={widgetLoading.fluxo} aiInsight={aiInsights.fluxo} />
+                      </motion.div>
+                    )}
+                    {isWidgetEnabled('pendencias') && (
+                      <motion.div key="pendencias" layout initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ duration: 0.3 }}>
+                        <WidgetPendencias pendencias={pendencias} isLoading={widgetLoading.pendencias} aiInsight={aiInsights.pendencias} />
+                      </motion.div>
+                    )}
+                    {isWidgetEnabled('ia-insight') && (
+                      <motion.div key="ia-insight" layout initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ duration: 0.3 }}>
+                        <WidgetIAInsight recommendations={iaRecommendations} isLoading={widgetLoading.iaInsight} />
+                      </motion.div>
+                    )}
+                    {isWidgetEnabled('feed-ia') && (
+                      <motion.div key="feed-ia" layout initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ duration: 0.3 }}>
+                        <WidgetFeedIA notificacoes={iaNotificacoes} isLoading={widgetLoading.feedIA} aiInsight={aiInsights.feedIA} />
+                      </motion.div>
+                    )}
+                    {isWidgetEnabled('simulacao') && (
+                      <motion.div key="simulacao" layout initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ duration: 0.3 }}>
+                        <WidgetSimulacao saldoAtual={simulacaoData.saldoAtual} receitaMensal={simulacaoData.receitaMensal} isLoading={widgetLoading.simulacao} aiInsight={aiInsights.simulacao} onRefresh={triggerRefresh} onViewDetails={() => navigate('/orcamento/projecoes')} onRemove={isCustomMode ? () => handleRemoveWidget('simulacao') : undefined} />
+                      </motion.div>
+                    )}
+                    {isWidgetEnabled('estoque-critico') && (
+                      <motion.div key="estoque-critico" layout initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ duration: 0.3 }}>
+                        <WidgetEstoqueCritico produtos={estoqueCritico} isLoading={widgetLoading.estoqueCritico} aiInsight={aiInsights.estoqueCritico} onRefresh={triggerRefresh} onViewDetails={() => navigate('/suprimentos/estoque')} onRemove={isCustomMode ? () => handleRemoveWidget('estoque-critico') : undefined} />
+                      </motion.div>
+                    )}
+                    {isWidgetEnabled('aging-cobranca') && (
+                      <motion.div key="aging-cobranca" layout initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ duration: 0.3 }}>
+                        <WidgetAgingCobranca data={agingCobranca} isLoading={widgetLoading.agingCobranca} aiInsight={aiInsights.agingCobranca} onRefresh={triggerRefresh} onViewDetails={() => navigate('/ar/aging')} onRemove={isCustomMode ? () => handleRemoveWidget('aging-cobranca') : undefined} />
+                      </motion.div>
+                    )}
+                    {isWidgetEnabled('ranking-vendas') && (
+                      <motion.div key="ranking-vendas" layout initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ duration: 0.3 }}>
+                        <WidgetRankingVendas produtos={rankingVendas} isLoading={widgetLoading.rankingVendas} aiInsight={aiInsights.rankingVendas} onRefresh={triggerRefresh} onViewDetails={() => navigate('/vendas')} onRemove={isCustomMode ? () => handleRemoveWidget('ranking-vendas') : undefined} />
+                      </motion.div>
+                    )}
+                    {isWidgetEnabled('compliance-fiscal') && (
+                      <motion.div key="compliance-fiscal" layout initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ duration: 0.3 }}>
+                        <WidgetComplianceFiscal obrigacoes={complianceFiscal} isLoading={widgetLoading.complianceFiscal} aiInsight={aiInsights.complianceFiscal} onRefresh={triggerRefresh} onViewDetails={() => navigate('/controladoria/compliance')} onRemove={isCustomMode ? () => handleRemoveWidget('compliance-fiscal') : undefined} />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.section>
+              </LayoutGroup>
 
               {/* KPI Cards - Bento Style */}
               <section aria-label="Indicadores principais">
@@ -593,15 +633,17 @@ export default function DashboardModern() {
           healthDiagnostic={healthDiagnosticExport}
         />
 
-        {/* Widget Customization Drawer */}
-        <WidgetCustomizationDrawer
-          open={isCustomizeOpen}
-          onOpenChange={setIsCustomizeOpen}
-          widgets={modularWidgets}
-          onWidgetsChange={updateWidgets}
-          onSave={saveModularWidgets}
-          onReset={resetModularWidgets}
-        />
+        {/* Widget Customization Drawer (only in custom mode) */}
+        {isCustomMode && (
+          <WidgetCustomizationDrawer
+            open={isCustomizeOpen}
+            onOpenChange={setIsCustomizeOpen}
+            widgets={customWidgets}
+            onWidgetsChange={updateCustomWidgets}
+            onSave={() => {}}
+            onReset={() => updateCustomWidgets(modularWidgets)}
+          />
+        )}
       </div>
     </MainLayout>
   );
