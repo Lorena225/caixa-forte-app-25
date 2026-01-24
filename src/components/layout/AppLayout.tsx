@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { Sidebar, useSidebarCollapse } from '@/components/Sidebar';
+import SidebarEnterprise, { useSidebarCollapse } from '@/components/SidebarEnterprise';
 import { Header } from '@/components/Header';
 import CopilotWidget from '@/components/CopilotWidget';
 import { CommandPalette } from '@/components/navigation/CommandPalette';
@@ -31,7 +31,7 @@ export function AppLayout({ children }: AppLayoutProps) {
       <Header />
       
       {/* Sidebar Navigation - Fixed position, below header */}
-      <Sidebar />
+      <SidebarEnterprise />
       
       {/* Command Palette */}
       <CommandPalette />
@@ -59,8 +59,8 @@ function MainContent({ children }: { children: ReactNode }) {
         'flex-1 min-h-[calc(100vh-3.5rem)] sm:min-h-[calc(100vh-4rem)] transition-all duration-300',
         'pt-14 sm:pt-16', // Offset for fixed header (56px mobile, 64px desktop)
         // On mobile, full width (sidebar is overlay)
-        // On desktop, offset by sidebar width (64px collapsed, 256px expanded)
-        collapsed ? 'md:pl-16' : 'md:pl-64'
+        // On desktop, offset by sidebar width (64px collapsed, 280px expanded)
+        collapsed ? 'md:pl-16' : 'md:pl-[280px]'
       )}
     >
       {/* Responsive Container */}
@@ -72,3 +72,6 @@ function MainContent({ children }: { children: ReactNode }) {
 }
 
 export default AppLayout;
+
+// Re-export useSidebarCollapse for backward compatibility
+export { useSidebarCollapse };
