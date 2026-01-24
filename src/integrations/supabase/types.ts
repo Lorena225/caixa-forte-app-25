@@ -3291,8 +3291,11 @@ export type Database = {
           account_type: string
           agency: string
           agency_digit: string | null
+          available_balance: number | null
+          balance_updated_at: string | null
           bank_code: string
           bank_name: string | null
+          bank_slug: string | null
           branch_id: string | null
           cnab_agreement: string | null
           cnab_layout: string | null
@@ -3300,14 +3303,20 @@ export type Database = {
           cnab_variation: string | null
           cnab_wallet: string | null
           company_id: string
+          connection_status: string | null
           created_at: string
           credentials_encrypted: string | null
           credentials_meta: Json | null
+          current_balance: number | null
           holder_document: string | null
           holder_name: string | null
           id: string
           is_active: boolean
           is_default: boolean
+          last_sync_at: string | null
+          last_sync_error: string | null
+          next_sync_at: string | null
+          sync_status: string | null
           updated_at: string
           wallet_id: string | null
         }
@@ -3317,8 +3326,11 @@ export type Database = {
           account_type?: string
           agency: string
           agency_digit?: string | null
+          available_balance?: number | null
+          balance_updated_at?: string | null
           bank_code: string
           bank_name?: string | null
+          bank_slug?: string | null
           branch_id?: string | null
           cnab_agreement?: string | null
           cnab_layout?: string | null
@@ -3326,14 +3338,20 @@ export type Database = {
           cnab_variation?: string | null
           cnab_wallet?: string | null
           company_id: string
+          connection_status?: string | null
           created_at?: string
           credentials_encrypted?: string | null
           credentials_meta?: Json | null
+          current_balance?: number | null
           holder_document?: string | null
           holder_name?: string | null
           id?: string
           is_active?: boolean
           is_default?: boolean
+          last_sync_at?: string | null
+          last_sync_error?: string | null
+          next_sync_at?: string | null
+          sync_status?: string | null
           updated_at?: string
           wallet_id?: string | null
         }
@@ -3343,8 +3361,11 @@ export type Database = {
           account_type?: string
           agency?: string
           agency_digit?: string | null
+          available_balance?: number | null
+          balance_updated_at?: string | null
           bank_code?: string
           bank_name?: string | null
+          bank_slug?: string | null
           branch_id?: string | null
           cnab_agreement?: string | null
           cnab_layout?: string | null
@@ -3352,14 +3373,20 @@ export type Database = {
           cnab_variation?: string | null
           cnab_wallet?: string | null
           company_id?: string
+          connection_status?: string | null
           created_at?: string
           credentials_encrypted?: string | null
           credentials_meta?: Json | null
+          current_balance?: number | null
           holder_document?: string | null
           holder_name?: string | null
           id?: string
           is_active?: boolean
           is_default?: boolean
+          last_sync_at?: string | null
+          last_sync_error?: string | null
+          next_sync_at?: string | null
+          sync_status?: string | null
           updated_at?: string
           wallet_id?: string | null
         }

@@ -42,6 +42,23 @@ export interface OpenBankingBalance {
   }>;
 }
 
+// Extended bank account type with Open Banking fields
+interface BankAccountWithOpenBanking {
+  id: string;
+  company_id: string;
+  bank_code: string | null;
+  bank_name: string | null;
+  holder_document: string | null;
+  created_at: string;
+  // Open Banking specific fields (added via migration)
+  connection_status?: string | null;
+  last_sync_at?: string | null;
+  next_sync_at?: string | null;
+  current_balance?: number | null;
+  available_balance?: number | null;
+  account_type?: string | null;
+}
+
 // Fetch all Open Banking connections
 export function useOpenBankingConnections() {
   const { currentCompany } = useAuth();
@@ -60,7 +77,10 @@ export function useOpenBankingConnections() {
 
       if (error) throw error;
 
-      return (data || []).map((account) => {
+      // Cast to extended type that includes Open Banking fields
+      const accounts = (data || []) as unknown as BankAccountWithOpenBanking[];
+
+      return accounts.map((account) => {
         const bank = SUPPORTED_BANKS.find(b => b.code === account.bank_code);
         return {
           id: account.id,
@@ -71,8 +91,8 @@ export function useOpenBankingConnections() {
           bank_color: bank?.color || '#666',
           holder_document: account.holder_document || '',
           connection_status: (account.connection_status || 'pending') as OpenBankingConnection['connection_status'],
-          last_sync_at: account.last_sync_at,
-          next_sync_at: account.next_sync_at,
+          last_sync_at: account.last_sync_at || null,
+          next_sync_at: account.next_sync_at || null,
           consent_expires_at: null,
           current_balance: Number(account.current_balance) || 0,
           available_balance: Number(account.available_balance) || 0,
@@ -103,23 +123,26 @@ export function useOpenBankingBalance() {
         };
       }
 
-      const { data: accounts, error } = await supabase
+      const { data, error } = await supabase
         .from('bank_accounts')
-        .select('id, bank_name, bank_code, account_type, current_balance, available_balance, last_sync_at, connection_status')
+        .select('*')
         .eq('company_id', currentCompany.id)
-        .eq('is_active', true)
-        .eq('connection_status', 'connected');
+        .eq('is_active', true);
 
       if (error) throw error;
 
-      const connectedAccounts = accounts || [];
+      // Cast to extended type
+      const allAccounts = (data || []) as unknown as BankAccountWithOpenBanking[];
+      
+      // Filter connected accounts
+      const connectedAccounts = allAccounts.filter(acc => acc.connection_status === 'connected');
       
       const total_balance = connectedAccounts.reduce((sum, acc) => sum + (Number(acc.current_balance) || 0), 0);
       const available_balance = connectedAccounts.reduce((sum, acc) => sum + (Number(acc.available_balance) || 0), 0);
       
       const syncDates = connectedAccounts
         .map(a => a.last_sync_at)
-        .filter(Boolean)
+        .filter((d): d is string => !!d)
         .sort()
         .reverse();
 
@@ -136,7 +159,7 @@ export function useOpenBankingBalance() {
             bank_color: bank?.color || '#666',
             account_type: acc.account_type || 'checking',
             balance: Number(acc.current_balance) || 0,
-            last_sync_at: acc.last_sync_at,
+            last_sync_at: acc.last_sync_at || null,
           };
         }),
       };
@@ -168,25 +191,29 @@ export function useConnectOpenBanking() {
       // Simulate OAuth flow delay
       await new Promise(resolve => setTimeout(resolve, 2000));
 
-      // Create bank account record
+      // Create bank account record with base fields only (type-safe)
+      // Open Banking fields are added but TS types may not be updated yet
+      const insertData = {
+        company_id: currentCompany.id,
+        bank_code: bank.code,
+        bank_name: bank.name,
+        holder_document: credentials.cpf.replace(/\D/g, ''),
+        account_number: '****' + Math.random().toString().slice(2, 6),
+        agency: '0001',
+        is_active: true,
+      } as Record<string, unknown>;
+
+      // Add Open Banking specific fields
+      insertData.connection_status = 'connected';
+      insertData.sync_status = 'syncing';
+      insertData.current_balance = Math.random() * 50000 + 5000;
+      insertData.available_balance = Math.random() * 40000 + 4000;
+      insertData.last_sync_at = new Date().toISOString();
+      insertData.next_sync_at = new Date(Date.now() + 4 * 60 * 60 * 1000).toISOString();
+
       const { data, error } = await supabase
         .from('bank_accounts')
-        .insert({
-          company_id: currentCompany.id,
-          bank_code: bank.code,
-          bank_name: bank.name,
-          bank_slug: bank.id,
-          holder_document: credentials.cpf.replace(/\D/g, ''),
-          account_number: '****' + Math.random().toString().slice(2, 6),
-          agency: '0001',
-          is_active: true,
-          connection_status: 'connected',
-          sync_status: 'syncing',
-          current_balance: Math.random() * 50000 + 5000, // Mock balance
-          available_balance: Math.random() * 40000 + 4000,
-          last_sync_at: new Date().toISOString(),
-          next_sync_at: new Date(Date.now() + 4 * 60 * 60 * 1000).toISOString(), // +4 hours
-        })
+        .insert(insertData as never)
         .select()
         .single();
 
@@ -211,12 +238,12 @@ export function useSyncOpenBanking() {
 
   return useMutation({
     mutationFn: async (connectionId: string) => {
-      // Update sync status
+      // Update sync status - use type assertion for extended fields
+      const syncingUpdate = { sync_status: 'syncing' } as Record<string, unknown>;
+      
       const { error: updateError } = await supabase
         .from('bank_accounts')
-        .update({
-          sync_status: 'syncing',
-        })
+        .update(syncingUpdate as never)
         .eq('id', connectionId);
 
       if (updateError) throw updateError;
@@ -225,15 +252,17 @@ export function useSyncOpenBanking() {
       await new Promise(resolve => setTimeout(resolve, 1500));
 
       // Update with new sync time and mock new balance
+      const syncCompleteUpdate = {
+        sync_status: 'idle',
+        last_sync_at: new Date().toISOString(),
+        next_sync_at: new Date(Date.now() + 4 * 60 * 60 * 1000).toISOString(),
+        current_balance: Math.random() * 50000 + 5000,
+        available_balance: Math.random() * 40000 + 4000,
+      } as Record<string, unknown>;
+
       const { data, error } = await supabase
         .from('bank_accounts')
-        .update({
-          sync_status: 'idle',
-          last_sync_at: new Date().toISOString(),
-          next_sync_at: new Date(Date.now() + 4 * 60 * 60 * 1000).toISOString(),
-          current_balance: Math.random() * 50000 + 5000,
-          available_balance: Math.random() * 40000 + 4000,
-        })
+        .update(syncCompleteUpdate as never)
         .eq('id', connectionId)
         .select()
         .single();
