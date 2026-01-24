@@ -165,6 +165,7 @@ const menuItems: MenuItem[] = [
       { key: 'cnab', label: 'CNAB', icon: Send, route: '/tesouraria/cnab' },
       { key: 'fluxo-caixa', label: 'Fluxo de Caixa', icon: TrendingUp, route: '/fluxo-caixa' },
       { key: 'orcamento-real', label: 'Orçamento vs Real', icon: Target, route: '/financeiro/orcamento-real' },
+      { key: 'metas-financeiras', label: 'Metas Financeiras', icon: Target, route: '/metas-financeiras' },
       { key: 'rolling-forecast', label: 'Rolling Forecast', icon: TrendingUp, route: '/financeiro/rolling-forecast' },
       { key: 'simulacoes-whatif', label: 'Simulações What-If', icon: Calculator, route: '/financeiro/simulacoes-orcamento' },
       { key: 'contas-bancarias', label: 'Contas Bancárias', icon: Building2, route: '/cadastros/contas-bancarias' },

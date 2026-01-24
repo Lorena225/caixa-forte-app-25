@@ -289,6 +289,7 @@ const App = () => (
                 <Route path="/fluxo-caixa" element={<FluxoCaixa />} />
                 <Route path="/dre" element={<DRE />} />
                 <Route path="/metas" element={<Metas />} />
+                <Route path="/metas-financeiras" element={<MetasFinanceiras />} />
                 <Route path="/cartoes" element={<Cartoes />} />
                 
                 {/* Settings - Primary paths */}
