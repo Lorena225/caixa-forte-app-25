@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { X, Upload, Shield, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
+import { showDevelopmentToast } from "@/utils/devFeedback";
 
 interface CertificadoUploadModalProps {
   open: boolean;
@@ -54,7 +55,10 @@ export function CertificadoUploadModal({ open, onOpenChange }: CertificadoUpload
       // 3. Extract certificate info (validade, CNPJ, etc)
       // 4. Store encrypted in database
       
-      toast.success("Certificado enviado com sucesso!");
+      // Simulating processing delay
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      showDevelopmentToast('Upload de certificado A1');
       onOpenChange(false);
       resetForm();
     } catch (error: any) {

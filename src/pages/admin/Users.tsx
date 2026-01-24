@@ -33,6 +33,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { showDevelopmentToast } from "@/utils/devFeedback";
 
 const roleLabels: Record<string, string> = {
   admin: "Administrador",
@@ -79,7 +80,7 @@ export default function AdminUsers() {
         toast.success("Usuário adicionado à empresa");
       } else {
         // For now, just show a message - in production, send invite email
-        toast.info("Funcionalidade de convite por email será implementada em breve");
+        showDevelopmentToast('Convite por email');
       }
       
       setInviteOpen(false);

@@ -24,6 +24,7 @@ import {
 import { PageHeader } from '@/components/common/PageHeader';
 import { useCurrencies, Currency } from '@/hooks/useCurrencies';
 import { toast } from 'sonner';
+import { showDevelopmentToast } from '@/utils/devFeedback';
 
 export default function Moedas() {
   const { data: currencies = [], isLoading } = useCurrencies();
@@ -68,13 +69,13 @@ export default function Moedas() {
     }
     
     // TODO: Implement save mutation when types are synced
-    toast.info('Funcionalidade será habilitada após sincronização dos tipos');
+    showDevelopmentToast('Salvar moeda');
     setIsDialogOpen(false);
   };
 
   const handleDelete = (currency: Currency) => {
     // TODO: Implement delete mutation when types are synced
-    toast.info(`Exclusão de ${currency.code} pendente de implementação`);
+    showDevelopmentToast(`Exclusão de ${currency.code}`);
   };
 
   return (

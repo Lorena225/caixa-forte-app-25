@@ -29,6 +29,7 @@ import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { formatCurrency } from '@/lib/formatters';
 import { toast } from 'sonner';
+import { showDevelopmentToast, showImportToast } from '@/utils/devFeedback';
 
 export default function Conciliacao() {
   const { currentCompany } = useAuth();
@@ -103,7 +104,11 @@ export default function Conciliacao() {
       return;
     }
     
-    toast.info('Processando arquivo... Esta funcionalidade será implementada com a Edge Function de parsing.');
+    showImportToast('extrato bancário');
+  };
+
+  const handleVincular = (lineId: string) => {
+    showDevelopmentToast('Vincular movimento');
   };
 
   const getStatusBadge = (status: string) => {
@@ -243,7 +248,7 @@ export default function Conciliacao() {
                         {line.direction === 'credit' ? '+' : '-'}{formatCurrency(line.amount)}
                       </TableCell>
                       <TableCell className="text-right">
-                        <Button size="sm" variant="outline">
+                        <Button size="sm" variant="outline" onClick={() => handleVincular(line.id)}>
                           <Link2 className="mr-1 h-3 w-3" />
                           Vincular
                         </Button>

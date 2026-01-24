@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
+import { showDevelopmentToast } from '@/utils/devFeedback';
 import {
   Plus,
   Search,
@@ -329,10 +330,10 @@ export default function ProjetosIndex() {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem>Editar</DropdownMenuItem>
-                          <DropdownMenuItem>Nova OS</DropdownMenuItem>
-                          <DropdownMenuItem>Alocar Recursos</DropdownMenuItem>
-                          <DropdownMenuItem>Faturar</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => showDevelopmentToast('Editar projeto')}>Editar</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => showDevelopmentToast('Nova OS')}>Nova OS</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => showDevelopmentToast('Alocar recursos')}>Alocar Recursos</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => showDevelopmentToast('Faturar projeto')}>Faturar</DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </div>

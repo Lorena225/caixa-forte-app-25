@@ -8,6 +8,8 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { formatCurrency } from '@/lib/formatters';
+import { toast } from 'sonner';
+import { showDevelopmentToast } from '@/utils/devFeedback';
 import { 
   ShoppingCart, 
   Plus, 
@@ -83,10 +85,24 @@ export default function FrenteCaixa() {
   const total = subtotal - discount;
 
   const handleCheckout = (paymentMethod: string) => {
-    console.log('Checkout with:', paymentMethod, { cart, customer, total });
-    // TODO: Implement actual checkout
-    setCart([]);
-    setCustomer(null);
+    if (cart.length === 0) {
+      toast.error('Carrinho vazio');
+      return;
+    }
+    
+    const paymentLabels: Record<string, string> = {
+      dinheiro: 'Dinheiro',
+      cartao: 'Cartão',
+      pix: 'PIX',
+      mixed: 'Múltiplos meios',
+    };
+    
+    showDevelopmentToast(`Finalizar venda (${paymentLabels[paymentMethod] || paymentMethod})`);
+    // TODO: Implement actual checkout when payment processing is ready
+  };
+
+  const handleSelectCustomer = () => {
+    showDevelopmentToast('Seleção de cliente');
   };
 
   return (
@@ -116,7 +132,7 @@ export default function FrenteCaixa() {
                   className="pl-10"
                 />
               </div>
-              <Button variant="outline">
+              <Button variant="outline" onClick={handleSelectCustomer}>
                 <User className="h-4 w-4 mr-2" />
                 {customer || 'Selecionar Cliente'}
               </Button>
