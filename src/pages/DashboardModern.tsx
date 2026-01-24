@@ -16,6 +16,8 @@ import { CFOVirtualHero } from '@/components/dashboard/CFOVirtualHero';
 import { BentoGrid, BentoCard } from '@/components/dashboard/BentoGrid';
 import { ModernKPICard } from '@/components/dashboard/ModernKPICard';
 import { FloatingQuickActions } from '@/components/dashboard/FloatingQuickActions';
+import { WidgetCustomizationDrawer } from '@/components/dashboard/WidgetCustomizationDrawer';
+import { WidgetVendas, WidgetFluxo, WidgetPendencias, WidgetIAInsight, WidgetFeedIA } from '@/components/dashboard/widgets';
 import { Card, CardContent, CardDescription, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { formatCurrency } from '@/lib/formatters';
@@ -25,6 +27,8 @@ import { useDashboardAlerts } from '@/hooks/useDashboardAlerts';
 import { useDashboardFluxo } from '@/hooks/useDashboardFluxo';
 import { useBudgetVsActual } from '@/hooks/useDashboardData';
 import { useDashboardWidgets } from '@/hooks/useDashboardWidgets';
+import { useModularWidgets } from '@/hooks/useModularWidgets';
+import { useWidgetData } from '@/hooks/useWidgetData';
 import { useFinancialHealthMetrics } from '@/hooks/useFinancialHealthMetrics';
 import { useRealtimeTransactions, useSupabaseConnectionStatus } from '@/hooks/useRealtimeTransactions';
 import { useRevenueExpensesData, useExpensesByCategory, useRecentTransactions } from '@/hooks/useAnalyticsData';
@@ -41,6 +45,7 @@ import {
   TrendingUp,
   PieChart,
   Activity,
+  Settings,
 } from 'lucide-react';
 
 type PeriodType = 'today' | 'week' | 'month' | 'quarter' | 'year' | 'custom';
@@ -109,12 +114,33 @@ export default function DashboardModern() {
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [lastRefresh, setLastRefresh] = useState(new Date());
   const [isExportDialogOpen, setIsExportDialogOpen] = useState(false);
+  const [isCustomizeOpen, setIsCustomizeOpen] = useState(false);
   
   // Date range filter state
   const [dateRange, setDateRange] = useState<DateRange | undefined>(() => ({
     from: startOfMonth(subMonths(new Date(), 5)),
     to: endOfMonth(new Date()),
   }));
+
+  // Modular widgets system
+  const { 
+    widgets: modularWidgets, 
+    updateWidgets, 
+    saveWidgets: saveModularWidgets, 
+    resetToDefaults: resetModularWidgets,
+    isWidgetEnabled,
+  } = useModularWidgets();
+  
+  // Widget data
+  const { 
+    vendasData, 
+    fluxoData, 
+    pendencias, 
+    iaRecommendations, 
+    iaNotificacoes,
+    aiInsights,
+    isLoading: widgetLoading,
+  } = useWidgetData();
 
   // Memoized period dates
   const periodConfig = useMemo(() => getPeriodDates(periodType), [periodType]);
@@ -307,7 +333,7 @@ export default function DashboardModern() {
                 />
               </section>
 
-              {/* Date Range Filter and Export */}
+              {/* Date Range Filter and Actions */}
               <motion.div 
                 className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
                 initial={{ opacity: 0, y: 10 }}
@@ -318,15 +344,77 @@ export default function DashboardModern() {
                   dateRange={dateRange}
                   onDateRangeChange={setDateRange}
                 />
-                <Button 
-                  onClick={() => setIsExportDialogOpen(true)}
-                  variant="outline"
-                  className="min-w-[180px] rounded-xl"
-                >
-                  <FileDown className="mr-2 h-4 w-4" />
-                  Exportar Relatório
-                </Button>
+                <div className="flex items-center gap-3">
+                  <Button 
+                    onClick={() => setIsCustomizeOpen(true)}
+                    variant="outline"
+                    className="rounded-xl"
+                  >
+                    <Settings className="mr-2 h-4 w-4" />
+                    Personalizar Dashboard
+                  </Button>
+                  <Button 
+                    onClick={() => setIsExportDialogOpen(true)}
+                    variant="outline"
+                    className="rounded-xl"
+                  >
+                    <FileDown className="mr-2 h-4 w-4" />
+                    Exportar
+                  </Button>
+                </div>
               </motion.div>
+
+              {/* Modular Widgets Section */}
+              <section aria-label="Widgets Modulares">
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6">
+                  {isWidgetEnabled('vendas') && (
+                    <WidgetVendas
+                      totalVendas={vendasData.totalVendas}
+                      ticketMedio={vendasData.ticketMedio}
+                      variacaoVendas={vendasData.variacaoVendas}
+                      variacaoTicket={vendasData.variacaoTicket}
+                      isLoading={widgetLoading.vendas}
+                      aiInsight={aiInsights.vendas}
+                    />
+                  )}
+                  
+                  {isWidgetEnabled('fluxo') && (
+                    <WidgetFluxo
+                      data={fluxoData}
+                      isLoading={widgetLoading.fluxo}
+                      aiInsight={aiInsights.fluxo}
+                    />
+                  )}
+                  
+                  {isWidgetEnabled('pendencias') && (
+                    <WidgetPendencias
+                      pendencias={pendencias}
+                      isLoading={widgetLoading.pendencias}
+                      aiInsight={aiInsights.pendencias}
+                    />
+                  )}
+                </div>
+              </section>
+
+              {/* AI Widgets Section */}
+              <section aria-label="Widgets de IA">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+                  {isWidgetEnabled('ia-insight') && (
+                    <WidgetIAInsight
+                      recommendations={iaRecommendations}
+                      isLoading={widgetLoading.iaInsight}
+                    />
+                  )}
+                  
+                  {isWidgetEnabled('feed-ia') && (
+                    <WidgetFeedIA
+                      notificacoes={iaNotificacoes}
+                      isLoading={widgetLoading.feedIA}
+                      aiInsight={aiInsights.feedIA}
+                    />
+                  )}
+                </div>
+              </section>
 
               {/* KPI Cards - Bento Style */}
               <section aria-label="Indicadores principais">
@@ -501,6 +589,16 @@ export default function DashboardModern() {
           onOpenChange={setIsExportDialogOpen}
           reportData={exportReportData}
           healthDiagnostic={healthDiagnosticExport}
+        />
+
+        {/* Widget Customization Drawer */}
+        <WidgetCustomizationDrawer
+          open={isCustomizeOpen}
+          onOpenChange={setIsCustomizeOpen}
+          widgets={modularWidgets}
+          onWidgetsChange={updateWidgets}
+          onSave={saveModularWidgets}
+          onReset={resetModularWidgets}
         />
       </div>
     </MainLayout>
