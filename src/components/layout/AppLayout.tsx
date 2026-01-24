@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import SidebarMinimalist, { useSidebarCollapse } from '@/components/SidebarMinimalist';
 import { Header } from '@/components/Header';
-import CopilotWidget from '@/components/CopilotWidget';
+import { CopilotChat } from '@/components/common/CopilotChat';
 import { CommandPalette } from '@/components/navigation/CommandPalette';
 import { SkipLinks } from '@/components/common/SkipLinks';
 import { cn } from '@/lib/utils';
@@ -39,8 +39,8 @@ export function AppLayout({ children }: AppLayoutProps) {
       {/* Main Content Area - Offset for header and sidebar */}
       <MainContent>{children}</MainContent>
       
-      {/* CopilotWidget - Always visible, fixed bottom-right */}
-      <CopilotWidget />
+      {/* Copilot Chat - Always visible, fixed bottom-right */}
+      <CopilotChat />
     </div>
   );
 }

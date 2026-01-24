@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, ChevronDown, User, LogOut, Settings, Sparkles } from 'lucide-react';
+import { Plus, ChevronDown, User, LogOut, Settings, Sparkles, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -143,10 +143,21 @@ export const Header = memo(function Header() {
           <div className="hidden sm:block h-7 w-px bg-border mx-1" />
 
           {/* Action Icons Group */}
-          <div className="flex items-center">
+          <div className="flex items-center gap-0.5">
             <NotificationCenter />
             <SmartHelpPanel />
             <HelpMenu />
+            
+            {/* Documentation Link */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate('/documentacao')}
+              className="h-9 w-9 text-muted-foreground hover:text-foreground hover:bg-muted/50"
+              aria-label="Central de Ajuda"
+            >
+              <BookOpen className="h-[18px] w-[18px]" />
+            </Button>
           </div>
 
           {/* Divider before Avatar */}
