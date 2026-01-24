@@ -94,7 +94,7 @@ export const Header = memo(function Header() {
         </div>
 
         {/* Right Section - Actions */}
-        <div className="flex items-center gap-1 sm:gap-2" role="group" aria-label="Ações rápidas">
+        <div className="flex items-center gap-2 sm:gap-3" role="group" aria-label="Ações rápidas">
           {/* Mobile Search Button */}
           <div className="md:hidden">
             <GlobalSearch />
@@ -105,12 +105,11 @@ export const Header = memo(function Header() {
             <DropdownMenuTrigger asChild>
               <Button 
                 className={cn(
-                  'gap-1.5 h-9 sm:h-10 px-2.5 sm:px-4 rounded-lg font-semibold text-sm',
+                  'gap-1.5 h-9 sm:h-10 px-3 sm:px-4 rounded-lg font-semibold text-sm',
                   'bg-primary text-primary-foreground',
                   'hover:bg-primary/90 hover:shadow-md',
                   'active:scale-[0.98]',
-                  'transition-all duration-200',
-                  'min-w-[40px] min-h-[40px] sm:min-w-[44px] sm:min-h-[44px]'
+                  'transition-all duration-200'
                 )}
                 aria-label="Criar novo registro"
                 aria-haspopup="menu"
@@ -137,16 +136,19 @@ export const Header = memo(function Header() {
           </DropdownMenu>
 
           {/* Divider */}
-          <div className="hidden sm:block h-6 w-px bg-border mx-1" />
+          <div className="hidden sm:block h-7 w-px bg-border/60" />
 
-          {/* Notification Center */}
-          <NotificationCenter />
+          {/* Action Icons - Unified spacing */}
+          <div className="flex items-center gap-1">
+            {/* Notification Center */}
+            <NotificationCenter />
 
-          {/* Smart Help Panel - Manual do Usuário */}
-          <SmartHelpPanel />
+            {/* Smart Help Panel - Manual do Usuário */}
+            <SmartHelpPanel />
 
-          {/* Help Menu - Suporte */}
-          <HelpMenu />
+            {/* Help Menu - Suporte */}
+            <HelpMenu />
+          </div>
 
           {/* User Avatar Dropdown */}
           <DropdownMenu>

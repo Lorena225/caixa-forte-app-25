@@ -724,16 +724,8 @@ const SidebarContent = memo(function SidebarContent({ collapsed = false, onNavig
   return (
     <TooltipProvider>
       <div className="flex h-full flex-col bg-white">
-        {/* Search Hint */}
-        {!collapsed && (
-          <div className="px-3 py-3 border-b border-slate-100">
-            <div className="flex items-center gap-2 px-3 py-2 text-xs text-slate-400 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100 transition-colors">
-              <Search className="h-3.5 w-3.5" />
-              <span className="flex-1">Buscar...</span>
-              <kbd className="px-1.5 py-0.5 bg-white rounded text-[10px] font-mono border border-slate-200 text-slate-500">⌘K</kbd>
-            </div>
-          </div>
-        )}
+        {/* Spacer top */}
+        <div className="h-2" />
 
         {/* Menu Items */}
         <ScrollArea className="flex-1 py-2">
