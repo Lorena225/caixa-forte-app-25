@@ -17,7 +17,10 @@ import { BentoGrid, BentoCard } from '@/components/dashboard/BentoGrid';
 import { ModernKPICard } from '@/components/dashboard/ModernKPICard';
 import { FloatingQuickActions } from '@/components/dashboard/FloatingQuickActions';
 import { WidgetCustomizationDrawer } from '@/components/dashboard/WidgetCustomizationDrawer';
-import { WidgetVendas, WidgetFluxo, WidgetPendencias, WidgetIAInsight, WidgetFeedIA } from '@/components/dashboard/widgets';
+import { 
+  WidgetVendas, WidgetFluxo, WidgetPendencias, WidgetIAInsight, WidgetFeedIA,
+  WidgetSimulacao, WidgetEstoqueCritico, WidgetAgingCobranca, WidgetRankingVendas, WidgetComplianceFiscal,
+} from '@/components/dashboard/widgets';
 import { Card, CardContent, CardDescription, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { formatCurrency } from '@/lib/formatters';
@@ -133,14 +136,17 @@ export default function DashboardModern() {
   
   // Widget data
   const { 
-    vendasData, 
-    fluxoData, 
-    pendencias, 
-    iaRecommendations, 
-    iaNotificacoes,
-    aiInsights,
-    isLoading: widgetLoading,
+    vendasData, fluxoData, pendencias, iaRecommendations, iaNotificacoes,
+    simulacaoData, estoqueCritico, agingCobranca, rankingVendas, complianceFiscal,
+    aiInsights, triggerRefresh, isLoading: widgetLoading,
   } = useWidgetData();
+
+  // Widget removal handler
+  const handleRemoveWidget = useCallback((widgetKey: string) => {
+    const updated = modularWidgets.map(w => w.key === widgetKey ? { ...w, enabled: false } : w);
+    updateWidgets(updated);
+    saveModularWidgets();
+  }, [modularWidgets, updateWidgets, saveModularWidgets]);
 
   // Memoized period dates
   const periodConfig = useMemo(() => getPeriodDates(periodType), [periodType]);
@@ -368,30 +374,13 @@ export default function DashboardModern() {
               <section aria-label="Widgets Modulares">
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6">
                   {isWidgetEnabled('vendas') && (
-                    <WidgetVendas
-                      totalVendas={vendasData.totalVendas}
-                      ticketMedio={vendasData.ticketMedio}
-                      variacaoVendas={vendasData.variacaoVendas}
-                      variacaoTicket={vendasData.variacaoTicket}
-                      isLoading={widgetLoading.vendas}
-                      aiInsight={aiInsights.vendas}
-                    />
+                    <WidgetVendas totalVendas={vendasData.totalVendas} ticketMedio={vendasData.ticketMedio} variacaoVendas={vendasData.variacaoVendas} variacaoTicket={vendasData.variacaoTicket} isLoading={widgetLoading.vendas} aiInsight={aiInsights.vendas} />
                   )}
-                  
                   {isWidgetEnabled('fluxo') && (
-                    <WidgetFluxo
-                      data={fluxoData}
-                      isLoading={widgetLoading.fluxo}
-                      aiInsight={aiInsights.fluxo}
-                    />
+                    <WidgetFluxo data={fluxoData} isLoading={widgetLoading.fluxo} aiInsight={aiInsights.fluxo} />
                   )}
-                  
                   {isWidgetEnabled('pendencias') && (
-                    <WidgetPendencias
-                      pendencias={pendencias}
-                      isLoading={widgetLoading.pendencias}
-                      aiInsight={aiInsights.pendencias}
-                    />
+                    <WidgetPendencias pendencias={pendencias} isLoading={widgetLoading.pendencias} aiInsight={aiInsights.pendencias} />
                   )}
                 </div>
               </section>
@@ -400,18 +389,31 @@ export default function DashboardModern() {
               <section aria-label="Widgets de IA">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
                   {isWidgetEnabled('ia-insight') && (
-                    <WidgetIAInsight
-                      recommendations={iaRecommendations}
-                      isLoading={widgetLoading.iaInsight}
-                    />
+                    <WidgetIAInsight recommendations={iaRecommendations} isLoading={widgetLoading.iaInsight} />
                   )}
-                  
                   {isWidgetEnabled('feed-ia') && (
-                    <WidgetFeedIA
-                      notificacoes={iaNotificacoes}
-                      isLoading={widgetLoading.feedIA}
-                      aiInsight={aiInsights.feedIA}
-                    />
+                    <WidgetFeedIA notificacoes={iaNotificacoes} isLoading={widgetLoading.feedIA} aiInsight={aiInsights.feedIA} />
+                  )}
+                </div>
+              </section>
+
+              {/* New Widgets Section */}
+              <section aria-label="Widgets Adicionais">
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6">
+                  {isWidgetEnabled('simulacao') && (
+                    <WidgetSimulacao saldoAtual={simulacaoData.saldoAtual} receitaMensal={simulacaoData.receitaMensal} isLoading={widgetLoading.simulacao} aiInsight={aiInsights.simulacao} onRefresh={triggerRefresh} onViewDetails={() => navigate('/orcamento/projecoes')} onRemove={() => handleRemoveWidget('simulacao')} />
+                  )}
+                  {isWidgetEnabled('estoque-critico') && (
+                    <WidgetEstoqueCritico produtos={estoqueCritico} isLoading={widgetLoading.estoqueCritico} aiInsight={aiInsights.estoqueCritico} onRefresh={triggerRefresh} onViewDetails={() => navigate('/suprimentos/estoque')} onRemove={() => handleRemoveWidget('estoque-critico')} />
+                  )}
+                  {isWidgetEnabled('aging-cobranca') && (
+                    <WidgetAgingCobranca data={agingCobranca} isLoading={widgetLoading.agingCobranca} aiInsight={aiInsights.agingCobranca} onRefresh={triggerRefresh} onViewDetails={() => navigate('/ar/aging')} onRemove={() => handleRemoveWidget('aging-cobranca')} />
+                  )}
+                  {isWidgetEnabled('ranking-vendas') && (
+                    <WidgetRankingVendas produtos={rankingVendas} isLoading={widgetLoading.rankingVendas} aiInsight={aiInsights.rankingVendas} onRefresh={triggerRefresh} onViewDetails={() => navigate('/vendas')} onRemove={() => handleRemoveWidget('ranking-vendas')} />
+                  )}
+                  {isWidgetEnabled('compliance-fiscal') && (
+                    <WidgetComplianceFiscal obrigacoes={complianceFiscal} isLoading={widgetLoading.complianceFiscal} aiInsight={aiInsights.complianceFiscal} onRefresh={triggerRefresh} onViewDetails={() => navigate('/controladoria/compliance')} onRemove={() => handleRemoveWidget('compliance-fiscal')} />
                   )}
                 </div>
               </section>

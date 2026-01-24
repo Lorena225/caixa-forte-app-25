@@ -6,6 +6,12 @@ export { WidgetFluxo } from './WidgetFluxo';
 export { WidgetPendencias } from './WidgetPendencias';
 export { WidgetIAInsight } from './WidgetIAInsight';
 export { WidgetFeedIA } from './WidgetFeedIA';
+export { WidgetMenu } from './WidgetMenu';
+export { WidgetSimulacao } from './WidgetSimulacao';
+export { WidgetEstoqueCritico } from './WidgetEstoqueCritico';
+export { WidgetAgingCobranca } from './WidgetAgingCobranca';
+export { WidgetRankingVendas } from './WidgetRankingVendas';
+export { WidgetComplianceFiscal } from './WidgetComplianceFiscal';
 
 // Types
 export interface DashboardWidgetConfig {
@@ -13,11 +19,12 @@ export interface DashboardWidgetConfig {
   key: string;
   title: string;
   description: string;
-  category: 'kpi' | 'chart' | 'list' | 'ai';
+  category: 'kpi' | 'chart' | 'list' | 'ai' | 'simulacao' | 'fiscal';
   enabled: boolean;
   order: number;
   size: 'sm' | 'md' | 'lg' | 'xl';
   icon: string;
+  detailsRoute?: string;
 }
 
 export const AVAILABLE_WIDGETS: DashboardWidgetConfig[] = [
@@ -31,6 +38,7 @@ export const AVAILABLE_WIDGETS: DashboardWidgetConfig[] = [
     order: 0,
     size: 'sm',
     icon: 'ShoppingCart',
+    detailsRoute: '/vendas',
   },
   {
     id: 'widget-fluxo',
@@ -42,6 +50,7 @@ export const AVAILABLE_WIDGETS: DashboardWidgetConfig[] = [
     order: 1,
     size: 'md',
     icon: 'Activity',
+    detailsRoute: '/tesouraria/fluxo',
   },
   {
     id: 'widget-pendencias',
@@ -53,6 +62,7 @@ export const AVAILABLE_WIDGETS: DashboardWidgetConfig[] = [
     order: 2,
     size: 'md',
     icon: 'Clock',
+    detailsRoute: '/ar',
   },
   {
     id: 'widget-ia-insight',
@@ -64,6 +74,7 @@ export const AVAILABLE_WIDGETS: DashboardWidgetConfig[] = [
     order: 3,
     size: 'lg',
     icon: 'Brain',
+    detailsRoute: '/autopiloto/decisoes',
   },
   {
     id: 'widget-feed-ia',
@@ -75,5 +86,66 @@ export const AVAILABLE_WIDGETS: DashboardWidgetConfig[] = [
     order: 4,
     size: 'md',
     icon: 'Radio',
+    detailsRoute: '/autopiloto/decisoes',
+  },
+  {
+    id: 'widget-simulacao',
+    key: 'simulacao',
+    title: 'Widget Simulação (What-If)',
+    description: 'Mini simulador de impacto de vendas no fluxo',
+    category: 'simulacao',
+    enabled: true,
+    order: 5,
+    size: 'md',
+    icon: 'Calculator',
+    detailsRoute: '/orcamento/projecoes',
+  },
+  {
+    id: 'widget-estoque-critico',
+    key: 'estoque-critico',
+    title: 'Widget Estoque Crítico',
+    description: 'Lista de produtos com estoque baixo',
+    category: 'list',
+    enabled: true,
+    order: 6,
+    size: 'md',
+    icon: 'Package',
+    detailsRoute: '/suprimentos/estoque',
+  },
+  {
+    id: 'widget-aging-cobranca',
+    key: 'aging-cobranca',
+    title: 'Widget Aging de Cobrança',
+    description: 'Gráfico de faturas vencidas por período',
+    category: 'chart',
+    enabled: true,
+    order: 7,
+    size: 'md',
+    icon: 'Clock',
+    detailsRoute: '/ar/aging',
+  },
+  {
+    id: 'widget-ranking-vendas',
+    key: 'ranking-vendas',
+    title: 'Widget Ranking de Vendas',
+    description: 'Top 5 produtos mais rentáveis do mês',
+    category: 'list',
+    enabled: true,
+    order: 8,
+    size: 'md',
+    icon: 'Trophy',
+    detailsRoute: '/vendas',
+  },
+  {
+    id: 'widget-compliance-fiscal',
+    key: 'compliance-fiscal',
+    title: 'Widget Compliance Fiscal',
+    description: 'Checklist de obrigações fiscais',
+    category: 'fiscal',
+    enabled: true,
+    order: 9,
+    size: 'md',
+    icon: 'FileCheck',
+    detailsRoute: '/controladoria/compliance',
   },
 ];
