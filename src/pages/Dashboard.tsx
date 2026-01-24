@@ -25,6 +25,8 @@ import { useDashboardAlerts } from '@/hooks/useDashboardAlerts';
 import { useDashboardFluxo } from '@/hooks/useDashboardFluxo';
 import { useBudgetVsActual } from '@/hooks/useDashboardData';
 import { useDashboardWidgets } from '@/hooks/useDashboardWidgets';
+import { useFinancialHealthMetrics } from '@/hooks/useFinancialHealthMetrics';
+import { FinancialHealthDiagnostic } from '@/components/dashboard/FinancialHealthDiagnostic';
 import { useRealtimeTransactions, useSupabaseConnectionStatus } from '@/hooks/useRealtimeTransactions';
 import { useRevenueExpensesData, useExpensesByCategory, useRecentTransactions } from '@/hooks/useAnalyticsData';
 import { exportMonthlyReportPDF } from '@/utils/pdfExport';
@@ -152,6 +154,10 @@ export default function Dashboard() {
     refetch: refetchMetrics 
   } = useDashboardMetrics();
   
+  const { 
+    data: healthMetrics, 
+    isLoading: healthLoading 
+  } = useFinancialHealthMetrics();
   const { 
     data: alerts = [], 
     isLoading: alertsLoading,
@@ -360,6 +366,12 @@ export default function Dashboard() {
                   )}
                 </Button>
               </div>
+
+              {/* Financial Health Diagnostic */}
+              <FinancialHealthDiagnostic 
+                metrics={healthMetrics || null}
+                isLoading={healthLoading}
+              />
 
               {/* Section 1: KPI Grid - 4 columns (if enabled) */}
               {(isWidgetEnabled('saldo-caixa') || isWidgetEnabled('contas-receber') || 
