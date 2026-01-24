@@ -22,6 +22,7 @@ import { useDashboardAlerts } from '@/hooks/useDashboardAlerts';
 import { useDashboardFluxo } from '@/hooks/useDashboardFluxo';
 import { useBudgetVsActual } from '@/hooks/useDashboardData';
 import { useDashboardWidgets } from '@/hooks/useDashboardWidgets';
+import { useRealtimeTransactions, useSupabaseConnectionStatus } from '@/hooks/useRealtimeTransactions';
 import { cn } from '@/lib/utils';
 import {
   Wallet,
@@ -123,6 +124,10 @@ export default function Dashboard() {
   useEffect(() => {
     localStorage.setItem(PERIOD_STORAGE_KEY, periodType);
   }, [periodType]);
+
+  // Enable realtime sync and connection monitoring
+  useRealtimeTransactions();
+  useSupabaseConnectionStatus();
 
   // Data hooks
   const { 

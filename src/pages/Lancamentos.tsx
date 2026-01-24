@@ -9,10 +9,11 @@ import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { formatCurrency } from '@/lib/formatters';
-import { Plus, Pencil, Trash2, ArrowUpCircle, ArrowDownCircle, Filter, FileText, Sparkles } from 'lucide-react';
+import { Plus, Pencil, Trash2, ArrowUpCircle, ArrowDownCircle, Filter, FileText, Sparkles, Loader2 } from 'lucide-react';
 import { useAICategorySuggestion } from '@/hooks/useAICategorySuggestion';
 import { AIAnalysisBadge } from '@/components/transactions/AIAnalysisBadge';
 import { ReceiptUpload } from '@/components/transactions/ReceiptUpload';
+import { useRealtimeTransactions } from '@/hooks/useRealtimeTransactions';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -96,6 +97,13 @@ export default function Lancamentos() {
   // AI suggestion state
   const [aiSuggestion, setAiSuggestion] = useState<{ categoryId: string; confidence: number; reason: string } | null>(null);
   const [receiptFile, setReceiptFile] = useState<File | null>(null);
+  
+  // Loading and submission states
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState<string | null>(null);
+  
+  // Enable realtime sync for transactions
+  useRealtimeTransactions();
 
   const { data: transactions = [], isLoading } = useTransactions({
     month: filterMonth,
@@ -194,15 +202,24 @@ export default function Lancamentos() {
   };
 
   const handleSubmit = async () => {
-    if (!currentCompany) return;
+    if (!currentCompany) {
+      toast.error('Empresa não selecionada', {
+        description: 'Por favor, selecione uma empresa para continuar',
+      });
+      return;
+    }
 
     const amount = parseFloat(formData.original_amount.replace(',', '.'));
     const totalAmount = parseFloat(formData.total_amount.replace(',', '.')) || amount;
 
     if (!formData.description || isNaN(amount) || !formData.account_id || !formData.wallet_id) {
-      toast.error('Preencha todos os campos obrigatórios');
+      toast.error('Campos obrigatórios', {
+        description: 'Preencha descrição, valor, conta e carteira',
+      });
       return;
     }
+
+    setIsSubmitting(true);
 
     const payload = {
       company_id: currentCompany.id,
@@ -225,33 +242,83 @@ export default function Lancamentos() {
       document_series: formData.document_series || null,
     };
 
-    let error;
-    if (editingTransaction) {
-      ({ error } = await supabase.from('transactions').update(payload).eq('id', editingTransaction.id));
-    } else {
-      ({ error } = await supabase.from('transactions').insert(payload));
-    }
+    try {
+      let error;
+      if (editingTransaction) {
+        ({ error } = await supabase.from('transactions').update(payload).eq('id', editingTransaction.id));
+      } else {
+        ({ error } = await supabase.from('transactions').insert(payload));
+      }
 
-    if (error) {
-      toast.error('Erro ao salvar lançamento');
-      console.error(error);
-      return;
-    }
+      if (error) {
+        throw error;
+      }
 
-    toast.success(editingTransaction ? 'Lançamento atualizado' : 'Lançamento criado');
-    queryClient.invalidateQueries({ queryKey: ['transactions'] });
-    setIsDialogOpen(false);
-    setFormData(initialFormData);
+      toast.success(editingTransaction ? 'Lançamento atualizado' : 'Lançamento criado', {
+        description: 'Os dados foram salvos com sucesso pela IA ✨',
+        icon: <Sparkles className="h-4 w-4" />,
+      });
+      queryClient.invalidateQueries({ queryKey: ['transactions'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard-metrics'] });
+      setIsDialogOpen(false);
+      setFormData(initialFormData);
+      setEditingTransaction(null);
+    } catch (error: any) {
+      console.error('Erro ao salvar:', error);
+      
+      // Tratamento de erros específicos
+      if (error.code === 'PGRST301') {
+        toast.error('Erro de autenticação', {
+          description: 'Sua sessão expirou. Faça login novamente.',
+        });
+      } else if (error.code === '23503') {
+        toast.error('Dados inválidos', {
+          description: 'Verifique se a conta e carteira selecionadas existem.',
+        });
+      } else if (error.message?.includes('network')) {
+        toast.error('Erro de conexão', {
+          description: 'Verifique sua internet e tente novamente.',
+        });
+      } else {
+        toast.error('Erro ao salvar lançamento', {
+          description: error.message || 'Tente novamente em alguns instantes.',
+        });
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleDelete = async (id: string) => {
-    const { error } = await supabase.from('transactions').delete().eq('id', id);
-    if (error) {
-      toast.error('Erro ao excluir lançamento');
-      return;
+    setIsDeleting(id);
+    
+    try {
+      const { error } = await supabase.from('transactions').delete().eq('id', id);
+      
+      if (error) {
+        throw error;
+      }
+      
+      toast.success('Lançamento excluído', {
+        description: 'O registro foi removido permanentemente.',
+      });
+      queryClient.invalidateQueries({ queryKey: ['transactions'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard-metrics'] });
+    } catch (error: any) {
+      console.error('Erro ao excluir:', error);
+      
+      if (error.code === '42501') {
+        toast.error('Sem permissão', {
+          description: 'Você não tem permissão para excluir este lançamento.',
+        });
+      } else {
+        toast.error('Erro ao excluir lançamento', {
+          description: error.message || 'Tente novamente.',
+        });
+      }
+    } finally {
+      setIsDeleting(null);
     }
-    toast.success('Lançamento excluído');
-    queryClient.invalidateQueries({ queryKey: ['transactions'] });
   };
 
   const getStatusBadge = (status: TransactionStatus) => {
@@ -461,21 +528,39 @@ export default function Lancamentos() {
                               </Button>
                               <AlertDialog>
                                 <AlertDialogTrigger asChild>
-                                  <Button variant="ghost" size="icon">
-                                    <Trash2 className="h-4 w-4 text-destructive" />
+                                  <Button 
+                                    variant="ghost" 
+                                    size="icon"
+                                    disabled={isDeleting === t.id}
+                                  >
+                                    {isDeleting === t.id ? (
+                                      <Loader2 className="h-4 w-4 animate-spin" />
+                                    ) : (
+                                      <Trash2 className="h-4 w-4 text-destructive" />
+                                    )}
                                   </Button>
                                 </AlertDialogTrigger>
                                 <AlertDialogContent>
                                   <AlertDialogHeader>
                                     <AlertDialogTitle>Excluir lançamento?</AlertDialogTitle>
                                     <AlertDialogDescription>
-                                      Esta ação não pode ser desfeita.
+                                      Esta ação não pode ser desfeita. O lançamento será removido permanentemente.
                                     </AlertDialogDescription>
                                   </AlertDialogHeader>
                                   <AlertDialogFooter>
                                     <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                                    <AlertDialogAction onClick={() => handleDelete(t.id)}>
-                                      Excluir
+                                    <AlertDialogAction 
+                                      onClick={() => handleDelete(t.id)}
+                                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                    >
+                                      {isDeleting === t.id ? (
+                                        <>
+                                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                          Excluindo...
+                                        </>
+                                      ) : (
+                                        'Excluir'
+                                      )}
                                     </AlertDialogAction>
                                   </AlertDialogFooter>
                                 </AlertDialogContent>
@@ -891,11 +976,29 @@ export default function Lancamentos() {
           </div>
 
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+            <Button 
+              variant="outline" 
+              onClick={() => setIsDialogOpen(false)}
+              disabled={isSubmitting}
+            >
               Cancelar
             </Button>
-            <Button onClick={handleSubmit}>
-              {editingTransaction ? 'Salvar' : 'Criar'}
+            <Button 
+              onClick={handleSubmit} 
+              disabled={isSubmitting}
+              className="min-w-[100px]"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Salvando...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="mr-2 h-4 w-4" />
+                  {editingTransaction ? 'Salvar' : 'Criar'}
+                </>
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>
