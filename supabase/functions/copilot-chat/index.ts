@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import OpenAI from "https://deno.land/x/openai@v4.69.0/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -69,65 +70,105 @@ serve(async (req) => {
 
   try {
     const { messages, stream = true } = await req.json();
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
     
-    if (!LOVABLE_API_KEY) {
-      throw new Error("LOVABLE_API_KEY is not configured");
+    if (!OPENAI_API_KEY) {
+      console.error("OPENAI_API_KEY not configured");
+      throw new Error("OPENAI_API_KEY is not configured");
     }
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
+    console.log("Creating OpenAI client...");
+    const openai = new OpenAI({
+      apiKey: OPENAI_API_KEY,
+    });
+
+    console.log("Sending request to OpenAI with messages:", JSON.stringify(messages.slice(-2)));
+
+    if (stream) {
+      // Streaming response
+      const completion = await openai.chat.completions.create({
+        model: "gpt-4o-mini",
         messages: [
           { role: "system", content: knowledgeBaseContext },
           ...messages,
         ],
-        stream,
+        stream: true,
         max_tokens: 1024,
         temperature: 0.7,
-      }),
-    });
+      });
 
-    if (!response.ok) {
-      if (response.status === 429) {
-        return new Response(
-          JSON.stringify({ error: "Limite de requisições excedido. Tente novamente em alguns segundos." }),
-          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
-      if (response.status === 402) {
-        return new Response(
-          JSON.stringify({ error: "Créditos insuficientes. Entre em contato com o administrador." }),
-          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
-      const errorText = await response.text();
-      console.error("AI gateway error:", response.status, errorText);
-      return new Response(
-        JSON.stringify({ error: "Erro ao processar sua pergunta. Tente novamente." }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
+      // Create a readable stream from the OpenAI response
+      const encoder = new TextEncoder();
+      const readableStream = new ReadableStream({
+        async start(controller) {
+          try {
+            for await (const chunk of completion) {
+              const content = chunk.choices[0]?.delta?.content || "";
+              if (content) {
+                const data = JSON.stringify({
+                  choices: [{ delta: { content } }]
+                });
+                controller.enqueue(encoder.encode(`data: ${data}\n\n`));
+              }
+            }
+            controller.enqueue(encoder.encode("data: [DONE]\n\n"));
+            controller.close();
+          } catch (error) {
+            console.error("Stream error:", error);
+            controller.error(error);
+          }
+        },
+      });
 
-    if (stream) {
-      return new Response(response.body, {
-        headers: { ...corsHeaders, "Content-Type": "text/event-stream" },
+      return new Response(readableStream, {
+        headers: { 
+          ...corsHeaders, 
+          "Content-Type": "text/event-stream",
+          "Cache-Control": "no-cache",
+          "Connection": "keep-alive",
+        },
       });
     } else {
-      const data = await response.json();
-      return new Response(JSON.stringify(data), {
+      // Non-streaming response
+      const completion = await openai.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages: [
+          { role: "system", content: knowledgeBaseContext },
+          ...messages,
+        ],
+        max_tokens: 1024,
+        temperature: 0.7,
+      });
+
+      console.log("OpenAI response received");
+
+      return new Response(JSON.stringify(completion), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
-  } catch (error) {
-    console.error("Copilot chat error:", error);
+  } catch (err) {
+    console.error("Copilot chat error:", err);
+    
+    const error = err as { status?: number; code?: string; message?: string };
+    
+    // Handle rate limiting
+    if (error.status === 429) {
+      return new Response(
+        JSON.stringify({ error: "Limite de requisições excedido. Aguarde alguns segundos e tente novamente." }),
+        { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Handle quota exceeded
+    if (error.status === 402 || error.code === "insufficient_quota") {
+      return new Response(
+        JSON.stringify({ error: "Créditos insuficientes na API OpenAI. Verifique sua conta." }),
+        { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : "Erro desconhecido" }),
+      JSON.stringify({ error: error.message || "Erro desconhecido" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
