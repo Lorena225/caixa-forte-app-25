@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { FileDown, Printer } from 'lucide-react';
+import { showExportToast, showPrintToast } from '@/utils/devFeedback';
 
 const balanceteData = [
   { codigo: '1', conta: 'ATIVO', nivel: 1, saldoAnterior: 0, debitos: 1250000, creditos: 212500, saldoAtual: 1037500 },
@@ -59,11 +60,11 @@ export default function Balancete() {
             </Select>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline">
+            <Button variant="outline" onClick={() => showPrintToast()}>
               <Printer className="h-4 w-4 mr-2" />
               Imprimir
             </Button>
-            <Button variant="outline">
+            <Button variant="outline" onClick={() => showExportToast('Excel')}>
               <FileDown className="h-4 w-4 mr-2" />
               Exportar
             </Button>
