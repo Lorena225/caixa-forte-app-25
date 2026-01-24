@@ -16,6 +16,7 @@ import { DashboardSkeleton } from '@/components/common/DashboardSkeleton';
 import { RevenueExpensesAreaChart } from '@/components/dashboard/RevenueExpensesAreaChart';
 import { ExpensesByCategoryChart } from '@/components/dashboard/ExpensesByCategoryChart';
 import { DateRangeFilter } from '@/components/dashboard/DateRangeFilter';
+import { ReportExportDialog } from '@/components/dashboard/ReportExportDialog';
 import { Card, CardContent, CardDescription, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { formatCurrency } from '@/lib/formatters';
@@ -29,8 +30,6 @@ import { useFinancialHealthMetrics } from '@/hooks/useFinancialHealthMetrics';
 import { FinancialHealthDiagnostic } from '@/components/dashboard/FinancialHealthDiagnostic';
 import { useRealtimeTransactions, useSupabaseConnectionStatus } from '@/hooks/useRealtimeTransactions';
 import { useRevenueExpensesData, useExpensesByCategory, useRecentTransactions } from '@/hooks/useAnalyticsData';
-import { exportMonthlyReportPDF } from '@/utils/pdfExport';
-import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import type { DateRange } from 'react-day-picker';
 import {
@@ -41,7 +40,6 @@ import {
   BarChart3,
   AlertTriangle,
   FileDown,
-  Loader2,
 } from 'lucide-react';
 
 type PeriodType = 'today' | 'week' | 'month' | 'quarter' | 'year' | 'custom';
@@ -111,7 +109,7 @@ export default function Dashboard() {
   const [lastRefresh, setLastRefresh] = useState(new Date());
   const [isEditMode, setIsEditMode] = useState(false);
   const [showWidgetPanel, setShowWidgetPanel] = useState(false);
-  const [isExporting, setIsExporting] = useState(false);
+  const [isExportDialogOpen, setIsExportDialogOpen] = useState(false);
   
   // Date range filter state
   const [dateRange, setDateRange] = useState<DateRange | undefined>(() => ({
@@ -251,47 +249,56 @@ export default function Dashboard() {
     setShowWidgetPanel(true);
   };
 
-  // PDF Export handler
-  const handleExportPDF = async () => {
-    if (!currentCompany) {
-      toast.error('Selecione uma empresa para exportar');
-      return;
-    }
+  // Prepare export data
+  const exportReportData = useMemo(() => {
+    const totalReceitas = revenueExpensesData.reduce((sum, d) => sum + d.receitas, 0);
+    const totalDespesas = revenueExpensesData.reduce((sum, d) => sum + d.despesas, 0);
 
-    setIsExporting(true);
+    return {
+      companyName: currentCompany?.name || 'Empresa',
+      saldoCaixa: metrics?.saldoCaixa?.valor || 0,
+      contasReceber: metrics?.contasReceber?.valor || 0,
+      contasPagar: metrics?.contasPagar?.valor || 0,
+      totalReceitas,
+      totalDespesas,
+      transactions: recentTransactions.map(t => ({
+        id: t.id,
+        description: t.description || '',
+        direction: t.direction as 'entrada' | 'saida',
+        total_amount: Number(t.total_amount) || 0,
+        transaction_date: t.transaction_date,
+        status: t.status || '',
+        category: t.category || null,
+      })),
+    };
+  }, [currentCompany, metrics, revenueExpensesData, recentTransactions]);
+
+  // Prepare health diagnostic for export
+  const healthDiagnosticExport = useMemo(() => {
+    if (!healthMetrics) return null;
     
-    try {
-      // Calculate totals from revenueExpensesData
-      const totalReceitas = revenueExpensesData.reduce((sum, d) => sum + d.receitas, 0);
-      const totalDespesas = revenueExpensesData.reduce((sum, d) => sum + d.despesas, 0);
-
-      await exportMonthlyReportPDF({
-        companyName: currentCompany.name,
-        period: dateRange?.from && dateRange?.to 
-          ? `${format(dateRange.from, 'dd/MM/yyyy')} a ${format(dateRange.to, 'dd/MM/yyyy')}`
-          : format(new Date(), "MMMM 'de' yyyy", { locale: ptBR }),
-        saldoCaixa: metrics?.saldoCaixa?.valor || 0,
-        contasReceber: metrics?.contasReceber?.valor || 0,
-        contasPagar: metrics?.contasPagar?.valor || 0,
-        totalReceitas,
-        totalDespesas,
-        transactions: recentTransactions as any[],
-        categoriesData: categoryData,
-      });
-
-      toast.success('Relatório exportado', {
-        description: 'PDF gerado com sucesso!',
-        icon: '📄',
-      });
-    } catch (error) {
-      console.error('Erro ao exportar PDF:', error);
-      toast.error('Erro ao exportar', {
-        description: 'Tente novamente em alguns instantes.',
-      });
-    } finally {
-      setIsExporting(false);
-    }
-  };
+    const taxaPoupanca = healthMetrics.totalReceitas > 0
+      ? ((healthMetrics.totalReceitas - healthMetrics.totalDespesas) / healthMetrics.totalReceitas) * 100
+      : 0;
+    
+    const percentualFixos = healthMetrics.totalReceitas > 0
+      ? (healthMetrics.despesasFixas / healthMetrics.totalReceitas) * 100
+      : 0;
+    
+    const projecaoFimMes = healthMetrics.saldoAtual - (healthMetrics.mediaGastosDiarios * healthMetrics.diasRestantesMes);
+    
+    let status: 'excellent' | 'good' | 'attention' | 'risk' = 'excellent';
+    if (taxaPoupanca < 0 || projecaoFimMes < 0) status = 'risk';
+    else if (taxaPoupanca < 10 || percentualFixos > 60) status = 'attention';
+    else if (taxaPoupanca < 20 || percentualFixos > 50) status = 'good';
+    
+    return {
+      status,
+      savingsRate: taxaPoupanca,
+      fixedCostsPercentage: percentualFixos,
+      projectedEndBalance: projecaoFimMes,
+    };
+  }, [healthMetrics]);
 
   return (
     <MainLayout>
@@ -349,21 +356,11 @@ export default function Dashboard() {
                   onDateRangeChange={setDateRange}
                 />
                 <Button 
-                  onClick={handleExportPDF}
-                  disabled={isExporting}
+                  onClick={() => setIsExportDialogOpen(true)}
                   className="min-w-[180px]"
                 >
-                  {isExporting ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Gerando PDF...
-                    </>
-                  ) : (
-                    <>
-                      <FileDown className="mr-2 h-4 w-4" />
-                      Exportar Relatório
-                    </>
-                  )}
+                  <FileDown className="mr-2 h-4 w-4" />
+                  Exportar Relatório
                 </Button>
               </div>
 
@@ -566,6 +563,14 @@ export default function Dashboard() {
             hasChanges={hasChanges}
           />
         )}
+
+        {/* Report Export Dialog */}
+        <ReportExportDialog
+          open={isExportDialogOpen}
+          onOpenChange={setIsExportDialogOpen}
+          reportData={exportReportData}
+          healthDiagnostic={healthDiagnosticExport}
+        />
       </div>
     </MainLayout>
   );
