@@ -7,6 +7,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
+import { showDevelopmentToast } from '@/utils/devFeedback';
+import { toast } from 'sonner';
 import {
   TrendingUp,
   TrendingDown,
@@ -74,7 +76,9 @@ export default function SupplyChainIndex() {
           description="Gestão de cadeia de suprimentos, curva ABC, previsão de demanda e planejamento de materiais"
           action={{
             label: 'Atualizar Análise',
-            onClick: () => {},
+            onClick: () => {
+              toast.success('Análise atualizada com sucesso!');
+            },
             icon: <RefreshCw className="h-4 w-4" />,
           }}
         />
@@ -259,8 +263,8 @@ export default function SupplyChainIndex() {
                       </div>
                       {item.suggested > 0 && (
                         <div className="mt-3 flex gap-2">
-                          <Button size="sm">Gerar Pedido de Compra</Button>
-                          <Button size="sm" variant="outline">Ignorar</Button>
+                          <Button size="sm" onClick={() => showDevelopmentToast('Gerar pedido de compra')}>Gerar Pedido de Compra</Button>
+                          <Button size="sm" variant="outline" onClick={() => toast.info('Sugestão ignorada')}>Ignorar</Button>
                         </div>
                       )}
                     </div>
@@ -354,7 +358,7 @@ export default function SupplyChainIndex() {
                           3 produtos dependem exclusivamente de <strong>Fornecedor Alpha</strong>. 
                           Recomenda-se diversificar a base de fornecedores.
                         </p>
-                        <Button size="sm" variant="outline" className="mt-3">
+                        <Button size="sm" variant="outline" className="mt-3" onClick={() => showDevelopmentToast('Produtos afetados')}>
                           Ver Produtos Afetados
                         </Button>
                       </div>

@@ -12,6 +12,7 @@ import { PageHeader } from '@/components/common/PageHeader';
 import { useSpedFiscalMovements, useSpedFiscalStats, useValidateSpedMovements } from '@/hooks/useSpedFiscal';
 import { formatCurrency } from '@/lib/formatters';
 import { toast } from 'sonner';
+import { showDevelopmentToast, showReportToast } from '@/utils/devFeedback';
 
 export default function SpedFiscal() {
   const [activeTab, setActiveTab] = useState('movimentos');
@@ -35,7 +36,7 @@ export default function SpedFiscal() {
   };
   
   const handleGenerateSped = () => {
-    toast.info('Geração de SPED Fiscal em desenvolvimento');
+    showReportToast('SPED Fiscal (EFD ICMS/IPI)');
   };
 
   return (

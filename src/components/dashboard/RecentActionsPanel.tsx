@@ -1,12 +1,15 @@
 import { memo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
-import { ClipboardList, Check } from 'lucide-react';
+import { ClipboardList, Check, ChevronRight } from 'lucide-react';
+import { showDevelopmentToast } from '@/utils/devFeedback';
 
 interface RecentAction {
   id: string;
   description: string;
   timestamp: string;
+  route?: string;
 }
 
 interface RecentActionsPanelProps {
@@ -15,15 +18,25 @@ interface RecentActionsPanelProps {
 }
 
 const defaultActions: RecentAction[] = [
-  { id: '1', description: 'Conciliação Bancária', timestamp: '2 horas atrás' },
+  { id: '1', description: 'Conciliação Bancária', timestamp: '2 horas atrás', route: '/tesouraria/conciliacao' },
   { id: '2', description: 'Folha de Pagamento', timestamp: '5 horas atrás' },
-  { id: '3', description: 'Backup Automático', timestamp: '1 dia atrás' },
+  { id: '3', description: 'Backup Automático', timestamp: '1 dia atrás', route: '/admin/backup' },
 ];
 
 export const RecentActionsPanel = memo(function RecentActionsPanel({ 
   actions = defaultActions,
   className 
 }: RecentActionsPanelProps) {
+  const navigate = useNavigate();
+
+  const handleActionClick = (action: RecentAction) => {
+    if (action.route) {
+      navigate(action.route);
+    } else {
+      showDevelopmentToast(action.description);
+    }
+  };
+
   return (
     <Card className={cn(
       'bg-white border border-border rounded-xl',
@@ -40,9 +53,10 @@ export const RecentActionsPanel = memo(function RecentActionsPanel({
 
       <CardContent className="pt-0 space-y-3">
         {actions.map((action) => (
-          <div 
+          <button
             key={action.id}
-            className="flex items-start gap-3 py-2 border-b border-border/50 last:border-b-0"
+            onClick={() => handleActionClick(action)}
+            className="w-full flex items-start gap-3 py-2 px-2 -mx-2 rounded-lg border-b border-border/50 last:border-b-0 hover:bg-muted/50 transition-colors cursor-pointer text-left group"
           >
             {/* Check Icon */}
             <div className="w-6 h-6 rounded-full bg-success/10 flex items-center justify-center shrink-0">
@@ -51,14 +65,17 @@ export const RecentActionsPanel = memo(function RecentActionsPanel({
 
             {/* Text Content */}
             <div className="flex-1 min-w-0">
-              <p className="text-[13px] font-medium text-foreground leading-5">
+              <p className="text-[13px] font-medium text-foreground leading-5 group-hover:text-primary transition-colors">
                 {action.description}
               </p>
               <p className="text-[11px] text-muted-foreground">
                 {action.timestamp}
               </p>
             </div>
-          </div>
+
+            {/* Arrow */}
+            <ChevronRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity mt-1" />
+          </button>
         ))}
       </CardContent>
     </Card>

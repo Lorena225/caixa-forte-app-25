@@ -11,6 +11,7 @@ import { PageHeader } from '@/components/common/PageHeader';
 import { useSpedAccountingEntries, useSpedAccountingStats, useValidateSpedAccountingEntries } from '@/hooks/useSpedAccounting';
 import { formatCurrency } from '@/lib/formatters';
 import { toast } from 'sonner';
+import { showReportToast } from '@/utils/devFeedback';
 
 export default function SpedContabil() {
   const [activeTab, setActiveTab] = useState('lancamentos');
@@ -29,7 +30,7 @@ export default function SpedContabil() {
   };
   
   const handleGenerateSped = () => {
-    toast.info('Geração de SPED Contábil em desenvolvimento');
+    showReportToast('SPED Contábil (ECD)');
   };
 
   return (

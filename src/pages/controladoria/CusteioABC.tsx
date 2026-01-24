@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
+import { showDevelopmentToast } from '@/utils/devFeedback';
 import {
   Plus,
   Search,
@@ -64,7 +65,7 @@ export default function CusteioABC() {
           description="Custeio baseado em atividades - alocação precisa de custos indiretos"
           action={{
             label: 'Nova Atividade',
-            onClick: () => {},
+            onClick: () => showDevelopmentToast('Cadastro de atividade'),
             icon: <Plus className="h-4 w-4" />,
           }}
         />
@@ -327,7 +328,7 @@ export default function CusteioABC() {
                         <span className="text-xl font-bold text-primary">{formatCurrency(242857)}</span>
                       </div>
                     </div>
-                    <Button className="w-full">
+                    <Button className="w-full" onClick={() => showDevelopmentToast('Recalcular ponto de equilíbrio')}>
                       <Calculator className="h-4 w-4 mr-2" />
                       Recalcular
                     </Button>

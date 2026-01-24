@@ -28,6 +28,7 @@ import { useVendas, useVendasStats, SITUACAO_VENDA_LABELS, TIPO_VENDA_LABELS, us
 import { format, startOfMonth, endOfMonth, startOfDay, endOfDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { toast } from "sonner";
+import { showDevelopmentToast } from '@/utils/devFeedback';
 import { PedidoFormModal } from "@/components/vendas/PedidoFormModal";
 import { NFeEmissaoModal } from "@/components/fiscal/NFeEmissaoModal";
 
@@ -86,7 +87,15 @@ export default function Pedidos() {
   };
 
   const handleCancelar = (vendaId: string) => {
-    toast.info("Funcionalidade de cancelamento em desenvolvimento");
+    showDevelopmentToast('Cancelamento de pedido');
+  };
+
+  const handleVisualizar = (vendaId: string) => {
+    showDevelopmentToast('Visualização de pedido');
+  };
+
+  const handleEditar = (vendaId: string) => {
+    showDevelopmentToast('Edição de pedido');
   };
 
   const handleEmitirNFe = (vendaId: string) => {
@@ -162,11 +171,11 @@ export default function Pedidos() {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => toast.info("Visualização em desenvolvimento")}>
+            <DropdownMenuItem onClick={() => handleVisualizar(row.id as string)}>
               <Eye className="mr-2 h-4 w-4" /> Visualizar
             </DropdownMenuItem>
             <DropdownMenuItem 
-              onClick={() => toast.info("Edição em desenvolvimento")}
+              onClick={() => handleEditar(row.id as string)}
               disabled={(row.situacao as string) === 'F' || (row.situacao as string) === 'C'}
             >
               <FileEdit className="mr-2 h-4 w-4" /> Editar

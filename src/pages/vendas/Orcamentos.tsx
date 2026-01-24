@@ -24,6 +24,7 @@ import { useVendas, SITUACAO_VENDA_LABELS } from "@/hooks/useVendas";
 import { format, startOfMonth, endOfMonth } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { toast } from "sonner";
+import { showDevelopmentToast } from '@/utils/devFeedback';
 import { PedidoFormModal } from "@/components/vendas/PedidoFormModal";
 
 const SITUACAO_BADGE_VARIANT: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
@@ -60,7 +61,19 @@ export default function Orcamentos() {
 
   // Handlers
   const handleConverterVenda = (orcamentoId: string) => {
-    toast.info("Conversão para venda em desenvolvimento");
+    showDevelopmentToast('Conversão para venda');
+  };
+
+  const handleVisualizar = (orcamentoId: string) => {
+    showDevelopmentToast('Visualização de orçamento');
+  };
+
+  const handleEditar = (orcamentoId: string) => {
+    showDevelopmentToast('Edição de orçamento');
+  };
+
+  const handleExcluir = (orcamentoId: string) => {
+    showDevelopmentToast('Exclusão de orçamento');
   };
 
   // Colunas da tabela
@@ -133,16 +146,16 @@ export default function Orcamentos() {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => toast.info("Visualização em desenvolvimento")}>
+            <DropdownMenuItem onClick={() => handleVisualizar(row.id as string)}>
               <Eye className="mr-2 h-4 w-4" /> Visualizar
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => toast.info("Edição em desenvolvimento")}>
+            <DropdownMenuItem onClick={() => handleEditar(row.id as string)}>
               <FileEdit className="mr-2 h-4 w-4" /> Editar
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => handleConverterVenda(row.id as string)}>
               <ArrowRight className="mr-2 h-4 w-4" /> Converter em Venda
             </DropdownMenuItem>
-            <DropdownMenuItem className="text-destructive">
+            <DropdownMenuItem className="text-destructive" onClick={() => handleExcluir(row.id as string)}>
               <Trash2 className="mr-2 h-4 w-4" /> Excluir
             </DropdownMenuItem>
           </DropdownMenuContent>
