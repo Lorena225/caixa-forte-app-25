@@ -14,14 +14,16 @@
 
 @layer base {
   :root {
-    /* ===== CORES PRIMÁRIAS ===== */
-    --primary: 210 100% 40%; /* #0066CC */
+    /* ===== MODERN SAAS ENTERPRISE THEME ===== */
+    
+    /* ===== CORES PRIMÁRIAS (Deep Navy/Slate) ===== */
+    --primary: 220 90% 52%; /* Vibrant Blue */
     --primary-foreground: 0 0% 100%;
-    --primary-dark: 210 100% 32%; /* #0052A3 */
-    --primary-light: 210 100% 90%; /* #CCE5FF */
-    --primary-very-light: 210 100% 95%; /* #E6F0FF */
+    --primary-dark: 220 90% 42%;
+    --primary-light: 220 90% 92%;
+    --primary-very-light: 220 90% 97%;
 
-    /* ===== CORES SECUNDÁRIAS (Roxo) ===== */
+    /* ===== CORES SECUNDÁRIAS (Purple/Violet) ===== */
     --secondary-purple: 262 83% 58%; /* #7C3AED */
     --secondary-purple-dark: 263 70% 50%; /* #6D28D9 */
     --secondary-purple-light: 263 90% 96%; /* #EDE9FE */
@@ -58,104 +60,116 @@
     --disabled-light: 220 14% 84%; /* #D1D5DB */
     --disabled-very-light: 220 14% 91%; /* #E5E7EB */
 
-    /* ===== CORES NEUTRAS (Escala de Cinza) ===== */
-    --gray-50: 210 40% 98%; /* #F9FAFB */
-    --gray-100: 220 14% 96%; /* #F3F4F6 */
-    --gray-200: 220 13% 91%; /* #E5E7EB */
-    --gray-300: 216 12% 84%; /* #D1D5DB */
-    --gray-400: 218 11% 65%; /* #9CA3AF */
-    --gray-500: 220 9% 46%; /* #6B7280 */
-    --gray-600: 215 14% 34%; /* #4B5563 */
-    --gray-700: 217 19% 27%; /* #374151 */
-    --gray-800: 215 28% 17%; /* #1F2937 */
-    --gray-900: 221 39% 11%; /* #111827 */
+    /* ===== CORES NEUTRAS (Slate Scale) ===== */
+    --gray-50: 210 20% 98%; /* Slate 50 */
+    --gray-100: 214 20% 96%; /* Slate 100 */
+    --gray-200: 213 18% 91%; /* Slate 200 */
+    --gray-300: 212 14% 84%; /* Slate 300 */
+    --gray-400: 215 12% 65%; /* Slate 400 */
+    --gray-500: 216 11% 50%; /* Slate 500 */
+    --gray-600: 215 16% 36%; /* Slate 600 */
+    --gray-700: 217 20% 27%; /* Slate 700 */
+    --gray-800: 218 28% 17%; /* Slate 800 */
+    --gray-900: 222 47% 11%; /* Deep Navy */
 
-    /* ===== BACKGROUNDS ===== */
-    --background: 0 0% 100%; /* #FFFFFF branco puro */
-    --background-secondary: 210 20% 98%; /* #F8F9FA */
-    --background-tertiary: 220 14% 96%; /* #F3F4F6 */
-    --foreground: 221 39% 11%; /* #111827 */
+    /* ===== BACKGROUNDS (Slate Grey Suave) ===== */
+    --background: 214 20% 98%; /* Very light slate grey */
+    --background-secondary: 210 18% 96%;
+    --background-tertiary: 212 15% 94%;
+    --foreground: 222 47% 11%; /* Deep Navy text */
 
-    /* Cards e Superfícies */
+    /* Cards e Superfícies (Glassmorphism ready) */
     --card: 0 0% 100%;
-    --card-foreground: 221 39% 11%;
+    --card-foreground: 222 47% 11%;
 
     /* Popover/Dropdown */
     --popover: 0 0% 100%;
-    --popover-foreground: 221 39% 11%;
+    --popover-foreground: 222 47% 11%;
 
     /* Secondary - Para botões secundários */
-    --secondary: 220 14% 96%;
-    --secondary-foreground: 217 19% 27%;
+    --secondary: 214 18% 95%;
+    --secondary-foreground: 217 20% 27%;
 
     /* Muted - Neutro suave */
-    --muted: 220 14% 96%;
-    --muted-foreground: 220 9% 46%;
+    --muted: 214 18% 95%;
+    --muted-foreground: 216 11% 50%;
 
-    /* Accent - Azul claro */
-    --accent: 210 100% 95%;
-    --accent-foreground: 210 100% 32%;
+    /* Accent - Azul/Purple claro */
+    --accent: 262 90% 96%;
+    --accent-foreground: 262 83% 58%;
 
     /* ===== BORDAS ===== */
-    --border: 220 13% 91%; /* #E5E7EB */
-    --border-light: 220 14% 96%; /* #F3F4F6 */
-    --border-dark: 216 12% 84%; /* #D1D5DB */
-    --input: 220 13% 91%;
-    --ring: 210 100% 40%;
+    --border: 213 18% 91%;
+    --border-light: 214 20% 96%;
+    --border-dark: 212 14% 84%;
+    --input: 213 18% 91%;
+    --ring: 220 90% 52%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem; /* XL rounded corners */
 
-    /* ===== SIDEBAR - BRANCA ===== */
-    --sidebar-background: 0 0% 100%; /* #FFFFFF */
-    --sidebar-foreground: 210 18% 18%; /* #2C3E50 */
-    --sidebar-primary: 210 100% 40%; /* #0066CC */
+    /* ===== SIDEBAR - DEEP NAVY ===== */
+    --sidebar-background: 222 47% 11%; /* Deep Navy */
+    --sidebar-foreground: 210 20% 85%;
+    --sidebar-primary: 220 90% 60%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 210 20% 98%; /* #F8F9FA hover */
-    --sidebar-accent-foreground: 215 28% 17%; /* #1F2937 */
-    --sidebar-border: 220 13% 91%; /* #E5E7EB */
-    --sidebar-ring: 210 100% 40%;
-    --sidebar-muted: 215 14% 34%; /* #4B5563 */
+    --sidebar-accent: 217 25% 18%;
+    --sidebar-accent-foreground: 210 20% 98%;
+    --sidebar-border: 217 25% 18%;
+    --sidebar-ring: 220 90% 52%;
+    --sidebar-muted: 215 16% 60%;
+
+    /* ===== CFO VIRTUAL HERO GRADIENT ===== */
+    --cfo-gradient-start: 220 90% 45%;
+    --cfo-gradient-mid: 262 83% 50%;
+    --cfo-gradient-end: 280 75% 45%;
 
     /* ===== CORES POR CATEGORIA DE MENU ===== */
-    --menu-inicio: 210 100% 40%; /* #0066CC Azul */
-    --menu-favoritos: 262 83% 58%; /* #7C3AED Roxo */
-    --menu-operacoes: 160 84% 39%; /* #10B981 Verde Esmeralda */
-    --menu-catalogo: 24 94% 53%; /* #F97316 Laranja */
-    --menu-compras: 0 84% 60%; /* #EF4444 Vermelho */
-    --menu-financeiro: 161 94% 30%; /* #059669 Verde Escuro */
-    --menu-contabil: 38 92% 50%; /* #F59E0B Âmbar */
-    --menu-relatorios: 189 94% 43%; /* #06B6D4 Ciano */
-    --menu-cadastros: 330 81% 60%; /* #EC4899 Rosa */
-    --menu-ia: 270 91% 65%; /* #A855F7 Roxo Vibrante */
-    --menu-servicos: 243 75% 59%; /* #4F46E5 Índigo */
-    --menu-integracoes: 174 72% 40%; /* #14B8A6 Teal */
-    --menu-config: 220 9% 46%; /* #6B7280 Cinza */
+    --menu-inicio: 220 90% 60%; /* Blue */
+    --menu-favoritos: 262 83% 58%; /* Purple */
+    --menu-operacoes: 160 84% 45%; /* Emerald */
+    --menu-catalogo: 24 94% 53%; /* Orange */
+    --menu-compras: 0 84% 60%; /* Red */
+    --menu-financeiro: 161 94% 35%; /* Green */
+    --menu-contabil: 38 92% 50%; /* Amber */
+    --menu-relatorios: 189 94% 50%; /* Cyan */
+    --menu-cadastros: 330 81% 60%; /* Pink */
+    --menu-ia: 270 91% 65%; /* Violet Vibrant */
+    --menu-servicos: 243 75% 59%; /* Indigo */
+    --menu-integracoes: 174 72% 45%; /* Teal */
+    --menu-config: 216 11% 50%; /* Slate */
 
     /* ===== CORES FINANCEIRAS ===== */
     --finance-positive: 160 84% 39%;
     --finance-positive-foreground: 0 0% 100%;
     --finance-negative: 0 84% 60%;
     --finance-negative-foreground: 0 0% 100%;
-    --finance-neutral: 220 9% 46%;
+    --finance-neutral: 216 11% 50%;
     --finance-overdue: 25 95% 53%;
 
-    /* ===== SOMBRAS ===== */
-    --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    --shadow-sidebar: 0 2px 4px rgba(0, 0, 0, 0.05);
-    --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+    /* ===== GLASSMORPHISM ===== */
+    --glass-bg: 0 0% 100% / 0.7;
+    --glass-border: 0 0% 100% / 0.2;
+    --glass-blur: 16px;
+
+    /* ===== SOMBRAS (Soft Shadows) ===== */
+    --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.06), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+    --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+    --shadow-sidebar: 4px 0 15px rgba(0, 0, 0, 0.1);
+    --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.04);
+    --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.08);
 
     /* ===== FOCUS RINGS (WCAG 2.1 AA Compliance) ===== */
-    --focus-ring: 0 0 0 3px hsl(210 100% 40% / 0.3);
+    --focus-ring: 0 0 0 3px hsl(220 90% 52% / 0.3);
     --focus-ring-offset: 2px;
 
     /* Sidebar width tokens */
-    --sidebar-width: 16rem; /* 256px */
+    --sidebar-width: 17rem; /* 272px */
     --sidebar-width-collapsed: 5rem; /* 80px for icon-only */
-    --sidebar-width-mobile: 16rem; /* 256px */
+    --sidebar-width-mobile: 17rem; /* 272px */
     --header-height: 4rem; /* 64px */
     --header-height-mobile: 3.5rem; /* 56px */
 
