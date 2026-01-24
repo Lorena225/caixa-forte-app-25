@@ -17,7 +17,6 @@ import { HelpMenu } from '@/components/common/HelpMenu';
 import { SmartHelpPanel } from '@/components/common/SmartHelpPanel';
 import { NotificationCenter } from '@/components/common/NotificationCenter';
 import { GlobalSearch } from '@/components/common/GlobalSearch';
-import { useSidebarCollapse } from '@/components/SidebarEnterprise';
 import { cn } from '@/lib/utils';
 
 const novoRegistroOptions = [
@@ -50,7 +49,6 @@ function generateAvatarColor(email: string): string {
 export const Header = memo(function Header() {
   const navigate = useNavigate();
   const { user, signOut, currentCompany } = useAuth();
-  const { collapsed } = useSidebarCollapse();
 
   const userInitials = user?.email
     ? user.email.substring(0, 2).toUpperCase()
@@ -60,43 +58,48 @@ export const Header = memo(function Header() {
 
   return (
     <header 
-      className="fixed top-0 right-0 left-0 z-50 h-16 border-b border-border bg-card shadow-sm"
+      className="fixed top-0 left-0 right-0 z-50 h-16 border-b border-border bg-card shadow-sm"
       role="banner"
       aria-label="Barra de navegação principal"
     >
-      <div className="flex h-full items-center justify-between px-4 md:px-6">
-        {/* Left Section - Logo + Brand Logo + Company Selector */}
-        <div className={cn(
-          'flex items-center gap-3 transition-all duration-300',
-          collapsed ? 'md:ml-16' : 'md:ml-[280px]'
-        )}>
-          {/* Mobile hamburger space */}
-          <div className="w-10 md:hidden" />
-          
-          {/* App Logo - Desktop only */}
-          <div className="hidden md:flex items-center gap-2.5 mr-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary shadow-sm">
-              <Sparkles className="h-4.5 w-4.5 text-white" />
+      <div className="flex h-full items-center px-4">
+        {/* Left Section - Logo fixo na extremidade */}
+        <div className="flex items-center gap-4 shrink-0">
+          {/* App Logo */}
+          <div 
+            className="flex items-center gap-2.5 cursor-pointer" 
+            onClick={() => navigate('/')}
+            role="button"
+            aria-label="Ir para página inicial"
+          >
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary shadow-md">
+              <Sparkles className="h-5 w-5 text-primary-foreground" />
             </div>
-            <span className="text-lg font-bold text-foreground tracking-tight">Caixa Forte</span>
+            <span className="hidden sm:block text-lg font-bold text-foreground tracking-tight">
+              Caixa Forte
+            </span>
           </div>
           
           {/* Divider */}
           <div className="hidden md:block h-8 w-px bg-border" />
           
           {/* Brand Logo with Company Selector */}
-          <BrandLogo />
+          <div className="hidden md:block">
+            <BrandLogo />
+          </div>
         </div>
 
-        {/* Center Section - Global Search (hidden on mobile) */}
-        <div className="hidden md:flex flex-1 justify-center max-w-xl mx-4">
-          <GlobalSearch className="w-full max-w-md" />
+        {/* Center Section - Global Search */}
+        <div className="flex-1 flex justify-center px-4 md:px-8">
+          <div className="hidden sm:block w-full max-w-lg">
+            <GlobalSearch className="w-full" />
+          </div>
         </div>
 
         {/* Right Section - Actions */}
-        <div className="flex items-center gap-2 sm:gap-3" role="group" aria-label="Ações rápidas">
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0" role="group" aria-label="Ações rápidas">
           {/* Mobile Search Button */}
-          <div className="md:hidden">
+          <div className="sm:hidden">
             <GlobalSearch />
           </div>
 
@@ -104,8 +107,9 @@ export const Header = memo(function Header() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button 
+                size="sm"
                 className={cn(
-                  'gap-1.5 h-9 sm:h-10 px-3 sm:px-4 rounded-lg font-semibold text-sm',
+                  'gap-1.5 h-9 px-3 rounded-lg font-semibold text-sm',
                   'bg-primary text-primary-foreground',
                   'hover:bg-primary/90 hover:shadow-md',
                   'active:scale-[0.98]',
@@ -114,9 +118,9 @@ export const Header = memo(function Header() {
                 aria-label="Criar novo registro"
                 aria-haspopup="menu"
               >
-                <Plus className="h-4 w-4 sm:h-[18px] sm:w-[18px]" aria-hidden="true" />
-                <span className="hidden lg:inline">Novo</span>
-                <ChevronDown className="h-3.5 w-3.5 hidden sm:block" aria-hidden="true" />
+                <Plus className="h-4 w-4" aria-hidden="true" />
+                <span className="hidden md:inline">Novo</span>
+                <ChevronDown className="h-3.5 w-3.5 hidden sm:block opacity-70" aria-hidden="true" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56 bg-card border-border shadow-lg z-[100]">
@@ -136,35 +140,33 @@ export const Header = memo(function Header() {
           </DropdownMenu>
 
           {/* Divider */}
-          <div className="hidden sm:block h-7 w-px bg-border/60" />
+          <div className="hidden sm:block h-7 w-px bg-border mx-1" />
 
-          {/* Action Icons - Unified spacing */}
-          <div className="flex items-center gap-1">
-            {/* Notification Center */}
+          {/* Action Icons Group */}
+          <div className="flex items-center">
             <NotificationCenter />
-
-            {/* Smart Help Panel - Manual do Usuário */}
             <SmartHelpPanel />
-
-            {/* Help Menu - Suporte */}
             <HelpMenu />
           </div>
+
+          {/* Divider before Avatar */}
+          <div className="hidden sm:block h-7 w-px bg-border mx-1" />
 
           {/* User Avatar Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button 
                 variant="ghost" 
-                className="relative h-9 w-9 sm:h-10 sm:w-10 min-w-[36px] min-h-[36px] sm:min-w-[44px] sm:min-h-[44px] rounded-full p-0 hover:bg-transparent ml-1"
+                className="relative h-9 w-9 rounded-full p-0 hover:bg-transparent"
                 aria-label={`Menu do usuário: ${user?.email || 'Usuário'}`}
                 aria-haspopup="menu"
               >
                 <Avatar className={cn(
-                  'h-9 w-9 sm:h-10 sm:w-10 border-2 border-border transition-all duration-200',
+                  'h-9 w-9 border-2 border-border transition-all duration-200',
                   'hover:border-primary hover:shadow-md hover:scale-105'
                 )}>
                   <AvatarImage src="" alt={user?.email || 'User'} />
-                  <AvatarFallback className={cn(avatarColor, 'text-white font-semibold text-sm')}>
+                  <AvatarFallback className={cn(avatarColor, 'text-primary-foreground font-semibold text-sm')}>
                     {userInitials}
                   </AvatarFallback>
                 </Avatar>
