@@ -214,10 +214,10 @@ export const BankConnectionFlow = memo(function BankConnectionFlow({
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="flex gap-1">
-                      {bank.supports.includes('data') && (
+                      {(bank.supports as readonly string[]).includes('data') && (
                         <Badge variant="outline" className="text-xs">Dados</Badge>
                       )}
-                      {bank.supports.includes('pix') && (
+                      {(bank.supports as readonly string[]).includes('pix') && (
                         <Badge variant="outline" className="text-xs">Pix</Badge>
                       )}
                     </div>
