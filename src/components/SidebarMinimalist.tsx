@@ -224,7 +224,6 @@ const menuItems: MenuItem[] = [
         label: 'Catálogo',
         items: [
           { key: 'produtos', label: 'Produtos', icon: Package, route: '/cadastros/produtos' },
-          { key: 'categorias', label: 'Categorias', icon: Boxes, route: '/cadastros/dimensoes' },
           { key: 'servicos', label: 'Serviços', icon: Briefcase, route: '/cadastros/servicos' },
         ]
       },
