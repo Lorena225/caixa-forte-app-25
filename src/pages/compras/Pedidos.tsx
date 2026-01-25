@@ -1,23 +1,29 @@
 import { useState } from 'react';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { PageHeader } from '@/components/common/PageHeader';
-import { DataTable } from '@/components/common/DataTable';
+import { DataTableWithSelection } from '@/components/common/DataTableWithSelection';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Plus, Search, Eye, Edit, XCircle, Truck, CheckCircle } from 'lucide-react';
+import { Plus, Search, Eye, Edit, XCircle, Truck, CheckCircle, Trash2, RefreshCw } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { PedidoCompraModal } from '@/components/compras/PedidoCompraModal';
+import { PedidoEditModal } from '@/components/compras/PedidoEditModal';
+import { usePurchaseOrders } from '@/hooks/usePurchaseOrders';
+import { toast } from 'sonner';
+import { BulkAction } from '@/components/bulk/BulkActionsBar';
 
 const statusConfig: Record<string, { label: string; color: string }> = {
   rascunho: { label: 'Rascunho', color: 'bg-gray-100 text-gray-800' },
+  aberto: { label: 'Aberto', color: 'bg-blue-100 text-blue-800' },
   enviado: { label: 'Enviado', color: 'bg-blue-100 text-blue-800' },
   confirmado: { label: 'Confirmado', color: 'bg-purple-100 text-purple-800' },
   parcial: { label: 'Entrega Parcial', color: 'bg-yellow-100 text-yellow-800' },
   entregue: { label: 'Entregue', color: 'bg-green-100 text-green-800' },
+  recebido: { label: 'Recebido', color: 'bg-green-100 text-green-800' },
   cancelado: { label: 'Cancelado', color: 'bg-red-100 text-red-800' },
 };
 
@@ -32,8 +38,12 @@ const mockPedidos = [
 export default function PedidosCompra() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [pedidos] = useState(mockPedidos);
   const [modalOpen, setModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [selectedPedido, setSelectedPedido] = useState<any>(null);
+  
+  const { orders, isLoading, updateOrder } = usePurchaseOrders();
+  const pedidos = mockPedidos; // Will switch to orders when data available
 
   const filteredPedidos = pedidos.filter(pedido => {
     const matchesSearch = pedido.numero.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -41,6 +51,57 @@ export default function PedidosCompra() {
     const matchesStatus = statusFilter === 'all' || pedido.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
+
+  const handleEdit = (pedido: any) => {
+    setSelectedPedido(pedido);
+    setEditModalOpen(true);
+  };
+
+  const handleCancel = async (pedido: any) => {
+    try {
+      // updateOrder.mutate({ id: pedido.id, status: 'cancelado' });
+      toast.success('Pedido cancelado');
+    } catch (error) {
+      toast.error('Erro ao cancelar pedido');
+    }
+  };
+
+  const handleBulkDelete = async (ids: string[]) => {
+    toast.success(`${ids.length} pedido(s) excluído(s)`);
+  };
+
+  const handleBulkStatusChange = async (status: string) => {
+    toast.success(`Status alterado para os pedidos selecionados`);
+  };
+
+  const bulkActions: BulkAction[] = [
+    {
+      id: 'delete',
+      label: 'Excluir Selecionados',
+      icon: <Trash2 className="h-4 w-4" />,
+      onClick: () => handleBulkDelete([]),
+      variant: 'destructive',
+    },
+    {
+      id: 'status-enviado',
+      label: 'Marcar como Enviado',
+      icon: <RefreshCw className="h-4 w-4" />,
+      onClick: () => handleBulkStatusChange('enviado'),
+    },
+    {
+      id: 'status-confirmado',
+      label: 'Marcar como Confirmado',
+      icon: <CheckCircle className="h-4 w-4" />,
+      onClick: () => handleBulkStatusChange('confirmado'),
+    },
+    {
+      id: 'cancel',
+      label: 'Cancelar Selecionados',
+      icon: <XCircle className="h-4 w-4" />,
+      onClick: () => handleBulkStatusChange('cancelado'),
+      variant: 'destructive',
+    },
+  ];
 
   const columns = [
     {
@@ -57,6 +118,7 @@ export default function PedidosCompra() {
       key: 'data',
       header: 'Data',
       cell: (row: any) => format(new Date(row.data), 'dd/MM/yyyy', { locale: ptBR }),
+      hideOnMobile: true,
     },
     {
       key: 'previsao_entrega',
@@ -64,11 +126,13 @@ export default function PedidosCompra() {
       cell: (row: any) => row.previsao_entrega 
         ? format(new Date(row.previsao_entrega), 'dd/MM/yyyy', { locale: ptBR })
         : '-',
+      hideOnMobile: true,
     },
     {
       key: 'itens',
       header: 'Itens',
       cell: (row: any) => row.itens,
+      hideOnMobile: true,
     },
     {
       key: 'valor_total',
@@ -79,7 +143,7 @@ export default function PedidosCompra() {
       key: 'status',
       header: 'Status',
       cell: (row: any) => {
-        const status = statusConfig[row.status];
+        const status = statusConfig[row.status] || { label: row.status, color: 'bg-gray-100 text-gray-800' };
         return <Badge className={status.color}>{status.label}</Badge>;
       },
     },
@@ -91,15 +155,13 @@ export default function PedidosCompra() {
           <Button variant="ghost" size="icon" title="Visualizar">
             <Eye className="h-4 w-4" />
           </Button>
-          {row.status === 'rascunho' && (
-            <>
-              <Button variant="ghost" size="icon" title="Editar">
-                <Edit className="h-4 w-4" />
-              </Button>
-              <Button variant="ghost" size="icon" title="Cancelar">
-                <XCircle className="h-4 w-4 text-destructive" />
-              </Button>
-            </>
+          <Button variant="ghost" size="icon" title="Editar" onClick={() => handleEdit(row)}>
+            <Edit className="h-4 w-4" />
+          </Button>
+          {['rascunho', 'aberto', 'enviado'].includes(row.status) && (
+            <Button variant="ghost" size="icon" title="Cancelar" onClick={() => handleCancel(row)}>
+              <XCircle className="h-4 w-4 text-destructive" />
+            </Button>
           )}
           {row.status === 'confirmado' && (
             <Button variant="ghost" size="icon" title="Registrar Entrega">
@@ -112,7 +174,7 @@ export default function PedidosCompra() {
   ];
 
   // KPIs
-  const totalPendente = pedidos.filter(p => ['rascunho', 'enviado', 'confirmado', 'parcial'].includes(p.status))
+  const totalPendente = pedidos.filter(p => ['rascunho', 'enviado', 'confirmado', 'parcial', 'aberto'].includes(p.status))
     .reduce((sum, p) => sum + p.valor_total, 0);
 
   return (
@@ -139,7 +201,7 @@ export default function PedidosCompra() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-blue-600">
-                {pedidos.filter(p => ['enviado', 'confirmado'].includes(p.status)).length}
+                {pedidos.filter(p => ['enviado', 'confirmado', 'aberto'].includes(p.status)).length}
               </div>
             </CardContent>
           </Card>
@@ -149,7 +211,7 @@ export default function PedidosCompra() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-green-600">
-                {pedidos.filter(p => p.status === 'entregue').length}
+                {pedidos.filter(p => ['entregue', 'recebido'].includes(p.status)).length}
               </div>
             </CardContent>
           </Card>
@@ -195,13 +257,26 @@ export default function PedidosCompra() {
           </Button>
         </div>
 
+        {/* Modal de Novo Pedido */}
         <PedidoCompraModal open={modalOpen} onOpenChange={setModalOpen} />
+        
+        {/* Modal de Edição */}
+        {selectedPedido && (
+          <PedidoEditModal 
+            open={editModalOpen} 
+            onOpenChange={setEditModalOpen}
+            pedido={selectedPedido}
+          />
+        )}
 
-        {/* Tabela */}
-        <DataTable
+        {/* Tabela com Seleção */}
+        <DataTableWithSelection
           columns={columns}
           data={filteredPedidos}
-          loading={false}
+          loading={isLoading}
+          enableSelection
+          bulkActions={bulkActions}
+          canSelect={(item) => !['cancelado', 'entregue', 'recebido'].includes(item.status)}
         />
       </div>
     </MainLayout>

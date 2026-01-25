@@ -253,13 +253,7 @@ const menuItems: MenuItem[] = [
           { key: 'pedidos-compra', label: 'Pedidos', icon: FileText, route: '/compras/pedidos' },
           { key: 'cotacoes', label: 'Cotações', icon: Calculator, route: '/compras/cotacoes' },
           { key: 'entradas', label: 'Entradas', icon: Package, route: '/compras/entradas' },
-        ]
-      },
-      {
-        key: 'parceiros',
-        label: 'Parceiros',
-        items: [
-          { key: 'fornecedores', label: 'Fornecedores', icon: Users, route: '/cadastros/clientes-fornecedores' },
+          { key: 'fornecedores', label: 'Fornecedores', icon: Users, route: '/cadastros/clientes-fornecedores?tipo=fornecedor' },
         ]
       }
     ]
