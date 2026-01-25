@@ -30,7 +30,13 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Produto, useCreateProduto, useUpdateProduto } from '@/hooks/useProdutos';
-import { Loader2 } from 'lucide-react';
+import { Loader2, HelpCircle } from 'lucide-react';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 const produtoSchema = z.object({
   tipo: z.enum(['P', 'S']),
@@ -223,9 +229,24 @@ export function ProdutoFormDialog({
                     name="referencia"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Referência</FormLabel>
+                        <FormLabel className="flex items-center gap-1.5">
+                          SKU / Referência
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger type="button" className="cursor-help">
+                                <HelpCircle className="h-3.5 w-3.5 text-muted-foreground" />
+                              </TooltipTrigger>
+                              <TooltipContent className="max-w-[250px]">
+                                <p className="text-sm">
+                                  Código interno único para identificar o produto. 
+                                  Use padrões como "ELET-001" ou "CAM-AZUL-M" para facilitar buscas.
+                                </p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </FormLabel>
                         <FormControl>
-                          <Input {...field} value={field.value || ''} />
+                          <Input placeholder="Ex: ELET-001" {...field} value={field.value || ''} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -502,11 +523,27 @@ export function ProdutoFormDialog({
                     name="estoque_minimo"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Estoque Mínimo</FormLabel>
+                        <FormLabel className="flex items-center gap-1.5">
+                          Estoque Mínimo
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger type="button" className="cursor-help">
+                                <HelpCircle className="h-3.5 w-3.5 text-muted-foreground" />
+                              </TooltipTrigger>
+                              <TooltipContent className="max-w-[280px]">
+                                <p className="text-sm">
+                                  Quantidade de segurança que dispara alerta de reposição.
+                                  Fórmula sugerida: Consumo Médio Diário × Lead Time × 1,5
+                                </p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </FormLabel>
                         <FormControl>
                           <Input
                             type="number"
                             step="0.01"
+                            placeholder="Ex: 10"
                             {...field}
                             value={field.value ?? ''}
                             onChange={(e) =>

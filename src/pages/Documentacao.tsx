@@ -808,7 +808,7 @@ O agente entende linguagem natural:
     icon: Rocket,
     color: 'text-emerald-500',
     bgColor: 'bg-emerald-50',
-    description: 'PDV, gestão de produtos, inventário e logística.',
+    description: 'PDV, gestão de produtos, inventário, movimentações de estoque e logística.',
     modules: [
       {
         id: 'pdv',
@@ -864,47 +864,100 @@ O CFO Virtual otimiza suas vendas:
 - 🎯 Analisa ticket médio e sugere estratégias de upsell`
       },
       {
-        id: 'inventario',
-        title: 'Gestão de Inventário',
-        icon: Boxes,
+        id: 'movimentacoes-estoque',
+        title: 'Movimentações de Estoque',
+        icon: Truck,
         content: `## 📊 O que é?
 
-A **Gestão de Inventário** controla todo o estoque da empresa em tempo real, incluindo:
+As **Movimentações de Estoque** são registros contínuos de toda entrada e saída de produtos do seu estoque. Diferente do Inventário (conferência periódica), as movimentações acontecem em tempo real, conforme as operações do dia a dia.
 
-- Quantidade disponível por produto
-- Movimentações de entrada e saída
-- Controle de lotes e validade
-- Inventários periódicos
+**Tipos de Movimentação:**
+| Tipo | Descrição | Exemplo |
+|------|-----------|---------|
+| Entrada | Produtos entrando no estoque | Compra de fornecedor |
+| Saída | Produtos saindo do estoque | Venda, consumo interno |
+| Transferência | Movimentação entre locais | Matriz → Filial |
+| Ajuste | Correção manual de quantidade | Perda, quebra, furto |
 
 ---
 
 ## 📝 Como usar? (Passo a Passo)
 
-**1. Visualize o estoque atual**
-   - Navegue para: **Operacional > Logística > Inventário**
-   - Veja lista de produtos com quantidade disponível
-   - Filtre por categoria, local ou status
+**1. Acesse as movimentações**
+   - Navegue para: **Operacional > Estoque > Movimentações**
+   - Visualize o histórico completo filtrado por data
 
-**2. Faça uma contagem de inventário**
+**2. Registre uma nova movimentação**
+   - Clique em "Nova Movimentação"
+   - Selecione o tipo: Entrada, Saída, Transferência ou Ajuste
+   - Escolha o produto
+   - Informe quantidade e custo unitário (se aplicável)
+   - Adicione documento de referência (NF, pedido)
+
+**3. Acompanhe o impacto em tempo real**
+   - O estoque é atualizado automaticamente
+   - Veja o saldo antes e depois da movimentação
+   - Alertas disparam se atingir estoque mínimo
+
+**4. Como ajustar estoque manualmente?**
+   - Tipo: **Ajuste**
+   - Informe a diferença (positiva ou negativa)
+   - Motivo obrigatório: perda, quebra, furto, correção
+   - O sistema gera lançamento contábil automático
+
+---
+
+## 💡 Dica da IA
+
+O CFO Virtual monitora suas movimentações:
+
+- 📉 Detecta padrões de consumo anormal
+- ⚠️ Alerta sobre **Ruptura de Estoque** (quantidade zerou ou ficou negativa)
+- 🔄 Sugere reposição automática baseada em lead time
+- 📊 Identifica produtos com alta rotatividade`
+      },
+      {
+        id: 'inventario',
+        title: 'Inventário (Contagem Periódica)',
+        icon: Boxes,
+        content: `## 📊 O que é?
+
+O **Inventário** é o processo de **conferência física periódica** do estoque. Diferente das movimentações (contínuas), o inventário é uma fotografia do que realmente existe no seu armazém em um momento específico.
+
+**Diferença entre Movimentação e Inventário:**
+| Aspecto | Movimentação | Inventário |
+|---------|--------------|------------|
+| Frequência | Contínua (tempo real) | Periódica (mensal, trimestral) |
+| Objetivo | Registrar entradas/saídas | Conferir quantidade física |
+| Resultado | Atualiza estoque | Detecta divergências |
+| Ação | Automática | Ajuste manual |
+
+---
+
+## 📝 Como usar? (Passo a Passo)
+
+**1. Inicie um novo inventário**
+   - Navegue para: **Operacional > Estoque > Inventário**
    - Clique em "Novo Inventário"
-   - Selecione os produtos ou categorias
-   - Registre as quantidades contadas
-   - O sistema calcula a diferença (sobra/falta)
+   - Selecione: Todos os produtos ou categorias específicas
 
-**3. Ajuste o estoque**
-   - Para divergências, clique em "Ajustar"
-   - Informe o motivo (quebra, furto, erro de contagem)
-   - O ajuste gera lançamento contábil automático
+**2. Realize a contagem física**
+   - Imprima a lista de contagem (ou use dispositivo móvel)
+   - Conte fisicamente cada item
+   - Registre a quantidade encontrada
 
-**4. Configure alertas de estoque**
-   - Defina estoque mínimo por produto
-   - Receba alertas quando atingir o nível crítico
-   - Configure ponto de pedido para reposição automática
+**3. Compare com o sistema**
+   - O Caixa Forte mostra: **Esperado vs Contado**
+   - Divergências são destacadas em vermelho
+   - Valor financeiro da diferença é calculado
 
-**5. Controle de validade**
-   - Para produtos perecíveis, informe lote e validade
-   - Receba alertas 30 dias antes do vencimento
-   - Use FIFO (primeiro a entrar, primeiro a sair)
+**4. Finalize o inventário**
+   - Revise todas as divergências
+   - Clique em "Finalizar Inventário"
+   - O sistema gera automaticamente:
+     - Ajustes de estoque
+     - Lançamentos contábeis
+     - Relatório de auditoria
 
 ---
 
@@ -912,72 +965,108 @@ A **Gestão de Inventário** controla todo o estoque da empresa em tempo real, i
 
 O CFO Virtual otimiza seu inventário:
 
-- 📉 Prevê demanda baseada em histórico e sazonalidade
-- 🔄 Sugere transferências entre centros de custódia
-- ⚠️ Alerta sobre produtos parados há mais de 90 dias
-- 💰 Calcula o custo de estoque parado`
+- 📅 Sugere frequência ideal de contagem por categoria (Curva ABC)
+- ⚠️ Prioriza itens com alto valor ou alta rotatividade
+- 📊 Calcula a **Acuracidade de Estoque** (meta: >98%)
+- 💰 Estima impacto financeiro das divergências`
       },
       {
-        id: 'centros-custodia',
-        title: 'Centros de Custódia',
-        icon: Building2,
+        id: 'estoque-minimo-ruptura',
+        title: 'Estoque Mínimo e Ruptura',
+        icon: Activity,
         content: `## 📊 O que é?
 
-Os **Centros de Custódia** são os locais físicos onde a empresa armazena produtos. Podem ser:
+O **Estoque Mínimo** é a quantidade limite que você deve ter de cada produto para não correr o risco de **Ruptura de Estoque** (ficar sem o produto para vender).
 
-- Matriz
-- Filiais
-- Armazéns externos
-- Pontos de venda
-- Veículos de entrega
-
-Cada centro tem seu próprio estoque, permitindo controle descentralizado.
+**Conceitos importantes:**
+- **Estoque Mínimo**: Quantidade de segurança que dispara alerta de reposição
+- **Ruptura de Estoque**: Quando a quantidade disponível é zero ou negativa
+- **Ponto de Pedido**: Momento ideal para fazer novo pedido de compra
+- **Lead Time**: Tempo entre o pedido e o recebimento do fornecedor
 
 ---
 
-## 📝 Como usar? (Passo a Passo)
+## 📝 Como configurar?
 
-**1. Cadastre um novo centro**
-   - Navegue para: **Operacional > Logística > Centros de Custódia**
-   - Clique em "Novo Centro"
-   - Preencha:
-     - Nome (ex: "Armazém Centro")
-     - Tipo (Matriz, Filial, CD, Veículo)
-     - Endereço completo
-     - Responsável
+**1. Defina o estoque mínimo por produto**
+   - Navegue para: **Operacional > Produtos > Catálogo**
+   - Edite o produto desejado
+   - Na aba "Estoque", configure:
+     - **Estoque Mínimo**: Quantidade de segurança
+     - **Estoque Máximo**: Limite superior (opcional)
 
-**2. Configure parâmetros**
-   - Capacidade máxima (m² ou unidades)
-   - Produtos permitidos (categorias)
-   - Horário de operação
-   - Custo de armazenagem (se aplicável)
+**2. Cálculo recomendado**
+   - Estoque Mínimo = Consumo Médio Diário × Lead Time × 1,5 (margem de segurança)
+   - Exemplo: Se vende 10 un/dia e fornecedor entrega em 5 dias:
+     - Estoque Mínimo = 10 × 5 × 1,5 = **75 unidades**
 
-**3. Faça transferências entre centros**
-   - Clique em "Nova Transferência"
-   - Selecione origem e destino
-   - Escolha os produtos e quantidades
-   - Gere romaneio de transferência
-
-**4. Acompanhe movimentações**
-   - Veja histórico de entradas e saídas
-   - Identifique centros com excesso ou falta
-   - Analise tempo médio de permanência
-
-**5. Integre com logística**
-   - Configure rotas de entrega
-   - Vincule veículos aos centros
-   - Acompanhe entregas em tempo real
+**3. Monitore os alertas**
+   - Dashboard mostra produtos abaixo do mínimo
+   - Receba notificações por email ou WhatsApp
+   - Gere pedido de compra automaticamente
 
 ---
 
 ## 💡 Dica da IA
 
-O CFO Virtual otimiza sua distribuição:
+O CFO Virtual calcula automaticamente:
 
-- 🚚 Sugere transferências para equilibrar estoque
-- 📊 Analisa custo de manter cada centro
-- 🗺️ Recomenda localização ideal para novos centros
-- ⏱️ Calcula lead time médio por rota`
+- 📈 Sugere estoque mínimo baseado no histórico de vendas
+- 🔮 Prevê ruptura antes que aconteça
+- 📊 Identifica sazonalidade (Natal, Black Friday)
+- 💰 Calcula custo de manter estoque vs custo de ruptura`
+      },
+      {
+        id: 'centros-custodia',
+        title: 'Classificação por Centro de Custo/Departamento',
+        icon: Building2,
+        content: `## 📊 O que é?
+
+A **Classificação por Centro de Custo e Departamento** organiza seus produtos e transações para análise gerencial detalhada. Isso substitui o conceito antigo de "Dimensões Gerenciais" com uma abordagem mais intuitiva.
+
+**Exemplos de Centro de Custo:**
+- Loja Matriz
+- Filial Centro
+- E-commerce
+- Marketplace
+
+**Exemplos de Departamento:**
+- Eletrônicos
+- Vestuário
+- Alimentos
+- Serviços
+
+---
+
+## 📝 Como usar? (Passo a Passo)
+
+**1. Cadastre Centros de Custo**
+   - Navegue para: **Configurações > Cadastros > Centros de Custo**
+   - Crie: Matriz, Filiais, Canais de Venda
+
+**2. Cadastre Departamentos**
+   - Navegue para: **Configurações > Cadastros > Departamentos**
+   - Organize por categoria de produto ou área
+
+**3. Vincule aos Produtos**
+   - Ao cadastrar um produto, selecione o Centro de Custo padrão
+   - O departamento pode vir da categoria do produto
+
+**4. Analise por dimensão**
+   - Relatórios filtram por Centro de Custo ou Departamento
+   - Compare desempenho entre lojas ou categorias
+   - Identifique os mais rentáveis
+
+---
+
+## 💡 Dica da IA
+
+O CFO Virtual cruza dados por dimensão:
+
+- 📊 Ranking de vendas por Centro de Custo
+- 💰 Margem de lucro por Departamento
+- 📉 Detecta unidades com baixo desempenho
+- 🎯 Sugere ações de otimização por local`
       },
       {
         id: 'produtos',
@@ -994,18 +1083,20 @@ O **Catálogo de Produtos** centraliza todo o cadastro de itens comercializados 
 **1. Cadastre um produto**
    - Navegue para: **Operacional > Produtos > Catálogo**
    - Clique em "Novo Produto"
-   - Preencha: Nome, SKU, Código de barras
+   - Preencha: Nome, **SKU** (código único interno), Código de barras (EAN)
    - Defina preço de venda e custo
 
-**2. Configure tributação**
+**2. Entenda os campos importantes**
+   - **SKU (Referência)**: Código interno único para identificar o produto. Use padrões como "ELET-001" ou "CAM-AZUL-M"
+   - **Estoque Mínimo**: Quantidade que dispara alerta de reposição
+   - **Centro de Custo**: Local/unidade responsável pelo produto
+   - **NCM**: Código fiscal obrigatório para NF-e
+
+**3. Configure tributação**
    - NCM (obrigatório para NF-e)
    - CFOP padrão
    - CST/CSOSN
    - Alíquotas de ICMS, PIS, COFINS
-
-**3. Adicione variações**
-   - Cor, tamanho, sabor, etc.
-   - Cada variação pode ter SKU e preço próprio
 
 **4. Organize em categorias**
    - Crie hierarquias (Eletrônicos > Celulares > iPhones)
@@ -1019,7 +1110,8 @@ O CFO Virtual analisa seu catálogo:
 
 - 📊 Identifica produtos mais e menos vendidos
 - 💰 Sugere precificação baseada em margem e concorrência
-- ⚠️ Alerta sobre produtos sem movimentação`
+- ⚠️ Alerta sobre produtos sem movimentação
+- 🔍 Detecta SKUs duplicados ou inconsistentes`
       }
     ]
   },
