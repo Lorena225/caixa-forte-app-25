@@ -174,7 +174,7 @@ export default function Entradas() {
       <div className="space-y-6">
         <PageHeader
           title="Entradas de Mercadorias"
-          description="Recebimento e conferência de NF-e de entrada"
+          description="O coração da logística: ao confirmar uma entrada, o estoque é atualizado, o custo médio é recalculado e uma conta a pagar é gerada automaticamente."
         />
 
         {/* KPIs */}
