@@ -1,15 +1,19 @@
 import { useState } from 'react';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { PageHeader } from '@/components/common/PageHeader';
-import { DataTable } from '@/components/common/DataTable';
+import { DataTableWithSelection } from '@/components/common/DataTableWithSelection';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Plus, Search, Eye, FileText, Package, CheckCircle, AlertTriangle } from 'lucide-react';
+import { Plus, Search, Eye, FileText, Package, CheckCircle, AlertTriangle, Trash2, Edit } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { EntradaModal } from '@/components/compras/EntradaModal';
+import { usePurchaseReceipts } from '@/hooks/usePurchaseReceipts';
+import { toast } from 'sonner';
+import { BulkAction } from '@/components/bulk/BulkActionsBar';
 
 const statusConfig: Record<string, { label: string; color: string }> = {
   pendente: { label: 'Pendente', color: 'bg-yellow-100 text-yellow-800' },
@@ -18,7 +22,7 @@ const statusConfig: Record<string, { label: string; color: string }> = {
   divergencia: { label: 'Divergência', color: 'bg-red-100 text-red-800' },
 };
 
-// Mock data
+// Mock data for display (will be replaced by real data)
 const mockEntradas = [
   { id: '1', numero: 'ENT-2026-0001', nfe: '123456', fornecedor: 'Distribuidora ABC', data: '2026-01-14', valor_total: 15000, pedido: 'PC-2026-0001', status: 'pendente', itens: 5 },
   { id: '2', numero: 'ENT-2026-0002', nfe: '654321', fornecedor: 'Tech Supplies', data: '2026-01-13', valor_total: 8500, pedido: 'PC-2026-0002', status: 'conferido', itens: 3 },
@@ -29,7 +33,11 @@ const mockEntradas = [
 export default function Entradas() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [entradas] = useState(mockEntradas);
+  const [modalOpen, setModalOpen] = useState(false);
+  
+  // Using mock data for now, can integrate with usePurchaseReceipts
+  const { receipts, isLoading } = usePurchaseReceipts();
+  const entradas = mockEntradas; // Will switch to receipts when data available
 
   const filteredEntradas = entradas.filter(entrada => {
     const matchesSearch = entrada.numero.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -38,6 +46,36 @@ export default function Entradas() {
     const matchesStatus = statusFilter === 'all' || entrada.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
+
+  const handleBulkDelete = async (ids: string[]) => {
+    toast.success(`${ids.length} entrada(s) excluída(s)`);
+  };
+
+  const handleBulkStatusChange = async (ids: string[], status: string) => {
+    toast.success(`Status alterado para ${ids.length} entrada(s)`);
+  };
+
+  const bulkActions: BulkAction[] = [
+    {
+      id: 'delete',
+      label: 'Excluir Selecionados',
+      icon: <Trash2 className="h-4 w-4" />,
+      onClick: () => handleBulkDelete([]),
+      variant: 'destructive',
+    },
+    {
+      id: 'status-finalizado',
+      label: 'Marcar como Finalizado',
+      icon: <CheckCircle className="h-4 w-4" />,
+      onClick: () => handleBulkStatusChange([], 'finalizado'),
+    },
+    {
+      id: 'status-conferido',
+      label: 'Marcar como Conferido',
+      icon: <Package className="h-4 w-4" />,
+      onClick: () => handleBulkStatusChange([], 'conferido'),
+    },
+  ];
 
   const columns = [
     {
@@ -64,6 +102,7 @@ export default function Entradas() {
       key: 'data',
       header: 'Data',
       cell: (row: any) => format(new Date(row.data), 'dd/MM/yyyy', { locale: ptBR }),
+      hideOnMobile: true,
     },
     {
       key: 'pedido',
@@ -73,11 +112,13 @@ export default function Entradas() {
       ) : (
         <span className="text-muted-foreground">Sem pedido</span>
       ),
+      hideOnMobile: true,
     },
     {
       key: 'itens',
       header: 'Itens',
       cell: (row: any) => row.itens,
+      hideOnMobile: true,
     },
     {
       key: 'valor_total',
@@ -99,6 +140,9 @@ export default function Entradas() {
         <div className="flex gap-1">
           <Button variant="ghost" size="icon" title="Visualizar">
             <Eye className="h-4 w-4" />
+          </Button>
+          <Button variant="ghost" size="icon" title="Editar">
+            <Edit className="h-4 w-4" />
           </Button>
           {row.status === 'pendente' && (
             <Button variant="ghost" size="icon" title="Conferir">
@@ -203,18 +247,24 @@ export default function Entradas() {
               <SelectItem value="divergencia">Divergência</SelectItem>
             </SelectContent>
           </Select>
-          <Button>
+          <Button onClick={() => setModalOpen(true)}>
             <Plus className="h-4 w-4 mr-2" />
             Nova Entrada
           </Button>
         </div>
 
-        {/* Tabela */}
-        <DataTable
+        {/* Tabela com Seleção */}
+        <DataTableWithSelection
           columns={columns}
           data={filteredEntradas}
-          loading={false}
+          loading={isLoading}
+          enableSelection
+          bulkActions={bulkActions}
+          canSelect={(item) => item.status !== 'finalizado'}
         />
+
+        {/* Modal de Nova Entrada */}
+        <EntradaModal open={modalOpen} onOpenChange={setModalOpen} />
       </div>
     </MainLayout>
   );
