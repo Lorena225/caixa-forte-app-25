@@ -1307,10 +1307,37 @@ A IA valida importações e alerta sobre:
   }
 };
 
+import { useSearchParams } from 'react-router-dom';
+
 export default function Documentacao() {
+  const [searchParams] = useSearchParams();
+  const categoryParam = searchParams.get('categoria');
+  
   const [searchQuery, setSearchQuery] = useState('');
-  const [expandedCategories, setExpandedCategories] = useState<string[]>(['financeiro']);
-  const [selectedModule, setSelectedModule] = useState<string | null>('conciliacao-bancaria');
+  
+  // Map URL parameter to knowledgeBase keys
+  const getCategoryKey = (param: string | null): string => {
+    const categoryMapping: Record<string, string> = {
+      'operacional': 'operacional',
+      'suprimentos': 'suprimentos',
+      'financeiro': 'financeiro',
+      'controladoria-fiscal': 'fiscal',
+      'inteligencia': 'inteligencia',
+      'configuracoes': 'configuracoes',
+    };
+    return categoryMapping[param || ''] || 'financeiro';
+  };
+  
+  const initialCategory = getCategoryKey(categoryParam);
+  const [expandedCategories, setExpandedCategories] = useState<string[]>([initialCategory]);
+  
+  // Get first module of the initial category
+  const getInitialModule = (categoryKey: string): string | null => {
+    const category = knowledgeBase[categoryKey as keyof typeof knowledgeBase];
+    return category?.modules?.[0]?.id || 'conciliacao-bancaria';
+  };
+  
+  const [selectedModule, setSelectedModule] = useState<string | null>(getInitialModule(initialCategory));
 
   const toggleCategory = (categoryKey: string) => {
     setExpandedCategories(prev => 
