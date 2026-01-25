@@ -34058,6 +34058,10 @@ export type Database = {
         Args: { p_days_login_attempts?: number; p_days_rate_limit?: number }
         Returns: Json
       }
+      finalize_inventory_with_adjustments: {
+        Args: { p_inventory_id: string }
+        Returns: undefined
+      }
       generate_api_key: { Args: never; Returns: string }
       generate_sequential_code: {
         Args: { p_company_id?: string; p_prefix?: string; p_table_name: string }
@@ -34094,6 +34098,18 @@ export type Database = {
       get_company_tier: {
         Args: { p_company_id: string }
         Returns: Database["public"]["Enums"]["system_tier"]
+      }
+      get_dashboard_metrics: {
+        Args: { p_company_id: string }
+        Returns: {
+          company_id: string
+          overdue_count: number
+          refreshed_at: string
+          total_payable_amount: number
+          total_payables: number
+          total_receivable_amount: number
+          total_receivables: number
+        }[]
       }
       get_security_dashboard: {
         Args: { p_company_id: string }
