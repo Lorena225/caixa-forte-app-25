@@ -23476,6 +23476,7 @@ export type Database = {
           created_at: string
           current_stock: number | null
           description: string | null
+          external_id: string | null
           id: string
           is_active: boolean | null
           location: string | null
@@ -23497,6 +23498,7 @@ export type Database = {
           created_at?: string
           current_stock?: number | null
           description?: string | null
+          external_id?: string | null
           id?: string
           is_active?: boolean | null
           location?: string | null
@@ -23518,6 +23520,7 @@ export type Database = {
           created_at?: string
           current_stock?: number | null
           description?: string | null
+          external_id?: string | null
           id?: string
           is_active?: boolean | null
           location?: string | null
