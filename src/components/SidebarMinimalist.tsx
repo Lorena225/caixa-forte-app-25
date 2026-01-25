@@ -208,7 +208,15 @@ const menuItems: MenuItem[] = [
         items: [
           { key: 'pdv', label: 'PDV', icon: Store, route: '/frente-caixa' },
           { key: 'nova-venda', label: 'Nova Venda', icon: ShoppingCart, route: '/vendas/nova' },
-          { key: 'movimentacoes', label: 'Movimentações', icon: TrendingUp, route: '/estoque/movimentacoes' },
+        ]
+      },
+      {
+        key: 'estoque',
+        label: 'Estoque',
+        items: [
+          { key: 'estoque-central', label: 'Central de Estoque', icon: Package, route: '/estoque' },
+          { key: 'movimentacoes', label: 'Movimentações', icon: ArrowRightLeft, route: '/estoque/movimentacoes' },
+          { key: 'inventario', label: 'Inventário', icon: ClipboardList, route: '/estoque/inventario' },
         ]
       },
       {
@@ -224,7 +232,6 @@ const menuItems: MenuItem[] = [
         key: 'logistica',
         label: 'Logística',
         items: [
-          { key: 'inventario', label: 'Inventário', icon: Package, route: '/estoque/inventario' },
           { key: 'centros-custodia', label: 'Centros de Custódia', icon: FolderTree, route: '/operacional/centros-custodia' },
           { key: 'estrutura-org', label: 'Estrutura Organizacional', icon: Network, route: '/operacional/estrutura' },
           { key: 'departamentos', label: 'Departamentos', icon: Building2, route: '/operacional/departamentos' },
