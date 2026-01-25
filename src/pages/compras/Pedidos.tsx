@@ -182,7 +182,7 @@ export default function PedidosCompra() {
       <div className="space-y-6">
         <PageHeader
           title="Pedidos de Compra"
-          description="Gerencie pedidos enviados a fornecedores"
+          description="Formalize a intenção de compra e acompanhe o status até a entrega. Após receber, registre uma 'Entrada' para atualizar o estoque."
         />
 
         {/* KPIs */}

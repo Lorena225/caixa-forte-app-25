@@ -17,9 +17,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { X, FileText, Upload } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { X, FileText, Upload, HelpCircle, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import { useFornecedores } from '@/hooks/useFornecedores';
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface EntradaModalProps {
   open: boolean;
@@ -80,6 +82,19 @@ export function EntradaModal({ open, onOpenChange }: EntradaModalProps) {
         </DialogHeader>
 
         <div className="space-y-6 py-4">
+          {/* Alert explaining automatic actions */}
+          <Alert className="bg-primary/5 border-primary/20">
+            <AlertCircle className="h-4 w-4 text-primary" />
+            <AlertDescription className="text-sm">
+              <strong>Ao confirmar esta entrada, o sistema executará automaticamente:</strong>
+              <ul className="list-disc list-inside mt-2 space-y-1 text-muted-foreground">
+                <li>Atualização do saldo de estoque dos produtos</li>
+                <li>Registro do custo médio no Catálogo</li>
+                <li>Criação de conta a pagar no Financeiro</li>
+              </ul>
+            </AlertDescription>
+          </Alert>
+
           <div className="border-2 border-dashed rounded-lg p-6 text-center">
             <Upload className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
             <p className="font-medium">Importar XML da NF-e</p>
@@ -133,7 +148,21 @@ export function EntradaModal({ open, onOpenChange }: EntradaModalProps) {
               />
             </div>
             <div className="space-y-2">
-              <Label>Valor Total</Label>
+              <Label className="flex items-center gap-1.5">
+                Valor Total
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger type="button" className="cursor-help">
+                      <HelpCircle className="h-3.5 w-3.5 text-muted-foreground" />
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-[280px]">
+                      <p className="text-sm">
+                        Este valor será usado para gerar a conta a pagar no Financeiro automaticamente.
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </Label>
               <Input
                 type="number"
                 step="0.01"

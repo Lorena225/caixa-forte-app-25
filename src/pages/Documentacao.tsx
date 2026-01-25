@@ -1120,48 +1120,193 @@ O CFO Virtual analisa seu catálogo:
     icon: Package,
     color: 'text-orange-500',
     bgColor: 'bg-orange-50',
-    description: 'Gestão de compras, fornecedores e cotações.',
+    description: 'Gestão inteligente do fluxo de aquisição: Cotações, Pedidos e Entradas.',
     modules: [
+      {
+        id: 'fluxo-aquisicao',
+        title: 'Fluxo de Aquisição Inteligente',
+        icon: Zap,
+        content: `## 🚀 Visão Geral
+
+O **Fluxo de Aquisição Inteligente** do Caixa Forte organiza todo o processo de compras em três etapas conectadas:
+
+**Cotação → Pedido → Entrada**
+
+Cada etapa alimenta a próxima, garantindo rastreabilidade completa e automação de tarefas repetitivas.
+
+---
+
+## 📊 Diagrama do Fluxo
+
+| Etapa | Objetivo | Resultado |
+|-------|----------|-----------|
+| 1. Cotação | Comparar preços entre fornecedores | Melhor proposta selecionada |
+| 2. Pedido | Formalizar a intenção de compra | Pedido enviado ao fornecedor |
+| 3. Entrada | Registrar recebimento físico | Estoque atualizado + Conta a Pagar |
+
+---
+
+## 💡 Dica da IA
+
+O CFO Virtual acompanha todo o fluxo e:
+
+- 📊 Sugere o melhor fornecedor baseado em histórico
+- ⚠️ Alerta sobre prazos de entrega em risco
+- 💰 Identifica oportunidades de negociação
+- 🔄 Automatiza criação de pedido a partir de cotação aprovada`
+      },
+      {
+        id: 'cotacoes',
+        title: 'Cotações',
+        icon: Calculator,
+        content: `## 📊 O que é?
+
+As **Cotações** permitem comparar preços e condições de múltiplos fornecedores antes de realizar uma compra. É a primeira etapa do fluxo de aquisição.
+
+---
+
+## 📝 Como usar? (Passo a Passo)
+
+**1. Crie uma nova cotação**
+   - Navegue para: **Suprimentos > Cotações**
+   - Clique em "Nova Cotação"
+   - Selecione os produtos que deseja cotar
+
+**2. Adicione fornecedores**
+   - Inclua 2 ou mais fornecedores para comparação
+   - O sistema pode sugerir fornecedores com base no histórico
+
+**3. Envie os pedidos de cotação**
+   - Gere PDF ou envie por email automaticamente
+   - Defina prazo limite para respostas
+
+**4. Registre as propostas**
+   - Ao receber respostas, registre os valores
+   - O sistema destaca automaticamente a melhor oferta
+   - Compare: preço, prazo de pagamento, prazo de entrega
+
+**5. Aprove e gere o pedido**
+   - Selecione a melhor proposta
+   - Clique em "Gerar Pedido de Compra"
+   - O pedido é criado com os dados da cotação
+
+---
+
+## 💡 Dica da IA
+
+O CFO Virtual potencializa suas cotações:
+
+- 📊 Analisa histórico de preços do produto
+- ⚠️ Alerta se o preço está acima da média
+- 💰 Sugere negociar desconto por volume
+- 🏆 Rankeia fornecedores por melhor custo-benefício`
+      },
       {
         id: 'compras',
         title: 'Pedidos de Compra',
         icon: FileText,
         content: `## 📊 O que é?
 
-O módulo de **Pedidos de Compra** gerencia todo o processo de aquisição de produtos e serviços.
+O **Pedido de Compra** formaliza a intenção de aquisição junto ao fornecedor. É a segunda etapa do fluxo, gerada após aprovação de uma cotação ou criada diretamente.
 
 ---
 
 ## 📝 Como usar? (Passo a Passo)
 
-**1. Crie um pedido de compra**
-   - Navegue para: **Suprimentos > Pedidos de Compra**
-   - Clique em "Novo Pedido"
+**1. Crie ou gere um pedido**
+   - Navegue para: **Suprimentos > Pedidos**
+   - Clique em "Novo Pedido" ou gere a partir de uma cotação
    - Selecione o fornecedor
 
-**2. Adicione itens**
+**2. Adicione itens ao pedido**
    - Busque produtos pelo nome ou código
-   - Informe quantidade e preço negociado
-   - Adicione condições de pagamento
+   - Informe quantidade, preço negociado e desconto
+   - Defina condições de pagamento
 
-**3. Envie para aprovação**
-   - Pedidos acima do limite requerem aprovação
-   - Aprovadores recebem notificação
+**3. Gerencie prazos de entrega**
+   - Informe a data prevista de entrega
+   - O sistema monitora e alerta sobre atrasos
+   - Status do pedido: Rascunho → Enviado → Em Trânsito → Entregue
 
-**4. Acompanhe o recebimento**
-   - Ao receber, faça a conferência
-   - Recebimento parcial é permitido
-   - Divergências geram alerta
+**4. Edite o pedido quando necessário**
+   - Clique em "Ações" para editar itens, valores ou status
+   - Ajuste quantidades ou preços conforme negociação
+   - Altere o status para acompanhar o progresso
+
+**5. Aguarde a entrega**
+   - Quando a mercadoria chegar, registre uma "Entrada"
+   - O pedido é vinculado automaticamente à entrada
 
 ---
 
 ## 💡 Dica da IA
 
-O CFO Virtual otimiza suas compras:
+O CFO Virtual otimiza seus pedidos:
 
-- 📊 Compara preços entre fornecedores
-- 📅 Sugere melhor momento para comprar
-- ⚠️ Alerta sobre fornecedores com atraso recorrente`
+- 📊 Compara preços entre pedidos históricos
+- 📅 Sugere melhor momento para comprar (sazonalidade)
+- ⚠️ Alerta sobre fornecedores com atraso recorrente
+- 🔄 Sugere reposição automática baseada em estoque mínimo`
+      },
+      {
+        id: 'entradas',
+        title: 'Entradas (O Coração da Logística)',
+        icon: Package,
+        content: `## 📊 O que é?
+
+A **Entrada** é o registro do recebimento físico de mercadorias no seu estoque. É a etapa final e mais importante do fluxo de aquisição, pois dispara **três ações automáticas** no sistema.
+
+---
+
+## ⚡ As 3 Ações Automáticas da Entrada
+
+Ao confirmar uma "Nova Entrada", o Caixa Forte executa automaticamente:
+
+| # | Ação | Descrição |
+|---|------|-----------|
+| 1 | **Atualiza o Estoque** | O saldo dos produtos é somado à tabela de inventário |
+| 2 | **Registra o Custo Médio** | O custo unitário é atualizado no Catálogo de Produtos |
+| 3 | **Cria Conta a Pagar** | Uma obrigação é gerada no módulo Financeiro |
+
+---
+
+## 📝 Como usar? (Passo a Passo)
+
+**1. Registre uma nova entrada**
+   - Navegue para: **Suprimentos > Entradas**
+   - Clique em "Nova Entrada"
+   - Vincule a um Pedido de Compra existente (opcional)
+
+**2. Preencha os dados fiscais**
+   - Informe o número da Nota Fiscal do fornecedor
+   - Data de emissão e valor total
+   - Selecione o fornecedor
+
+**3. Adicione os produtos recebidos**
+   - Busque pelo código ou nome do produto
+   - Informe a quantidade recebida
+   - Confira o custo unitário (será usado no cálculo do custo médio)
+
+**4. Confira e confirme a entrada**
+   - Revise todos os itens
+   - Clique em "Confirmar Entrada"
+   - **IMPORTANTE**: Neste momento as 3 ações automáticas são executadas!
+
+**5. Acompanhe os impactos**
+   - Vá em **Estoque > Central de Estoque** para ver o novo saldo
+   - Vá em **Financeiro > Contas a Pagar** para ver a obrigação criada
+   - O custo médio é atualizado automaticamente no cadastro do produto
+
+---
+
+## 💡 Dica da IA
+
+O CFO Virtual monitora suas entradas:
+
+- ⚠️ Alerta se a quantidade recebida diverge do pedido
+- 📊 Detecta variação de preço acima do normal
+- 💰 Calcula automaticamente o novo custo médio ponderado
+- 📅 Integra o vencimento da conta a pagar no fluxo de caixa`
       },
       {
         id: 'fornecedores',
@@ -1169,15 +1314,24 @@ O CFO Virtual otimiza suas compras:
         icon: Users,
         content: `## 📊 O que é?
 
-A **Gestão de Fornecedores** centraliza informações e avalia o desempenho de cada parceiro comercial.
+A **Gestão de Fornecedores** centraliza informações e avalia o desempenho de cada parceiro comercial. O cadastro de fornecedores está unificado com o de clientes em **Cadastros Base**.
+
+---
+
+## 📝 Como acessar?
+
+**Acesso rápido:**
+- Menu lateral: **Suprimentos > Fornecedores**
+- Ou navegue para: **Configurações > Cadastros > Clientes/Fornecedores**
+- Filtre por "Tipo: Fornecedor" para ver apenas parceiros de compra
 
 ---
 
 ## 📝 Como usar? (Passo a Passo)
 
 **1. Cadastre um fornecedor**
-   - Navegue para: **Suprimentos > Fornecedores**
-   - Clique em "Novo Fornecedor"
+   - Clique em "Novo Cadastro"
+   - Marque o tipo como "Fornecedor"
    - Preencha: CNPJ, Razão Social, Contatos
 
 **2. Configure condições comerciais**
@@ -1204,7 +1358,89 @@ O CFO Virtual analisa seus fornecedores:
 
 - ⭐ Ranking de melhores fornecedores por categoria
 - 📉 Detecta aumento de preços acima do mercado
-- 🔄 Sugere alternativas quando há problemas recorrentes`
+- 🔄 Sugere alternativas quando há problemas recorrentes
+- 📊 Compara condições de pagamento entre fornecedores`
+      }
+    ]
+  },
+  produtividade: {
+    title: 'Produtividade',
+    icon: Zap,
+    color: 'text-yellow-500',
+    bgColor: 'bg-yellow-50',
+    description: 'Dicas e ferramentas para aumentar sua eficiência no sistema.',
+    modules: [
+      {
+        id: 'edicao-massa',
+        title: 'Edição em Massa (Bulk Actions)',
+        icon: Boxes,
+        content: `## 📊 O que é?
+
+A **Edição em Massa** permite selecionar múltiplos registros e aplicar ações simultaneamente, economizando tempo em operações repetitivas.
+
+---
+
+## 📝 Como usar? (Passo a Passo)
+
+**1. Ative a seleção múltipla**
+   - Em tabelas como Vendas, Produtos, Pedidos ou Fornecedores
+   - Marque as checkboxes na primeira coluna de cada linha
+   - Use a checkbox do cabeçalho para selecionar/desmarcar todos
+
+**2. Veja a barra de ações flutuante**
+   - Ao selecionar itens, uma barra aparece na parte inferior
+   - Ela mostra quantos registros estão selecionados
+   - Apresenta as ações disponíveis
+
+**3. Ações disponíveis**
+   - **Excluir Selecionados**: Remove múltiplos registros de uma vez
+   - **Alterar Status em Massa**: Mude o status de vários itens simultaneamente
+   - **Editar Categoria**: Reclassifique produtos ou transações em lote
+
+**4. Confirme a ação**
+   - Um modal de confirmação aparecerá
+   - Revise os itens selecionados
+   - Clique em "Confirmar" para executar
+
+---
+
+## 💡 Dica da IA
+
+Para máxima produtividade:
+
+- 🔍 Use filtros antes de selecionar para agrupar itens similares
+- ⚡ Combine com busca para encontrar registros específicos
+- 📊 A edição em massa gera logs de auditoria para rastreabilidade
+- ⏱️ Economize até 80% do tempo em operações de manutenção de cadastros`
+      },
+      {
+        id: 'atalhos-teclado',
+        title: 'Atalhos de Teclado',
+        icon: Zap,
+        content: `## 📊 O que é?
+
+Os **Atalhos de Teclado** permitem navegar e executar ações rapidamente sem usar o mouse.
+
+---
+
+## ⌨️ Atalhos Principais
+
+| Atalho | Ação |
+|--------|------|
+| **Cmd/Ctrl + K** | Abre a barra de busca global |
+| **?** | Exibe todos os atalhos disponíveis |
+| **Esc** | Fecha modais e painéis laterais |
+| **Enter** | Confirma ações em modais |
+
+---
+
+## 💡 Dica da IA
+
+A barra de busca global (Cmd+K) entende linguagem natural:
+
+- 📊 Digite "saldo" para ir direto ao fluxo de caixa
+- 🛒 Digite "nova venda" para abrir o PDV
+- 📝 Digite "pedido 1234" para buscar um pedido específico`
       }
     ]
   },
