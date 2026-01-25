@@ -77,10 +77,10 @@ export function useDashboardMetrics() {
         .eq('company_id', companyId)
         .eq('direction', 'saida')
         .eq('status', 'pago')
-        .gte('paid_at', format(inicioMes, 'yyyy-MM-dd'))
-        .lte('paid_at', format(fimMes, 'yyyy-MM-dd'));
+        .gte('paid_date', format(inicioMes, 'yyyy-MM-dd'))
+        .lte('paid_date', format(fimMes, 'yyyy-MM-dd'));
 
-      const realizadoMes = (realizadoData as any[])?.reduce((sum, t) => sum + (Number(t.amount) || 0), 0) || 0;
+      const realizadoMes = (realizadoData as any[])?.reduce((sum, t) => sum + (Number(t.total_amount) || Number(t.amount) || 0), 0) || 0;
       const orcadoMes = realizadoMes * 1.2; // Placeholder
       const percentualExecucao = orcadoMes > 0 ? (realizadoMes / orcadoMes) * 100 : 0;
       const execucaoStatus = getStatus(percentualExecucao, 90, 100, true);
@@ -94,10 +94,10 @@ export function useDashboardMetrics() {
         .eq('company_id', companyId)
         .eq('direction', 'entrada')
         .eq('status', 'pago')
-        .gte('paid_at', format(inicioMes, 'yyyy-MM-dd'))
-        .lte('paid_at', format(fimMes, 'yyyy-MM-dd'));
+        .gte('paid_date', format(inicioMes, 'yyyy-MM-dd'))
+        .lte('paid_date', format(fimMes, 'yyyy-MM-dd'));
 
-      const totalReceitas = (receitasMes as any[])?.reduce((sum, t) => sum + (Number(t.amount) || 0), 0) || 0;
+      const totalReceitas = (receitasMes as any[])?.reduce((sum, t) => sum + (Number(t.total_amount) || Number(t.amount) || 0), 0) || 0;
       const lucroMes = totalReceitas - realizadoMes;
       const margemLiquida = totalReceitas > 0 ? (lucroMes / totalReceitas) * 100 : 0;
 
@@ -117,8 +117,8 @@ export function useDashboardMetrics() {
 }
 
 function calcularResumoContas(transactions: any[], hoje: Date): ContasResumo {
-  const total = transactions.reduce((sum, t) => sum + (Number(t.amount) || 0), 0);
+  const total = transactions.reduce((sum, t) => sum + (Number(t.total_amount) || Number(t.amount) || 0), 0);
   const vencidas = transactions.filter(t => t.due_date && new Date(t.due_date) < hoje);
-  const vencidoValor = vencidas.reduce((sum, t) => sum + (Number(t.amount) || 0), 0);
+  const vencidoValor = vencidas.reduce((sum, t) => sum + (Number(t.total_amount) || Number(t.amount) || 0), 0);
   return { total, vencidoPercentual: total > 0 ? (vencidoValor / total) * 100 : 0, vencidoValor, aVencerPercentual: total > 0 ? ((total - vencidoValor) / total) * 100 : 0, aVencerValor: total - vencidoValor, quantidade: transactions.length, quantidadeVencida: vencidas.length };
 }

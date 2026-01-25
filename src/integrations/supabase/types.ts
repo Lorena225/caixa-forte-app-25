@@ -28778,6 +28778,7 @@ export type Database = {
           origin_installment_id: string | null
           origin_type: string | null
           original_amount: number
+          paid_at: string | null
           paid_date: string | null
           payment_method_id: string | null
           recurrence_type: string | null
@@ -28817,6 +28818,7 @@ export type Database = {
           origin_installment_id?: string | null
           origin_type?: string | null
           original_amount: number
+          paid_at?: string | null
           paid_date?: string | null
           payment_method_id?: string | null
           recurrence_type?: string | null
@@ -28856,6 +28858,7 @@ export type Database = {
           origin_installment_id?: string | null
           origin_type?: string | null
           original_amount?: number
+          paid_at?: string | null
           paid_date?: string | null
           payment_method_id?: string | null
           recurrence_type?: string | null
@@ -30604,6 +30607,7 @@ export type Database = {
           event_type: string
           id: string
           last_attempt_at: string | null
+          next_retry_at: string | null
           payload: Json
           status: string | null
           webhook_id: string
@@ -30616,6 +30620,7 @@ export type Database = {
           event_type: string
           id?: string
           last_attempt_at?: string | null
+          next_retry_at?: string | null
           payload: Json
           status?: string | null
           webhook_id: string
@@ -30628,6 +30633,7 @@ export type Database = {
           event_type?: string
           id?: string
           last_attempt_at?: string | null
+          next_retry_at?: string | null
           payload?: Json
           status?: string | null
           webhook_id?: string
