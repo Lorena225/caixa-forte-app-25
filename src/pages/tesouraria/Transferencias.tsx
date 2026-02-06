@@ -10,9 +10,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Plus, ArrowRightLeft, CheckCircle, XCircle, Clock, FileText } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { Plus, ArrowRightLeft, CheckCircle, XCircle, Clock, FileText, Zap } from 'lucide-react';
 import { useCompanyBankAccounts } from '@/hooks/useBanksReference';
 import { useBankTransfers, useCreateBankTransfer, useExecuteBankTransfer, useCancelBankTransfer } from '@/hooks/useBankTransfers';
+import { useAtomicTransfer } from '@/hooks/useAtomicTransfer';
 import { formatCurrency, formatDate } from '@/lib/formatters';
 
 const statusConfig = {
@@ -25,6 +27,7 @@ const statusConfig = {
 export default function TransferenciasPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>('__all__');
+  const [executeImmediate, setExecuteImmediate] = useState(true);
   const [formData, setFormData] = useState({
     origin_bank_account_id: '',
     destination_bank_account_id: '',
@@ -39,6 +42,7 @@ export default function TransferenciasPage() {
     statusFilter !== '__all__' ? statusFilter : undefined
   );
   const createTransfer = useCreateBankTransfer();
+  const atomicTransfer = useAtomicTransfer();
   const executeTransfer = useExecuteBankTransfer();
   const cancelTransfer = useCancelBankTransfer();
 
@@ -58,14 +62,27 @@ export default function TransferenciasPage() {
       return;
     }
 
-    await createTransfer.mutateAsync({
-      origin_bank_account_id: formData.origin_bank_account_id,
-      destination_bank_account_id: formData.destination_bank_account_id,
-      transfer_date: formData.transfer_date,
-      amount: parseFloat(formData.amount),
-      description: formData.description || undefined,
-      reference_number: formData.reference_number || undefined,
-    });
+    if (executeImmediate) {
+      // Use atomic transfer for immediate execution (ACID compliant)
+      await atomicTransfer.mutateAsync({
+        origin_account_id: formData.origin_bank_account_id,
+        destination_account_id: formData.destination_bank_account_id,
+        transfer_date: formData.transfer_date,
+        amount: parseFloat(formData.amount),
+        description: formData.description || undefined,
+        reference_number: formData.reference_number || undefined,
+      });
+    } else {
+      // Create as draft for later execution
+      await createTransfer.mutateAsync({
+        origin_bank_account_id: formData.origin_bank_account_id,
+        destination_bank_account_id: formData.destination_bank_account_id,
+        transfer_date: formData.transfer_date,
+        amount: parseFloat(formData.amount),
+        description: formData.description || undefined,
+        reference_number: formData.reference_number || undefined,
+      });
+    }
 
     resetForm();
     setIsDialogOpen(false);
@@ -330,6 +347,23 @@ export default function TransferenciasPage() {
                   onChange={(e) => setFormData({ ...formData, reference_number: e.target.value })}
                 />
               </div>
+
+              {/* Atomic execution toggle */}
+              <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50 border">
+                <div className="flex items-center gap-2">
+                  <Zap className="h-4 w-4 text-warning" />
+                  <div>
+                    <Label className="cursor-pointer">Executar Imediatamente</Label>
+                    <p className="text-xs text-muted-foreground">
+                      Atualiza os saldos das contas em tempo real (transação atômica)
+                    </p>
+                  </div>
+                </div>
+                <Switch
+                  checked={executeImmediate}
+                  onCheckedChange={setExecuteImmediate}
+                />
+              </div>
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
@@ -337,9 +371,16 @@ export default function TransferenciasPage() {
               </Button>
               <Button 
                 onClick={handleSubmit} 
-                disabled={createTransfer.isPending || !formData.origin_bank_account_id || !formData.destination_bank_account_id || !formData.amount}
+                disabled={(executeImmediate ? atomicTransfer.isPending : createTransfer.isPending) || !formData.origin_bank_account_id || !formData.destination_bank_account_id || !formData.amount}
               >
-                Criar Transferência
+                {executeImmediate ? (
+                  <>
+                    <Zap className="h-4 w-4 mr-2" />
+                    Executar Agora
+                  </>
+                ) : (
+                  'Criar Rascunho'
+                )}
               </Button>
             </DialogFooter>
           </DialogContent>

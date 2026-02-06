@@ -25269,7 +25269,11 @@ export type Database = {
           original_amount: number
           paid_at: string | null
           paid_date: string | null
+          parent_transaction_id: string | null
           payment_method_id: string | null
+          recurrence_count: number | null
+          recurrence_end_date: string | null
+          recurrence_index: number | null
           recurrence_type: string | null
           requires_workflow: boolean | null
           status: Database["public"]["Enums"]["transaction_status"]
@@ -25309,7 +25313,11 @@ export type Database = {
           original_amount: number
           paid_at?: string | null
           paid_date?: string | null
+          parent_transaction_id?: string | null
           payment_method_id?: string | null
+          recurrence_count?: number | null
+          recurrence_end_date?: string | null
+          recurrence_index?: number | null
           recurrence_type?: string | null
           requires_workflow?: boolean | null
           status?: Database["public"]["Enums"]["transaction_status"]
@@ -25349,7 +25357,11 @@ export type Database = {
           original_amount?: number
           paid_at?: string | null
           paid_date?: string | null
+          parent_transaction_id?: string | null
           payment_method_id?: string | null
+          recurrence_count?: number | null
+          recurrence_end_date?: string | null
+          recurrence_index?: number | null
           recurrence_type?: string | null
           requires_workflow?: boolean | null
           status?: Database["public"]["Enums"]["transaction_status"]
@@ -25463,6 +25475,27 @@ export type Database = {
             columns: ["origin_installment_id"]
             isOneToOne: false
             referencedRelation: "loan_installments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_parent_transaction_id_fkey"
+            columns: ["parent_transaction_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_parent_transaction_id_fkey"
+            columns: ["parent_transaction_id"]
+            isOneToOne: false
+            referencedRelation: "v_ap_open"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_parent_transaction_id_fkey"
+            columns: ["parent_transaction_id"]
+            isOneToOne: false
+            referencedRelation: "v_ar_open"
             referencedColumns: ["id"]
           },
           {
@@ -28346,6 +28379,33 @@ export type Database = {
           },
         ]
       }
+      v_cash_flow_projection: {
+        Row: {
+          company_id: string | null
+          direction: Database["public"]["Enums"]["transaction_direction"] | null
+          due_date: string | null
+          net_flow: number | null
+          total_payable: number | null
+          total_receivable: number | null
+          transaction_count: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transactions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
       v_cash_position_cached: {
         Row: {
           company_id: string | null
@@ -28789,6 +28849,34 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_trial_balance"
             referencedColumns: ["account_id"]
+          },
+        ]
+      }
+      v_liquidity_dashboard: {
+        Row: {
+          cash_balance: number | null
+          checking_balance: number | null
+          company_id: string | null
+          investment_balance: number | null
+          payables_30d: number | null
+          receivables_30d: number | null
+          savings_balance: number | null
+          total_balance: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bank_accounts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bank_accounts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
           },
         ]
       }
@@ -29479,6 +29567,14 @@ export type Database = {
         }
         Returns: string
       }
+      bulk_settle_transactions: {
+        Args: {
+          p_payment_date?: string
+          p_transaction_ids: string[]
+          p_wallet_id: string
+        }
+        Returns: Json
+      }
       calcular_impostos_nfe: {
         Args: {
           p_cfop: string
@@ -29564,11 +29660,27 @@ export type Database = {
         Args: { p_days_login_attempts?: number; p_days_rate_limit?: number }
         Returns: Json
       }
+      execute_bank_transfer: {
+        Args: {
+          p_amount: number
+          p_company_id: string
+          p_description?: string
+          p_destination_account_id: string
+          p_origin_account_id: string
+          p_reference_number?: string
+          p_transfer_date: string
+        }
+        Returns: Json
+      }
       finalize_inventory_with_adjustments: {
         Args: { p_inventory_id: string }
         Returns: undefined
       }
       generate_api_key: { Args: never; Returns: string }
+      generate_recurring_transactions: {
+        Args: { p_transaction_id: string }
+        Returns: number
+      }
       generate_sequential_code: {
         Args: { p_company_id?: string; p_prefix?: string; p_table_name: string }
         Returns: string
@@ -29779,6 +29891,16 @@ export type Database = {
       refresh_dashboard_cache: { Args: never; Returns: undefined }
       refresh_performance_views: { Args: never; Returns: undefined }
       refresh_security_dashboard: { Args: never; Returns: undefined }
+      register_partial_payment: {
+        Args: {
+          p_notes?: string
+          p_payment_amount: number
+          p_payment_date?: string
+          p_transaction_id: string
+          p_wallet_id?: string
+        }
+        Returns: Json
+      }
       request_digital_signature: {
         Args: {
           p_amount?: number
