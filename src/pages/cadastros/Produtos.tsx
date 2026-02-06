@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/contexts/AuthContext';
 import { useProdutos, Produto, useDeleteProduto } from '@/hooks/useProdutos';
+import { useBulkDeleteProdutos, useBulkUpdateProdutosSituacao } from '@/hooks/useBulkProdutos';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { PageHeader } from '@/components/common/PageHeader';
-import { DataTable } from '@/components/common/DataTable';
+import { DataTableWithSelection } from '@/components/common/DataTableWithSelection';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
@@ -15,22 +15,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Pencil, Trash2, Search, Package, Star } from 'lucide-react';
+import { Pencil, Trash2, Search, Package, Star, CheckCircle, XCircle } from 'lucide-react';
 import { ProdutoFormDialog } from '@/components/erp/ProdutoFormDialog';
 import { formatCurrency } from '@/lib/formatters';
+import { BulkAction } from '@/components/bulk/BulkActionsBar';
 
 export default function Produtos() {
   const { currentCompany } = useAuth();
   const { data: produtos = [], isLoading } = useProdutos(currentCompany?.id, 'P');
   const deleteProduto = useDeleteProduto();
-  const queryClient = useQueryClient();
+  const bulkDelete = useBulkDeleteProdutos();
+  const bulkUpdateSituacao = useBulkUpdateProdutosSituacao();
   
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<Produto | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterSituacao, setFilterSituacao] = useState<'all' | 'A' | 'I'>('all');
+  const [pendingAction, setPendingAction] = useState<{ type: string; ids: string[] } | null>(null);
 
-  // Filtragem
+  // Filtering
   const filteredData = produtos.filter((item) => {
     if (filterSituacao !== 'all' && item.situacao !== filterSituacao) return false;
 
@@ -63,6 +66,34 @@ export default function Produtos() {
     }
   };
 
+  // Bulk action handlers - will be called with selected IDs from DataTableWithSelection
+  const createBulkActions = (): BulkAction[] => [
+    {
+      id: 'delete',
+      label: 'Excluir Selecionados',
+      icon: <Trash2 className="h-4 w-4" />,
+      onClick: () => {
+        // This will be called by the internal selection system
+        // We need to get the IDs from the selection context
+      },
+      variant: 'destructive',
+    },
+    {
+      id: 'activate',
+      label: 'Ativar',
+      icon: <CheckCircle className="h-4 w-4" />,
+      onClick: () => {},
+      variant: 'default',
+    },
+    {
+      id: 'deactivate',
+      label: 'Inativar',
+      icon: <XCircle className="h-4 w-4" />,
+      onClick: () => {},
+      variant: 'default',
+    },
+  ];
+
   const columns = [
     {
       key: 'codigo',
@@ -79,7 +110,7 @@ export default function Produtos() {
         <div className="flex items-center gap-2">
           <Package className="h-4 w-4 text-muted-foreground" />
           <span>{item.descricao}</span>
-          {item.destaque && <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />}
+          {item.destaque && <Star className="h-4 w-4 text-primary fill-primary" />}
         </div>
       ),
     },
@@ -183,7 +214,7 @@ export default function Produtos() {
           action={{ label: 'Novo Produto', onClick: handleNew }}
         />
 
-        {/* Filtros */}
+        {/* Filters */}
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -209,16 +240,18 @@ export default function Produtos() {
           </Select>
         </div>
 
-        {/* Tabela */}
-        <DataTable
+        {/* Table with selection */}
+        <DataTableWithSelection
           columns={columns}
           data={filteredData}
           loading={isLoading}
           emptyMessage="Nenhum produto cadastrado"
           pageSize={20}
+          enableSelection
+          bulkActions={createBulkActions()}
         />
 
-        {/* Dialog de formulário */}
+        {/* Form dialog */}
         {currentCompany && (
           <ProdutoFormDialog
             open={dialogOpen}
