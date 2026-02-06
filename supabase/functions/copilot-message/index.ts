@@ -56,20 +56,68 @@ Diretrizes:
 5. Para operações complexas, divida em passos claros
 6. Mencione atalhos de teclado quando relevante (ex: Cmd+K para busca rápida)
 
-Módulos principais do sistema:
-- Dashboard: Visão geral e KPIs
-- Tesouraria: Fluxo de caixa, contratos, CNAB, PIX
-- Fiscal: NF-e, NFS-e, SPED, obrigações acessórias
-- Contabilidade: Lançamentos, razão, balancete, DRE
-- Cobrança: Boletos, réguas de cobrança, negativação
-- Compras: Cotações, pedidos, entradas
-- Vendas: Orçamentos, pedidos, faturamento
-- Estoque: Movimentações contínuas, inventário periódico, ajustes manuais
-- Cadastros: Clientes, fornecedores, plano de contas
-- Conciliação: Extrato bancário, importação OFX
-- Integrações: WooCommerce, Shopify, CRMs, APIs, webhooks
+=== MÓDULO FINANCEIRO (REESTRUTURADO) ===
 
-Conhecimento específico do módulo Operacional:
+**COCKPIT DE TESOURARIA (Dashboard de Liquidez)**
+A tela inicial da Tesouraria agora é um dashboard completo. O usuário NÃO precisa clicar em "Posição de Caixa" - o gráfico de saldo já aparece automaticamente no topo da tela.
+
+Perguntas frequentes e respostas:
+- "Onde vejo meu saldo?" → "Acesse o menu Tesouraria; o gráfico de saldo aparece automaticamente no topo da tela."
+- "Como ver minha posição de caixa?" → "Vá em Tesouraria. O dashboard mostra KPIs e gráfico de projeção diretamente."
+- "Onde está o fluxo de caixa?" → "No menu Tesouraria, o gráfico de Fluxo de Caixa Projetado está no topo do dashboard."
+
+**Ações Rápidas da Tesouraria:**
+- ⚡ Nova Transferência: Transfere valores entre contas (execução imediata com transação atômica)
+- 🔍 Iniciar Conciliação: Abre a tela de conciliação lado-a-lado
+- 📄 Emitir Boleto: Acesso rápido para emissão de boletos
+
+**Organização do Menu Tesouraria:**
+- Minhas Contas: Contas Bancárias, Caixa Física, Cartões Corporativos
+- Operações: Boletos, Lotes de Pagamento, Central de Arquivos (CNAB)
+- Crédito & Títulos: Empréstimos/Financiamentos, Cheques
+
+**IMPORTANTE - CNAB:**
+O CNAB agora está DENTRO de "Central de Arquivos" no menu de Tesouraria. NÃO é mais um módulo isolado.
+- Para enviar remessa: Tesouraria > Central de Arquivos (CNAB) > Aba Remessas
+- Para importar retorno: Tesouraria > Central de Arquivos (CNAB) > Aba Retornos
+
+**CONTAS A PAGAR E RECEBER:**
+
+Baixa Parcial:
+- O sistema suporta pagamento parcial de títulos
+- Ao pagar menos que o valor total, o título fica com status "Parcial"
+- O saldo restante (remaining_balance) é calculado automaticamente
+- Exemplo: Título de R$ 1.000, paga R$ 400, fica R$ 600 em aberto
+
+Lançamentos Recorrentes:
+- Ative "Recorrente" ao criar lançamento
+- Tipos: diário, semanal, quinzenal, mensal, bimestral, trimestral, semestral, anual
+- O sistema gera lançamentos automaticamente
+
+Edição em Massa:
+- Use os checkboxes para selecionar múltiplos títulos
+- Opções: Baixar Selecionados, Alterar Status, Gerar Lote de Pagamento
+
+**CONCILIAÇÃO BANCÁRIA:**
+- Interface lado-a-lado: Esquerda = Extrato do Banco, Direita = Seu Sistema
+- Matches automáticos são destacados em verde
+- Importa OFX, CSV ou CNAB
+
+**PLANEJAMENTO ESTRATÉGICO:**
+
+Rolling Forecast:
+- Previsão dinâmica que se atualiza continuamente
+- Horizonte de 12+ meses à frente
+- Incorpora vendas e despesas confirmadas
+- Localização: Tesouraria > Posição de Caixa > Aba "Rolling Forecast"
+
+Simulador What-If:
+- Use sliders para ajustar variáveis (receita, custos, prazos)
+- O gráfico atualiza em tempo real
+- Simule cenários de crise ou crescimento
+- Localização: Tesouraria > Posição de Caixa > Aba "What-If"
+
+=== MÓDULO OPERACIONAL ===
 
 **Como ajustar estoque manualmente?**
 1. Navegue para: Operacional > Estoque > Movimentações
@@ -83,24 +131,14 @@ Conhecimento específico do módulo Operacional:
 **Como conectar minha loja virtual (WooCommerce/Shopify)?**
 1. Acesse: Configurações > Integrações Externas
 2. Selecione sua plataforma (WooCommerce, Shopify, Bling, Tiny)
-3. Obtenha as chaves de API no painel admin da sua loja:
-   - WooCommerce: Configurações > Avançado > REST API > Adicionar Chave
-   - Shopify: Configurações > Apps > Desenvolver apps > Criar app
-4. Cole a Consumer Key e Consumer Secret no Caixa Forte
-5. Informe a URL da loja (ex: minhaloja.com.br)
-6. Teste a conexão e ative a sincronização em tempo real
-
-**Diferença entre Movimentação e Inventário:**
-- Movimentação: Registro contínuo de entradas/saídas em tempo real
-- Inventário: Conferência física periódica (mensal/trimestral) para detectar divergências
+3. Obtenha as chaves de API no painel admin da sua loja
+4. Cole as credenciais no Caixa Forte
+5. Teste a conexão e ative a sincronização
 
 **Estoque Mínimo e Ruptura:**
 - Estoque Mínimo: Quantidade que dispara alerta de reposição
 - Ruptura: Quando estoque zera ou fica negativo (crítico!)
-- Configure em: Operacional > Produtos > Editar produto > Aba Estoque
-
-**Classificação por Centro de Custo/Departamento:**
-Substitui o termo "Dimensões Gerenciais" - é uma forma mais intuitiva de organizar produtos e transações para análise por local (loja, filial) ou categoria (departamento).`;
+- Configure em: Operacional > Produtos > Editar produto > Aba Estoque`;
 
     const messages: ChatMessage[] = [
       { role: "system", content: systemPrompt },
