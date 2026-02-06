@@ -34,24 +34,58 @@ export function useLiquidityDashboard() {
     queryFn: async (): Promise<LiquidityData | null> => {
       if (!currentCompany?.id) return null;
 
-      const { data, error } = await supabase
-        .from('v_liquidity_dashboard')
-        .select('*')
+      // Calculate from bank_accounts and transactions directly
+      const { data: accounts } = await supabase
+        .from('bank_accounts')
+        .select('current_balance, account_type')
         .eq('company_id', currentCompany.id)
-        .single();
+        .eq('is_active', true);
 
-      if (error && error.code !== 'PGRST116') throw error;
-      
-      return data ? {
-        company_id: data.company_id,
-        total_balance: Number(data.total_balance) || 0,
-        checking_balance: Number(data.checking_balance) || 0,
-        savings_balance: Number(data.savings_balance) || 0,
-        cash_balance: Number(data.cash_balance) || 0,
-        investment_balance: Number(data.investment_balance) || 0,
-        receivables_30d: Number(data.receivables_30d) || 0,
-        payables_30d: Number(data.payables_30d) || 0,
-      } : null;
+      const totals = (accounts || []).reduce(
+        (acc, acct) => {
+          const bal = Number(acct.current_balance) || 0;
+          acc.total += bal;
+          if (acct.account_type === 'conta_corrente') acc.checking += bal;
+          if (acct.account_type === 'poupanca') acc.savings += bal;
+          if (acct.account_type === 'caixa') acc.cash += bal;
+          if (acct.account_type === 'investimento') acc.investment += bal;
+          return acc;
+        },
+        { total: 0, checking: 0, savings: 0, cash: 0, investment: 0 }
+      );
+
+      // Get 30-day receivables and payables
+      const thirtyDaysFromNow = new Date();
+      thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
+      const thirtyDaysStr = thirtyDaysFromNow.toISOString().split('T')[0];
+
+      const { data: transactions } = await supabase
+        .from('transactions')
+        .select('direction, total_amount')
+        .eq('company_id', currentCompany.id)
+        .in('status', ['lancado', 'rascunho'])
+        .lte('due_date', thirtyDaysStr);
+
+      const flows = (transactions || []).reduce(
+        (acc, tx) => {
+          const amt = Number(tx.total_amount) || 0;
+          if (tx.direction === 'entrada') acc.receivables += amt;
+          if (tx.direction === 'saida') acc.payables += amt;
+          return acc;
+        },
+        { receivables: 0, payables: 0 }
+      );
+
+      return {
+        company_id: currentCompany.id,
+        total_balance: totals.total,
+        checking_balance: totals.checking,
+        savings_balance: totals.savings,
+        cash_balance: totals.cash,
+        investment_balance: totals.investment,
+        receivables_30d: flows.receivables,
+        payables_30d: flows.payables,
+      };
     },
     enabled: !!currentCompany?.id,
     staleTime: 30000, // 30 seconds cache for performance
