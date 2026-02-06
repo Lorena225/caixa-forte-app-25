@@ -9075,9 +9075,150 @@ export type Database = {
           },
         ]
       }
+      contract_billings: {
+        Row: {
+          amount: number
+          billing_date: string
+          contract_id: string
+          created_at: string
+          created_by: string | null
+          due_date: string
+          id: string
+          notes: string | null
+          reference_month: number
+          reference_year: number
+          status: string
+          transaction_id: string | null
+        }
+        Insert: {
+          amount: number
+          billing_date: string
+          contract_id: string
+          created_at?: string
+          created_by?: string | null
+          due_date: string
+          id?: string
+          notes?: string | null
+          reference_month: number
+          reference_year: number
+          status?: string
+          transaction_id?: string | null
+        }
+        Update: {
+          amount?: number
+          billing_date?: string
+          contract_id?: string
+          created_at?: string
+          created_by?: string | null
+          due_date?: string
+          id?: string
+          notes?: string | null
+          reference_month?: number
+          reference_year?: number
+          status?: string
+          transaction_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contract_billings_contract_id_fkey"
+            columns: ["contract_id"]
+            isOneToOne: false
+            referencedRelation: "contracts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contract_billings_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contract_billings_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "v_ap_open"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contract_billings_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "v_ar_open"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contract_items: {
+        Row: {
+          contract_id: string
+          created_at: string
+          description: string
+          discount_percentage: number | null
+          id: string
+          is_active: boolean | null
+          notes: string | null
+          product_id: string | null
+          quantity: number
+          unit_price: number
+          updated_at: string
+        }
+        Insert: {
+          contract_id: string
+          created_at?: string
+          description: string
+          discount_percentage?: number | null
+          id?: string
+          is_active?: boolean | null
+          notes?: string | null
+          product_id?: string | null
+          quantity?: number
+          unit_price: number
+          updated_at?: string
+        }
+        Update: {
+          contract_id?: string
+          created_at?: string
+          description?: string
+          discount_percentage?: number | null
+          id?: string
+          is_active?: boolean | null
+          notes?: string | null
+          product_id?: string | null
+          quantity?: number
+          unit_price?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contract_items_contract_id_fkey"
+            columns: ["contract_id"]
+            isOneToOne: false
+            referencedRelation: "contracts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contract_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       contracts: {
         Row: {
+          adjustment_index: string | null
+          adjustment_percentage: number | null
           alertar_antes_dias: number | null
+          auto_adjustment: boolean | null
+          auto_generate_billing: boolean | null
+          billing_cycle: string | null
+          billing_day: number | null
+          cancellation_fee_percentage: number | null
+          cancellation_reason: string | null
+          cancelled_at: string | null
+          cancelled_by: string | null
           company_id: string
           condicoes_comerciais_json: Json | null
           contract_number: string
@@ -9085,16 +9226,34 @@ export type Database = {
           created_at: string | null
           data_fim: string | null
           data_inicio: string
+          description: string | null
           id: string
+          last_adjustment_date: string | null
+          last_billing_date: string | null
+          monthly_value: number | null
+          next_adjustment_date: string | null
+          next_billing_date: string | null
           observacoes: string | null
           renovacao_automatica: boolean | null
           status: string
+          suspended_at: string | null
+          suspended_reason: string | null
           tipo: string
           updated_at: string | null
           valor_total: number | null
         }
         Insert: {
+          adjustment_index?: string | null
+          adjustment_percentage?: number | null
           alertar_antes_dias?: number | null
+          auto_adjustment?: boolean | null
+          auto_generate_billing?: boolean | null
+          billing_cycle?: string | null
+          billing_day?: number | null
+          cancellation_fee_percentage?: number | null
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          cancelled_by?: string | null
           company_id: string
           condicoes_comerciais_json?: Json | null
           contract_number: string
@@ -9102,16 +9261,34 @@ export type Database = {
           created_at?: string | null
           data_fim?: string | null
           data_inicio: string
+          description?: string | null
           id?: string
+          last_adjustment_date?: string | null
+          last_billing_date?: string | null
+          monthly_value?: number | null
+          next_adjustment_date?: string | null
+          next_billing_date?: string | null
           observacoes?: string | null
           renovacao_automatica?: boolean | null
           status?: string
+          suspended_at?: string | null
+          suspended_reason?: string | null
           tipo: string
           updated_at?: string | null
           valor_total?: number | null
         }
         Update: {
+          adjustment_index?: string | null
+          adjustment_percentage?: number | null
           alertar_antes_dias?: number | null
+          auto_adjustment?: boolean | null
+          auto_generate_billing?: boolean | null
+          billing_cycle?: string | null
+          billing_day?: number | null
+          cancellation_fee_percentage?: number | null
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          cancelled_by?: string | null
           company_id?: string
           condicoes_comerciais_json?: Json | null
           contract_number?: string
@@ -9119,10 +9296,18 @@ export type Database = {
           created_at?: string | null
           data_fim?: string | null
           data_inicio?: string
+          description?: string | null
           id?: string
+          last_adjustment_date?: string | null
+          last_billing_date?: string | null
+          monthly_value?: number | null
+          next_adjustment_date?: string | null
+          next_billing_date?: string | null
           observacoes?: string | null
           renovacao_automatica?: boolean | null
           status?: string
+          suspended_at?: string | null
+          suspended_reason?: string | null
           tipo?: string
           updated_at?: string | null
           valor_total?: number | null
@@ -29603,6 +29788,14 @@ export type Database = {
         }
         Returns: string
       }
+      calculate_next_billing_date: {
+        Args: {
+          p_billing_cycle: string
+          p_billing_day: number
+          p_last_date: string
+        }
+        Returns: string
+      }
       check_login_lockout: {
         Args: { p_email: string; p_ip_address?: unknown }
         Returns: {
@@ -29677,6 +29870,14 @@ export type Database = {
         Returns: undefined
       }
       generate_api_key: { Args: never; Returns: string }
+      generate_contract_billing: {
+        Args: {
+          p_contract_id: string
+          p_reference_month: number
+          p_reference_year: number
+        }
+        Returns: string
+      }
       generate_recurring_transactions: {
         Args: { p_transaction_id: string }
         Returns: number
