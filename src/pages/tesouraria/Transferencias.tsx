@@ -11,7 +11,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Switch } from '@/components/ui/switch';
-import { Plus, ArrowRightLeft, CheckCircle, XCircle, Clock, FileText, Zap } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Plus, ArrowRightLeft, CheckCircle, XCircle, Clock, FileText, Zap, HelpCircle, AlertTriangle } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useCompanyBankAccounts } from '@/hooks/useBanksReference';
 import { useBankTransfers, useCreateBankTransfer, useExecuteBankTransfer, useCancelBankTransfer } from '@/hooks/useBankTransfers';
 import { useAtomicTransfer } from '@/hooks/useAtomicTransfer';
@@ -266,8 +268,29 @@ export default function TransferenciasPage() {
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogContent className="max-w-lg">
             <DialogHeader>
-              <DialogTitle>Nova Transferência</DialogTitle>
+              <DialogTitle className="flex items-center gap-2">
+                Nova Transferência
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent side="right" className="max-w-xs">
+                      <p>Transferências entre contas próprias movimentam saldos internamente. Não geram lançamentos fiscais.</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </DialogTitle>
             </DialogHeader>
+            
+            {/* Alert explicativo */}
+            <Alert className="border-info/50 bg-info/5">
+              <AlertTriangle className="h-4 w-4 text-info" />
+              <AlertDescription className="text-sm">
+                <strong>Atenção:</strong> Ao confirmar, os saldos das contas serão atualizados imediatamente. A operação é registrada no histórico de movimentações.
+              </AlertDescription>
+            </Alert>
+            
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label>Conta Origem *</Label>

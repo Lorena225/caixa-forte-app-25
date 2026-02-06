@@ -48,6 +48,109 @@ const knowledgeBase = {
     description: 'Controle completo do fluxo de caixa, contas e planejamento financeiro.',
     modules: [
       {
+        id: 'cockpit-tesouraria',
+        title: 'O Cockpit de Tesouraria (Visão Geral)',
+        icon: Wallet,
+        content: `## 📊 O que é?
+
+O **Cockpit de Tesouraria** é o novo dashboard de liquidez que centraliza todas as informações financeiras em tempo real. Ao acessar o menu **Tesouraria**, você verá imediatamente:
+
+- **KPIs de Saldo**: Saldo Total, Entradas (30 dias), Saídas (30 dias) e Indicador de Saúde
+- **Gráfico de Posição de Caixa**: Linha do tempo com Saldo Real vs. Projetado
+- **Ações Rápidas**: Botões para operações frequentes
+
+---
+
+## 📝 Ações Rápidas (Quick Actions)
+
+**⚡ Nova Transferência** - Transfere valores entre suas contas bancárias com execução imediata (atômica) ou rascunho.
+
+**🔍 Iniciar Conciliação** - Leva direto para a tela de conciliação bancária lado-a-lado.
+
+**📄 Emitir Boleto** - Acesso rápido para emissão de boletos bancários.
+
+---
+
+## 📈 Como ler o Gráfico de Posição
+
+- **Área Verde**: Saldo projetado (considerando recebimentos futuros)
+- **Linha Azul**: Evolução diária do saldo
+- **Hover**: Passe o mouse para ver valores exatos por data
+
+⚠️ Se a linha se aproximar de zero, o sistema destacará em vermelho.
+
+---
+
+## 💡 Dica da IA
+
+Se você perguntar "Onde vejo meu saldo?", o Copilot responderá: **"Acesse o menu Tesouraria; o gráfico de saldo aparece automaticamente no topo da tela."**`
+      },
+      {
+        id: 'contas-pagar-receber',
+        title: 'Gestão de Contas a Pagar e Receber',
+        icon: CreditCard,
+        content: `## 💰 Baixa Parcial de Títulos
+
+O sistema suporta **pagamentos parciais**: ao pagar menos que o total, o título fica com status "Parcial" e o saldo restante é calculado automaticamente.
+
+---
+
+## 🔄 Lançamentos Recorrentes
+
+Configure contas que se repetem (aluguel, assinaturas): Diário, Semanal, Quinzenal, Mensal, Bimestral, Trimestral, Semestral, Anual. O sistema gera lançamentos futuros automaticamente.
+
+---
+
+## ☑️ Edição em Massa
+
+Marque checkboxes na lista para: Baixar Selecionados, Alterar Status, Gerar Lote de Pagamento.`
+      },
+      {
+        id: 'conciliacao-avancada',
+        title: 'Conciliação Bancária Avançada',
+        icon: Calculator,
+        content: `## 👁️ Visão Lado-a-Lado
+
+| Esquerda (Extrato do Banco) | Direita (Seu Sistema) |
+|----------------------------|----------------------|
+| Transações importadas | Lançamentos do Caixa Forte |
+| Data, valor, descrição | Data, valor, favorecido |
+
+---
+
+## 📁 Central CNAB (Unificada)
+
+**Localização:** Tesouraria > Central de Arquivos (CNAB)
+
+- **Aba Convênios**: Configuração dos bancos
+- **Aba Remessas**: Geração de arquivos para envio ao banco
+- **Aba Retornos**: Importação de arquivos de retorno
+
+⚠️ O CNAB foi consolidado dentro de Tesouraria > Central de Arquivos.`
+      },
+      {
+        id: 'planejamento-estrategico',
+        title: 'Planejamento Estratégico',
+        icon: Target,
+        content: `## 📈 Rolling Forecast
+
+Previsão dinâmica que se atualiza continuamente com horizonte de 12+ meses.
+**Localização:** Tesouraria > Posição de Caixa > Aba "Rolling Forecast"
+
+---
+
+## 🎛️ Simulador What-If
+
+Use sliders para ajustar variáveis (receita, custos) e ver o impacto no saldo em tempo real.
+**Localização:** Tesouraria > Posição de Caixa > Aba "What-If"
+
+---
+
+## 📊 Orçado vs. Realizado
+
+Compare metas com execução real usando barras de progresso.`
+      },
+      {
         id: 'conciliacao-bancaria',
         title: 'Conciliação Bancária',
         icon: Calculator,
