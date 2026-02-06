@@ -2,16 +2,18 @@ import { useState } from "react";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { PageHeader } from "@/components/common/PageHeader";
 import { BackButton } from "@/components/common/BackButton";
-import { DataTable } from "@/components/common/DataTable";
+import { DataTableWithSelection } from "@/components/common/DataTableWithSelection";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, Search, FileText, Package, DollarSign, TrendingUp } from "lucide-react";
+import { Plus, Search, FileText, Package, DollarSign, TrendingUp, XCircle, Printer } from "lucide-react";
 import { useSalesOrders, useSalesOrdersStats, useUpdateSalesOrder } from "@/hooks/useSalesOrders";
 import { useCreateInvoiceFromOrder } from "@/hooks/useInvoices";
 import { format, startOfMonth, endOfMonth } from "date-fns";
+import { toast } from "sonner";
+import { BulkAction } from "@/components/bulk/BulkActionsBar";
 
 const STATUS_LABELS: Record<string, string> = {
   rascunho: 'Rascunho',
@@ -56,6 +58,27 @@ export default function PedidosVenda() {
   const handleFaturar = async (id: string) => {
     await createInvoice.mutateAsync(id);
   };
+
+  const bulkActions: BulkAction[] = [
+    {
+      id: 'cancel',
+      label: 'Cancelar Pedidos',
+      icon: <XCircle className="h-4 w-4" />,
+      onClick: () => {
+        toast.info("Selecione os pedidos e confirme o cancelamento");
+      },
+      variant: 'destructive',
+    },
+    {
+      id: 'print',
+      label: 'Imprimir Recibos',
+      icon: <Printer className="h-4 w-4" />,
+      onClick: () => {
+        toast.info("Função de impressão em lote será disponibilizada em breve");
+      },
+      variant: 'default',
+    },
+  ];
 
   const columns = [
     { 
@@ -125,7 +148,7 @@ export default function PedidosVenda() {
       <div className="space-y-6">
         <div className="flex items-center gap-4">
           <BackButton to="/vendas" />
-          <PageHeader title="Pedidos de Venda" description="Gestão de pedidos" />
+          <PageHeader title="Pedidos de Venda" description="Gestão de pedidos com baixa automática de estoque" />
         </div>
 
         <div className="grid gap-4 md:grid-cols-4">
@@ -141,7 +164,7 @@ export default function PedidosVenda() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Confirmados</CardTitle>
-              <Package className="h-4 w-4 text-blue-500" />
+              <Package className="h-4 w-4 text-primary" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stats?.confirmados || 0}</div>
@@ -150,7 +173,7 @@ export default function PedidosVenda() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Faturados</CardTitle>
-              <TrendingUp className="h-4 w-4 text-emerald-500" />
+              <TrendingUp className="h-4 w-4 text-primary" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stats?.faturados || 0}</div>
@@ -159,7 +182,7 @@ export default function PedidosVenda() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Valor Total</CardTitle>
-              <DollarSign className="h-4 w-4 text-emerald-500" />
+              <DollarSign className="h-4 w-4 text-primary" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
@@ -196,10 +219,12 @@ export default function PedidosVenda() {
           </Button>
         </div>
 
-        <DataTable 
+        <DataTableWithSelection 
           data={orders || []} 
           columns={columns} 
           loading={isLoading}
+          enableSelection
+          bulkActions={bulkActions}
         />
       </div>
     </MainLayout>

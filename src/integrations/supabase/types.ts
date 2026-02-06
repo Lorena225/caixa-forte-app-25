@@ -20907,6 +20907,132 @@ export type Database = {
         }
         Relationships: []
       }
+      purchase_entries: {
+        Row: {
+          company_id: string
+          created_at: string
+          entry_date: string
+          id: string
+          invoice_number: string | null
+          invoice_series: string | null
+          notes: string | null
+          purchase_order_id: string | null
+          status: string
+          supplier_id: string | null
+          total_amount: number
+          updated_at: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          entry_date?: string
+          id?: string
+          invoice_number?: string | null
+          invoice_series?: string | null
+          notes?: string | null
+          purchase_order_id?: string | null
+          status?: string
+          supplier_id?: string | null
+          total_amount?: number
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          entry_date?: string
+          id?: string
+          invoice_number?: string | null
+          invoice_series?: string | null
+          notes?: string | null
+          purchase_order_id?: string | null
+          status?: string
+          supplier_id?: string | null
+          total_amount?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_entries_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_entries_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "purchase_entries_purchase_order_id_fkey"
+            columns: ["purchase_order_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_entries_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "counterparties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_entries_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "counterparties_safe"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      purchase_entry_items: {
+        Row: {
+          created_at: string
+          entry_id: string
+          id: string
+          product_id: string
+          quantity: number
+          total_cost: number | null
+          unit_cost: number
+        }
+        Insert: {
+          created_at?: string
+          entry_id: string
+          id?: string
+          product_id: string
+          quantity: number
+          total_cost?: number | null
+          unit_cost: number
+        }
+        Update: {
+          created_at?: string
+          entry_id?: string
+          id?: string
+          product_id?: string
+          quantity?: number
+          total_cost?: number | null
+          unit_cost?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_entry_items_entry_id_fkey"
+            columns: ["entry_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_entries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_entry_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       purchase_order_items: {
         Row: {
           created_at: string
@@ -24470,6 +24596,7 @@ export type Database = {
           notes: string | null
           product_id: string | null
           quantity: number
+          reason: string | null
           reference_id: string | null
           reference_type: string | null
           source_destination: string | null
@@ -24486,6 +24613,7 @@ export type Database = {
           notes?: string | null
           product_id?: string | null
           quantity: number
+          reason?: string | null
           reference_id?: string | null
           reference_type?: string | null
           source_destination?: string | null
@@ -24502,6 +24630,7 @@ export type Database = {
           notes?: string | null
           product_id?: string | null
           quantity?: number
+          reason?: string | null
           reference_id?: string | null
           reference_type?: string | null
           source_destination?: string | null
@@ -29599,6 +29728,7 @@ export type Database = {
         Returns: string
       }
       mask_sensitive_audit_data: { Args: { data: Json }; Returns: Json }
+      process_purchase_entry: { Args: { p_entry_id: string }; Returns: Json }
       process_settlement: {
         Args: {
           p_bank_account_id: string
