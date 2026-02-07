@@ -7,22 +7,17 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { 
-  Plus, Search, FolderKanban, LayoutList, Calendar,
-  Clock, Users, AlertTriangle, TrendingUp, Target,
-  Play, CheckCircle2, Pause, MoreHorizontal, DollarSign
+  Plus, Search, FolderKanban, LayoutList, 
+  Clock, AlertTriangle, Target, ArrowLeft,
+  Play, CheckCircle2, Pause, DollarSign
 } from "lucide-react";
-import { useProjects, useProjectStats } from "@/hooks/useProjects";
+import { useProjects, useProjectStats, useProject } from "@/hooks/useProjects";
 import { ProjectFormDialog } from "@/components/projetos/ProjectFormDialog";
 import { ProjectsList } from "@/components/projetos/ProjectsList";
 import { KanbanBoard } from "@/components/projetos/KanbanBoard";
+import { ProjectProfitabilityPanel } from "@/components/projetos/ProjectProfitabilityPanel";
 import { cn } from "@/lib/utils";
-import { ptBR } from "date-fns/locale";
-
-const formatCurrency = (value: number) => {
-  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
-};
 
 const statusLabels: Record<string, { label: string; color: string; icon: React.ElementType }> = {
   planejamento: { label: 'Planejamento', color: 'bg-blue-100 text-blue-800', icon: Target },
@@ -35,7 +30,6 @@ const statusLabels: Record<string, { label: string; color: string; icon: React.E
 export default function GestaoProjetosPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("todos");
-  const [viewMode, setViewMode] = useState<'list' | 'kanban'>('list');
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
   
@@ -44,6 +38,61 @@ export default function GestaoProjetosPage() {
     search 
   });
   const { data: stats, isLoading: statsLoading } = useProjectStats();
+  const { data: selectedProject } = useProject(selectedProjectId);
+
+  // If a project is selected, show the project detail view
+  if (selectedProjectId && selectedProject) {
+    return (
+      <MainLayout>
+        <div className="space-y-6">
+          {/* Header with Back Button */}
+          <div className="flex items-center gap-4">
+            <Button 
+              variant="ghost" 
+              size="icon"
+              onClick={() => setSelectedProjectId(null)}
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+            <div className="flex-1">
+              <div className="flex items-center gap-3">
+                <h1 className="text-2xl font-bold">{selectedProject.name}</h1>
+                <Badge className={cn(statusLabels[selectedProject.status]?.color)}>
+                  {statusLabels[selectedProject.status]?.label}
+                </Badge>
+              </div>
+              <p className="text-muted-foreground text-sm">
+                {selectedProject.project_number}
+                {selectedProject.counterparty && ` • ${selectedProject.counterparty.name}`}
+              </p>
+            </div>
+          </div>
+
+          {/* Project Tabs */}
+          <Tabs defaultValue="kanban" className="space-y-4">
+            <TabsList>
+              <TabsTrigger value="kanban" className="gap-2">
+                <LayoutList className="h-4 w-4" />
+                Tarefas
+              </TabsTrigger>
+              <TabsTrigger value="financeiro" className="gap-2">
+                <DollarSign className="h-4 w-4" />
+                Financeiro
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="kanban">
+              <KanbanBoard projectId={selectedProjectId} />
+            </TabsContent>
+
+            <TabsContent value="financeiro">
+              <ProjectProfitabilityPanel projectId={selectedProjectId} />
+            </TabsContent>
+          </Tabs>
+        </div>
+      </MainLayout>
+    );
+  }
 
   return (
     <MainLayout>
@@ -81,10 +130,10 @@ export default function GestaoProjetosPage() {
               <CardTitle className="text-sm font-medium text-muted-foreground">
                 Em Planejamento
               </CardTitle>
-              <Target className="h-4 w-4 text-blue-500" />
+              <Target className="h-4 w-4 text-primary" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-blue-600">{stats?.planejamento || 0}</div>
+              <div className="text-2xl font-bold text-primary">{stats?.planejamento || 0}</div>
               <p className="text-xs text-muted-foreground mt-1">
                 Aguardando início
               </p>
@@ -96,10 +145,10 @@ export default function GestaoProjetosPage() {
               <CardTitle className="text-sm font-medium text-muted-foreground">
                 Concluídos
               </CardTitle>
-              <CheckCircle2 className="h-4 w-4 text-green-500" />
+              <CheckCircle2 className="h-4 w-4 text-primary" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-green-600">{stats?.concluidos || 0}</div>
+              <div className="text-2xl font-bold text-primary">{stats?.concluidos || 0}</div>
               <p className="text-xs text-muted-foreground mt-1">
                 Finalizados com sucesso
               </p>
@@ -111,10 +160,10 @@ export default function GestaoProjetosPage() {
               <CardTitle className="text-sm font-medium text-muted-foreground">
                 Atrasados
               </CardTitle>
-              <AlertTriangle className="h-4 w-4 text-red-500" />
+              <AlertTriangle className="h-4 w-4 text-destructive" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-red-600">{stats?.atrasados || 0}</div>
+              <div className="text-2xl font-bold text-destructive">{stats?.atrasados || 0}</div>
               <p className="text-xs text-muted-foreground mt-1">
                 Prazo excedido
               </p>
@@ -126,10 +175,10 @@ export default function GestaoProjetosPage() {
               <CardTitle className="text-sm font-medium text-muted-foreground">
                 Horas Realizadas
               </CardTitle>
-              <Clock className="h-4 w-4 text-violet-500" />
+              <Clock className="h-4 w-4 text-primary" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-violet-600">
+              <div className="text-2xl font-bold text-primary">
                 {(stats?.totalHours || 0).toFixed(1)}h
               </div>
               <p className="text-xs text-muted-foreground mt-1">
@@ -145,69 +194,37 @@ export default function GestaoProjetosPage() {
           </Card>
         </div>
 
-        {/* Tabs de Navegação */}
-        <Tabs defaultValue="projetos" className="space-y-4">
-          <div className="flex items-center justify-between">
-            <TabsList>
-              <TabsTrigger value="projetos" className="gap-2">
-                <FolderKanban className="h-4 w-4" />
-                Projetos
-              </TabsTrigger>
-              <TabsTrigger value="kanban" className="gap-2">
-                <LayoutList className="h-4 w-4" />
-                Kanban de Tarefas
-              </TabsTrigger>
-            </TabsList>
-            
-            <div className="flex items-center gap-2">
-              <div className="relative w-64">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input 
-                  placeholder="Buscar projetos..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-              <select 
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="h-10 rounded-md border border-input bg-background px-3 text-sm"
-              >
-                <option value="todos">Todos Status</option>
-                <option value="planejamento">Planejamento</option>
-                <option value="em_andamento">Em Andamento</option>
-                <option value="pausado">Pausado</option>
-                <option value="concluido">Concluído</option>
-                <option value="cancelado">Cancelado</option>
-              </select>
-            </div>
-          </div>
-
-          <TabsContent value="projetos">
-            <ProjectsList 
-              projects={projects || []} 
-              isLoading={projectsLoading}
-              onSelectProject={setSelectedProjectId}
+        {/* Filters and Search */}
+        <div className="flex items-center gap-4">
+          <div className="relative flex-1 max-w-sm">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input 
+              placeholder="Buscar projetos..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-10"
             />
-          </TabsContent>
+          </div>
+          <select 
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="h-10 rounded-md border border-input bg-background px-3 text-sm"
+          >
+            <option value="todos">Todos Status</option>
+            <option value="planejamento">Planejamento</option>
+            <option value="em_andamento">Em Andamento</option>
+            <option value="pausado">Pausado</option>
+            <option value="concluido">Concluído</option>
+            <option value="cancelado">Cancelado</option>
+          </select>
+        </div>
 
-          <TabsContent value="kanban">
-            {selectedProjectId ? (
-              <KanbanBoard projectId={selectedProjectId} />
-            ) : (
-              <Card className="p-12">
-                <div className="text-center text-muted-foreground">
-                  <FolderKanban className="h-12 w-12 mx-auto mb-4 opacity-30" />
-                  <h3 className="font-medium mb-2">Selecione um Projeto</h3>
-                  <p className="text-sm">
-                    Clique em um projeto na lista para visualizar o Kanban de tarefas
-                  </p>
-                </div>
-              </Card>
-            )}
-          </TabsContent>
-        </Tabs>
+        {/* Projects List */}
+        <ProjectsList 
+          projects={projects || []} 
+          isLoading={projectsLoading}
+          onSelectProject={setSelectedProjectId}
+        />
 
         {/* Dialogs */}
         <ProjectFormDialog 

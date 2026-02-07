@@ -3,7 +3,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Eye, Edit, Play, Pause, XCircle, RefreshCw, Trash2 } from "lucide-react";
+import { MoreHorizontal, Eye, Edit, Play, Pause, XCircle, RefreshCw, Trash2, FolderKanban } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -11,6 +11,7 @@ import type { Contract } from "@/hooks/useContracts";
 import { useSuspendContract, useCancelContract, useRenewContract, useReactivateContract, useDeleteContract } from "@/hooks/useContracts";
 import { ContractDetailsDialog } from "./ContractDetailsDialog";
 import { ContractActionDialog } from "./ContractActionDialog";
+import { CreateProjectFromContractDialog } from "./CreateProjectFromContractDialog";
 
 interface ContractsListProps {
   contracts: Contract[];
@@ -39,6 +40,8 @@ export function ContractsList({ contracts, isLoading }: ContractsListProps) {
   const [selectedContract, setSelectedContract] = useState<Contract | null>(null);
   const [showDetailsDialog, setShowDetailsDialog] = useState(false);
   const [actionDialog, setActionDialog] = useState<{ type: 'suspend' | 'cancel' | 'renew' | 'delete' | null; contract: Contract | null }>({ type: null, contract: null });
+  const [showCreateProjectDialog, setShowCreateProjectDialog] = useState(false);
+  const [projectContract, setProjectContract] = useState<Contract | null>(null);
 
   const suspendMutation = useSuspendContract();
   const cancelMutation = useCancelContract();
@@ -181,6 +184,14 @@ export function ContractsList({ contracts, isLoading }: ContractsListProps) {
                       
                       {contract.status === 'ativo' && (
                         <>
+                          <DropdownMenuItem onClick={() => {
+                            setProjectContract(contract);
+                            setShowCreateProjectDialog(true);
+                          }}>
+                            <FolderKanban className="h-4 w-4 mr-2" />
+                            Criar Projeto de Entrega
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
                           <DropdownMenuItem onClick={() => handleAction('renew', contract)}>
                             <RefreshCw className="h-4 w-4 mr-2" />
                             Renovar
@@ -191,7 +202,7 @@ export function ContractsList({ contracts, isLoading }: ContractsListProps) {
                           </DropdownMenuItem>
                           <DropdownMenuItem 
                             onClick={() => handleAction('cancel', contract)}
-                            className="text-red-600"
+                            className="text-destructive"
                           >
                             <XCircle className="h-4 w-4 mr-2" />
                             Cancelar
@@ -266,6 +277,12 @@ export function ContractsList({ contracts, isLoading }: ContractsListProps) {
           }
           setActionDialog({ type: null, contract: null });
         }}
+      />
+
+      <CreateProjectFromContractDialog
+        contract={projectContract}
+        open={showCreateProjectDialog}
+        onOpenChange={setShowCreateProjectDialog}
       />
     </>
   );
