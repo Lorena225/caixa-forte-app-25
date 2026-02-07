@@ -33,7 +33,11 @@ import {
   Tag,
   BarChart3,
   PieChart,
-  Briefcase
+  Briefcase,
+  FolderKanban,
+  Timer,
+  LayoutGrid,
+  ClipboardList
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -318,6 +322,56 @@ const helpCategories: HelpCategory[] = [
     ],
   },
   {
+    id: 'projetos',
+    title: 'Gestão de Projetos',
+    icon: FolderKanban,
+    color: 'text-cyan-500',
+    topics: [
+      {
+        id: 'contrato-projeto',
+        title: 'Contrato → Projeto',
+        description: 'Transforme vendas em projetos de entrega com um clique.',
+        icon: Briefcase,
+        keywords: ['contrato', 'projeto', 'entrega', 'conversão', 'venda'],
+      },
+      {
+        id: 'kanban',
+        title: 'Quadro Kanban',
+        description: 'Visualize e gerencie tarefas com drag-and-drop.',
+        icon: LayoutGrid,
+        keywords: ['kanban', 'tarefa', 'board', 'card', 'arrastar'],
+      },
+      {
+        id: 'timesheet',
+        title: 'Timesheet (Horas)',
+        description: 'Apontamento de horas com timer ou lançamento manual.',
+        icon: Timer,
+        keywords: ['timesheet', 'horas', 'timer', 'apontamento', 'cronômetro'],
+      },
+      {
+        id: 'rentabilidade',
+        title: 'Rentabilidade',
+        description: 'Análise de margem: Receita - Custo de Pessoal = Lucro.',
+        icon: TrendingUp,
+        keywords: ['rentabilidade', 'margem', 'lucro', 'custo', 'profitability'],
+      },
+      {
+        id: 'marcos',
+        title: 'Marcos (Milestones)',
+        description: 'Pontos de controle para faturamento por entrega.',
+        icon: Target,
+        keywords: ['marco', 'milestone', 'entrega', 'fase', 'faturamento'],
+      },
+      {
+        id: 'acoes-massa-tarefas',
+        title: 'Ações em Massa',
+        description: 'Edite responsáveis, prazos e status de várias tarefas.',
+        icon: ClipboardList,
+        keywords: ['massa', 'bulk', 'lote', 'edição', 'múltiplas'],
+      },
+    ],
+  },
+  {
     id: 'inteligencia',
     title: 'Inteligência (IA)',
     icon: Bot,
@@ -453,6 +507,20 @@ const searchSuggestions = [
   { query: 'mensalidade', suggestion: 'Cobrar Mensalidades', topicId: 'criando-contrato', categoryId: 'contratos' },
   { query: 'renovacao', suggestion: 'Renovação de Contratos', topicId: 'ciclo-vida', categoryId: 'contratos' },
   { query: 'cancelamento', suggestion: 'Cancelamento de Contratos', topicId: 'ciclo-vida', categoryId: 'contratos' },
+  // Projetos
+  { query: 'projeto', suggestion: 'Gestão de Projetos de Entrega', topicId: 'contrato-projeto', categoryId: 'projetos' },
+  { query: 'kanban', suggestion: 'Quadro Kanban de Tarefas', topicId: 'kanban', categoryId: 'projetos' },
+  { query: 'timesheet', suggestion: 'Apontamento de Horas (Timesheet)', topicId: 'timesheet', categoryId: 'projetos' },
+  { query: 'horas', suggestion: 'Apontamento de Horas', topicId: 'timesheet', categoryId: 'projetos' },
+  { query: 'timer', suggestion: 'Timer de Apontamento', topicId: 'timesheet', categoryId: 'projetos' },
+  { query: 'cronometro', suggestion: 'Cronômetro de Horas', topicId: 'timesheet', categoryId: 'projetos' },
+  { query: 'rentabilidade', suggestion: 'Rentabilidade de Projeto', topicId: 'rentabilidade', categoryId: 'projetos' },
+  { query: 'margem', suggestion: 'Margem de Contribuição', topicId: 'rentabilidade', categoryId: 'projetos' },
+  { query: 'lucro projeto', suggestion: 'Lucro do Projeto', topicId: 'rentabilidade', categoryId: 'projetos' },
+  { query: 'marco', suggestion: 'Marcos de Entrega (Milestones)', topicId: 'marcos', categoryId: 'projetos' },
+  { query: 'milestone', suggestion: 'Marcos de Entrega', topicId: 'marcos', categoryId: 'projetos' },
+  { query: 'entrega', suggestion: 'Projeto de Entrega', topicId: 'contrato-projeto', categoryId: 'projetos' },
+  { query: 'tarefa', suggestion: 'Gestão de Tarefas (Kanban)', topicId: 'kanban', categoryId: 'projetos' },
 ];
 
 // Flatten all topics for search

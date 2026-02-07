@@ -30,7 +30,11 @@ import {
   Plug,
   Upload,
   Lightbulb,
-  RepeatIcon
+  RepeatIcon,
+  FolderKanban,
+  Timer,
+  LayoutGrid,
+  Briefcase
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -990,6 +994,339 @@ Pergunte ao Copilot:
 - *"Quantos contratos estão prestes a vencer?"*
 
 O CFO Virtual consolida esses dados e oferece insights acionáveis.`
+      }
+    ]
+  },
+  projetos: {
+    title: 'Gestão de Entregas e Serviços',
+    icon: FolderKanban,
+    color: 'text-cyan-500',
+    bgColor: 'bg-cyan-50',
+    description: 'Transforme contratos em projetos, gerencie tarefas, apontamentos de horas e rentabilidade.',
+    modules: [
+      {
+        id: 'contrato-para-projeto',
+        title: 'Do Contrato à Entrega (Fluxo Ideal)',
+        icon: Briefcase,
+        content: `## 🚀 O que é?
+
+O **Fluxo de Entrega** conecta sua área comercial à operação. Quando você fecha um contrato com um cliente, o próximo passo natural é **criar um Projeto de Entrega** para gerenciar as tarefas, horas e entregas.
+
+---
+
+## 📝 Passo a Passo
+
+**1. Vá ao contrato vendido**
+   - Navegue para: **Contratos & Projetos > Lista de Contratos**
+   - Localize o contrato do cliente
+
+**2. Clique em "Criar Projeto de Entrega"**
+   - O botão aparece no menu de ações (⋮) de cada contrato
+   - Contratos ativos ou em execução podem gerar projetos
+
+**3. O sistema herda automaticamente:**
+   - ✅ **Cliente/Contraparte**: Já vem preenchido
+   - ✅ **Escopo do Contrato**: Descrição e valor total
+   - ✅ **Prazo Sugerido**: Baseado na data fim do contrato
+
+**4. Configure o projeto:**
+   - **Gerente do Projeto (PM)**: Quem será responsável pela entrega
+   - **Prazo Final (Deadline)**: Data limite de conclusão
+   - **Orçamento de Horas (Budget)**: Quantas horas foram vendidas
+
+**5. Clique em "Criar Projeto"**
+   - O projeto é criado com status "Planejamento"
+   - Você é redirecionado para a tela de gestão
+
+---
+
+## 🎯 Por que fazer assim?
+
+> **"Um projeto sem contrato é trabalho sem receita. Um contrato sem projeto é promessa sem entrega."**
+
+A integração garante:
+- 📊 **Rastreabilidade**: Saber de qual venda veio cada projeto
+- 💰 **Rentabilidade**: Comparar quanto vendeu vs. quanto gastou
+- 📈 **Métricas**: Dashboard unificado de contratos e projetos
+
+---
+
+## 💡 Dica da IA
+
+Pergunte ao Copilot: *"Quais contratos ainda não têm projeto vinculado?"*
+
+O CFO Virtual identificará contratos ativos sem projeto de entrega, ajudando você a não deixar nenhuma venda sem acompanhamento.`
+      },
+      {
+        id: 'kanban-gantt',
+        title: 'Execução Visual (Kanban e Gantt)',
+        icon: LayoutGrid,
+        content: `## 📊 Quadro de Tarefas (Kanban)
+
+O **Kanban Board** é a visualização padrão para gerenciar tarefas do projeto. Cada coluna representa um estágio:
+
+| Coluna | Significado |
+|--------|-------------|
+| **A Fazer** | Tarefas planejadas, aguardando início |
+| **Em Andamento** | Trabalho em progresso |
+| **Em Revisão** | Aguardando aprovação ou QA |
+| **Concluído** | Tarefa finalizada |
+
+---
+
+## 📝 Como usar o Kanban
+
+**1. Acesse o projeto**
+   - Navegue para: **Contratos & Projetos > Gestão de Projetos**
+   - Clique no projeto desejado
+   - Vá para a aba "Tarefas"
+
+**2. Crie tarefas**
+   - Clique em "+ Nova Tarefa"
+   - Defina: Título, Responsável, Prioridade, Estimativa de horas
+
+**3. Arraste os cards**
+   - **Drag & Drop**: Mova tarefas entre colunas
+   - A mudança é salva automaticamente
+   - O progresso do projeto é recalculado
+
+**4. Visualize o progresso**
+   - Barra de progresso no topo mostra % concluído
+   - Cards coloridos indicam prioridade (vermelho = urgente)
+
+---
+
+## 📅 Cronograma (Gantt Simplificado)
+
+A visão de **Marcos (Milestones)** funciona como um Gantt simplificado:
+
+- 📍 **Marcos**: Pontos de controle no tempo (ex: "Entrega Fase 1")
+- 📆 **Linha do Tempo**: Visualize quando cada marco deve ser atingido
+- ⚠️ **Gargalos**: Marcos atrasados são destacados em vermelho
+
+### Como criar Marcos
+
+1. Na aba "Marcos" do projeto
+2. Clique em "+ Novo Marco"
+3. Defina: Nome, Data prevista, Valor (se for faturável)
+
+---
+
+## 🔗 Faturamento por Marco (Milestone Billing)
+
+Quando um marco é marcado como **"Concluído"**:
+
+1. O sistema verifica se há valor associado
+2. Exibe um alerta: *"Marco concluído! Gerar fatura?"*
+3. Ao confirmar, cria um Contas a Receber vinculado ao contrato
+
+Isso implementa o modelo de **faturamento por entrega**, comum em consultorias e desenvolvimento de software.
+
+---
+
+## 💡 Dica da IA
+
+O CFO Virtual monitora a execução:
+
+- ⚠️ *"Projeto XYZ tem 3 tarefas atrasadas"*
+- 📊 *"A equipe está consumindo horas 20% mais rápido que o planejado"*
+- 🎯 *"Marco 'Entrega Fase 1' vence em 5 dias"*`
+      },
+      {
+        id: 'timesheet',
+        title: 'Timesheet (Apontamento de Horas)',
+        icon: Timer,
+        content: `## ⏱️ O Coração da Operação
+
+O **Timesheet** (Apontamento de Horas) é onde você registra o tempo gasto em cada tarefa. Sem ele, **não há cálculo de custo real do projeto**.
+
+> ⚠️ **Importante**: O tempo apontado aqui impacta diretamente o custo do projeto. Seja preciso!
+
+---
+
+## 🎮 Widget de Cronômetro (Play/Pause)
+
+O **Timesheet Widget** é um componente flutuante sempre visível no canto inferior direito da tela.
+
+### Como usar o Play/Pause
+
+**1. Clique em "Apontar Horas"**
+   - O botão flutuante aparece em todas as páginas do sistema
+
+**2. Escolha "Iniciar Timer"**
+   - Selecione o Projeto
+   - Opcionalmente, selecione a Tarefa específica
+   - Clique em "Iniciar"
+
+**3. O cronômetro começa a rodar**
+   - Contador mostra HH:MM:SS em tempo real
+   - Badge mostra o projeto ativo
+   - Expanda para ver detalhes
+
+**4. Ao terminar, clique em "Parar Timer"**
+   - Adicione uma descrição do que foi feito
+   - O tempo é registrado automaticamente
+
+---
+
+## 📝 Lançamento Manual (Retroativo)
+
+Esqueceu de dar play? Sem problema! Use o lançamento manual:
+
+**1. Clique em "Apontar Horas" > "Lançar Manual"**
+
+**2. Preencha:**
+   - **Projeto**: Onde trabalhou
+   - **Tarefa**: Qual atividade (opcional)
+   - **Data**: Quando foi
+   - **Início/Fim**: Horário trabalhado
+   - **Descrição**: O que foi feito
+
+**3. Clique em "Registrar Horas"**
+
+---
+
+## 📊 Por que o Timesheet é Crítico?
+
+| Com Timesheet | Sem Timesheet |
+|---------------|---------------|
+| Custo real calculado | Apenas estimativas |
+| Rentabilidade precisa | Margem desconhecida |
+| Horas x Valor Hora | Chute no escuro |
+| Dados para precificação futura | Repetir erros de orçamento |
+
+---
+
+## 💡 Dica da IA
+
+Pergunte ao Copilot:
+
+- *"Quem está trabalhando agora?"* → Lista usuários com timer ativo
+- *"Quantas horas gastei no Projeto X esta semana?"* → Soma seus apontamentos
+- *"O Projeto Y está dentro do budget de horas?"* → Compara orçado vs. realizado`
+      },
+      {
+        id: 'rentabilidade-projeto',
+        title: 'Análise de Rentabilidade (Profitability)',
+        icon: TrendingUp,
+        content: `## 💰 O Dashboard Financeiro do Projeto
+
+A aba **"Financeiro"** de cada projeto mostra a **Margem de Contribuição** — o lucro real daquele serviço.
+
+---
+
+## 📊 A Fórmula Mágica
+
+\`\`\`
+Receita (Valor do Contrato)
+- Custo de Pessoal (Horas Apontadas × Valor Hora do Colaborador)
+= Margem de Contribuição (Lucro Real)
+\`\`\`
+
+---
+
+## 📝 Como Funciona na Prática
+
+**1. Receita do Projeto**
+   - Vem do contrato vinculado
+   - Valor total ou valor mensal × meses de vigência
+
+**2. Custo de Pessoal**
+   - Soma de todas as horas no Timesheet
+   - Cada hora é multiplicada pelo **Valor Hora do Colaborador**
+   - Configurado em: Cadastros > Usuários > Custo Hora
+
+**3. Margem de Contribuição**
+   - Receita - Custo = Margem
+   - Margem % = (Margem / Receita) × 100
+
+---
+
+## 📈 Exemplo Real
+
+| Item | Valor |
+|------|-------|
+| **Receita do Contrato** | R$ 50.000 |
+| **Horas Apontadas** | 400 horas |
+| **Custo Médio/Hora** | R$ 80 |
+| **Custo Total** | R$ 32.000 |
+| **Margem de Contribuição** | R$ 18.000 (36%) |
+
+---
+
+## ⚙️ Configurando o Valor Hora
+
+O campo **"Valor Hora"** de cada usuário é a base de cálculo para rentabilidade:
+
+1. Vá em **Configurações > Usuários**
+2. Edite o usuário
+3. Preencha o campo "Custo Hora" (R$/hora)
+
+> 💡 **Dica**: Use o custo total (salário + encargos + benefícios) dividido por horas produtivas mensais.
+
+---
+
+## 💡 Dica da IA
+
+Pergunte ao Copilot:
+
+- *"O Projeto da Empresa X está dando lucro?"*
+  - IA responde: *"Sim, margem atual de 30%"* ou *"Alerta: O custo de horas já consumiu 90% do orçamento"*
+
+- *"Qual projeto tem melhor rentabilidade?"*
+  - IA compara todos os projetos ativos
+
+- *"Quanto estou gastando por hora em média?"*
+  - IA calcula o custo médio ponderado da equipe`
+      },
+      {
+        id: 'acoes-massa-projetos',
+        title: 'Ações em Massa (Produtividade)',
+        icon: Boxes,
+        content: `## ⚡ Edição em Massa de Tarefas
+
+Gerentes de projeto podem selecionar múltiplas tarefas e aplicar ações em lote, economizando tempo em operações repetitivas.
+
+---
+
+## 📝 Como Usar
+
+**1. Acesse o Kanban do projeto**
+
+**2. Selecione as tarefas**
+   - Clique na checkbox de cada card
+   - Ou use "Selecionar Todas" na coluna
+
+**3. A barra de ações aparece**
+   - Mostra quantos itens selecionados
+   - Apresenta as ações disponíveis
+
+**4. Escolha a ação:**
+
+| Ação | Descrição |
+|------|-----------|
+| **Alterar Responsável** | Reatribui tarefas para outro membro |
+| **Mudar Prazo** | Define nova data de entrega em lote |
+| **Arquivar** | Move para arquivo morto |
+| **Alterar Prioridade** | Muda urgência de várias tarefas |
+
+---
+
+## 🎯 Casos de Uso Comuns
+
+- 📦 **Redistribuição de trabalho**: Membro saiu de férias? Reatribua suas tarefas
+- 📅 **Replanejamento**: Prazo do projeto mudou? Ajuste todas as datas
+- 🗄️ **Limpeza**: Arquive tarefas concluídas do mês passado
+
+---
+
+## 💡 Dica da IA
+
+O Copilot pode ajudar com ações em massa:
+
+- *"Mova todas as tarefas do João para a Maria"*
+- *"Quais tarefas estão atrasadas no Projeto X?"*
+- *"Arquive tarefas concluídas há mais de 30 dias"*`
       }
     ]
   },
@@ -1989,6 +2326,7 @@ export default function Documentacao() {
       'controladoria-fiscal': 'fiscal',
       'inteligencia': 'inteligencia',
       'contratos': 'contratos',
+      'projetos': 'projetos',
       'configuracoes': 'configuracoes',
     };
     return categoryMapping[param || ''] || 'financeiro';
