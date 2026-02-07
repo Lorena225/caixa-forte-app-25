@@ -164,6 +164,8 @@ import CRMLeads from "./pages/crm/Leads";
 import CRMVendedores from "./pages/crm/Vendedores";
 import CRMComissoes from "./pages/crm/Comissoes";
 import CRMMetas from "./pages/crm/Metas";
+// Contratos / Recorrência
+import RecorrenciaPage from "./pages/contratos/Recorrencia";
 // Admin
 import AdminIndex from "./pages/admin/Index";
 import AdminBranding from "./pages/admin/Branding";
@@ -591,6 +593,9 @@ const App = () => (
                 <Route path="/crm/vendedores" element={<CRMVendedores />} />
                 <Route path="/crm/comissoes" element={<CRMComissoes />} />
                 <Route path="/crm/metas" element={<CRMMetas />} />
+                
+                {/* ============ CONTRATOS / RECORRÊNCIA ============ */}
+                <Route path="/contratos/recorrencia" element={<RecorrenciaPage />} />
                 
                 {/* ============ DEVELOPER PORTAL & MARKETPLACE ============ */}
                 <Route path="/developers" element={<DeveloperPortal />} />
