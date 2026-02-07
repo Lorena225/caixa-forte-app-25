@@ -58,6 +58,7 @@ import {
   Key,
   Inbox,
   LayoutGrid,
+  RepeatIcon,
   FileBarChart,
   Layers,
   CircleDollarSign,
@@ -183,6 +184,7 @@ const menuItems: MenuItem[] = [
       { key: 'orcamento-real', label: 'Orçamento vs Real', icon: Target, route: '/financeiro/orcamento-real' },
       { key: 'rolling-forecast', label: 'Rolling Forecast', icon: TrendingUp, route: '/financeiro/rolling-forecast' },
       { key: 'simulacoes-whatif', label: 'Simulações What-If', icon: Calculator, route: '/financeiro/simulacoes-orcamento' },
+      { key: 'contratos-recorrencia', label: 'Contratos & Recorrência', icon: RepeatIcon, route: '/contratos/recorrencia' },
     ]
   },
 

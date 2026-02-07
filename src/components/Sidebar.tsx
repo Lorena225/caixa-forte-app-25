@@ -58,6 +58,7 @@ import {
   Inbox,
   LayoutGrid,
   FileBarChart,
+  RepeatIcon,
   Layers,
   CircleDollarSign,
   Activity,
@@ -170,6 +171,7 @@ const menuItems: MenuItem[] = [
       { key: 'simulacoes-whatif', label: 'Simulações What-If', icon: Calculator, route: '/financeiro/simulacoes-orcamento' },
       { key: 'contas-bancarias', label: 'Contas Bancárias', icon: Building2, route: '/cadastros/contas-bancarias' },
       { key: 'conciliacao', label: 'Conciliação Bancária', icon: RefreshCw, route: '/tesouraria/conciliacao' },
+      { key: 'contratos-recorrencia', label: 'Contratos & Recorrência', icon: RepeatIcon, route: '/contratos/recorrencia' },
     ]
   },
   
