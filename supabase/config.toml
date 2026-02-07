@@ -98,3 +98,6 @@ verify_jwt = false
 
 [functions.ai-reconcile-match]
 verify_jwt = true
+
+[functions.cfo-agent]
+verify_jwt = false

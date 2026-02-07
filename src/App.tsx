@@ -258,6 +258,10 @@ import { ControladoriaLivroDiarioPage } from "./pages/ControladoriaLivroDiarioPa
 import { ControladoriaDREPage } from "./pages/ControladoriaDREPage";
 import { ControladoriaBalancetePage } from "./pages/ControladoriaBalancetePage";
 import { ControladoriaBalancoPage } from "./pages/ControladoriaBalancoPage";
+// IA Agentes
+import IntelligenceFeed from "./pages/ia/IntelligenceFeed";
+import AISettingsPage from "./pages/ia/AISettingsPage";
+import AnomalyMonitorPage from "./pages/ia/AnomalyMonitorPage";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -437,6 +441,10 @@ const App = () => (
                 <Route path="/paineis/orcamento" element={<BudgetDashboard />} />
                 <Route path="/paineis/conta-orcamentaria" element={<BudgetByAccountDashboard />} />
                 
+                {/* ============ INTELIGÊNCIA (IA) ============ */}
+                <Route path="/ia/feed" element={<IntelligenceFeed />} />
+                <Route path="/ia/configuracoes" element={<AISettingsPage />} />
+                <Route path="/ia/anomalias" element={<AnomalyMonitorPage />} />
                 {/* Redirects de rotas antigas (inglês) para novas (português) */}
                 <Route path="/dashboards" element={<Navigate to="/paineis" replace />} />
                 <Route path="/dashboards/executive" element={<Navigate to="/paineis/executivo" replace />} />
