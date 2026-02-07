@@ -9,8 +9,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { HelpCircle, Loader2 } from "lucide-react";
 import { useCreateContract } from "@/hooks/useContracts";
-import { useCounterparties } from "@/hooks/useCRM";
+import { useCounterparties } from "@/hooks/useCompanyData";
 import { format } from "date-fns";
+
+type AdjustmentIndex = "IGPM" | "IPCA" | "INPC" | "SELIC" | "MANUAL";
 
 interface ContractFormDialogProps {
   open: boolean;
@@ -19,7 +21,10 @@ interface ContractFormDialogProps {
 
 export function ContractFormDialog({ open, onOpenChange }: ContractFormDialogProps) {
   const createMutation = useCreateContract();
-  const { data: counterparties } = useCounterparties({ is_client: true });
+  const { data: counterparties } = useCounterparties();
+  
+  // Filter only clients
+  const clients = counterparties?.filter(cp => cp.is_client) || [];
   
   const [formData, setFormData] = useState({
     counterparty_id: "",
@@ -31,7 +36,7 @@ export function ContractFormDialog({ open, onOpenChange }: ContractFormDialogPro
     billing_day: 5,
     monthly_value: 0,
     auto_adjustment: false,
-    adjustment_index: undefined as "IGPM" | "IPCA" | "INPC" | "SELIC" | "MANUAL" | undefined,
+    adjustment_index: undefined as AdjustmentIndex | undefined,
     auto_generate_billing: true,
     renovacao_automatica: false,
     alertar_antes_dias: 30,
@@ -61,7 +66,7 @@ export function ContractFormDialog({ open, onOpenChange }: ContractFormDialogPro
       billing_day: 5,
       monthly_value: 0,
       auto_adjustment: false,
-      adjustment_index: "",
+      adjustment_index: undefined,
       auto_generate_billing: true,
       renovacao_automatica: false,
       alertar_antes_dias: 30,
@@ -90,7 +95,7 @@ export function ContractFormDialog({ open, onOpenChange }: ContractFormDialogPro
                   <SelectValue placeholder="Selecione o cliente" />
                 </SelectTrigger>
                 <SelectContent>
-                  {counterparties?.map((cp) => (
+                  {clients?.map((cp) => (
                     <SelectItem key={cp.id} value={cp.id}>
                       {cp.name} {cp.document && `(${cp.document})`}
                     </SelectItem>
@@ -253,7 +258,7 @@ export function ContractFormDialog({ open, onOpenChange }: ContractFormDialogPro
                   <Label>Índice de Reajuste</Label>
                   <Select 
                     value={formData.adjustment_index} 
-                    onValueChange={(v) => setFormData(prev => ({ ...prev, adjustment_index: v }))}
+                    onValueChange={(v: AdjustmentIndex) => setFormData(prev => ({ ...prev, adjustment_index: v }))}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Selecione o índice" />
