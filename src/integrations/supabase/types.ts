@@ -31196,6 +31196,8 @@ export type Database = {
         Args: { p_days_login_attempts?: number; p_days_rate_limit?: number }
         Returns: Json
       }
+      decrypt_credentials: { Args: { encrypted_text: string }; Returns: string }
+      encrypt_credentials: { Args: { plain_text: string }; Returns: string }
       execute_bank_transfer: {
         Args: {
           p_amount: number
