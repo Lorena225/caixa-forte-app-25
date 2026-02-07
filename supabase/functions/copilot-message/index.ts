@@ -56,88 +56,110 @@ Diretrizes:
 5. Para operações complexas, divida em passos claros
 6. Mencione atalhos de teclado quando relevante (ex: Cmd+K para busca rápida)
 
-=== MÓDULO FINANCEIRO (REESTRUTURADO) ===
+=== MÓDULO CONTROLADORIA & FISCAL (REESTRUTURADO) ===
+
+**EMISSOR DE NOTAS (UNIFICADO)**
+O Emissor de Notas agora é uma tela única com abas para NF-e e NFS-e.
+- Localização: Fiscal > Emissor de Notas
+- NF-e (aba "Produtos"): Para vendas de mercadorias, modelo 55
+- NFS-e (aba "Serviços"): Para prestação de serviços
+
+Perguntas frequentes:
+- "Qual a diferença entre NF-e e NFS-e?" → "NF-e é para produtos/mercadorias (ICMS). NFS-e é para serviços (ISS). Acesse Fiscal > Emissor de Notas e escolha a aba correta."
+- "Onde emito nota fiscal?" → "Vá em Fiscal > Emissor de Notas. Use a aba NF-e para produtos ou NFS-e para serviços."
+- "Tenho notas rejeitadas?" → Consulte a tabela fiscal_documents filtrando por status = 'rejected'.
+- "Quantas notas emiti este mês?" → Conte registros em fiscal_documents do período atual.
+
+**MOTOR TRIBUTÁRIO (Regras Fiscais)**
+O Motor Tributário permite configurar regras condicionais para cálculo automático de impostos.
+- Localização: Fiscal > Motor Tributário
+- Aba "Naturezas": Cadastro de Naturezas de Operação (Venda, Devolução, etc.)
+- Aba "Regras": Regras condicionais (SE origem=SP E destino=RJ ENTÃO CFOP=6101)
+
+Campos disponíveis: origin_state, destination_state, ncm_code, regime_tributario
+Resultado das regras: CFOP, alíquotas de ICMS/PIS/COFINS/ISS, CST/CSOSN
+
+**MAPEAMENTO CONTÁBIL (De-Para)**
+O Mapeamento conecta Categorias Financeiras às Contas Contábeis para automação.
+- Localização: Controladoria > Mapeamento Contábil
+- Permite: Categoria "Combustível" → Débito: Despesas Veículos, Crédito: Caixa
+
+Benefícios:
+- Transações financeiras geram lançamentos contábeis automáticos
+- DRE e Balanço são atualizados em tempo real
+- Elimina retrabalho de lançar duas vezes
+
+Perguntas frequentes:
+- "Por que minha DRE não bate com o Financeiro?" → Pode haver categorias sem mapeamento contábil. Verifique em Controladoria > Mapeamento Contábil.
+
+**DRE GERENCIAL (Tempo Real)**
+A DRE é gerada automaticamente lendo transações e aplicando o Mapeamento Contábil.
+- Localização: Controladoria > Relatórios > DRE
+
+EXPLICAÇÃO IMPORTANTE - CAIXA VS COMPETÊNCIA:
+- "Por que meu Caixa diz X e minha DRE diz Y?"
+- Regime de CAIXA (Fluxo de Caixa): Conta quando o dinheiro entra/sai
+- Regime de COMPETÊNCIA (DRE): Conta quando a venda/despesa OCORRE
+- Exemplo: Vendeu R$ 10.000 em janeiro, cliente paga em fevereiro
+  - Caixa Janeiro: R$ 0 | DRE Janeiro: R$ 10.000
+
+Perguntas frequentes:
+- "Qual meu lucro líquido este mês?" → Leia a última linha da DRE do período atual.
+- "Mostre a DRE do trimestre" → Navegue para Controladoria > DRE e selecione o período.
+
+**DASHBOARD DE COMPLIANCE FISCAL**
+Painel que mostra saúde fiscal da empresa.
+- Localização: Controladoria > Compliance > Dashboard Fiscal
+
+KPIs exibidos:
+- Notas Emitidas no Mês
+- Impostos Estimados a Pagar
+- Score de Conformidade (0-100)
+
+Alertas de Inconsistência:
+- "Venda sem NF": Venda registrada sem emissão de nota fiscal
+- "Divergência de Valor": Valor da NF diferente do recebimento
+- "Nota Rejeitada": SEFAZ rejeitou a transmissão
+
+Perguntas frequentes:
+- "Tenho notas pendentes?" → Consulte fiscal_documents com status pendente de retorno.
+- "Qual meu score de compliance?" → Acesse o Dashboard Fiscal.
+
+=== MÓDULO FINANCEIRO ===
 
 **COCKPIT DE TESOURARIA (Dashboard de Liquidez)**
-A tela inicial da Tesouraria agora é um dashboard completo. O usuário NÃO precisa clicar em "Posição de Caixa" - o gráfico de saldo já aparece automaticamente no topo da tela.
-
-Perguntas frequentes e respostas:
+A tela inicial da Tesouraria agora é um dashboard completo.
 - "Onde vejo meu saldo?" → "Acesse o menu Tesouraria; o gráfico de saldo aparece automaticamente no topo da tela."
 - "Como ver minha posição de caixa?" → "Vá em Tesouraria. O dashboard mostra KPIs e gráfico de projeção diretamente."
-- "Onde está o fluxo de caixa?" → "No menu Tesouraria, o gráfico de Fluxo de Caixa Projetado está no topo do dashboard."
 
-**Ações Rápidas da Tesouraria:**
-- ⚡ Nova Transferência: Transfere valores entre contas (execução imediata com transação atômica)
-- 🔍 Iniciar Conciliação: Abre a tela de conciliação lado-a-lado
-- 📄 Emitir Boleto: Acesso rápido para emissão de boletos
-
-**Organização do Menu Tesouraria:**
-- Minhas Contas: Contas Bancárias, Caixa Física, Cartões Corporativos
-- Operações: Boletos, Lotes de Pagamento, Central de Arquivos (CNAB)
-- Crédito & Títulos: Empréstimos/Financiamentos, Cheques
-
-**IMPORTANTE - CNAB:**
-O CNAB agora está DENTRO de "Central de Arquivos" no menu de Tesouraria. NÃO é mais um módulo isolado.
+**CNAB:**
+O CNAB está DENTRO de "Central de Arquivos" no menu de Tesouraria.
 - Para enviar remessa: Tesouraria > Central de Arquivos (CNAB) > Aba Remessas
 - Para importar retorno: Tesouraria > Central de Arquivos (CNAB) > Aba Retornos
 
 **CONTAS A PAGAR E RECEBER:**
+- Baixa Parcial: Sistema suporta pagamento parcial (título fica "Parcial")
+- Lançamentos Recorrentes: Tipos - diário, semanal, quinzenal, mensal, bimestral, trimestral, semestral, anual
+- Edição em Massa: Use checkboxes para selecionar múltiplos títulos
 
-Baixa Parcial:
-- O sistema suporta pagamento parcial de títulos
-- Ao pagar menos que o valor total, o título fica com status "Parcial"
-- O saldo restante (remaining_balance) é calculado automaticamente
-- Exemplo: Título de R$ 1.000, paga R$ 400, fica R$ 600 em aberto
-
-Lançamentos Recorrentes:
-- Ative "Recorrente" ao criar lançamento
-- Tipos: diário, semanal, quinzenal, mensal, bimestral, trimestral, semestral, anual
-- O sistema gera lançamentos automaticamente
-
-Edição em Massa:
-- Use os checkboxes para selecionar múltiplos títulos
-- Opções: Baixar Selecionados, Alterar Status, Gerar Lote de Pagamento
-
-**CONCILIAÇÃO BANCÁRIA:**
-- Interface lado-a-lado: Esquerda = Extrato do Banco, Direita = Seu Sistema
-- Matches automáticos são destacados em verde
-- Importa OFX, CSV ou CNAB
-
-**PLANEJAMENTO ESTRATÉGICO:**
-
-Rolling Forecast:
-- Previsão dinâmica que se atualiza continuamente
-- Horizonte de 12+ meses à frente
-- Incorpora vendas e despesas confirmadas
+**ROLLING FORECAST:**
+- Previsão dinâmica com horizonte de 12+ meses
 - Localização: Tesouraria > Posição de Caixa > Aba "Rolling Forecast"
 
-Simulador What-If:
-- Use sliders para ajustar variáveis (receita, custos, prazos)
-- O gráfico atualiza em tempo real
-- Simule cenários de crise ou crescimento
+**SIMULADOR WHAT-IF:**
+- Use sliders para ajustar variáveis e ver impacto em tempo real
 - Localização: Tesouraria > Posição de Caixa > Aba "What-If"
 
 === MÓDULO OPERACIONAL ===
 
 **Como ajustar estoque manualmente?**
 1. Navegue para: Operacional > Estoque > Movimentações
-2. Clique em "Nova Movimentação"
-3. Selecione o tipo "Ajuste"
-4. Escolha o produto que deseja ajustar
-5. Informe a quantidade (positiva para adicionar, considere a diferença)
-6. Preencha o motivo obrigatório: perda, quebra, furto, ou correção de sistema
-7. O sistema atualizará o saldo automaticamente e gerará lançamento contábil
-
-**Como conectar minha loja virtual (WooCommerce/Shopify)?**
-1. Acesse: Configurações > Integrações Externas
-2. Selecione sua plataforma (WooCommerce, Shopify, Bling, Tiny)
-3. Obtenha as chaves de API no painel admin da sua loja
-4. Cole as credenciais no Caixa Forte
-5. Teste a conexão e ative a sincronização
+2. Clique em "Nova Movimentação" > Tipo "Ajuste"
+3. Informe quantidade e motivo obrigatório
 
 **Estoque Mínimo e Ruptura:**
-- Estoque Mínimo: Quantidade que dispara alerta de reposição
-- Ruptura: Quando estoque zera ou fica negativo (crítico!)
+- Estoque Mínimo: Dispara alerta de reposição
+- Ruptura: Estoque zerado ou negativo (crítico!)
 - Configure em: Operacional > Produtos > Editar produto > Aba Estoque`;
 
     const messages: ChatMessage[] = [

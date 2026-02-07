@@ -459,216 +459,424 @@ O CFO Virtual otimiza seu contas a pagar:
     ]
   },
   fiscal: {
-    title: 'Módulo Fiscal',
+    title: 'Controladoria & Fiscal',
     icon: Scale,
     color: 'text-blue-500',
     bgColor: 'bg-blue-50',
-    description: 'Emissão de notas fiscais, obrigações acessórias e compliance tributário.',
+    description: 'Contabilidade automatizada, emissão fiscal unificada, compliance e análise gerencial.',
     modules: [
       {
-        id: 'emissao-nfe',
-        title: 'Emissão de NF-e',
+        id: 'emissor-unificado',
+        title: 'Emissor de Notas Fiscais (Unificado)',
         icon: Receipt,
         content: `## 📊 O que é?
 
-A **NF-e (Nota Fiscal Eletrônica)** é o documento digital que substitui a nota fiscal em papel. No Caixa Forte, você emite NF-e modelo 55 (vendas para empresas) e NFC-e modelo 65 (vendas para consumidor final).
+O **Emissor de Notas** é a central unificada para emissão de todos os tipos de documentos fiscais. Em uma única tela, você acessa:
 
-É obrigatória para:
-- Vendas de produtos
-- Prestação de alguns serviços
-- Operações interestaduais
+- **NF-e (Nota Fiscal Eletrônica)**: Vendas de produtos/mercadorias (modelo 55)
+- **NFS-e (Nota Fiscal de Serviços)**: Prestação de serviços (varia por município)
 
 ---
 
-## 📝 Como usar? (Passo a Passo)
+## 🎯 Por que foi unificado?
 
-**1. Acesse o módulo de emissão**
-   - Navegue para: **Fiscal > Notas Fiscais > Emitir NF-e**
-   - Ou emita diretamente do PDV/Pedido de Venda
+| Antes (Antigo) | Agora (Novo) |
+|----------------|--------------|
+| Menu separado para NF-e e NFS-e | Tela única com abas |
+| DANFE em outro menu | Botão de impressão na própria nota |
+| Cupom Fiscal separado | Integrado ao PDV |
 
-**2. Preencha os dados do destinatário**
-   - CNPJ/CPF do cliente
-   - Razão Social / Nome
-   - Endereço completo (CEP, UF, Município)
-   - O sistema busca dados automaticamente pelo CNPJ
+---
 
-**3. Adicione os produtos**
-   - Busque pelo código ou nome do produto
-   - Confira: NCM, CFOP, CST/CSOSN
-   - Informe quantidade e valor unitário
-   - Impostos são calculados automaticamente
+## 📝 Como Emitir uma NF-e (Produtos)
 
-**4. Revise as informações fiscais**
-   - Base de cálculo do ICMS
-   - Valores de PIS/COFINS
-   - Informações complementares
+**1. Acesse o Emissor**
+   - Navegue para: **Fiscal > Emissor de Notas > Aba NF-e**
+   - Ou via Ação Rápida no Dashboard
 
-**5. Transmita para a SEFAZ**
-   - Clique em "Emitir NF-e"
-   - Aguarde a autorização (geralmente 3-5 segundos)
-   - Status: Autorizada, Rejeitada ou Denegada
+**2. Preencha o Destinatário**
+   - Busque pelo CNPJ/CPF (autocomplete)
+   - Dados são preenchidos automaticamente
 
-**6. Em caso de rejeição**
-   - Leia o motivo da rejeição
-   - Corrija o campo indicado
-   - Retransmita a nota
+**3. Adicione os Produtos**
+   - Selecione o produto cadastrado
+   - **NCM** e **CFOP** são sugeridos pelo Motor Tributário
+   - Impostos calculados automaticamente
+
+**4. Transmita para SEFAZ**
+   - Clique em "Emitir Nota"
+   - Aguarde autorização (3-5 segundos)
+   - Status: ✅ Autorizada | ⚠️ Rejeitada | ❌ Denegada
+
+**5. Imprima/Envie o DANFE**
+   - Clique no ícone de impressora
+   - Ou envie PDF por email/WhatsApp
+
+---
+
+## 📝 Como Emitir uma NFS-e (Serviços)
+
+**1. Acesse a Aba NFS-e**
+   - Navegue para: **Fiscal > Emissor de Notas > Aba NFS-e**
+
+**2. Configure a Prefeitura**
+   - Cada município tem integração própria
+   - Configure em: **Configurações > Fiscal > Prefeituras**
+
+**3. Descreva o Serviço**
+   - Código do Serviço (Lista LC 116)
+   - Descrição detalhada
+   - ISS calculado conforme alíquota municipal
+
+**4. Transmita para Prefeitura**
+   - Processo similar à NF-e
+   - Tempo de resposta varia por cidade
 
 ---
 
 ## 💡 Dica da IA
 
-O CFO Virtual previne erros na emissão:
+O Copilot entende perguntas como:
 
-- ✅ Valida NCM e CFOP antes da transmissão
-- ⚠️ Alerta se o CNPJ do cliente está irregular
-- 📊 Sugere CFOP correto baseado na operação
-- 🔄 Detecta se a operação requer Nota de Devolução ou Complementar`
+- *"Tenho notas rejeitadas?"* → Consulta fiscal_documents com status 'rejected'
+- *"Quantas notas emiti este mês?"* → Conta notas do período atual
+- *"Qual a diferença entre NF-e e NFS-e?"* → Explica: NF-e para produtos, NFS-e para serviços`
       },
       {
-        id: 'danfe',
-        title: 'Geração de DANFE',
-        icon: FileText,
+        id: 'motor-tributario',
+        title: 'Motor Tributário (Regras Fiscais)',
+        icon: Calculator,
         content: `## 📊 O que é?
 
-O **DANFE (Documento Auxiliar da Nota Fiscal Eletrônica)** é a representação visual impressa da NF-e. Ele não substitui a nota fiscal eletrônica, mas serve para:
+O **Motor Tributário** é o cérebro fiscal do sistema. Ele contém regras configuráveis que determinam automaticamente:
 
-- Acompanhar a mercadoria em trânsito
-- Consultar a chave de acesso da NF-e
-- Registro visual para o destinatário
-
----
-
-## 📝 Como usar? (Passo a Passo)
-
-**1. Localize a nota emitida**
-   - Navegue para: **Fiscal > Notas Fiscais > Consultar**
-   - Busque por número, data ou cliente
-   - Apenas notas com status "Autorizada" geram DANFE
-
-**2. Gere o DANFE**
-   - Clique no ícone de impressora ou "Gerar DANFE"
-   - Escolha o formato:
-     - **DANFE Retrato**: Formato padrão A4
-     - **DANFE Paisagem**: Para notas com muitos itens
-     - **DANFE Simplificado**: Formato reduzido (meia página)
-
-**3. Imprima ou envie por email**
-   - Use papel A4 comum (não precisa ser especial)
-   - Envie PDF por email ao cliente
-   - O sistema pode enviar automaticamente após emissão
-
-**4. Elementos do DANFE**
-   - Código de barras com chave de acesso (44 dígitos)
-   - QR Code para consulta no portal da SEFAZ
-   - Dados do emitente e destinatário
-   - Lista de produtos com impostos
+- **CFOP** (Código Fiscal de Operações)
+- **Alíquotas de ICMS, PIS, COFINS, ISS**
+- **CST/CSOSN** por operação
+- **Natureza de Operação**
 
 ---
 
-## 💡 Dica da IA
+## 🧠 Lógica de Regras Condicionais
 
-O CFO Virtual automatiza a geração de DANFE:
+O sistema permite criar regras no formato:
 
-- 📧 Envia automaticamente para o email do cliente
-- 📱 Envia link do PDF via WhatsApp
-- 🖨️ Configura impressão automática ao emitir NF-e
-- 📁 Arquiva todos os DANFEs organizados por mês/ano`
-      },
-      {
-        id: 'alertas-compliance',
-        title: 'Alertas de Compliance',
-        icon: Shield,
-        content: `## 📊 O que é?
+> **SE** [condição A] **E** [condição B] **ENTÃO** [resultado]
 
-Os **Alertas de Compliance** são notificações inteligentes que o Caixa Forte emite para prevenir problemas fiscais e tributários. O sistema monitora:
-
-- Inconsistências entre lançamentos contábeis e fiscais
-- Prazos de obrigações acessórias (SPED, ECD, ECF)
-- Divergências entre notas de entrada e saída
-- Irregularidades nos cadastros de produtos
+### Exemplo Prático:
+| Condição | Valor |
+|----------|-------|
+| Estado Origem | SP |
+| Estado Destino | RJ |
+| NCM começa com | 8471 (Informática) |
+| **CFOP Resultante** | **6101** |
+| **ICMS** | **12%** |
 
 ---
 
-## 📝 Como interpretar os alertas?
+## 📝 Como Configurar Regras
 
-**1. Acesse o painel de compliance**
-   - Navegue para: **Fiscal > Compliance > Painel de Alertas**
-   - Veja o score de saúde fiscal (0 a 100)
+**1. Acesse o Motor Tributário**
+   - Navegue para: **Fiscal > Motor Tributário**
+   - Clique em "Nova Regra"
 
-**2. Entenda os níveis de severidade**
-   - 🔴 **Crítico**: Risco iminente de multa ou bloqueio. Ação imediata.
-   - 🟠 **Alto**: Problema que deve ser resolvido em até 7 dias.
-   - 🟡 **Médio**: Inconsistência que requer atenção.
-   - 🟢 **Baixo**: Sugestão de melhoria.
+**2. Configure as Naturezas de Operação**
+   - Na aba "Naturezas", cadastre operações:
+   - Venda Produção Própria, Revenda, Devolução, etc.
 
-**3. Tipos comuns de alertas**
-   - "NCM 1234.56.78 não é válido para o produto X"
-   - "SPED Fiscal vence em 5 dias e ainda não foi gerado"
-   - "Divergência de R$ 15.000 entre NF-e de entrada e XML"
-   - "Fornecedor Y com CNPJ irregular na Receita Federal"
+**3. Crie Regras Fiscais**
+   - Na aba "Regras", defina condições:
+   - Origem (UF), Destino (UF), NCM, Regime Tributário
+   - Resultado: CFOP, alíquotas, CST
 
-**4. Resolva os alertas**
-   - Clique no alerta para ver detalhes
-   - Siga as instruções de correção
-   - Marque como "Resolvido" após corrigir
-   - Alertas resolvidos saem do painel
+**4. Priorize as Regras**
+   - Regras mais específicas têm prioridade
+   - Regra genérica (fallback) deve ficar por último
 
-**5. Configure notificações**
-   - Receba alertas por email ou WhatsApp
-   - Defina quem recebe cada tipo de alerta
-   - Configure lembretes de prazos
+---
+
+## 🔧 Campos Disponíveis para Condições
+
+| Campo | Descrição |
+|-------|-----------|
+| **origin_state** | UF de origem da operação |
+| **destination_state** | UF de destino |
+| **ncm_code** | Classificação do produto |
+| **regime_tributario** | Simples, Presumido, Real |
+| **natureza_operacao** | Tipo de operação (venda, devolução) |
 
 ---
 
 ## 💡 Dica da IA
 
-O CFO Virtual faz análise preditiva de compliance:
+Configure o Motor Tributário corretamente e o sistema:
 
-- 🔮 Prevê riscos antes que se tornem alertas
-- 📊 Compara seu score com empresas do mesmo setor
-- 📋 Gera relatório mensal de saúde fiscal
-- ⚡ Sugere correções automáticas para problemas comuns
-
-Configure em: **Configurações > IA > Compliance Preventivo**`
+- ✅ Sugere CFOP ao adicionar produto na NF-e
+- ✅ Calcula impostos automaticamente
+- ⚠️ Alerta se não encontrar regra aplicável
+- 📊 Previne rejeições por erro de tributação`
       },
       {
-        id: 'contabilidade',
-        title: 'Contabilidade',
+        id: 'mapeamento-contabil',
+        title: 'Mapeamento Contábil (De-Para)',
         icon: BookOpen,
         content: `## 📊 O que é?
 
-O módulo de **Contabilidade** gerencia todos os registros contábeis da empresa seguindo as normas brasileiras (CPC) e o padrão de partidas dobradas.
+O **Mapeamento Contábil** é a ponte entre o Financeiro e a Contabilidade. Ele conecta:
+
+> **Categoria Financeira** → **Conta Contábil**
+
+Isso permite que transações financeiras gerem **lançamentos contábeis automáticos**, sem digitação manual duplicada.
 
 ---
 
-## 📝 Como usar? (Passo a Passo)
+## 🔗 Como Funciona o De-Para
 
-**1. Livro Diário**
-   - Navegue para: **Fiscal > Contabilidade > Livro Diário**
-   - Visualize todos os lançamentos em ordem cronológica
-   - Exporte para ECD (SPED Contábil)
+| Categoria Financeira | Conta Débito | Conta Crédito |
+|---------------------|--------------|---------------|
+| Combustível | 3.1.01 - Despesas Veículos | 1.1.01 - Caixa/Banco |
+| Vendas | 1.1.01 - Caixa/Banco | 4.1.01 - Receita de Vendas |
+| Energia Elétrica | 3.1.03 - Utilidades | 1.1.01 - Caixa/Banco |
 
-**2. Balanço Patrimonial**
-   - Veja a posição de Ativos, Passivos e Patrimônio Líquido
-   - Compare períodos para análise de evolução
+---
 
-**3. DRE (Demonstração do Resultado)**
-   - Receitas - Custos - Despesas = Lucro
-   - Análise vertical e horizontal disponíveis
+## 📝 Como Configurar
 
-**4. Balancete de Verificação**
-   - Confira se débitos = créditos
-   - Identifique contas com saldo irregular
+**1. Acesse o Mapeamento**
+   - Navegue para: **Controladoria > Mapeamento Contábil**
+   - Veja a lista de categorias e seus vínculos
+
+**2. Vincule Categorias às Contas**
+   - Clique em "Novo Mapeamento"
+   - Selecione a Categoria Financeira
+   - Defina a Conta de Débito
+   - Defina a Conta de Crédito
+
+**3. Ative a Automação**
+   - Marque "Gerar lançamento automático"
+   - Cada transação baixada gera partida dobrada
+
+**4. Valide a Configuração**
+   - Teste com uma transação real
+   - Confira no Livro Diário se o lançamento aparece
+
+---
+
+## 📈 Benefícios da Automação
+
+- ❌ Elimina retrabalho de lançar duas vezes
+- ✅ Garante consistência entre Financeiro e Contábil
+- 📊 DRE e Balanço sempre atualizados em tempo real
+- 🔍 Auditoria: cada lançamento tem origem rastreável
 
 ---
 
 ## 💡 Dica da IA
 
-O CFO Virtual automatiza lançamentos contábeis:
+O Copilot pode ajudar:
 
-- 📝 Gera partidas dobradas a partir de transações financeiras
-- ✅ Valida a integridade contábil em tempo real
-- 📊 Detecta contas com movimentação anômala`
+- *"Qual conta contábil está vinculada a Combustível?"*
+- *"Por que minha DRE não bate com o Financeiro?"* → Verifica mapeamentos faltantes
+- *"Configure o De-Para para a categoria Aluguel"*`
+      },
+      {
+        id: 'dre-gerencial',
+        title: 'DRE Gerencial (Tempo Real)',
+        icon: TrendingUp,
+        content: `## 📊 O que é?
+
+A **DRE (Demonstração do Resultado do Exercício)** é o relatório que mostra se a empresa teve lucro ou prejuízo em um período.
+
+No Caixa Forte, a DRE é gerada **em tempo real**, lendo as transações financeiras e aplicando o Mapeamento Contábil.
+
+---
+
+## 📐 Estrutura da DRE
+
+\`\`\`
+(+) RECEITA BRUTA
+(-) Deduções (Impostos sobre vendas)
+= RECEITA LÍQUIDA
+
+(-) Custo das Mercadorias Vendidas (CMV)
+= LUCRO BRUTO
+
+(-) Despesas Operacionais
+    - Administrativas
+    - Comerciais
+    - Financeiras
+= LUCRO OPERACIONAL
+
+(+/-) Outras Receitas/Despesas
+= LUCRO ANTES DO IR/CSLL
+
+(-) IR e CSLL
+= LUCRO LÍQUIDO
+\`\`\`
+
+---
+
+## 🔄 Caixa vs. Competência: A Grande Dúvida
+
+**Por que meu Caixa diz X e minha DRE diz Y?**
+
+| Regime de CAIXA | Regime de COMPETÊNCIA |
+|-----------------|----------------------|
+| Conta quando PAGA/RECEBE | Conta quando OCORRE |
+| Fluxo de Caixa | DRE |
+| "Quanto dinheiro entrou?" | "Quanto faturei?" |
+
+### Exemplo:
+- Janeiro: Vendeu R$ 10.000 (cliente pagará em fevereiro)
+- **Caixa em Janeiro**: R$ 0 (não recebeu ainda)
+- **DRE em Janeiro**: R$ 10.000 (a venda ocorreu)
+
+---
+
+## 📝 Como Acessar a DRE
+
+**1. Navegue para Controladoria**
+   - **Controladoria > Relatórios > DRE**
+   - Selecione o período (mês, trimestre, ano)
+
+**2. Análise Vertical**
+   - Cada linha como % da Receita Líquida
+   - Ex: "Despesas Administrativas = 15% da Receita"
+
+**3. Análise Horizontal**
+   - Compare períodos lado a lado
+   - Ex: "Lucro cresceu 20% vs mês anterior"
+
+---
+
+## 💡 Dica da IA
+
+Pergunte ao Copilot:
+
+- *"Qual meu lucro líquido este mês?"* → Lê a última linha da DRE
+- *"Por que meu lucro caiu?"* → Analisa variações nas despesas
+- *"Mostre a DRE do trimestre"* → Gera relatório consolidado`
+      },
+      {
+        id: 'dashboard-fiscal',
+        title: 'Dashboard de Compliance Fiscal',
+        icon: Shield,
+        content: `## 📊 O que é?
+
+O **Dashboard de Compliance** centraliza indicadores de saúde fiscal e alertas de inconsistências:
+
+- **Notas Emitidas** no período
+- **Impostos Estimados** a pagar
+- **Score de Conformidade** (0 a 100)
+- **Alertas Críticos** (ações imediatas)
+
+---
+
+## 🚨 Tipos de Alertas de Inconsistência
+
+| Alerta | Descrição | Ação |
+|--------|-----------|------|
+| ⚠️ Venda sem NF | Venda registrada sem emissão de nota | Emitir NF-e |
+| ⚠️ Divergência de Valor | Valor da NF ≠ Valor do Recebimento | Revisar lançamento |
+| ⚠️ Nota Rejeitada | SEFAZ rejeitou transmissão | Corrigir e retransmitir |
+| ⚠️ XML não baixado | Nota autorizada sem manifesto | Manifestar/Baixar XML |
+
+---
+
+## 📝 Como Usar o Dashboard
+
+**1. Acesse o Painel**
+   - Navegue para: **Controladoria > Compliance > Dashboard Fiscal**
+   - Veja KPIs e alertas em tempo real
+
+**2. Monitore o Score**
+   - 90-100: Excelente ✅
+   - 70-89: Atenção ⚠️
+   - <70: Crítico 🔴
+
+**3. Resolva Inconsistências**
+   - Clique no alerta
+   - Siga as instruções de correção
+   - Marque como "Resolvido"
+
+**4. Configure Notificações**
+   - Receba alertas críticos por email
+   - Defina destinatários por tipo de alerta
+
+---
+
+## 💡 Dica da IA
+
+O Copilot monitora sua conformidade:
+
+- *"Tenho notas pendentes?"* → Lista notas sem retorno
+- *"Qual meu score de compliance?"* → Mostra pontuação atual
+- *"Alerta de venda sem nota"* → Detalha a inconsistência`
+      },
+      {
+        id: 'contabilidade-automatica',
+        title: 'Contabilidade Automática',
+        icon: BookOpen,
+        content: `## 📊 O que é?
+
+A **Contabilidade Automática** gera lançamentos de partida dobrada a partir das transações financeiras, usando o Mapeamento Contábil configurado.
+
+---
+
+## ⚙️ Fluxo de Automação
+
+\`\`\`
+1. Transação Financeira (Pagar/Receber)
+       ↓
+2. Sistema identifica a Categoria
+       ↓
+3. Consulta o Mapeamento Contábil
+       ↓
+4. Gera Lançamento: Débito + Crédito
+       ↓
+5. Atualiza DRE/Balanço em tempo real
+\`\`\`
+
+---
+
+## 📚 Relatórios Contábeis Disponíveis
+
+| Relatório | Descrição |
+|-----------|-----------|
+| **Livro Diário** | Todos os lançamentos cronológicos |
+| **Balancete** | Saldos de todas as contas |
+| **Balanço Patrimonial** | Ativo, Passivo e PL |
+| **DRE** | Resultado do período |
+| **Razão Contábil** | Movimentação por conta |
+
+---
+
+## 📝 Como Funciona
+
+**1. Configure o Plano de Contas**
+   - Navegue para: **Controladoria > Plano de Contas**
+   - Cadastre contas nos 5 grupos: Ativo, Passivo, PL, Receitas, Despesas
+
+**2. Vincule no Mapeamento**
+   - Cada Categoria Financeira aponta para contas
+
+**3. Transações Geram Lançamentos**
+   - Ao baixar uma conta, o sistema contabiliza
+
+**4. Consulte os Livros**
+   - Livro Diário, Razão, Balancete sempre atualizados
+
+---
+
+## 💡 Dica da IA
+
+A IA detecta anomalias contábeis:
+
+- ⚠️ "Conta com saldo invertido" (devedor no crédito)
+- ⚠️ "Lançamento sem contrapartida"
+- ⚠️ "Débitos ≠ Créditos no período"
+
+Pergunte: *"Minha contabilidade está equilibrada?"*`
       }
     ]
   },
