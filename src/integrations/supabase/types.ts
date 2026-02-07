@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       account_categories: {
         Row: {
+          accounting_account_id: string | null
           category_type: Database["public"]["Enums"]["account_category"]
           code: string
           company_id: string
@@ -27,6 +28,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          accounting_account_id?: string | null
           category_type: Database["public"]["Enums"]["account_category"]
           code: string
           company_id: string
@@ -38,6 +40,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          accounting_account_id?: string | null
           category_type?: Database["public"]["Enums"]["account_category"]
           code?: string
           company_id?: string
@@ -49,6 +52,27 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "account_categories_accounting_account_id_fkey"
+            columns: ["accounting_account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "account_categories_accounting_account_id_fkey"
+            columns: ["accounting_account_id"]
+            isOneToOne: false
+            referencedRelation: "v_rc_flow_by_account"
+            referencedColumns: ["account_id"]
+          },
+          {
+            foreignKeyName: "account_categories_accounting_account_id_fkey"
+            columns: ["accounting_account_id"]
+            isOneToOne: false
+            referencedRelation: "v_trial_balance"
+            referencedColumns: ["account_id"]
+          },
           {
             foreignKeyName: "account_categories_company_id_fkey"
             columns: ["company_id"]
@@ -66,6 +90,109 @@ export type Database = {
           {
             foreignKeyName: "account_categories_parent_id_fkey"
             columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "account_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      accounting_mappings: {
+        Row: {
+          company_id: string
+          created_at: string | null
+          credit_account_id: string | null
+          debit_account_id: string | null
+          description: string | null
+          financial_category_id: string
+          id: string
+          is_active: boolean | null
+          mapping_type: string
+          updated_at: string | null
+        }
+        Insert: {
+          company_id: string
+          created_at?: string | null
+          credit_account_id?: string | null
+          debit_account_id?: string | null
+          description?: string | null
+          financial_category_id: string
+          id?: string
+          is_active?: boolean | null
+          mapping_type?: string
+          updated_at?: string | null
+        }
+        Update: {
+          company_id?: string
+          created_at?: string | null
+          credit_account_id?: string | null
+          debit_account_id?: string | null
+          description?: string | null
+          financial_category_id?: string
+          id?: string
+          is_active?: boolean | null
+          mapping_type?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "accounting_mappings_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "accounting_mappings_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "accounting_mappings_credit_account_id_fkey"
+            columns: ["credit_account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "accounting_mappings_credit_account_id_fkey"
+            columns: ["credit_account_id"]
+            isOneToOne: false
+            referencedRelation: "v_rc_flow_by_account"
+            referencedColumns: ["account_id"]
+          },
+          {
+            foreignKeyName: "accounting_mappings_credit_account_id_fkey"
+            columns: ["credit_account_id"]
+            isOneToOne: false
+            referencedRelation: "v_trial_balance"
+            referencedColumns: ["account_id"]
+          },
+          {
+            foreignKeyName: "accounting_mappings_debit_account_id_fkey"
+            columns: ["debit_account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "accounting_mappings_debit_account_id_fkey"
+            columns: ["debit_account_id"]
+            isOneToOne: false
+            referencedRelation: "v_rc_flow_by_account"
+            referencedColumns: ["account_id"]
+          },
+          {
+            foreignKeyName: "accounting_mappings_debit_account_id_fkey"
+            columns: ["debit_account_id"]
+            isOneToOne: false
+            referencedRelation: "v_trial_balance"
+            referencedColumns: ["account_id"]
+          },
+          {
+            foreignKeyName: "accounting_mappings_financial_category_id_fkey"
+            columns: ["financial_category_id"]
             isOneToOne: false
             referencedRelation: "account_categories"
             referencedColumns: ["id"]
@@ -13032,6 +13159,69 @@ export type Database = {
         }
         Relationships: []
       }
+      fiscal_dashboard_cache: {
+        Row: {
+          company_id: string
+          compliance_score: number | null
+          estimated_icms: number | null
+          estimated_iss: number | null
+          estimated_pis_cofins: number | null
+          id: string
+          last_calculated_at: string | null
+          period_month: number
+          period_year: number
+          total_invoices_issued: number | null
+          total_invoices_pending: number | null
+          total_invoices_rejected: number | null
+          total_revenue: number | null
+        }
+        Insert: {
+          company_id: string
+          compliance_score?: number | null
+          estimated_icms?: number | null
+          estimated_iss?: number | null
+          estimated_pis_cofins?: number | null
+          id?: string
+          last_calculated_at?: string | null
+          period_month: number
+          period_year: number
+          total_invoices_issued?: number | null
+          total_invoices_pending?: number | null
+          total_invoices_rejected?: number | null
+          total_revenue?: number | null
+        }
+        Update: {
+          company_id?: string
+          compliance_score?: number | null
+          estimated_icms?: number | null
+          estimated_iss?: number | null
+          estimated_pis_cofins?: number | null
+          id?: string
+          last_calculated_at?: string | null
+          period_month?: number
+          period_year?: number
+          total_invoices_issued?: number | null
+          total_invoices_pending?: number | null
+          total_invoices_rejected?: number | null
+          total_revenue?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fiscal_dashboard_cache_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fiscal_dashboard_cache_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
       fiscal_document_lines: {
         Row: {
           cfop: string | null
@@ -13133,18 +13323,23 @@ export type Database = {
       fiscal_documents: {
         Row: {
           access_key: string | null
+          authorization_date: string | null
           branch_id: string | null
+          cancellation_date: string | null
+          cancellation_protocol: string | null
           company_id: string
           counterparty_id: string | null
           created_at: string | null
           document_model: string
           document_number: string
           document_series: string | null
+          environment: string | null
           id: string
           issue_date: string
           notes: string | null
           operation_type: string
           pdf_url: string | null
+          rejection_reason: string | null
           status: string | null
           total_cofins: number | null
           total_csll: number | null
@@ -13163,22 +13358,29 @@ export type Database = {
           total_products: number | null
           total_services: number | null
           updated_at: string | null
+          validation_errors: Json | null
           xml_content: string | null
+          xml_protocol: string | null
         }
         Insert: {
           access_key?: string | null
+          authorization_date?: string | null
           branch_id?: string | null
+          cancellation_date?: string | null
+          cancellation_protocol?: string | null
           company_id: string
           counterparty_id?: string | null
           created_at?: string | null
           document_model: string
           document_number: string
           document_series?: string | null
+          environment?: string | null
           id?: string
           issue_date: string
           notes?: string | null
           operation_type: string
           pdf_url?: string | null
+          rejection_reason?: string | null
           status?: string | null
           total_cofins?: number | null
           total_csll?: number | null
@@ -13197,22 +13399,29 @@ export type Database = {
           total_products?: number | null
           total_services?: number | null
           updated_at?: string | null
+          validation_errors?: Json | null
           xml_content?: string | null
+          xml_protocol?: string | null
         }
         Update: {
           access_key?: string | null
+          authorization_date?: string | null
           branch_id?: string | null
+          cancellation_date?: string | null
+          cancellation_protocol?: string | null
           company_id?: string
           counterparty_id?: string | null
           created_at?: string | null
           document_model?: string
           document_number?: string
           document_series?: string | null
+          environment?: string | null
           id?: string
           issue_date?: string
           notes?: string | null
           operation_type?: string
           pdf_url?: string | null
+          rejection_reason?: string | null
           status?: string | null
           total_cofins?: number | null
           total_csll?: number | null
@@ -13231,7 +13440,9 @@ export type Database = {
           total_products?: number | null
           total_services?: number | null
           updated_at?: string | null
+          validation_errors?: Json | null
           xml_content?: string | null
+          xml_protocol?: string | null
         }
         Relationships: [
           {
@@ -13271,6 +13482,69 @@ export type Database = {
           },
         ]
       }
+      fiscal_inconsistencies: {
+        Row: {
+          company_id: string
+          created_at: string | null
+          description: string | null
+          entity_id: string | null
+          entity_type: string | null
+          id: string
+          inconsistency_type: string
+          is_resolved: boolean | null
+          resolved_at: string | null
+          resolved_by: string | null
+          severity: string
+          suggested_action: string | null
+          title: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string | null
+          description?: string | null
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          inconsistency_type: string
+          is_resolved?: boolean | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          severity?: string
+          suggested_action?: string | null
+          title: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string | null
+          description?: string | null
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          inconsistency_type?: string
+          is_resolved?: boolean | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          severity?: string
+          suggested_action?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fiscal_inconsistencies_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fiscal_inconsistencies_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
       fiscal_ncm: {
         Row: {
           code: string
@@ -13300,6 +13574,63 @@ export type Database = {
           unit?: string | null
         }
         Relationships: []
+      }
+      fiscal_operations: {
+        Row: {
+          cfop_default: string | null
+          code: string
+          company_id: string
+          created_at: string | null
+          description: string | null
+          document_type: string
+          id: string
+          is_active: boolean | null
+          name: string
+          operation_type: string
+          updated_at: string | null
+        }
+        Insert: {
+          cfop_default?: string | null
+          code: string
+          company_id: string
+          created_at?: string | null
+          description?: string | null
+          document_type: string
+          id?: string
+          is_active?: boolean | null
+          name: string
+          operation_type: string
+          updated_at?: string | null
+        }
+        Update: {
+          cfop_default?: string | null
+          code?: string
+          company_id?: string
+          created_at?: string | null
+          description?: string | null
+          document_type?: string
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          operation_type?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fiscal_operations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fiscal_operations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
       }
       fiscal_periods: {
         Row: {

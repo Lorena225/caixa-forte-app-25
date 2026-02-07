@@ -332,17 +332,15 @@ const menuItems: MenuItem[] = [
           { key: 'dre', label: 'DRE (Resultado)', icon: PieChart, route: '/controladoria-dre' },
           { key: 'balancete', label: 'Balancete', icon: FileText, route: '/controladoria-balancete' },
           { key: 'lancamentos', label: 'Lançamentos', icon: FileText, route: '/contabilidade/lancamentos' },
-          { key: 'reclassificacao', label: 'Reclassificação', icon: Layers, route: '/contabilidade/reclassificacao' },
+          { key: 'mapeamento-contabil', label: 'Mapeamento De-Para', icon: Network, route: '/controladoria/mapeamento-contabil' },
         ]
       },
       {
         key: 'fiscal',
-        label: 'Fiscal',
+        label: 'Emissor Fiscal',
         items: [
-          { key: 'nfe', label: 'NF-e', icon: FileText, route: '/fiscal/nfe' },
-          { key: 'nfce', label: 'NFC-e', icon: Receipt, route: '/fiscal/nfce' },
-          { key: 'cupom-fiscal', label: 'Cupom Fiscal', icon: Receipt, route: '/fiscal/cupom-fiscal' },
-          { key: 'danfe', label: 'DANFE', icon: FileSpreadsheet, route: '/fiscal/danfe' },
+          { key: 'emissor-notas', label: 'Emissor de Notas', icon: FileText, route: '/fiscal/emissor' },
+          { key: 'motor-tributario', label: 'Motor Tributário', icon: Calculator, route: '/fiscal/motor-tributario' },
           { key: 'obrigacoes', label: 'Obrigações', icon: ClipboardList, route: '/controladoria-obrigacoes' },
         ]
       },
@@ -350,8 +348,7 @@ const menuItems: MenuItem[] = [
         key: 'compliance',
         label: 'Compliance',
         items: [
-          { key: 'analise-fiscal', label: 'Análise Fiscal', icon: PieChart, route: '/fiscal/analise' },
-          { key: 'mapeamento-contabil', label: 'Mapeamento Contábil', icon: Network, route: '/controladoria-mapeamento' },
+          { key: 'dashboard-fiscal', label: 'Painel Fiscal', icon: PieChart, route: '/controladoria/dashboard-fiscal' },
           { key: 'alertas', label: 'Alertas', icon: AlertTriangle, route: '/controladoria-alertas' },
           { key: 'auditoria', label: 'Auditoria', icon: Shield, route: '/controladoria-auditoria' },
         ]

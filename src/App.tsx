@@ -235,6 +235,8 @@ import NFCe from "./pages/fiscal/NFCe";
 import CupomFiscal from "./pages/fiscal/CupomFiscal";
 import DANFE from "./pages/fiscal/DANFE";
 import AnaliseFiscal from "./pages/fiscal/AnaliseFiscal";
+import EmissorNotas from "./pages/fiscal/EmissorNotas";
+import MotorTributario from "./pages/fiscal/MotorTributario";
 // Contabil
 import Reclassificacao from "./pages/contabilidade/Reclassificacao";
 // Automações
@@ -245,6 +247,8 @@ import ComplianceDashboard from "./pages/controladoria/ComplianceDashboard";
 import TaxMappingPage from "./pages/controladoria/TaxMappingPage";
 import ComplianceAlertsPage from "./pages/controladoria/ComplianceAlertsPage";
 import ComplianceAuditPage from "./pages/controladoria/ComplianceAuditPage";
+import MapeamentoContabil from "./pages/controladoria/MapeamentoContabil";
+import DashboardFiscal from "./pages/controladoria/DashboardFiscal";
 import OpenBankingPage from "./pages/openbanking/OpenBankingPage";
 import AutomaticReconciliationPage from "./pages/openbanking/AutomaticReconciliationPage";
 import NFXMLUploadPage from "./pages/openbanking/NFXMLUploadPage";
@@ -343,7 +347,12 @@ const App = () => (
                 <Route path="/fiscal/cupom-fiscal" element={<CupomFiscal />} />
                 <Route path="/fiscal/danfe" element={<DANFE />} />
                 <Route path="/fiscal/analise" element={<AnaliseFiscal />} />
+                <Route path="/fiscal/emissor" element={<EmissorNotas />} />
+                <Route path="/fiscal/motor-tributario" element={<MotorTributario />} />
                 
+                {/* ============ CONTROLADORIA AVANÇADA ============ */}
+                <Route path="/controladoria/mapeamento-contabil" element={<MapeamentoContabil />} />
+                <Route path="/controladoria/dashboard-fiscal" element={<DashboardFiscal />} />
                 {/* ============ OPERACIONAL ============ */}
                 <Route path="/operacional" element={<OperacionalIndex />} />
                 <Route path="/operacional/estrutura" element={<EstruturaOrganizacional />} />
