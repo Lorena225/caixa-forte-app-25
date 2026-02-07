@@ -18,8 +18,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
-import { FolderKanban, Calendar, Users, DollarSign, Clock } from "lucide-react";
+import { FolderKanban, Calendar, Users, DollarSign, Clock, HelpCircle, Zap } from "lucide-react";
 import { useCreateProject, useCompanyUsers } from "@/hooks/useProjects";
 import { Contract } from "@/hooks/useContracts";
 import { format, addMonths } from "date-fns";
@@ -98,17 +105,27 @@ export function CreateProjectFromContractDialog({
   const contractValue = contract.valor_total || contract.monthly_value || 0;
 
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <FolderKanban className="h-5 w-5 text-primary" />
-            Criar Projeto de Entrega
-          </DialogTitle>
-          <DialogDescription>
-            Crie um projeto vinculado ao contrato para gerenciar tarefas, apontamentos e entregas.
-          </DialogDescription>
-        </DialogHeader>
+    <TooltipProvider>
+      <Dialog open={open} onOpenChange={handleOpenChange}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <FolderKanban className="h-5 w-5 text-primary" />
+              Criar Projeto de Entrega
+            </DialogTitle>
+            <DialogDescription>
+              Crie um projeto vinculado ao contrato para gerenciar tarefas, apontamentos e entregas.
+            </DialogDescription>
+          </DialogHeader>
+
+          {/* Automation Alert */}
+          <Alert className="border-primary/20 bg-primary/5">
+            <Zap className="h-4 w-4 text-primary" />
+            <AlertDescription className="text-sm">
+              <strong>Automações ativadas:</strong> O projeto herdará o cliente e valor do contrato. 
+              Marcos concluídos podem gerar faturas automaticamente.
+            </AlertDescription>
+          </Alert>
 
         <div className="space-y-4 py-4">
           {/* Contract Info Card */}
@@ -151,7 +168,15 @@ export function CreateProjectFromContractDialog({
               <div className="space-y-2">
                 <Label htmlFor="manager" className="flex items-center gap-1">
                   <Users className="h-3 w-3" />
-                  Gerente
+                  Gerente (PM)
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <HelpCircle className="h-3 w-3 text-muted-foreground cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="max-w-xs">Responsável pela entrega do projeto. Receberá alertas de prazos e tarefas.</p>
+                    </TooltipContent>
+                  </Tooltip>
                 </Label>
                 <Select 
                   value={formData.manager_id} 
@@ -209,6 +234,14 @@ export function CreateProjectFromContractDialog({
                 <Label htmlFor="budget_hours" className="flex items-center gap-1">
                   <Clock className="h-3 w-3" />
                   Horas Orçadas
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <HelpCircle className="h-3 w-3 text-muted-foreground cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="max-w-xs">Budget de horas vendidas ao cliente. Serve como base para calcular se o projeto está consumindo mais que o previsto.</p>
+                    </TooltipContent>
+                  </Tooltip>
                 </Label>
                 <Input
                   id="budget_hours"
@@ -237,5 +270,6 @@ export function CreateProjectFromContractDialog({
         </DialogFooter>
       </DialogContent>
     </Dialog>
+  </TooltipProvider>
   );
 }

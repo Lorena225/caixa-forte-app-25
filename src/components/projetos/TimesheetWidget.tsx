@@ -18,15 +18,23 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { 
   Play, Pause, Clock, X, ChevronUp, ChevronDown, 
-  Timer, FolderKanban, CheckCircle2, Plus
+  Timer, FolderKanban, CheckCircle2, Plus, HelpCircle, AlertTriangle
 } from "lucide-react";
 import { 
   useActiveTimesheet, useStartTimesheet, useStopTimesheet, 
@@ -291,7 +299,17 @@ export function TimesheetWidget() {
               <Play className="h-5 w-5 text-green-600" />
               Iniciar Timer
             </DialogTitle>
+            <DialogDescription>
+              O tempo apontado aqui impacta diretamente o custo do projeto. Seja preciso.
+            </DialogDescription>
           </DialogHeader>
+
+          <Alert className="border-amber-200 bg-amber-50">
+            <AlertTriangle className="h-4 w-4 text-amber-600" />
+            <AlertDescription className="text-sm text-amber-800">
+              Suas horas serão usadas para calcular a rentabilidade do projeto (Custo = Horas × Seu Valor Hora).
+            </AlertDescription>
+          </Alert>
 
           <div className="space-y-4">
             <div className="space-y-2">
@@ -364,7 +382,17 @@ export function TimesheetWidget() {
               <Plus className="h-5 w-5 text-blue-600" />
               Lançar Horas Manualmente
             </DialogTitle>
+            <DialogDescription>
+              Use para registrar horas retroativas quando esqueceu de iniciar o timer.
+            </DialogDescription>
           </DialogHeader>
+
+          <Alert className="border-blue-200 bg-blue-50">
+            <HelpCircle className="h-4 w-4 text-blue-600" />
+            <AlertDescription className="text-sm text-blue-800">
+              Sem timesheet, não há cálculo de custo real do projeto. Registre todas as horas trabalhadas.
+            </AlertDescription>
+          </Alert>
 
           <div className="space-y-4">
             <div className="space-y-2">
