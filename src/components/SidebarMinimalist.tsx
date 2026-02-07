@@ -58,6 +58,7 @@ import {
   Activity,
   Upload,
   Search,
+  RepeatIcon,
   TrendingDown,
   Layers,
   CircleDollarSign,
@@ -292,6 +293,13 @@ const menuItems: MenuItem[] = [
         items: [
           { key: 'conciliacao-bancaria', label: 'Conciliação Bancária', icon: RefreshCw, route: '/tesouraria/conciliacao' },
           { key: 'cnab', label: 'CNAB', icon: Send, route: '/tesouraria/cnab' },
+        ]
+      },
+      {
+        key: 'contratos',
+        label: 'Contratos & Recorrência',
+        items: [
+          { key: 'contratos-recorrencia', label: 'Gestão de Contratos', icon: RepeatIcon, route: '/contratos/recorrencia' },
         ]
       },
       {
