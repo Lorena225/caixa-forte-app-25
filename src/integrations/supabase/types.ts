@@ -607,11 +607,66 @@ export type Database = {
           },
         ]
       }
+      ai_briefing_history: {
+        Row: {
+          anomalies_count: number | null
+          balance_snapshot: number | null
+          bills_today_count: number | null
+          bills_today_total: number | null
+          briefing_date: string
+          company_id: string
+          content_json: Json
+          created_at: string
+          delivered_to: Json | null
+          id: string
+        }
+        Insert: {
+          anomalies_count?: number | null
+          balance_snapshot?: number | null
+          bills_today_count?: number | null
+          bills_today_total?: number | null
+          briefing_date: string
+          company_id: string
+          content_json: Json
+          created_at?: string
+          delivered_to?: Json | null
+          id?: string
+        }
+        Update: {
+          anomalies_count?: number | null
+          balance_snapshot?: number | null
+          bills_today_count?: number | null
+          bills_today_total?: number | null
+          briefing_date?: string
+          company_id?: string
+          content_json?: Json
+          created_at?: string
+          delivered_to?: Json | null
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_briefing_history_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_briefing_history_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
       ai_company_settings: {
         Row: {
           agent_analyst_enabled: boolean | null
           agent_monitor_enabled: boolean | null
           agent_profile_id: string | null
+          agent_tone: string | null
           agent_whatsapp_enabled: boolean | null
           allow_auto_create_and_settle: boolean
           allow_auto_create_counterparty: boolean
@@ -627,6 +682,7 @@ export type Database = {
           monitor_alert_cooldown_minutes: number | null
           monitor_digest_enabled: boolean | null
           monitor_digest_time: string | null
+          morning_briefing_enabled: boolean | null
           ocr_enabled: boolean | null
           personality_mode: string | null
           proactive_suggestions: boolean | null
@@ -635,6 +691,7 @@ export type Database = {
           thresholds_json: Json
           updated_at: string
           updated_by: string | null
+          voice_enabled: boolean | null
           whatsapp_provider: string | null
           whatsapp_webhook_url: string | null
         }
@@ -642,6 +699,7 @@ export type Database = {
           agent_analyst_enabled?: boolean | null
           agent_monitor_enabled?: boolean | null
           agent_profile_id?: string | null
+          agent_tone?: string | null
           agent_whatsapp_enabled?: boolean | null
           allow_auto_create_and_settle?: boolean
           allow_auto_create_counterparty?: boolean
@@ -657,6 +715,7 @@ export type Database = {
           monitor_alert_cooldown_minutes?: number | null
           monitor_digest_enabled?: boolean | null
           monitor_digest_time?: string | null
+          morning_briefing_enabled?: boolean | null
           ocr_enabled?: boolean | null
           personality_mode?: string | null
           proactive_suggestions?: boolean | null
@@ -665,6 +724,7 @@ export type Database = {
           thresholds_json?: Json
           updated_at?: string
           updated_by?: string | null
+          voice_enabled?: boolean | null
           whatsapp_provider?: string | null
           whatsapp_webhook_url?: string | null
         }
@@ -672,6 +732,7 @@ export type Database = {
           agent_analyst_enabled?: boolean | null
           agent_monitor_enabled?: boolean | null
           agent_profile_id?: string | null
+          agent_tone?: string | null
           agent_whatsapp_enabled?: boolean | null
           allow_auto_create_and_settle?: boolean
           allow_auto_create_counterparty?: boolean
@@ -687,6 +748,7 @@ export type Database = {
           monitor_alert_cooldown_minutes?: number | null
           monitor_digest_enabled?: boolean | null
           monitor_digest_time?: string | null
+          morning_briefing_enabled?: boolean | null
           ocr_enabled?: boolean | null
           personality_mode?: string | null
           proactive_suggestions?: boolean | null
@@ -695,6 +757,7 @@ export type Database = {
           thresholds_json?: Json
           updated_at?: string
           updated_by?: string | null
+          voice_enabled?: boolean | null
           whatsapp_provider?: string | null
           whatsapp_webhook_url?: string | null
         }
@@ -768,6 +831,90 @@ export type Database = {
           },
           {
             foreignKeyName: "ai_confirmations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      ai_decision_logs: {
+        Row: {
+          company_id: string
+          confidence_score: number | null
+          confirmed_at: string | null
+          confirmed_by: string | null
+          created_at: string
+          decision_type: string
+          entity_id: string | null
+          entity_type: string | null
+          extracted_data: Json | null
+          final_action: string | null
+          id: string
+          input_summary: string | null
+          input_type: string
+          overridden: boolean | null
+          override_reason: string | null
+          phone_number: string | null
+          reasoning: string
+          rules_applied: Json | null
+          user_id: string | null
+          was_confirmed: boolean | null
+        }
+        Insert: {
+          company_id: string
+          confidence_score?: number | null
+          confirmed_at?: string | null
+          confirmed_by?: string | null
+          created_at?: string
+          decision_type: string
+          entity_id?: string | null
+          entity_type?: string | null
+          extracted_data?: Json | null
+          final_action?: string | null
+          id?: string
+          input_summary?: string | null
+          input_type: string
+          overridden?: boolean | null
+          override_reason?: string | null
+          phone_number?: string | null
+          reasoning: string
+          rules_applied?: Json | null
+          user_id?: string | null
+          was_confirmed?: boolean | null
+        }
+        Update: {
+          company_id?: string
+          confidence_score?: number | null
+          confirmed_at?: string | null
+          confirmed_by?: string | null
+          created_at?: string
+          decision_type?: string
+          entity_id?: string | null
+          entity_type?: string | null
+          extracted_data?: Json | null
+          final_action?: string | null
+          id?: string
+          input_summary?: string | null
+          input_type?: string
+          overridden?: boolean | null
+          override_reason?: string | null
+          phone_number?: string | null
+          reasoning?: string
+          rules_applied?: Json | null
+          user_id?: string | null
+          was_confirmed?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_decision_logs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_decision_logs_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "v_security_status"
@@ -907,6 +1054,76 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_security_status"
             referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      ai_inbox: {
+        Row: {
+          company_id: string
+          connection_id: string | null
+          context_json: Json | null
+          conversation_state: string
+          created_at: string
+          expires_at: string | null
+          id: string
+          last_message_at: string | null
+          pending_action: Json | null
+          pending_entity_data: Json | null
+          pending_entity_type: string | null
+          phone_number: string
+          updated_at: string | null
+        }
+        Insert: {
+          company_id: string
+          connection_id?: string | null
+          context_json?: Json | null
+          conversation_state?: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          last_message_at?: string | null
+          pending_action?: Json | null
+          pending_entity_data?: Json | null
+          pending_entity_type?: string | null
+          phone_number: string
+          updated_at?: string | null
+        }
+        Update: {
+          company_id?: string
+          connection_id?: string | null
+          context_json?: Json | null
+          conversation_state?: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          last_message_at?: string | null
+          pending_action?: Json | null
+          pending_entity_data?: Json | null
+          pending_entity_type?: string | null
+          phone_number?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_inbox_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_inbox_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "ai_inbox_connection_id_fkey"
+            columns: ["connection_id"]
+            isOneToOne: false
+            referencedRelation: "whatsapp_connections"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -1146,6 +1363,72 @@ export type Database = {
             foreignKeyName: "ai_monitor_alerts_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      ai_morning_briefings: {
+        Row: {
+          company_id: string
+          created_at: string
+          delivery_channels: Json | null
+          delivery_time: string | null
+          enabled: boolean | null
+          id: string
+          include_anomalies: boolean | null
+          include_balance: boolean | null
+          include_bills_today: boolean | null
+          include_forecast: boolean | null
+          include_overdue: boolean | null
+          last_sent_at: string | null
+          timezone: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          delivery_channels?: Json | null
+          delivery_time?: string | null
+          enabled?: boolean | null
+          id?: string
+          include_anomalies?: boolean | null
+          include_balance?: boolean | null
+          include_bills_today?: boolean | null
+          include_forecast?: boolean | null
+          include_overdue?: boolean | null
+          last_sent_at?: string | null
+          timezone?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          delivery_channels?: Json | null
+          delivery_time?: string | null
+          enabled?: boolean | null
+          id?: string
+          include_anomalies?: boolean | null
+          include_balance?: boolean | null
+          include_bills_today?: boolean | null
+          include_forecast?: boolean | null
+          include_overdue?: boolean | null
+          last_sent_at?: string | null
+          timezone?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_morning_briefings_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_morning_briefings_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
             referencedRelation: "v_security_status"
             referencedColumns: ["company_id"]
           },
