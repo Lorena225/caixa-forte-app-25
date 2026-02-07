@@ -123,7 +123,7 @@ import Inbox from "./pages/autopilot/Inbox";
 import Decisoes from "./pages/autopilot/Decisoes";
 // IA / ChatGPT Financeiro
 import IAIndex from "./pages/ia/Index";
-import IAConfiguracoes from "./pages/ia/Configuracoes";
+// IAConfiguracoes replaced by AISettingsPage
 import IAWhatsAppAgent from "./pages/ia/WhatsAppAgent";
 import IAMonitorAlerts from "./pages/ia/MonitorAlerts";
 import IAAnalystChat from "./pages/ia/AnalystChat";
@@ -488,7 +488,6 @@ const App = () => (
                 
                 {/* ============ IA / CHATGPT FINANCEIRO ============ */}
                 <Route path="/ia" element={<IAIndex />} />
-                <Route path="/ia/configuracoes" element={<IAConfiguracoes />} />
                 <Route path="/ia/whatsapp" element={<IAWhatsAppAgent />} />
                 <Route path="/ia/alertas" element={<IAMonitorAlerts />} />
                 <Route path="/ia/analista" element={<IAAnalystChat />} />
