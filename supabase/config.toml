@@ -107,3 +107,6 @@ verify_jwt = false
 
 [functions.ai-morning-briefing]
 verify_jwt = false
+
+[functions.integration-health-check]
+verify_jwt = true

@@ -204,6 +204,8 @@ export type Database = {
           account_code: string
           account_name: string
           allows_posting: boolean | null
+          archived_at: string | null
+          archived_by: string | null
           category_id: string | null
           category_type: Database["public"]["Enums"]["account_category"]
           code: string
@@ -228,6 +230,8 @@ export type Database = {
           account_code: string
           account_name: string
           allows_posting?: boolean | null
+          archived_at?: string | null
+          archived_by?: string | null
           category_id?: string | null
           category_type: Database["public"]["Enums"]["account_category"]
           code: string
@@ -252,6 +256,8 @@ export type Database = {
           account_code?: string
           account_name?: string
           allows_posting?: boolean | null
+          archived_at?: string | null
+          archived_by?: string | null
           category_id?: string | null
           category_type?: Database["public"]["Enums"]["account_category"]
           code?: string
@@ -3429,6 +3435,8 @@ export type Database = {
           account_type: string
           agency: string
           agency_digit: string | null
+          archived_at: string | null
+          archived_by: string | null
           available_balance: number | null
           balance_updated_at: string | null
           bank_code: string
@@ -3464,6 +3472,8 @@ export type Database = {
           account_type?: string
           agency: string
           agency_digit?: string | null
+          archived_at?: string | null
+          archived_by?: string | null
           available_balance?: number | null
           balance_updated_at?: string | null
           bank_code: string
@@ -3499,6 +3509,8 @@ export type Database = {
           account_type?: string
           agency?: string
           agency_digit?: string | null
+          archived_at?: string | null
+          archived_by?: string | null
           available_balance?: number | null
           balance_updated_at?: string | null
           bank_code?: string
@@ -9056,6 +9068,72 @@ export type Database = {
         }
         Relationships: []
       }
+      company_smtp_settings: {
+        Row: {
+          company_id: string
+          created_at: string | null
+          from_email: string
+          from_name: string
+          id: string
+          is_verified: boolean | null
+          last_verified_at: string | null
+          smtp_host: string
+          smtp_password_encrypted: string
+          smtp_port: number | null
+          smtp_user: string
+          updated_at: string | null
+          use_ssl: boolean | null
+          use_tls: boolean | null
+        }
+        Insert: {
+          company_id: string
+          created_at?: string | null
+          from_email: string
+          from_name: string
+          id?: string
+          is_verified?: boolean | null
+          last_verified_at?: string | null
+          smtp_host: string
+          smtp_password_encrypted: string
+          smtp_port?: number | null
+          smtp_user: string
+          updated_at?: string | null
+          use_ssl?: boolean | null
+          use_tls?: boolean | null
+        }
+        Update: {
+          company_id?: string
+          created_at?: string | null
+          from_email?: string
+          from_name?: string
+          id?: string
+          is_verified?: boolean | null
+          last_verified_at?: string | null
+          smtp_host?: string
+          smtp_password_encrypted?: string
+          smtp_port?: number | null
+          smtp_user?: string
+          updated_at?: string | null
+          use_ssl?: boolean | null
+          use_tls?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_smtp_settings_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_smtp_settings_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
       company_tier_history: {
         Row: {
           accounting_start_date: string | null
@@ -10235,6 +10313,8 @@ export type Database = {
       }
       cost_centers: {
         Row: {
+          archived_at: string | null
+          archived_by: string | null
           branch_id: string | null
           code: string
           company_id: string
@@ -10256,6 +10336,8 @@ export type Database = {
           valid_to: string | null
         }
         Insert: {
+          archived_at?: string | null
+          archived_by?: string | null
           branch_id?: string | null
           code: string
           company_id: string
@@ -10277,6 +10359,8 @@ export type Database = {
           valid_to?: string | null
         }
         Update: {
+          archived_at?: string | null
+          archived_by?: string | null
           branch_id?: string | null
           code?: string
           company_id?: string
@@ -11920,6 +12004,84 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "funcionarios"
             referencedColumns: ["id"]
+          },
+        ]
+      }
+      digital_certificates: {
+        Row: {
+          certificate_name: string
+          certificate_type: string
+          company_id: string
+          created_at: string | null
+          created_by: string | null
+          encrypted_pfx_data: string | null
+          id: string
+          is_active: boolean | null
+          issuer: string | null
+          last_used_at: string | null
+          pfx_password_encrypted: string | null
+          serial_number: string | null
+          subject: string | null
+          thumbprint: string | null
+          updated_at: string | null
+          usage_count: number | null
+          valid_from: string | null
+          valid_until: string
+        }
+        Insert: {
+          certificate_name: string
+          certificate_type?: string
+          company_id: string
+          created_at?: string | null
+          created_by?: string | null
+          encrypted_pfx_data?: string | null
+          id?: string
+          is_active?: boolean | null
+          issuer?: string | null
+          last_used_at?: string | null
+          pfx_password_encrypted?: string | null
+          serial_number?: string | null
+          subject?: string | null
+          thumbprint?: string | null
+          updated_at?: string | null
+          usage_count?: number | null
+          valid_from?: string | null
+          valid_until: string
+        }
+        Update: {
+          certificate_name?: string
+          certificate_type?: string
+          company_id?: string
+          created_at?: string | null
+          created_by?: string | null
+          encrypted_pfx_data?: string | null
+          id?: string
+          is_active?: boolean | null
+          issuer?: string | null
+          last_used_at?: string | null
+          pfx_password_encrypted?: string | null
+          serial_number?: string | null
+          subject?: string | null
+          thumbprint?: string | null
+          updated_at?: string | null
+          usage_count?: number | null
+          valid_from?: string | null
+          valid_until?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "digital_certificates_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "digital_certificates_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
           },
         ]
       }
@@ -16116,6 +16278,57 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "integration_connections"
             referencedColumns: ["id"]
+          },
+        ]
+      }
+      integration_health_checks: {
+        Row: {
+          checked_by: string | null
+          company_id: string
+          created_at: string | null
+          error_message: string | null
+          id: string
+          integration_key: string
+          last_checked_at: string | null
+          response_time_ms: number | null
+          status: string
+        }
+        Insert: {
+          checked_by?: string | null
+          company_id: string
+          created_at?: string | null
+          error_message?: string | null
+          id?: string
+          integration_key: string
+          last_checked_at?: string | null
+          response_time_ms?: number | null
+          status: string
+        }
+        Update: {
+          checked_by?: string | null
+          company_id?: string
+          created_at?: string | null
+          error_message?: string | null
+          id?: string
+          integration_key?: string
+          last_checked_at?: string | null
+          response_time_ms?: number | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "integration_health_checks_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "integration_health_checks_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
           },
         ]
       }
@@ -27459,6 +27672,12 @@ export type Database = {
           id: string
           is_active: boolean | null
           last_access_at: string | null
+          last_login_at: string | null
+          last_login_ip: unknown
+          login_count: number | null
+          mfa_enabled: boolean | null
+          mfa_secret_encrypted: string | null
+          password_changed_at: string | null
           phone: string | null
           role_id: string | null
           updated_at: string | null
@@ -27473,6 +27692,12 @@ export type Database = {
           id?: string
           is_active?: boolean | null
           last_access_at?: string | null
+          last_login_at?: string | null
+          last_login_ip?: unknown
+          login_count?: number | null
+          mfa_enabled?: boolean | null
+          mfa_secret_encrypted?: string | null
+          password_changed_at?: string | null
           phone?: string | null
           role_id?: string | null
           updated_at?: string | null
@@ -27487,6 +27712,12 @@ export type Database = {
           id?: string
           is_active?: boolean | null
           last_access_at?: string | null
+          last_login_at?: string | null
+          last_login_ip?: unknown
+          login_count?: number | null
+          mfa_enabled?: boolean | null
+          mfa_secret_encrypted?: string | null
+          password_changed_at?: string | null
           phone?: string | null
           role_id?: string | null
           updated_at?: string | null
@@ -31174,6 +31405,14 @@ export type Database = {
         Args: { p_action: string; p_company_id: string; p_user_id: string }
         Returns: boolean
       }
+      check_record_dependencies: {
+        Args: {
+          p_company_id: string
+          p_record_id: string
+          p_table_name: string
+        }
+        Returns: Json
+      }
       check_sod_violation: {
         Args: { p_action: string; p_company_id: string; p_user_id: string }
         Returns: {
@@ -31369,6 +31608,16 @@ export type Database = {
           p_response_body?: Json
           p_status_code: number
           p_user_agent?: string
+        }
+        Returns: string
+      }
+      log_integration_health_check: {
+        Args: {
+          p_company_id: string
+          p_error_message?: string
+          p_integration_key: string
+          p_response_time_ms?: number
+          p_status: string
         }
         Returns: string
       }
