@@ -48,7 +48,7 @@ serve(async (req) => {
     // Get companies with briefing enabled
     let companiesQuery = supabase
       .from("ai_morning_briefings")
-      .select("*, companies!inner(id, trade_name)")
+      .select("*")
       .eq("enabled", true);
 
     if (company_id) {
