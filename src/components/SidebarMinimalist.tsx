@@ -297,9 +297,10 @@ const menuItems: MenuItem[] = [
       },
       {
         key: 'contratos',
-        label: 'Contratos & Recorrência',
+        label: 'Contratos & Projetos',
         items: [
           { key: 'contratos-recorrencia', label: 'Gestão de Contratos', icon: RepeatIcon, route: '/contratos/recorrencia' },
+          { key: 'gestao-projetos', label: 'Gestão de Projetos', icon: FolderTree, route: '/projetos/gestao' },
         ]
       },
       {
