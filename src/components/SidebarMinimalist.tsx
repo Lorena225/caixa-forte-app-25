@@ -368,8 +368,8 @@ const menuItems: MenuItem[] = [
         key: 'agentes',
         label: 'Agentes',
         items: [
+          { key: 'meus-agentes', label: 'Meus Agentes Digitais', icon: Bot, route: '/ia/agentes' },
           { key: 'cfo-virtual', label: 'CFO Virtual', icon: Brain, route: '/ia/cfo-virtual' },
-          { key: 'feed-inteligencia', label: 'Feed de Inteligência', icon: Sparkles, route: '/ia/feed' },
           { key: 'agente-whatsapp', label: 'Agente WhatsApp', icon: MessageSquare, route: '/ia/whatsapp' },
         ]
       },
@@ -377,9 +377,10 @@ const menuItems: MenuItem[] = [
         key: 'monitoramento',
         label: 'Monitoramento',
         items: [
+          { key: 'feed-inteligencia', label: 'Feed de Inteligência', icon: Sparkles, route: '/ia/feed' },
           { key: 'anomalias', label: 'Monitor de Anomalias', icon: AlertTriangle, route: '/ia/anomalias' },
           { key: 'tempo-real', label: 'Finanças Tempo Real', icon: Gauge, route: '/financeiro/tempo-real' },
-          { key: 'logs-ia', label: 'Logs', icon: FileText, route: '/ia/logs' },
+          { key: 'decisoes-log', label: 'Log de Decisões', icon: FileText, route: '/ia/decisoes-log' },
         ]
       },
       {

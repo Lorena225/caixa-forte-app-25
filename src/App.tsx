@@ -262,6 +262,8 @@ import { ControladoriaBalancoPage } from "./pages/ControladoriaBalancoPage";
 import IntelligenceFeed from "./pages/ia/IntelligenceFeed";
 import AISettingsPage from "./pages/ia/AISettingsPage";
 import AnomalyMonitorPage from "./pages/ia/AnomalyMonitorPage";
+import DigitalAgentsPage from "./pages/ia/DigitalAgentsPage";
+import AIDecisionLogsPage from "./pages/ia/AIDecisionLogsPage";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -445,6 +447,8 @@ const App = () => (
                 <Route path="/ia/feed" element={<IntelligenceFeed />} />
                 <Route path="/ia/configuracoes" element={<AISettingsPage />} />
                 <Route path="/ia/anomalias" element={<AnomalyMonitorPage />} />
+                <Route path="/ia/agentes" element={<DigitalAgentsPage />} />
+                <Route path="/ia/decisoes-log" element={<AIDecisionLogsPage />} />
                 {/* Redirects de rotas antigas (inglês) para novas (português) */}
                 <Route path="/dashboards" element={<Navigate to="/paineis" replace />} />
                 <Route path="/dashboards/executive" element={<Navigate to="/paineis/executivo" replace />} />

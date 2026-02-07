@@ -101,3 +101,9 @@ verify_jwt = true
 
 [functions.cfo-agent]
 verify_jwt = false
+
+[functions.ai-multimodal-processor]
+verify_jwt = false
+
+[functions.ai-morning-briefing]
+verify_jwt = false
