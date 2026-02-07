@@ -159,6 +159,8 @@ import SettingsPermissions from "./pages/settings/Permissions";
 import SettingsBackup from "./pages/settings/Backup";
 // CRM
 import CRMIndex from "./pages/crm/Index";
+// Projetos
+import GestaoProjetosPage from "./pages/projetos/GestaoProjetosPage";
 import CRMPipeline from "./pages/crm/Pipeline";
 import CRMLeads from "./pages/crm/Leads";
 import CRMVendedores from "./pages/crm/Vendedores";
@@ -596,6 +598,10 @@ const App = () => (
                 
                 {/* ============ CONTRATOS / RECORRÊNCIA ============ */}
                 <Route path="/contratos/recorrencia" element={<RecorrenciaPage />} />
+                
+                {/* ============ PROJETOS ============ */}
+                <Route path="/projetos" element={<GestaoProjetosPage />} />
+                <Route path="/projetos/gestao" element={<GestaoProjetosPage />} />
                 
                 {/* ============ DEVELOPER PORTAL & MARKETPLACE ============ */}
                 <Route path="/developers" element={<DeveloperPortal />} />
