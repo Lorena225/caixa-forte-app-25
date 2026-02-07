@@ -616,6 +616,9 @@ export type Database = {
           allow_auto_create_and_settle: boolean
           allow_auto_create_counterparty: boolean
           allow_auto_settle: boolean
+          anomaly_detection_enabled: boolean | null
+          anomaly_z_score_threshold: number | null
+          auto_categorization_enabled: boolean | null
           autopilot_mode: string
           company_id: string
           default_ai_model: string | null
@@ -624,6 +627,9 @@ export type Database = {
           monitor_alert_cooldown_minutes: number | null
           monitor_digest_enabled: boolean | null
           monitor_digest_time: string | null
+          ocr_enabled: boolean | null
+          personality_mode: string | null
+          proactive_suggestions: boolean | null
           require_pin_for_high_risk: boolean
           risk_tolerance: string | null
           thresholds_json: Json
@@ -640,6 +646,9 @@ export type Database = {
           allow_auto_create_and_settle?: boolean
           allow_auto_create_counterparty?: boolean
           allow_auto_settle?: boolean
+          anomaly_detection_enabled?: boolean | null
+          anomaly_z_score_threshold?: number | null
+          auto_categorization_enabled?: boolean | null
           autopilot_mode?: string
           company_id: string
           default_ai_model?: string | null
@@ -648,6 +657,9 @@ export type Database = {
           monitor_alert_cooldown_minutes?: number | null
           monitor_digest_enabled?: boolean | null
           monitor_digest_time?: string | null
+          ocr_enabled?: boolean | null
+          personality_mode?: string | null
+          proactive_suggestions?: boolean | null
           require_pin_for_high_risk?: boolean
           risk_tolerance?: string | null
           thresholds_json?: Json
@@ -664,6 +676,9 @@ export type Database = {
           allow_auto_create_and_settle?: boolean
           allow_auto_create_counterparty?: boolean
           allow_auto_settle?: boolean
+          anomaly_detection_enabled?: boolean | null
+          anomaly_z_score_threshold?: number | null
+          auto_categorization_enabled?: boolean | null
           autopilot_mode?: string
           company_id?: string
           default_ai_model?: string | null
@@ -672,6 +687,9 @@ export type Database = {
           monitor_alert_cooldown_minutes?: number | null
           monitor_digest_enabled?: boolean | null
           monitor_digest_time?: string | null
+          ocr_enabled?: boolean | null
+          personality_mode?: string | null
+          proactive_suggestions?: boolean | null
           require_pin_for_high_risk?: boolean
           risk_tolerance?: string | null
           thresholds_json?: Json
@@ -885,6 +903,90 @@ export type Database = {
           },
           {
             foreignKeyName: "ai_feedback_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      ai_insights: {
+        Row: {
+          action_taken: boolean | null
+          action_taken_at: string | null
+          action_taken_by: string | null
+          company_id: string
+          confidence_score: number | null
+          created_at: string | null
+          data_json: Json | null
+          description: string | null
+          dismissed_at: string | null
+          dismissed_by: string | null
+          entity_id: string | null
+          entity_type: string | null
+          expires_at: string | null
+          id: string
+          insight_type: string
+          is_dismissed: boolean | null
+          severity: string
+          suggested_action: string | null
+          title: string
+          z_score: number | null
+        }
+        Insert: {
+          action_taken?: boolean | null
+          action_taken_at?: string | null
+          action_taken_by?: string | null
+          company_id: string
+          confidence_score?: number | null
+          created_at?: string | null
+          data_json?: Json | null
+          description?: string | null
+          dismissed_at?: string | null
+          dismissed_by?: string | null
+          entity_id?: string | null
+          entity_type?: string | null
+          expires_at?: string | null
+          id?: string
+          insight_type: string
+          is_dismissed?: boolean | null
+          severity?: string
+          suggested_action?: string | null
+          title: string
+          z_score?: number | null
+        }
+        Update: {
+          action_taken?: boolean | null
+          action_taken_at?: string | null
+          action_taken_by?: string | null
+          company_id?: string
+          confidence_score?: number | null
+          created_at?: string | null
+          data_json?: Json | null
+          description?: string | null
+          dismissed_at?: string | null
+          dismissed_by?: string | null
+          entity_id?: string | null
+          entity_type?: string | null
+          expires_at?: string | null
+          id?: string
+          insight_type?: string
+          is_dismissed?: boolean | null
+          severity?: string
+          suggested_action?: string | null
+          title?: string
+          z_score?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_insights_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_insights_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "v_security_status"
@@ -1118,6 +1220,94 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_security_status"
             referencedColumns: ["company_id"]
+          },
+        ]
+      }
+      ai_staged_transactions: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          company_id: string
+          created_at: string | null
+          created_transaction_id: string | null
+          id: string
+          ocr_confidence: number | null
+          parsed_data: Json
+          raw_input: string | null
+          rejection_reason: string | null
+          source: string
+          status: string
+          suggested_amount: number | null
+          suggested_category_id: string | null
+          suggested_counterparty_id: string | null
+          suggested_date: string | null
+          suggested_description: string | null
+          suggested_type: string | null
+          whatsapp_message_id: string | null
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          company_id: string
+          created_at?: string | null
+          created_transaction_id?: string | null
+          id?: string
+          ocr_confidence?: number | null
+          parsed_data?: Json
+          raw_input?: string | null
+          rejection_reason?: string | null
+          source?: string
+          status?: string
+          suggested_amount?: number | null
+          suggested_category_id?: string | null
+          suggested_counterparty_id?: string | null
+          suggested_date?: string | null
+          suggested_description?: string | null
+          suggested_type?: string | null
+          whatsapp_message_id?: string | null
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          company_id?: string
+          created_at?: string | null
+          created_transaction_id?: string | null
+          id?: string
+          ocr_confidence?: number | null
+          parsed_data?: Json
+          raw_input?: string | null
+          rejection_reason?: string | null
+          source?: string
+          status?: string
+          suggested_amount?: number | null
+          suggested_category_id?: string | null
+          suggested_counterparty_id?: string | null
+          suggested_date?: string | null
+          suggested_description?: string | null
+          suggested_type?: string | null
+          whatsapp_message_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_staged_transactions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_staged_transactions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "ai_staged_transactions_whatsapp_message_id_fkey"
+            columns: ["whatsapp_message_id"]
+            isOneToOne: false
+            referencedRelation: "whatsapp_inbox"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -30630,6 +30820,15 @@ export type Database = {
           p_valor_base: number
         }
         Returns: Json
+      }
+      calculate_category_z_score: {
+        Args: {
+          p_amount: number
+          p_category_id: string
+          p_company_id: string
+          p_months_lookback?: number
+        }
+        Returns: number
       }
       calculate_credit_score: {
         Args: { p_company_id: string; p_counterparty_id: string }

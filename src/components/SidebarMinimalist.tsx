@@ -369,7 +369,7 @@ const menuItems: MenuItem[] = [
         label: 'Agentes',
         items: [
           { key: 'cfo-virtual', label: 'CFO Virtual', icon: Brain, route: '/ia/cfo-virtual' },
-          { key: 'analista-inteligente', label: 'Analista Inteligente', icon: Sparkles, route: '/ia/analista' },
+          { key: 'feed-inteligencia', label: 'Feed de Inteligência', icon: Sparkles, route: '/ia/feed' },
           { key: 'agente-whatsapp', label: 'Agente WhatsApp', icon: MessageSquare, route: '/ia/whatsapp' },
         ]
       },
@@ -377,10 +377,9 @@ const menuItems: MenuItem[] = [
         key: 'monitoramento',
         label: 'Monitoramento',
         items: [
-          { key: 'anomalias', label: 'Anomalias', icon: AlertTriangle, route: '/compliance/anomalias' },
+          { key: 'anomalias', label: 'Monitor de Anomalias', icon: AlertTriangle, route: '/ia/anomalias' },
           { key: 'tempo-real', label: 'Finanças Tempo Real', icon: Gauge, route: '/financeiro/tempo-real' },
           { key: 'logs-ia', label: 'Logs', icon: FileText, route: '/ia/logs' },
-          { key: 'monitor-financeiro', label: 'Monitor Financeiro', icon: BellRing, route: '/ia/alertas' },
         ]
       },
       {
@@ -389,7 +388,6 @@ const menuItems: MenuItem[] = [
         items: [
           { key: 'decisoes-ia', label: 'Decisões', icon: Lightbulb, route: '/autopiloto/decisoes' },
           { key: 'simulacoes', label: 'Simulações', icon: Calculator, route: '/financeiro/simulacoes' },
-          { key: 'roadmap-ia', label: 'Roadmap', icon: Lightbulb, route: '/inovacao' },
           { key: 'config-ia', label: 'Configurações de IA', icon: Settings, route: '/ia/configuracoes' },
         ]
       }
