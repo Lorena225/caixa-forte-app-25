@@ -444,6 +444,15 @@ const searchSuggestions = [
   { query: 'orcamento', suggestion: 'Orçamento Empresarial', topicId: 'orcamento', categoryId: 'controladoria-fiscal' },
   { query: 'forecast', suggestion: 'Rolling Forecast', topicId: 'rolling-forecast', categoryId: 'financeiro' },
   { query: 'ruptura', suggestion: 'Alertas de Ruptura de Estoque', topicId: 'estoque-minimo', categoryId: 'operacional' },
+  { query: 'contrato', suggestion: 'Gestão de Contratos e Recorrência', topicId: 'introducao-recorrencia', categoryId: 'contratos' },
+  { query: 'recorrente', suggestion: 'Contratos Recorrentes', topicId: 'criando-contrato', categoryId: 'contratos' },
+  { query: 'assinatura', suggestion: 'Gestão de Assinaturas', topicId: 'introducao-recorrencia', categoryId: 'contratos' },
+  { query: 'mrr', suggestion: 'MRR - Receita Recorrente Mensal', topicId: 'kpis-saas', categoryId: 'contratos' },
+  { query: 'churn', suggestion: 'Churn Rate - Taxa de Cancelamento', topicId: 'kpis-saas', categoryId: 'contratos' },
+  { query: 'faturamento', suggestion: 'Motor de Faturamento Automático', topicId: 'motor-faturamento', categoryId: 'contratos' },
+  { query: 'mensalidade', suggestion: 'Cobrar Mensalidades', topicId: 'criando-contrato', categoryId: 'contratos' },
+  { query: 'renovacao', suggestion: 'Renovação de Contratos', topicId: 'ciclo-vida', categoryId: 'contratos' },
+  { query: 'cancelamento', suggestion: 'Cancelamento de Contratos', topicId: 'ciclo-vida', categoryId: 'contratos' },
 ];
 
 // Flatten all topics for search

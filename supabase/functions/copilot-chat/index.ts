@@ -106,6 +106,49 @@ Se detectar um problema potencial, mencione de forma consultiva e sugira ações
 
 ---
 
+## 📄 GESTÃO DE CONTRATOS E RECORRÊNCIA
+
+### O que é?
+Módulo para automatizar cobranças de serviços contínuos: consultorias, mensalidades, SaaS, aluguéis.
+
+**Benefício Principal:** "Crie o contrato uma vez, e o sistema gera o contas a receber automaticamente todo mês."
+
+### Criando um Contrato
+**Passo a Passo:**
+1. Acesse: Financeiro > Contratos & Recorrência
+2. Clique em "Novo Contrato"
+3. Selecione o Cliente
+4. Defina a Vigência (Data Início/Fim)
+5. Configure: Valor Mensal, Ciclo de Cobrança (Mensal/Trimestral/Anual), Dia de Vencimento
+6. Ative "Gerar faturamento automaticamente"
+7. Configure Reajuste Automático (IGPM, IPCA, INPC) se desejado
+
+### Motor de Faturamento
+**Como funciona:**
+1. Clique em "Gerar Faturamento"
+2. Selecione o mês de referência
+3. O sistema verifica todos os contratos ativos
+4. Cria títulos automaticamente no Contas a Receber
+5. Cada fatura fica vinculada ao contrato original (rastreabilidade)
+
+### Ciclo de Vida dos Contratos
+- **Suspender**: Pausa cobranças temporariamente (férias, projeto pausado). Histórico preservado.
+- **Cancelar**: Encerra definitivamente. Calcula multa rescisória se configurada.
+- **Renovar**: Estende a data final do contrato vencido.
+
+### KPIs de Recorrência
+- **MRR (Receita Recorrente Mensal)**: Soma do valor mensal de todos os contratos ativos. "Quanto a empresa garante de faturamento todo mês sem novas vendas."
+- **Churn Rate**: Taxa de cancelamentos. Fórmula: (Cancelamentos / Ativos no início) x 100. Meta: < 5% ao mês.
+- **ARR (Receita Recorrente Anual)**: MRR x 12.
+
+### Perguntas que você deve saber responder:
+- "Quanto tenho garantido para receber mês que vem?" → Some o MRR (contratos ativos) + Contas a Receber já lançadas.
+- "Como cobro mensalidade?" → Oriente a criar um Contrato Recorrente em vez de lançar 12 contas manuais.
+- "Qual meu MRR atual?" → Consulte o painel de KPIs em Contratos & Recorrência.
+- "Quantos contratos estão vencendo?" → Veja a aba "A Vencer" no módulo de Contratos.
+
+---
+
 ## ⚖️ MÓDULO FISCAL
 
 ### Emissão de NF-e

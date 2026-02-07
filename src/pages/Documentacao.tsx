@@ -29,7 +29,8 @@ import {
   Building2,
   Plug,
   Upload,
-  Lightbulb
+  Lightbulb,
+  RepeatIcon
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -664,6 +665,331 @@ O CFO Virtual automatiza lançamentos contábeis:
 - 📝 Gera partidas dobradas a partir de transações financeiras
 - ✅ Valida a integridade contábil em tempo real
 - 📊 Detecta contas com movimentação anômala`
+      }
+    ]
+  },
+  contratos: {
+    title: 'Gestão de Contratos',
+    icon: FileText,
+    color: 'text-teal-500',
+    bgColor: 'bg-teal-50',
+    description: 'Contratos recorrentes, assinaturas, faturamento automático e métricas SaaS.',
+    modules: [
+      {
+        id: 'introducao-recorrencia',
+        title: 'Economia da Recorrência',
+        icon: TrendingUp,
+        content: `## 📊 O que é?
+
+O módulo de **Gestão de Contratos e Recorrência** é o motor de receitas previsíveis do Caixa Forte. Ele permite automatizar cobranças de serviços contínuos como:
+
+- **Consultorias mensais** (Contabilidade, Jurídico, Marketing)
+- **Mensalidades** (Academias, Escolas, Clubes)
+- **Assinaturas SaaS** (Software, Plataformas, Licenças)
+- **Aluguéis e Locações** (Imóveis, Equipamentos, Veículos)
+
+---
+
+## 🎯 O Grande Benefício
+
+> **"Crie o contrato uma vez, e o sistema gera o contas a receber automaticamente todo mês."**
+
+Em vez de criar manualmente 12 lançamentos para um contrato anual, você cadastra **um único contrato** e o sistema:
+
+1. Calcula as datas de vencimento automaticamente
+2. Gera os títulos no Financeiro todo mês
+3. Aplica reajustes por índices (IGPM, IPCA) no aniversário
+4. Alerta sobre contratos prestes a vencer
+
+---
+
+## 📈 Previsibilidade Financeira
+
+Com contratos recorrentes bem geridos, você sabe exatamente:
+
+- 💰 **Quanto vai faturar** nos próximos meses (MRR)
+- 📅 **Quando vai receber** (datas de vencimento configuradas)
+- 📊 **Taxa de retenção** (Churn Rate)
+
+---
+
+## 💡 Dica da IA
+
+Pergunte ao Copilot: *"Quanto tenho garantido para receber mês que vem?"*
+
+O CFO Virtual somará o valor dos seus contratos ativos (MRR) + Contas a Receber já lançadas, dando uma visão consolidada da sua receita previsível.`
+      },
+      {
+        id: 'criando-contrato',
+        title: 'Criando seu Primeiro Contrato',
+        icon: FileText,
+        content: `## 📝 Passo a Passo
+
+**1. Acesse o módulo**
+   - Navegue para: **Financeiro > Contratos & Recorrência**
+   - Clique em **"Novo Contrato"**
+
+**2. Selecione o Cliente**
+   - Busque pelo nome ou CNPJ/CPF
+   - O cliente deve estar cadastrado em Cadastros > Clientes
+   - Dica: O sistema filtra automaticamente apenas clientes ativos
+
+**3. Defina a Vigência**
+   - **Data de Início**: Quando o contrato entra em vigor
+   - **Data de Término**: Quando expira (ou deixe em branco para indeterminado)
+   - Contratos sem término continuam gerando cobranças até serem cancelados
+
+**4. Configure o Faturamento**
+   - **Valor Mensal**: Valor base da cobrança
+   - **Ciclo de Cobrança**: Mensal, Bimestral, Trimestral, Semestral ou Anual
+   - **Dia do Vencimento**: Dia do mês para geração da fatura (1-28)
+
+**5. Ative a Automação**
+   - Marque **"Gerar faturamento automaticamente"**
+   - O sistema criará os títulos no Contas a Receber
+
+---
+
+## 🔄 Regras de Reajuste
+
+Configure o reajuste automático anual para proteger o valor do contrato contra a inflação:
+
+| Índice | Descrição | Uso Comum |
+|--------|-----------|-----------|
+| **IGPM** | Índice Geral de Preços do Mercado | Aluguéis, Contratos Comerciais |
+| **IPCA** | Índice de Preços ao Consumidor Amplo | Planos de Saúde, Mensalidades |
+| **INPC** | Índice Nacional de Preços ao Consumidor | Contratos Trabalhistas |
+| **Manual** | Você define o percentual | Negociações Específicas |
+
+### Como funciona:
+1. No aniversário do contrato, o sistema calcula o novo valor
+2. Gera um alerta para aprovação (ou aplica automaticamente se configurado)
+3. Atualiza o valor base para as próximas cobranças
+
+---
+
+## 💡 Dica da IA
+
+Se você perguntar *"Como cobro mensalidade de um cliente?"*, o Copilot orientará:
+
+> *"Em vez de lançar 12 contas manuais, crie um Contrato Recorrente em Financeiro > Contratos. O sistema gera as cobranças automaticamente todo mês, aplica reajustes e controla o ciclo de vida."*`
+      },
+      {
+        id: 'motor-faturamento',
+        title: 'Motor de Faturamento (Automação)',
+        icon: Zap,
+        content: `## ⚡ Como Funciona o Faturamento Automático
+
+O **Motor de Faturamento** é o coração da automação de receitas recorrentes. Ele verifica diariamente todos os contratos ativos e gera as cobranças no momento certo.
+
+---
+
+## 📋 Processamento de Faturamento
+
+**1. Acesse o botão "Processar Faturamento"**
+   - Navegue para: **Financeiro > Contratos & Recorrência**
+   - Clique em **"Gerar Faturamento"**
+
+**2. Selecione o período**
+   - **Mês de Referência**: Para qual competência gerar
+   - O sistema lista todos os contratos que precisam de cobrança
+
+**3. Revise antes de confirmar**
+   - Veja a quantidade de contratos a faturar
+   - Confira o valor total que será gerado
+   - Clique em **"Confirmar"**
+
+**4. O sistema automaticamente:**
+   - ✅ Cria um título no **Contas a Receber** para cada contrato
+   - ✅ Define a data de vencimento conforme o dia configurado
+   - ✅ Vincula o título ao contrato de origem (rastreabilidade)
+   - ✅ Atualiza o status do ciclo de cobrança
+
+---
+
+## 🔗 Vínculo com o Financeiro
+
+Cada fatura gerada fica **"amarrada"** ao contrato original:
+
+| Contrato | Fatura Gerada |
+|----------|---------------|
+| Contrato #123 - Cliente ABC | Título #4567 - R$ 2.500,00 - Venc: 05/03/2024 |
+| Contrato #124 - Cliente XYZ | Título #4568 - R$ 1.800,00 - Venc: 10/03/2024 |
+
+Isso permite:
+- 📊 **Auditorias**: Saber de qual contrato veio cada título
+- 📈 **Relatórios**: Agrupar receitas por contrato
+- 🔄 **Rastreabilidade**: Ver histórico de faturas do contrato
+
+---
+
+## 💡 Dica da IA
+
+O CFO Virtual monitora o faturamento e alerta:
+
+- ⚠️ *"3 contratos vencem em 5 dias e ainda não foram faturados"*
+- 💰 *"O faturamento deste mês é 15% maior que o mês passado"*
+- 📋 *"Há 2 faturas em aberto de contratos recorrentes"*`
+      },
+      {
+        id: 'ciclo-vida',
+        title: 'Ciclo de Vida (Renovação/Cancelamento)',
+        icon: Activity,
+        content: `## 🔄 Gestão do Ciclo de Vida
+
+Todo contrato passa por fases: Ativo → Suspenso → Cancelado/Renovado. O Caixa Forte oferece controle total sobre cada etapa.
+
+---
+
+## ⏸️ Suspender Contrato
+
+**Quando usar:**
+- Cliente pediu pausa temporária (férias, viagem)
+- Projeto em stand-by
+- Aguardando regularização de pagamento
+
+**O que acontece:**
+- ❌ Cobranças são **pausadas** (não gera novos títulos)
+- ✅ Histórico é **preservado** (não perde dados)
+- ✅ Contrato pode ser **reativado** a qualquer momento
+
+**Como fazer:**
+1. Acesse o contrato
+2. Clique em **"Suspender"**
+3. Informe o motivo (opcional)
+4. O status muda para "Suspenso"
+
+---
+
+## ❌ Cancelar Contrato
+
+**Quando usar:**
+- Cliente encerrou o serviço definitivamente
+- Contrato expirou e não será renovado
+- Rescisão por inadimplência
+
+**O que acontece:**
+- ❌ Cobranças são **encerradas** permanentemente
+- 💰 **Multa rescisória** é calculada (se configurada)
+- ✅ Títulos em aberto continuam exigíveis
+- ✅ Histórico é preservado para auditorias
+
+**Como fazer:**
+1. Acesse o contrato
+2. Clique em **"Cancelar"**
+3. O sistema calcula a multa (ex: 2x o valor mensal)
+4. Confirme e informe o motivo
+5. O status muda para "Cancelado"
+
+---
+
+## 🔁 Renovar Contrato
+
+**Quando usar:**
+- Contrato com data de término definida
+- Cliente deseja continuar o serviço
+- Renegociação de valores ou condições
+
+**O que acontece:**
+- 📅 **Data final é estendida** para novo período
+- 💰 Novo valor pode ser aplicado (se renegociado)
+- ✅ Cobranças continuam normalmente
+
+**Como fazer:**
+1. Acesse o contrato
+2. Clique em **"Renovar"**
+3. Defina a nova data de término
+4. Ajuste o valor se necessário
+5. Confirme a renovação
+
+---
+
+## 💡 Dica da IA
+
+O CFO Virtual monitora o ciclo de vida:
+
+- 🔔 *"5 contratos vencem nos próximos 30 dias"*
+- 📊 *"Seu Churn Rate este mês foi de 3,2%"*
+- 💡 *"Considere contatar o Cliente ABC - contrato vence em 7 dias"*`
+      },
+      {
+        id: 'kpis-saas',
+        title: 'Entendendo as Métricas (KPIs)',
+        icon: Target,
+        content: `## 📊 Métricas de Receita Recorrente
+
+O módulo de Contratos exibe KPIs essenciais para gestão de negócios por assinatura/recorrência.
+
+---
+
+## 💰 MRR (Monthly Recurring Revenue)
+
+**O que é:**
+> Receita Recorrente Mensal - quanto sua empresa **garante de faturamento todo mês**, sem precisar fazer novas vendas.
+
+**Como é calculado:**
+\`\`\`
+MRR = Soma do valor mensal de todos os contratos ATIVOS
+\`\`\`
+
+**Exemplo:**
+| Contrato | Valor Mensal |
+|----------|-------------|
+| Cliente A | R$ 2.000 |
+| Cliente B | R$ 1.500 |
+| Cliente C | R$ 3.500 |
+| **MRR Total** | **R$ 7.000** |
+
+**Por que importa:**
+- 📈 Mede a saúde do negócio recorrente
+- 💰 Base para projeções de caixa
+- 📊 Benchmark: Crescimento de MRR mês a mês
+
+---
+
+## 📉 Churn Rate (Taxa de Cancelamento)
+
+**O que é:**
+> Taxa de clientes/contratos que **cancelaram** em um período.
+
+**Como é calculado:**
+\`\`\`
+Churn Rate = (Contratos Cancelados no Período / Contratos Ativos no Início) x 100
+\`\`\`
+
+**Exemplo:**
+- Início do mês: 100 contratos ativos
+- Cancelamentos: 3 contratos
+- Churn Rate = 3%
+
+**Por que importa:**
+- 📉 Churn alto indica problemas de retenção
+- 💡 Meta típica: < 5% ao mês para B2B
+- ⚠️ Churn > 10% requer ação urgente
+
+---
+
+## 📈 ARR (Annual Recurring Revenue)
+
+**O que é:**
+> Receita Recorrente Anual - projeção de 12 meses do MRR.
+
+**Cálculo simples:**
+\`\`\`
+ARR = MRR x 12
+\`\`\`
+
+---
+
+## 💡 Dica da IA
+
+Pergunte ao Copilot:
+
+- *"Qual meu MRR atual?"*
+- *"Como está meu Churn Rate este mês?"*
+- *"Quantos contratos estão prestes a vencer?"*
+
+O CFO Virtual consolida esses dados e oferece insights acionáveis.`
       }
     ]
   },
@@ -1662,6 +1988,7 @@ export default function Documentacao() {
       'financeiro': 'financeiro',
       'controladoria-fiscal': 'fiscal',
       'inteligencia': 'inteligencia',
+      'contratos': 'contratos',
       'configuracoes': 'configuracoes',
     };
     return categoryMapping[param || ''] || 'financeiro';

@@ -80,13 +80,26 @@ export function ContractFormDialog({ open, onOpenChange }: ContractFormDialogPro
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Novo Contrato de Recorrência</DialogTitle>
+          <p className="text-sm text-muted-foreground">
+            Configure um contrato e o sistema gerará automaticamente as cobranças no Contas a Receber.
+          </p>
         </DialogHeader>
         
         <TooltipProvider>
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Cliente */}
             <div className="space-y-2">
-              <Label htmlFor="counterparty_id">Cliente *</Label>
+              <div className="flex items-center gap-2">
+                <Label htmlFor="counterparty_id">Cliente *</Label>
+                <Tooltip>
+                  <TooltipTrigger type="button">
+                    <HelpCircle className="h-3.5 w-3.5 text-muted-foreground" />
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-xs">
+                    <p>Selecione o cliente que será cobrado. Apenas clientes ativos aparecem na lista.</p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
               <Select 
                 value={formData.counterparty_id} 
                 onValueChange={(v) => setFormData(prev => ({ ...prev, counterparty_id: v }))}
@@ -106,7 +119,17 @@ export function ContractFormDialog({ open, onOpenChange }: ContractFormDialogPro
 
             {/* Descrição */}
             <div className="space-y-2">
-              <Label htmlFor="description">Descrição do Contrato</Label>
+              <div className="flex items-center gap-2">
+                <Label htmlFor="description">Descrição do Contrato</Label>
+                <Tooltip>
+                  <TooltipTrigger type="button">
+                    <HelpCircle className="h-3.5 w-3.5 text-muted-foreground" />
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-xs">
+                    <p>Descrição que aparecerá nas faturas geradas. Ex: "Mensalidade Plano Premium"</p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
               <Textarea
                 id="description"
                 value={formData.description}
@@ -151,7 +174,17 @@ export function ContractFormDialog({ open, onOpenChange }: ContractFormDialogPro
 
             {/* Faturamento */}
             <div className="space-y-4 p-4 bg-muted/50 rounded-lg">
-              <h4 className="font-medium">Configuração de Faturamento</h4>
+              <div className="flex items-center gap-2">
+                <h4 className="font-medium">Configuração de Faturamento</h4>
+                <Tooltip>
+                  <TooltipTrigger type="button">
+                    <HelpCircle className="h-3.5 w-3.5 text-muted-foreground" />
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-xs">
+                    <p>Define como e quando as cobranças serão geradas automaticamente no Contas a Receber.</p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
               
               <div className="grid grid-cols-3 gap-4">
                 <div className="space-y-2">
@@ -161,8 +194,8 @@ export function ContractFormDialog({ open, onOpenChange }: ContractFormDialogPro
                       <TooltipTrigger type="button">
                         <HelpCircle className="h-3.5 w-3.5 text-muted-foreground" />
                       </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Valor base que será cobrado a cada período</p>
+                      <TooltipContent className="max-w-xs">
+                        <p>Valor base que será cobrado a cada ciclo. Este valor será usado para calcular o MRR (Receita Recorrente Mensal).</p>
                       </TooltipContent>
                     </Tooltip>
                   </div>
@@ -178,7 +211,17 @@ export function ContractFormDialog({ open, onOpenChange }: ContractFormDialogPro
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="billing_cycle">Ciclo de Cobrança</Label>
+                  <div className="flex items-center gap-2">
+                    <Label htmlFor="billing_cycle">Ciclo de Cobrança</Label>
+                    <Tooltip>
+                      <TooltipTrigger type="button">
+                        <HelpCircle className="h-3.5 w-3.5 text-muted-foreground" />
+                      </TooltipTrigger>
+                      <TooltipContent className="max-w-xs">
+                        <p>Frequência de geração das faturas. Mensal é o mais comum para assinaturas.</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
                   <Select 
                     value={formData.billing_cycle} 
                     onValueChange={(v: any) => setFormData(prev => ({ ...prev, billing_cycle: v }))}
@@ -203,8 +246,8 @@ export function ContractFormDialog({ open, onOpenChange }: ContractFormDialogPro
                       <TooltipTrigger type="button">
                         <HelpCircle className="h-3.5 w-3.5 text-muted-foreground" />
                       </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Dia do mês para vencimento das cobranças (1-28)</p>
+                      <TooltipContent className="max-w-xs">
+                        <p>Dia base para geração automática da fatura no financeiro. Use até dia 28 para evitar problemas com meses curtos.</p>
                       </TooltipContent>
                     </Tooltip>
                   </div>
@@ -219,7 +262,7 @@ export function ContractFormDialog({ open, onOpenChange }: ContractFormDialogPro
                 </div>
               </div>
 
-              <div className="flex items-center justify-between pt-2">
+              <div className="flex items-center justify-between pt-2 border-t">
                 <div className="flex items-center gap-2">
                   <Switch
                     id="auto_generate_billing"
@@ -229,6 +272,14 @@ export function ContractFormDialog({ open, onOpenChange }: ContractFormDialogPro
                   <Label htmlFor="auto_generate_billing" className="cursor-pointer">
                     Gerar faturamento automaticamente
                   </Label>
+                  <Tooltip>
+                    <TooltipTrigger type="button">
+                      <HelpCircle className="h-3.5 w-3.5 text-muted-foreground" />
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-xs">
+                      <p>Quando ativo, o sistema cria automaticamente os títulos no Contas a Receber conforme o ciclo definido.</p>
+                    </TooltipContent>
+                  </Tooltip>
                 </div>
               </div>
             </div>
@@ -243,7 +294,7 @@ export function ContractFormDialog({ open, onOpenChange }: ContractFormDialogPro
                       <HelpCircle className="h-3.5 w-3.5 text-muted-foreground" />
                     </TooltipTrigger>
                     <TooltipContent className="max-w-xs">
-                      <p>Configure o reajuste anual automático baseado em índices econômicos como IGPM ou IPCA</p>
+                      <p>Proteja o valor do contrato contra a inflação. O sistema alerta no aniversário do contrato para aplicar o reajuste conforme o índice escolhido.</p>
                     </TooltipContent>
                   </Tooltip>
                 </div>
@@ -255,7 +306,20 @@ export function ContractFormDialog({ open, onOpenChange }: ContractFormDialogPro
               
               {formData.auto_adjustment && (
                 <div className="space-y-2">
-                  <Label>Índice de Reajuste</Label>
+                  <div className="flex items-center gap-2">
+                    <Label>Índice de Reajuste</Label>
+                    <Tooltip>
+                      <TooltipTrigger type="button">
+                        <HelpCircle className="h-3.5 w-3.5 text-muted-foreground" />
+                      </TooltipTrigger>
+                      <TooltipContent className="max-w-xs">
+                        <p><strong>IGPM:</strong> Comum em aluguéis e contratos comerciais.<br/>
+                        <strong>IPCA:</strong> Índice oficial de inflação, usado em planos de saúde.<br/>
+                        <strong>INPC:</strong> Foco em famílias de baixa renda.<br/>
+                        <strong>Manual:</strong> Você define o percentual.</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
                   <Select 
                     value={formData.adjustment_index} 
                     onValueChange={(v: AdjustmentIndex) => setFormData(prev => ({ ...prev, adjustment_index: v }))}
@@ -264,9 +328,9 @@ export function ContractFormDialog({ open, onOpenChange }: ContractFormDialogPro
                       <SelectValue placeholder="Selecione o índice" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="IGPM">IGPM (Índice Geral de Preços)</SelectItem>
-                      <SelectItem value="IPCA">IPCA (Índice de Preços ao Consumidor)</SelectItem>
-                      <SelectItem value="INPC">INPC (Índice Nacional de Preços)</SelectItem>
+                      <SelectItem value="IGPM">IGPM (Índice Geral de Preços) - Aluguéis</SelectItem>
+                      <SelectItem value="IPCA">IPCA (Índice de Preços ao Consumidor) - Inflação oficial</SelectItem>
+                      <SelectItem value="INPC">INPC (Índice Nacional de Preços) - Trabalhista</SelectItem>
                       <SelectItem value="MANUAL">Manual (definir valor)</SelectItem>
                     </SelectContent>
                   </Select>
