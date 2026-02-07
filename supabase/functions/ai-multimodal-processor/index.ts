@@ -487,24 +487,39 @@ Responda APENAS em JSON válido.`
 // Local pattern matching (fallback and optimization)
 function extractIntentLocally(text: string): ExtractionResult {
   const lowerText = text.toLowerCase();
+  const originalText = text;
   
   // Amount extraction - handles various formats
-  const amountPatterns = [
-    /r?\$?\s*(\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{2})?)/i, // R$ 1.500,00 or 1500.00
-    /(\d+)\s*(?:reais?|real)/i, // 100 reais
-    /(\d+)\s*mil/i, // 1 mil
-  ];
-  
+  // Order matters: try more specific patterns first
   let amount: number | undefined;
-  for (const pattern of amountPatterns) {
-    const match = lowerText.match(pattern);
-    if (match) {
-      let value = match[1].replace(/\./g, "").replace(",", ".");
-      amount = parseFloat(value);
-      if (lowerText.includes("mil") && amount < 1000) {
-        amount *= 1000;
-      }
-      break;
+  
+  // Pattern 1: R$ 1.500,00 or R$ 1500,00 (Brazilian format with cents)
+  const brCurrencyMatch = originalText.match(/R?\$?\s*(\d{1,3}(?:\.\d{3})*(?:,\d{2}))/i);
+  if (brCurrencyMatch) {
+    amount = parseFloat(brCurrencyMatch[1].replace(/\./g, "").replace(",", "."));
+  }
+  
+  // Pattern 2: Plain numbers like 1500 (most common in chat)
+  if (!amount) {
+    const plainNumberMatch = originalText.match(/(?:^|\s)(\d{3,})(?:\s|$|[^\d])/);
+    if (plainNumberMatch) {
+      amount = parseFloat(plainNumberMatch[1]);
+    }
+  }
+  
+  // Pattern 3: "100 reais" or "cem reais"
+  if (!amount) {
+    const reaisMatch = lowerText.match(/(\d+)\s*(?:reais?|real)/i);
+    if (reaisMatch) {
+      amount = parseFloat(reaisMatch[1]);
+    }
+  }
+  
+  // Pattern 4: "1 mil" or "2 mil"  
+  if (!amount) {
+    const milMatch = lowerText.match(/(\d+)\s*mil/i);
+    if (milMatch) {
+      amount = parseFloat(milMatch[1]) * 1000;
     }
   }
 
