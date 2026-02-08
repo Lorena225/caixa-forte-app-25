@@ -426,6 +426,7 @@ const menuItems: MenuItem[] = [
         label: 'Sistema',
         items: [
           { key: 'importar-exportar', label: 'Importar/Exportar', icon: Upload, route: '/importar-exportar' },
+          { key: 'governanca', label: 'Governança', icon: Settings, route: '/configuracoes' },
           { key: 'admin', label: 'Administração', icon: UserCog, route: '/admin' },
           { key: 'integracoes', label: 'Configurar Integrações', icon: Plug, route: '/integracoes/configurar' },
         ]
