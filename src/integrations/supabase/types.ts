@@ -33992,6 +33992,14 @@ export type Database = {
         Args: { p_days_login_attempts?: number; p_days_rate_limit?: number }
         Returns: Json
       }
+      close_production_order: {
+        Args: { p_production_order_id: string; p_quantity_completed: number }
+        Returns: boolean
+      }
+      create_production_order_from_sales: {
+        Args: { p_sales_order_id: string; p_sales_order_item_id?: string }
+        Returns: string
+      }
       decrypt_credentials: { Args: { encrypted_text: string }; Returns: string }
       encrypt_credentials: { Args: { plain_text: string }; Returns: string }
       execute_bank_transfer: {
@@ -34005,6 +34013,18 @@ export type Database = {
           p_transfer_date: string
         }
         Returns: Json
+      }
+      explode_bom: {
+        Args: { p_bom_id: string; p_quantity?: number }
+        Returns: {
+          has_bom: boolean
+          is_manufactured: boolean
+          level: number
+          product_id: string
+          product_name: string
+          product_sku: string
+          required_quantity: number
+        }[]
       }
       finalize_inventory_with_adjustments: {
         Args: { p_inventory_id: string }
@@ -34302,6 +34322,10 @@ export type Database = {
       }
       reverse_settlement: {
         Args: { p_notes?: string; p_settlement_id: string; p_user_id: string }
+        Returns: string
+      }
+      run_mrp_calculation: {
+        Args: { p_company_id: string; p_horizon_days?: number }
         Returns: string
       }
       sanitize_pii: { Args: { p_data: Json }; Returns: Json }
