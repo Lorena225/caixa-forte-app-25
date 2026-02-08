@@ -55,6 +55,7 @@ import DeveloperPortal from "./pages/developers/Index";
 import Marketplace from "./pages/marketplace/Index";
 import APIDocs from "./pages/api/docs";
 import APIKeysPage from "./pages/settings/APIKeys";
+import SettingsGovernancePage from "./pages/configuracoes/SettingsGovernancePage";
 // ERP Modules
 import ContabilidadeIndex from "./pages/contabilidade/Index";
 import ContabilidadeLancamentos from "./pages/contabilidade/Lancamentos";
@@ -316,6 +317,8 @@ const App = () => (
                 <Route path="/settings/backup" element={<SettingsBackup />} />
                 
                 {/* Settings - Portuguese paths (aliases) */}
+                <Route path="/configuracoes" element={<SettingsGovernancePage />} />
+                <Route path="/configuracoes/governanca" element={<SettingsGovernancePage />} />
                 <Route path="/configuracoes/usuarios" element={<SettingsUsers />} />
                 <Route path="/configuracoes/papeis" element={<SettingsRoles />} />
                 <Route path="/configuracoes/papeis/:roleId" element={<SettingsRoleDetail />} />
