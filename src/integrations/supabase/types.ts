@@ -11130,6 +11130,69 @@ export type Database = {
           },
         ]
       }
+      cpq_tax_rates: {
+        Row: {
+          cofins_rate: number | null
+          company_id: string
+          created_at: string | null
+          icms_rate: number | null
+          icms_st_rate: number | null
+          id: string
+          ipi_rate: number | null
+          is_active: boolean | null
+          ncm: string | null
+          pis_rate: number | null
+          uf_destino: string | null
+          uf_origem: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          cofins_rate?: number | null
+          company_id: string
+          created_at?: string | null
+          icms_rate?: number | null
+          icms_st_rate?: number | null
+          id?: string
+          ipi_rate?: number | null
+          is_active?: boolean | null
+          ncm?: string | null
+          pis_rate?: number | null
+          uf_destino?: string | null
+          uf_origem?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          cofins_rate?: number | null
+          company_id?: string
+          created_at?: string | null
+          icms_rate?: number | null
+          icms_st_rate?: number | null
+          id?: string
+          ipi_rate?: number | null
+          is_active?: boolean | null
+          ncm?: string | null
+          pis_rate?: number | null
+          uf_destino?: string | null
+          uf_origem?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cpq_tax_rates_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cpq_tax_rates_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "v_security_status"
+            referencedColumns: ["company_id"]
+          },
+        ]
+      }
       credit_protection_requests: {
         Row: {
           amount: number
