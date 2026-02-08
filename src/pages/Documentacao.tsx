@@ -34,7 +34,10 @@ import {
   FolderKanban,
   Timer,
   LayoutGrid,
-  Briefcase
+  Briefcase,
+  Factory,
+  Layers,
+  Route
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -3401,6 +3404,438 @@ O CFO Virtual aprende com suas interações e se torna mais preciso ao longo do 
       }
     ]
   },
+  industrial: {
+    title: 'PCP & Industrial',
+    icon: Factory,
+    color: 'text-cyan-500',
+    bgColor: 'bg-cyan-50',
+    description: 'Planejamento e Controle de Produção: Engenharia de Produto (BOM/Roteiros), MRP, Ordens de Produção e Apontamento.',
+    modules: [
+      {
+        id: 'engenharia-bom',
+        title: 'Engenharia: Cadastro de BOM',
+        icon: Layers,
+        content: `## 📊 O que é BOM?
+
+A **BOM (Bill of Materials)** ou **Estrutura de Produto** define todos os componentes necessários para fabricar um produto acabado. É a "receita" da sua produção.
+
+---
+
+## 📝 Passo a Passo: Como Cadastrar uma BOM
+
+**1. Acesse o módulo de Engenharia**
+   - Navegue para: **Produção > Engenharia**
+   - Clique na aba **"BOMs"**
+
+**2. Crie uma nova estrutura**
+   - Clique em **"Nova BOM"**
+   - Selecione o **Produto Acabado** (que será fabricado)
+   - Informe a **Versão** (ex: 1.0, 2.0)
+   - Dê um nome descritivo (ex: "BOM Padrão - Mesa Escritório")
+
+**3. Adicione os componentes**
+   - Clique em **"Adicionar Componente"**
+   - Busque o item pelo código ou nome
+   - Informe a **quantidade** por unidade do produto acabado
+   - Defina a **unidade de medida** (un, kg, m)
+
+**4. Configure hierarquia multinível (opcional)**
+   - Se um componente também é fabricado (semi-acabado), ele pode ter sua própria BOM
+   - O sistema faz a **explosão automática** de todos os níveis
+   - Exemplo: Mesa → Tampo → Madeira MDF
+
+**5. Ative a BOM**
+   - Após revisar, mude o status para **"Ativa"**
+   - Apenas BOMs ativas são consideradas pelo MRP
+
+---
+
+## 🔍 Exemplo Prático
+
+| Produto | Componente | Qtd | Nível |
+|---------|------------|-----|-------|
+| Mesa Escritório | Tampo MDF | 1 | 1 |
+| Mesa Escritório | Pernas Metálicas | 4 | 1 |
+| Mesa Escritório | Parafusos | 16 | 1 |
+| Tampo MDF | Chapa MDF 18mm | 0.8 m² | 2 |
+| Tampo MDF | Laminado | 1 m² | 2 |
+
+---
+
+## 💡 Dica da IA
+
+O MRP faz a **explosão de BOM** automaticamente:
+- Ao calcular necessidades, considera todos os níveis
+- Se você precisa de 10 mesas, ele calcula 40 pernas, 160 parafusos, 8 m² de chapa...
+- Componentes comprados geram **Requisições de Compra**
+- Componentes fabricados geram **Ordens de Produção**`
+      },
+      {
+        id: 'engenharia-roteiro',
+        title: 'Engenharia: Cadastro de Roteiro',
+        icon: Route,
+        content: `## 📊 O que é um Roteiro?
+
+O **Roteiro de Fabricação** define a sequência de operações, tempos e recursos necessários para produzir um item. É o "passo a passo" do chão de fábrica.
+
+---
+
+## 📝 Passo a Passo: Como Cadastrar um Roteiro
+
+**1. Acesse a aba Roteiros**
+   - Navegue para: **Produção > Engenharia**
+   - Clique na aba **"Roteiros"**
+   - Selecione uma BOM ativa para vincular o roteiro
+
+**2. Defina as operações**
+   - Clique em **"Nova Operação"**
+   - Preencha os campos:
+
+| Campo | Descrição | Exemplo |
+|-------|-----------|---------|
+| **Sequência** | Ordem da operação | 10, 20, 30... |
+| **Centro de Trabalho** | Máquina ou setor | Célula Corte, Montagem |
+| **Descrição** | O que será feito | Cortar chapa MDF |
+| **Tempo Setup** | Preparação (min) | 15 min |
+| **Tempo Unitário** | Por peça (min) | 5 min |
+
+**3. Configure tempos padrão**
+   - **Tempo de Setup**: Preparação antes de iniciar (ajuste de máquina)
+   - **Tempo de Execução**: Tempo para produzir cada unidade
+   - **Tempo de Espera**: Tempo entre operações (cura, resfriamento)
+
+**4. Vincule recursos**
+   - Defina quais máquinas/operadores são necessários
+   - Configure capacidade produtiva diária
+
+**5. Ative o roteiro**
+   - Após revisar, mude o status para **"Ativo"**
+   - O roteiro é usado para calcular lead times e capacidade
+
+---
+
+## 🔍 Exemplo de Roteiro: Mesa Escritório
+
+| Seq | Operação | Centro | Setup | Tempo/Un |
+|-----|----------|--------|-------|----------|
+| 10 | Corte MDF | Célula Corte | 15 min | 5 min |
+| 20 | Laminação | Prensa | 20 min | 10 min |
+| 30 | Furação | CNC | 10 min | 3 min |
+| 40 | Montagem | Montagem Final | 5 min | 15 min |
+| 50 | Embalagem | Expedição | 2 min | 5 min |
+
+**Tempo total para 10 mesas:**
+- Setup: 15+20+10+5+2 = **52 min**
+- Execução: (5+10+3+15+5) × 10 = **380 min**
+- **Total: 432 min (~7h12)**
+
+---
+
+## 💡 Dica da IA
+
+O sistema usa os tempos do roteiro para:
+- 📅 Calcular **lead time** de produção
+- ⏱️ Estimar **data de entrega** de pedidos
+- 📊 Medir **eficiência** real vs. planejada no apontamento
+- 💰 Calcular **custo de MOD** (Mão de Obra Direta)`
+      },
+      {
+        id: 'mrp-ciclo',
+        title: 'Ciclo do MRP: Sugestões → Pedidos',
+        icon: Calculator,
+        content: `## 📊 O que é o MRP?
+
+O **MRP (Material Requirements Planning)** calcula automaticamente o que você precisa comprar e produzir para atender à demanda, considerando:
+- Pedidos de venda pendentes
+- Estoque atual disponível
+- Lead times de fornecedores
+- Estrutura de produto (BOM)
+
+---
+
+## 🔄 O Ciclo Completo do MRP
+
+| Etapa | O que acontece | Resultado |
+|-------|----------------|-----------|
+| 1. Executar MRP | Sistema analisa demanda vs estoque | Gera necessidades |
+| 2. Analisar Sugestões | Revisar itens sugeridos | Aprovar/ajustar |
+| 3. Converter em Pedidos | Transformar sugestões em ações | RCs e OPs criadas |
+
+---
+
+## 📝 Passo a Passo: Converter Sugestões em Pedidos de Compra
+
+**1. Execute o cálculo MRP**
+   - Navegue para: **Produção > MRP**
+   - Selecione o **horizonte** (7, 15, 30, 60 dias)
+   - Clique em **"Executar MRP"**
+
+**2. Analise as sugestões geradas**
+   - O sistema exibe duas abas:
+     - **Produção**: Itens que você fabrica (geram OP)
+     - **Compra**: Itens que você compra (geram RC)
+
+**3. Revise as quantidades**
+   - Verifique se as quantidades fazem sentido
+   - Ajuste se houver estoque não registrado ou pedidos cancelados
+
+**4. Converta com um clique! ⚡**
+   - Para **Compras**: Clique em **"Criar RC"** (Requisição de Compra)
+   - A requisição é criada automaticamente com:
+     - Produto, quantidade e data necessária
+     - Fornecedor sugerido (baseado no histórico)
+   
+   - Para **Produção**: Clique em **"Criar OP"** (Ordem de Produção)
+   - A OP é criada com a estrutura da BOM vinculada
+
+**5. Acompanhe no módulo específico**
+   - Requisições: **Produção > Requisições**
+   - Ordens de Produção: **Produção > Ordens de Produção**
+
+---
+
+## 🚀 Fluxo Visual
+
+\`\`\`
+Pedido de Venda (10 Mesas)
+        ↓
+   [EXECUTAR MRP]
+        ↓
+   ┌────┴────┐
+   ↓         ↓
+Produção   Compra
+   ↓         ↓
+OP: 10     RC: 40 pernas
+Mesas      RC: 8m² MDF
+           RC: 160 parafusos
+        ↓
+   [CRIAR RC] ← Um clique!
+        ↓
+Pedido de Compra gerado
+\`\`\`
+
+---
+
+## 💡 Dica da IA
+
+O sistema considera o **lead time** de cada fornecedor:
+- Se o parafuso demora 5 dias para chegar
+- E a mesa precisa estar pronta em 10 dias
+- O pedido de compra é sugerido para **hoje**!
+
+A IA também agrupa itens do mesmo fornecedor para otimizar fretes.`
+      },
+      {
+        id: 'apontamento-operador',
+        title: 'Apontamento: Guia do Operador',
+        icon: Timer,
+        content: `## 📊 O que é Apontamento?
+
+O **Apontamento de Produção** é o registro em tempo real do início, pausas e término das operações no chão de fábrica. Ele permite:
+- Medir tempo real de produção
+- Comparar com tempo planejado (eficiência)
+- Registrar quantidades produzidas e refugos
+- Atualizar estoque automaticamente
+
+---
+
+## 📝 Guia Rápido para o Operador
+
+### ▶️ INICIAR uma Operação
+
+**1. Acesse a tela de Apontamento**
+   - Navegue para: **Produção > Apontamento**
+   - Ou use o atalho no terminal de chão de fábrica
+
+**2. Selecione a Ordem de Produção**
+   - Escolha a OP que irá trabalhar
+   - O sistema mostra: produto, quantidade planejada, operação atual
+
+**3. Clique em "INICIAR" ▶️**
+   - O cronômetro começa a contar
+   - Status muda para **"Em andamento"**
+   - Você verá o tempo decorrido em tempo real
+
+---
+
+### ⏸️ PAUSAR uma Operação
+
+**Quando pausar?**
+- Intervalo/almoço
+- Aguardando material
+- Problema na máquina
+- Troca de turno
+
+**Como pausar:**
+1. Clique no botão **"PAUSAR"** ⏸️
+2. O cronômetro para
+3. Status muda para **"Pausado"**
+4. Para continuar, clique em **"RETOMAR"** ▶️
+
+---
+
+### ⏹️ FINALIZAR uma Operação
+
+**1. Informe a quantidade produzida**
+   - Digite quantas peças boas foram feitas
+   - O campo aceita apenas números
+
+**2. Registre refugos (se houver)**
+   - Informe quantas peças foram rejeitadas
+   - Clique no ícone de lixeira para confirmar
+
+**3. Adicione observações (opcional)**
+   - Anote problemas, ajustes de máquina, etc.
+   - Útil para análise posterior
+
+**4. Clique em "FINALIZAR" ⏹️**
+   - O sistema registra:
+     - Tempo total (descontando pausas)
+     - Quantidade boa e refugo
+     - Eficiência (real vs. planejado)
+   - O estoque é atualizado automaticamente!
+
+---
+
+## ⚡ Resumo Visual dos Botões
+
+| Botão | Ação | Quando usar |
+|-------|------|-------------|
+| ▶️ **INICIAR** | Começa a contar o tempo | Início da operação |
+| ⏸️ **PAUSAR** | Para o cronômetro | Intervalo, espera |
+| ▶️ **RETOMAR** | Continua de onde parou | Volta do intervalo |
+| ⏹️ **FINALIZAR** | Encerra e registra | Operação concluída |
+
+---
+
+## 📊 O que acontece ao finalizar?
+
+1. ✅ **Atualiza o estoque** do produto acabado (+X unidades)
+2. ✅ **Baixa o estoque** dos componentes (conforme BOM)
+3. ✅ **Calcula o custo real** (tempo × custo/hora)
+4. ✅ **Registra a eficiência** (tempo real / tempo padrão)
+5. ✅ **Atualiza a OP** (progresso, quantidade produzida)
+
+---
+
+## 💡 Dica da IA
+
+Para máxima precisão:
+- ⏱️ Inicie o apontamento **antes** de começar a produzir
+- 📝 Use as observações para registrar paradas não planejadas
+- 🔄 Se esquecer de pausar, edite o tempo depois com justificativa
+- 📊 A eficiência é calculada: (Tempo Padrão / Tempo Real) × 100%`
+      },
+      {
+        id: 'centros-trabalho',
+        title: 'Centros de Trabalho',
+        icon: Factory,
+        content: `## 📊 O que é um Centro de Trabalho?
+
+Um **Centro de Trabalho** representa uma máquina, célula de produção ou setor onde as operações são realizadas. É fundamental para:
+- Calcular capacidade produtiva
+- Definir custo/hora de MOD (Mão de Obra Direta)
+- Sequenciar operações no roteiro
+
+---
+
+## 📝 Como Cadastrar um Centro de Trabalho
+
+**1. Acesse o módulo**
+   - Navegue para: **Produção > Centros de Trabalho**
+   - Clique em **"Novo Centro"**
+
+**2. Preencha os dados básicos**
+
+| Campo | Descrição | Exemplo |
+|-------|-----------|---------|
+| **Código** | Identificador único | CT-001 |
+| **Nome** | Nome descritivo | Célula de Corte CNC |
+| **Tipo** | Máquina ou Mão de Obra | Máquina |
+| **Capacidade** | Horas disponíveis/dia | 8h |
+| **Custo/Hora** | Para cálculo de custo | R$ 120,00 |
+
+**3. Configure a eficiência padrão**
+   - Eficiência 100% = máquina trabalha o tempo todo
+   - Considere paradas para manutenção, setup, etc.
+   - Valor típico: 75% a 85%
+
+**4. Vincule aos roteiros**
+   - Ao criar operações no roteiro, selecione o centro de trabalho
+   - O sistema usa a capacidade para calcular lead times
+
+---
+
+## 💡 Dica da IA
+
+O custo/hora do centro de trabalho é usado para calcular o **custo de MOD** no backflushing:
+- Tempo apontado × Custo/hora = Custo de Mão de Obra
+- Esse valor compõe o custo real da Ordem de Produção`
+      },
+      {
+        id: 'ordens-producao',
+        title: 'Ordens de Produção (OPs)',
+        icon: Package,
+        content: `## 📊 O que é uma Ordem de Produção?
+
+A **Ordem de Produção (OP)** é o documento que autoriza a fabricação de um item. Ela contém:
+- Produto a ser fabricado
+- Quantidade planejada
+- Estrutura (BOM) e roteiro vinculados
+- Componentes a serem consumidos
+
+---
+
+## 📝 Ciclo de Vida da OP
+
+| Status | Descrição | Ações |
+|--------|-----------|-------|
+| **Rascunho** | OP criada, ainda não liberada | Editar, cancelar |
+| **Liberada** | Pronta para iniciar produção | Iniciar apontamento |
+| **Em Andamento** | Produção em execução | Apontar, pausar |
+| **Concluída** | Produção finalizada | Visualizar custos |
+| **Cancelada** | OP não será executada | - |
+
+---
+
+## 📝 Como Criar uma OP Manualmente
+
+**1. Acesse o módulo**
+   - Navegue para: **Produção > Ordens de Produção**
+   - Clique em **"Nova OP"**
+
+**2. Preencha os dados**
+   - Selecione o **Produto** a fabricar
+   - Informe a **Quantidade** planejada
+   - Defina a **Data Prevista** de entrega
+   - O sistema carrega automaticamente a BOM ativa
+
+**3. Libere a OP**
+   - Após revisar, clique em **"Liberar"**
+   - A OP fica disponível para o chão de fábrica
+
+---
+
+## 🔄 OP gerada pelo MRP
+
+Quando o MRP identifica necessidade de produção:
+1. Gera sugestão de OP
+2. Você clica em "Criar OP"
+3. OP é criada com status **Liberada**
+4. Vinculada ao pedido de venda original
+
+---
+
+## 💡 Dica da IA
+
+Ao finalizar uma OP:
+- ✅ Estoque do produto acabado é atualizado
+- ✅ Componentes são baixados (backflushing)
+- ✅ Custo real é calculado e registrado
+- ✅ Variações (real vs. padrão) são identificadas`
+      }
+    ]
+  },
   configuracoes: {
     title: 'Configurações',
     icon: Settings,
@@ -3519,6 +3954,8 @@ export default function Documentacao() {
       'contratos': 'contratos',
       'projetos': 'projetos',
       'crm': 'crm',
+      'pcp-industrial': 'industrial',
+      'producao': 'industrial',
       'configuracoes': 'configuracoes',
     };
     return categoryMapping[param || ''] || 'financeiro';
