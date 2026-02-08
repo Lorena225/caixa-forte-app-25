@@ -20404,8 +20404,10 @@ export type Database = {
           counterparty_id: string | null
           created_at: string
           created_by: string | null
+          currency_code: string | null
           custom_fields: Json | null
           description: string | null
+          exchange_rate: number | null
           expected_close_date: string | null
           id: string
           is_rotting: boolean | null
@@ -20447,8 +20449,10 @@ export type Database = {
           counterparty_id?: string | null
           created_at?: string
           created_by?: string | null
+          currency_code?: string | null
           custom_fields?: Json | null
           description?: string | null
+          exchange_rate?: number | null
           expected_close_date?: string | null
           id?: string
           is_rotting?: boolean | null
@@ -20490,8 +20494,10 @@ export type Database = {
           counterparty_id?: string | null
           created_at?: string
           created_by?: string | null
+          currency_code?: string | null
           custom_fields?: Json | null
           description?: string | null
+          exchange_rate?: number | null
           expected_close_date?: string | null
           id?: string
           is_rotting?: boolean | null
@@ -26191,6 +26197,45 @@ export type Database = {
           },
         ]
       }
+      seller_territories: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_primary: boolean | null
+          seller_id: string
+          territory_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          is_primary?: boolean | null
+          seller_id: string
+          territory_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_primary?: boolean | null
+          seller_id?: string
+          territory_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "seller_territories_seller_id_fkey"
+            columns: ["seller_id"]
+            isOneToOne: false
+            referencedRelation: "sellers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "seller_territories_territory_id_fkey"
+            columns: ["territory_id"]
+            isOneToOne: false
+            referencedRelation: "sales_territories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       sellers: {
         Row: {
           base_commission_percent: number | null
@@ -26201,10 +26246,12 @@ export type Database = {
           created_at: string
           email: string | null
           goal_monthly: number | null
+          hierarchy_level: string | null
           hire_date: string | null
           id: string
           is_active: boolean | null
           manager_id: string | null
+          max_discount_percent: number | null
           name: string
           notes: string | null
           phone: string | null
@@ -26222,10 +26269,12 @@ export type Database = {
           created_at?: string
           email?: string | null
           goal_monthly?: number | null
+          hierarchy_level?: string | null
           hire_date?: string | null
           id?: string
           is_active?: boolean | null
           manager_id?: string | null
+          max_discount_percent?: number | null
           name: string
           notes?: string | null
           phone?: string | null
@@ -26243,10 +26292,12 @@ export type Database = {
           created_at?: string
           email?: string | null
           goal_monthly?: number | null
+          hierarchy_level?: string | null
           hire_date?: string | null
           id?: string
           is_active?: boolean | null
           manager_id?: string | null
+          max_discount_percent?: number | null
           name?: string
           notes?: string | null
           phone?: string | null
@@ -32693,6 +32744,20 @@ export type Database = {
         }
         Returns: string
       }
+      calculate_quote_item_taxes: {
+        Args: {
+          p_company_id: string
+          p_counterparty_id: string
+          p_product_id: string
+          p_quantity: number
+          p_unit_price: number
+        }
+        Returns: Json
+      }
+      can_view_opportunity: {
+        Args: { p_opportunity_id: string }
+        Returns: boolean
+      }
       check_login_lockout: {
         Args: { p_email: string; p_ip_address?: unknown }
         Returns: {
@@ -32824,6 +32889,15 @@ export type Database = {
       get_company_tier: {
         Args: { p_company_id: string }
         Returns: Database["public"]["Enums"]["system_tier"]
+      }
+      get_current_seller_info: {
+        Args: { p_company_id: string }
+        Returns: {
+          hierarchy_level: string
+          max_discount: number
+          seller_id: string
+          team_id: string
+        }[]
       }
       get_dashboard_metrics: {
         Args: { p_company_id: string }
