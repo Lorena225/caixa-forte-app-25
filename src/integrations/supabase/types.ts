@@ -8585,31 +8585,67 @@ export type Database = {
       }
       companies: {
         Row: {
+          address: string | null
+          city: string | null
           cnpj: string | null
           created_at: string | null
+          email: string | null
           id: string
           is_active: boolean | null
+          legal_name: string | null
           logo_url: string | null
+          municipal_registration: string | null
           name: string
+          phone: string | null
+          state: string | null
+          state_registration: string | null
+          tax_regime: string | null
+          trade_name: string | null
           updated_at: string | null
+          website: string | null
+          zip_code: string | null
         }
         Insert: {
+          address?: string | null
+          city?: string | null
           cnpj?: string | null
           created_at?: string | null
+          email?: string | null
           id?: string
           is_active?: boolean | null
+          legal_name?: string | null
           logo_url?: string | null
+          municipal_registration?: string | null
           name: string
+          phone?: string | null
+          state?: string | null
+          state_registration?: string | null
+          tax_regime?: string | null
+          trade_name?: string | null
           updated_at?: string | null
+          website?: string | null
+          zip_code?: string | null
         }
         Update: {
+          address?: string | null
+          city?: string | null
           cnpj?: string | null
           created_at?: string | null
+          email?: string | null
           id?: string
           is_active?: boolean | null
+          legal_name?: string | null
           logo_url?: string | null
+          municipal_registration?: string | null
           name?: string
+          phone?: string | null
+          state?: string | null
+          state_registration?: string | null
+          tax_regime?: string | null
+          trade_name?: string | null
           updated_at?: string | null
+          website?: string | null
+          zip_code?: string | null
         }
         Relationships: []
       }

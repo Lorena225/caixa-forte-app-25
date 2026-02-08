@@ -11,52 +11,98 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Building2, Save, MapPin, Phone, Mail, Globe } from "lucide-react";
 import { toast } from "sonner";
 
+interface CompanyFormData {
+  trade_name: string;
+  legal_name: string;
+  cnpj: string;
+  state_registration: string;
+  municipal_registration: string;
+  address: string;
+  city: string;
+  state: string;
+  zip_code: string;
+  phone: string;
+  email: string;
+  website: string;
+  tax_regime: string;
+}
+
 export function GeneralSettingsTab() {
   const { currentCompany } = useAuth();
   const queryClient = useQueryClient();
   
   const { data: company, isLoading } = useQuery({
-    queryKey: ["company", currentCompany?.id],
+    queryKey: ["company-settings", currentCompany?.id],
     queryFn: async () => {
       if (!currentCompany?.id) return null;
-      const { data } = await supabase.from("companies").select("*").eq("id", currentCompany.id).single();
+      const { data, error } = await supabase
+        .from("companies")
+        .select("*")
+        .eq("id", currentCompany.id)
+        .single();
+      if (error) throw error;
       return data;
     },
     enabled: !!currentCompany?.id,
   });
 
-  const updateCompany = useMutation({
-    mutationFn: async (formData: any) => {
-      const { error } = await supabase.from("companies").update(formData).eq("id", currentCompany?.id);
+  const updateCompanyMutation = useMutation({
+    mutationFn: async (formData: Partial<CompanyFormData>) => {
+      if (!currentCompany?.id) throw new Error("No company selected");
+      const { error } = await supabase
+        .from("companies")
+        .update(formData as any)
+        .eq("id", currentCompany.id);
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["company"] }),
-  });
-  const updateCompany = useUpdateCompany();
-
-  const [formData, setFormData] = useState({
-    trade_name: company?.trade_name || "",
-    legal_name: company?.legal_name || "",
-    cnpj: company?.cnpj || "",
-    state_registration: company?.state_registration || "",
-    municipal_registration: company?.municipal_registration || "",
-    address: company?.address || "",
-    city: company?.city || "",
-    state: company?.state || "",
-    zip_code: company?.zip_code || "",
-    phone: company?.phone || "",
-    email: company?.email || "",
-    website: company?.website || "",
-    tax_regime: company?.tax_regime || "simples_nacional",
-  });
-
-  const handleSave = async () => {
-    try {
-      await updateCompany.mutateAsync(formData);
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["company-settings"] });
       toast.success("Dados da empresa atualizados!");
-    } catch (error) {
+    },
+    onError: () => {
       toast.error("Erro ao atualizar dados da empresa");
+    },
+  });
+
+  const [formData, setFormData] = useState<CompanyFormData>({
+    trade_name: "",
+    legal_name: "",
+    cnpj: "",
+    state_registration: "",
+    municipal_registration: "",
+    address: "",
+    city: "",
+    state: "",
+    zip_code: "",
+    phone: "",
+    email: "",
+    website: "",
+    tax_regime: "simples_nacional",
+  });
+
+  // Sync form data when company data loads
+  useEffect(() => {
+    if (company) {
+      setFormData({
+        trade_name: (company as any).trade_name || "",
+        legal_name: (company as any).legal_name || "",
+        cnpj: company.cnpj || "",
+        state_registration: (company as any).state_registration || "",
+        municipal_registration: (company as any).municipal_registration || "",
+        address: (company as any).address || "",
+        city: (company as any).city || "",
+        state: (company as any).state || "",
+        zip_code: (company as any).zip_code || "",
+        phone: (company as any).phone || "",
+        email: (company as any).email || "",
+        website: (company as any).website || "",
+        tax_regime: (company as any).tax_regime || "simples_nacional",
+      });
     }
+  }, [company]);
+
+  const handleSave = () => {
+    updateCompanyMutation.mutate(formData);
   };
 
   const validateCNPJ = (cnpj: string) => {
@@ -294,9 +340,9 @@ export function GeneralSettingsTab() {
 
       {/* Save Button */}
       <div className="flex justify-end">
-        <Button onClick={handleSave} disabled={updateCompany.isPending}>
+        <Button onClick={handleSave} disabled={updateCompanyMutation.isPending}>
           <Save className="h-4 w-4 mr-2" />
-          {updateCompany.isPending ? "Salvando..." : "Salvar Alterações"}
+          {updateCompanyMutation.isPending ? "Salvando..." : "Salvar Alterações"}
         </Button>
       </div>
     </div>
