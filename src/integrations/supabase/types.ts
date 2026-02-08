@@ -4641,11 +4641,14 @@ export type Database = {
         Row: {
           bom_id: string
           component_product_id: string
+          consumption_unit_id: string | null
+          conversion_factor: number | null
           created_at: string | null
           id: string
           is_phantom: boolean | null
           notes: string | null
           position: number | null
+          purchase_unit_id: string | null
           quantity: number
           scrap_rate: number | null
           unit_id: string | null
@@ -4653,11 +4656,14 @@ export type Database = {
         Insert: {
           bom_id: string
           component_product_id: string
+          consumption_unit_id?: string | null
+          conversion_factor?: number | null
           created_at?: string | null
           id?: string
           is_phantom?: boolean | null
           notes?: string | null
           position?: number | null
+          purchase_unit_id?: string | null
           quantity?: number
           scrap_rate?: number | null
           unit_id?: string | null
@@ -4665,11 +4671,14 @@ export type Database = {
         Update: {
           bom_id?: string
           component_product_id?: string
+          consumption_unit_id?: string | null
+          conversion_factor?: number | null
           created_at?: string | null
           id?: string
           is_phantom?: boolean | null
           notes?: string | null
           position?: number | null
+          purchase_unit_id?: string | null
           quantity?: number
           scrap_rate?: number | null
           unit_id?: string | null
@@ -4687,6 +4696,20 @@ export type Database = {
             columns: ["component_product_id"]
             isOneToOne: false
             referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bom_components_consumption_unit_id_fkey"
+            columns: ["consumption_unit_id"]
+            isOneToOne: false
+            referencedRelation: "units_of_measure"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bom_components_purchase_unit_id_fkey"
+            columns: ["purchase_unit_id"]
+            isOneToOne: false
+            referencedRelation: "units_of_measure"
             referencedColumns: ["id"]
           },
           {
@@ -16531,9 +16554,12 @@ export type Database = {
           description: string | null
           effective_date: string | null
           id: string
+          is_locked: boolean | null
           notes: string | null
           obsolete_date: string | null
+          parent_bom_id: string | null
           product_id: string
+          revision: string | null
           standard_batch_size: number | null
           standard_lead_time_days: number | null
           status: string | null
@@ -16549,9 +16575,12 @@ export type Database = {
           description?: string | null
           effective_date?: string | null
           id?: string
+          is_locked?: boolean | null
           notes?: string | null
           obsolete_date?: string | null
+          parent_bom_id?: string | null
           product_id: string
+          revision?: string | null
           standard_batch_size?: number | null
           standard_lead_time_days?: number | null
           status?: string | null
@@ -16567,9 +16596,12 @@ export type Database = {
           description?: string | null
           effective_date?: string | null
           id?: string
+          is_locked?: boolean | null
           notes?: string | null
           obsolete_date?: string | null
+          parent_bom_id?: string | null
           product_id?: string
+          revision?: string | null
           standard_batch_size?: number | null
           standard_lead_time_days?: number | null
           status?: string | null
@@ -16590,6 +16622,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_security_status"
             referencedColumns: ["company_id"]
+          },
+          {
+            foreignKeyName: "industrial_boms_parent_bom_id_fkey"
+            columns: ["parent_bom_id"]
+            isOneToOne: false
+            referencedRelation: "industrial_boms"
+            referencedColumns: ["id"]
           },
           {
             foreignKeyName: "industrial_boms_product_id_fkey"
@@ -19348,6 +19387,7 @@ export type Database = {
           calculation_run_id: string
           company_id: string
           converted_to_id: string | null
+          converted_to_type: string | null
           created_at: string | null
           gross_requirement: number
           id: string
@@ -19368,6 +19408,7 @@ export type Database = {
           calculation_run_id: string
           company_id: string
           converted_to_id?: string | null
+          converted_to_type?: string | null
           created_at?: string | null
           gross_requirement: number
           id?: string
@@ -19388,6 +19429,7 @@ export type Database = {
           calculation_run_id?: string
           company_id?: string
           converted_to_id?: string | null
+          converted_to_type?: string | null
           created_at?: string | null
           gross_requirement?: number
           id?: string
@@ -22928,11 +22970,15 @@ export type Database = {
           operation_id: string | null
           operator_id: string | null
           pause_reason: string | null
+          pause_start: string | null
           production_order_id: string
           quantity_produced: number | null
           quantity_scrapped: number | null
           scrap_reason: string | null
           start_time: string
+          status: string | null
+          total_pause_minutes: number | null
+          updated_at: string | null
           work_center_id: string | null
         }
         Insert: {
@@ -22946,11 +22992,15 @@ export type Database = {
           operation_id?: string | null
           operator_id?: string | null
           pause_reason?: string | null
+          pause_start?: string | null
           production_order_id: string
           quantity_produced?: number | null
           quantity_scrapped?: number | null
           scrap_reason?: string | null
           start_time?: string
+          status?: string | null
+          total_pause_minutes?: number | null
+          updated_at?: string | null
           work_center_id?: string | null
         }
         Update: {
@@ -22964,11 +23014,15 @@ export type Database = {
           operation_id?: string | null
           operator_id?: string | null
           pause_reason?: string | null
+          pause_start?: string | null
           production_order_id?: string
           quantity_produced?: number | null
           quantity_scrapped?: number | null
           scrap_reason?: string | null
           start_time?: string
+          status?: string | null
+          total_pause_minutes?: number | null
+          updated_at?: string | null
           work_center_id?: string | null
         }
         Relationships: [
