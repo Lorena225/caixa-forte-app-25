@@ -132,6 +132,11 @@ const menuItems: MenuItem[] = [
     children: [
       { key: 'pdv', label: 'PDV', icon: CreditCard, route: '/frente-caixa' },
       { key: 'vendas', label: 'Vendas', icon: ShoppingCart, route: '/vendas/nova' },
+      { key: 'crm', label: 'CRM (Dashboard)', icon: Users, route: '/crm' },
+      { key: 'crm-pipeline', label: 'CRM — Pipeline', icon: FolderTree, route: '/crm/pipeline' },
+      { key: 'crm-leads', label: 'CRM — Leads', icon: Users, route: '/crm/leads' },
+      { key: 'crm-comissoes', label: 'CRM — Comissões', icon: DollarSign, route: '/crm/comissoes' },
+      { key: 'crm-metas', label: 'CRM — Metas', icon: Target, route: '/crm/metas' },
       { key: 'catalogo-produtos', label: 'Produtos', icon: Package, route: '/cadastros/produtos' },
       { key: 'catalogo-categorias', label: 'Categorias', icon: Boxes, route: '/cadastros/dimensoes' },
       { key: 'catalogo-servicos', label: 'Serviços', icon: Briefcase, route: '/cadastros/servicos' },

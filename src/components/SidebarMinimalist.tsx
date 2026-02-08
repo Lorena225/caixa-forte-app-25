@@ -13,6 +13,7 @@ import {
   Package,
   Briefcase,
   DollarSign,
+  Kanban,
   Boxes,
   BarChart3,
   Plug,
@@ -21,6 +22,7 @@ import {
   Sparkles,
   FileText,
   Users,
+  UserPlus,
   CreditCard,
   Truck,
   Receipt,
@@ -209,6 +211,17 @@ const menuItems: MenuItem[] = [
         items: [
           { key: 'pdv', label: 'PDV', icon: Store, route: '/frente-caixa' },
           { key: 'nova-venda', label: 'Nova Venda', icon: ShoppingCart, route: '/vendas/nova' },
+        ]
+      },
+      {
+        key: 'crm',
+        label: 'CRM',
+        items: [
+          { key: 'crm-dashboard', label: 'Dashboard', icon: Users, route: '/crm' },
+          { key: 'crm-pipeline', label: 'Pipeline', icon: Kanban, route: '/crm/pipeline' },
+          { key: 'crm-leads', label: 'Leads', icon: UserPlus, route: '/crm/leads' },
+          { key: 'crm-comissoes', label: 'Comissões', icon: DollarSign, route: '/crm/comissoes' },
+          { key: 'crm-metas', label: 'Metas', icon: Target, route: '/crm/metas' },
         ]
       },
       {
