@@ -23368,7 +23368,9 @@ export type Database = {
           min_stock: number | null
           name: string
           ncm: string | null
+          product_type: string | null
           sale_price: number | null
+          sku: string | null
           unit: string | null
           updated_at: string
         }
@@ -23390,7 +23392,9 @@ export type Database = {
           min_stock?: number | null
           name: string
           ncm?: string | null
+          product_type?: string | null
           sale_price?: number | null
+          sku?: string | null
           unit?: string | null
           updated_at?: string
         }
@@ -23412,7 +23416,9 @@ export type Database = {
           min_stock?: number | null
           name?: string
           ncm?: string | null
+          product_type?: string | null
           sale_price?: number | null
+          sku?: string | null
           unit?: string | null
           updated_at?: string
         }
