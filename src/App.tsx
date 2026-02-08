@@ -85,6 +85,9 @@ import FiscalObrigacoesAcessorias from "./pages/fiscal/ObrigacoesAcessorias";
 import EstoqueIndex from "./pages/estoque/Index";
 import EstoqueMovimentacoes from "./pages/estoque/Movimentacoes";
 import EstoqueInventario from "./pages/estoque/Inventario";
+// Produção / PCP / MRP
+import ProducaoIndex from "./pages/producao/Index";
+import OrdensProducao from "./pages/producao/OrdensProducao";
 // Compras
 import ComprasIndex from "./pages/compras/Index";
 import ComprasPedidos from "./pages/compras/Pedidos";
@@ -434,6 +437,10 @@ const App = () => (
                 <Route path="/vendas/nova" element={<VendasNova />} />
                 <Route path="/vendas/pedidos" element={<VendasPedidos />} />
                 <Route path="/vendas/orcamentos" element={<VendasOrcamentos />} />
+                
+                {/* ============ PRODUÇÃO / PCP / MRP ============ */}
+                <Route path="/producao" element={<ProducaoIndex />} />
+                <Route path="/producao/ordens" element={<OrdensProducao />} />
                 
                 {/* AP/AR Index */}
                 <Route path="/ap" element={<APIndex />} />
