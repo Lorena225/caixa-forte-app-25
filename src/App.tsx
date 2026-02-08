@@ -88,6 +88,12 @@ import EstoqueInventario from "./pages/estoque/Inventario";
 // Produção / PCP / MRP
 import ProducaoIndex from "./pages/producao/Index";
 import OrdensProducao from "./pages/producao/OrdensProducao";
+import Engenharia from "./pages/producao/Engenharia";
+import MRP from "./pages/producao/MRP";
+import Apontamento from "./pages/producao/Apontamento";
+import CentrosTrabalho from "./pages/producao/CentrosTrabalho";
+import Requisicoes from "./pages/producao/Requisicoes";
+import Custeio from "./pages/producao/Custeio";
 // Compras
 import ComprasIndex from "./pages/compras/Index";
 import ComprasPedidos from "./pages/compras/Pedidos";
@@ -441,6 +447,12 @@ const App = () => (
                 {/* ============ PRODUÇÃO / PCP / MRP ============ */}
                 <Route path="/producao" element={<ProducaoIndex />} />
                 <Route path="/producao/ordens" element={<OrdensProducao />} />
+                <Route path="/producao/engenharia" element={<Engenharia />} />
+                <Route path="/producao/mrp" element={<MRP />} />
+                <Route path="/producao/apontamento" element={<Apontamento />} />
+                <Route path="/producao/centros-trabalho" element={<CentrosTrabalho />} />
+                <Route path="/producao/requisicoes" element={<Requisicoes />} />
+                <Route path="/producao/custeio" element={<Custeio />} />
                 
                 {/* AP/AR Index */}
                 <Route path="/ap" element={<APIndex />} />
