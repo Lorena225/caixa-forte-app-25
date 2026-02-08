@@ -3036,6 +3036,368 @@ Quando um lead entra, o sistema:
 ## 💡 Dica da IA
 
 A IA analisa a performance e sugere: "O território 'SP Interior' está com 40% mais leads que 'SP Capital', mas a equipe é do mesmo tamanho. Considere rebalancear para melhorar a cobertura."`
+      },
+      {
+        id: 'crm-manual-vendedor',
+        title: 'Manual do Vendedor (Playbook)',
+        icon: Briefcase,
+        content: `## 📖 Playbook de Vendas — Guia Completo
+
+Bem-vindo ao **Playbook de Vendas** do Caixa Forte! Este guia prático ensina tudo o que você precisa saber para operar o CRM e fechar mais negócios.
+
+---
+
+## 📝 Como Criar uma Proposta Comercial
+
+### Passo a Passo Completo
+
+**1. Acesse a Oportunidade**
+   - Menu: CRM → Pipeline
+   - Clique no card da oportunidade
+   - Ou busque pelo nome do cliente (Cmd/Ctrl + K)
+
+**2. Inicie o CPQ (Configurador de Propostas)**
+   - Na tela da oportunidade, clique em **"Criar Proposta"**
+   - O sistema carrega automaticamente os dados do cliente
+   - URL direta: /crm/proposta/{id-da-oportunidade}
+
+**3. Selecione os Produtos/Serviços**
+   - Use a busca por nome ou código
+   - Filtre por categoria se necessário
+   - Clique no produto para adicionar ao carrinho
+   - Ajuste a quantidade conforme necessário
+
+**4. Aplique Descontos (Dentro do Seu Limite)**
+   - Você pode aplicar descontos de **0% a 10%** automaticamente
+   - Descontos maiores exigem aprovação do gestor
+   - O sistema exibe badges visuais:
+     - 🟢 **Auto-aprovado**: Desconto dentro do limite
+     - 🟡 **Requer Aprovação**: Desconto acima do limite
+
+**5. Revise os Impostos**
+   - O sistema calcula automaticamente:
+     - **ICMS**: Imposto estadual (varia por UF origem/destino)
+     - **PIS/COFINS**: Contribuições federais
+     - **IPI**: Se aplicável ao produto
+     - **ICMS-ST**: Substituição tributária (quando houver)
+   - Confira o resumo fiscal no painel lateral
+
+**6. Gere o PDF da Proposta**
+   - Clique em **"Gerar Proposta"**
+   - Escolha o modelo de template
+   - O PDF é gerado com sua identidade visual
+   - Opções: Enviar por e-mail, WhatsApp ou baixar
+
+**7. Envie ao Cliente**
+   - Use o botão "Enviar por E-mail" direto do sistema
+   - Ou copie o link de aceite digital
+   - O cliente pode aceitar online com registro de IP/timestamp
+
+---
+
+## 🔄 Entendendo o Funil de Vendas
+
+### Significado de Cada Estágio
+
+| Estágio | O que significa | Quando mover o card |
+|---------|-----------------|---------------------|
+| **Lead** | Contato inicial, ainda não qualificado | Quando receber nova indicação ou contato |
+| **Qualificação** | Verificando fit do cliente | Após primeira conversa, confirmou interesse real |
+| **Descoberta** | Levantando necessidades | Cliente compartilhou desafios e objetivos |
+| **Proposta** | Apresentando solução | Proposta comercial enviada ao cliente |
+| **Negociação** | Ajustando termos | Cliente pediu ajustes de preço/prazo/escopo |
+| **Fechamento** | Decisão final | Aguardando assinatura ou pagamento |
+| **Ganho** ✅ | Venda concluída | Cliente aceitou a proposta |
+| **Perdido** ❌ | Venda não realizada | Cliente recusou ou desistiu |
+
+### Dicas para Cada Estágio
+
+**Em "Qualificação":**
+- Use BANT: Budget (orçamento), Authority (decisor), Need (necessidade), Timeline (prazo)
+- Pergunte: "Qual problema você está tentando resolver?"
+
+**Em "Proposta":**
+- Não envie proposta sem antes entender as necessidades
+- Personalize o valor para o contexto do cliente
+- Sempre agende um follow-up
+
+**Em "Negociação":**
+- Não reduza preço sem pedir algo em troca (prazo, escopo, referência)
+- Documente todas as concessões na timeline
+
+**Em "Fechamento":**
+- Crie senso de urgência (validade da proposta)
+- Facilite o processo de aceite (link digital)
+
+---
+
+## ⚠️ Atenção: Oportunidades Estagnadas
+
+Oportunidades paradas por muito tempo aparecem **destacadas em vermelho**. Isso indica que precisam de ação imediata!
+
+- **3+ dias sem atividade**: Amarelo (atenção)
+- **7+ dias sem atividade**: Vermelho (urgente)
+
+**O que fazer:** Registre uma atividade (ligação, e-mail) ou mova para "Perdido" se não houver mais interesse.
+
+---
+
+## 💡 Dica da IA
+
+Pergunte ao Copilot:
+- *"Como criar uma proposta para o cliente X?"*
+- *"Qual meu desconto máximo permitido?"*
+- *"Quais propostas preciso acompanhar hoje?"*
+
+O Copilot guia você passo a passo no processo de vendas.`
+      },
+      {
+        id: 'crm-guia-gestor',
+        title: 'Guia do Gestor Comercial',
+        icon: Target,
+        content: `## 📊 Guia do Gestor Comercial
+
+Este guia é destinado a **Gerentes, Líderes de Equipe e Diretores Comerciais** que precisam configurar metas, aprovar descontos e acompanhar a performance da equipe.
+
+---
+
+## 🎯 Configuração de Metas por Vendedor
+
+### Passo a Passo
+
+**1. Acesse o Módulo de Metas**
+   - Menu: CRM → Metas
+   - Clique em **"+ Nova Meta"**
+
+**2. Selecione o Vendedor**
+   - Escolha o vendedor ou equipe
+   - Pode criar metas individuais ou por território
+
+**3. Defina os Parâmetros**
+
+| Campo | Descrição | Exemplo |
+|-------|-----------|---------|
+| **Tipo de Meta** | O que será medido | Valor em R$, Qtd de vendas, Novos clientes |
+| **Período** | Frequência | Mensal, Trimestral, Anual |
+| **Valor Alvo** | Meta principal | R$ 100.000 |
+| **Stretch Goal** | Meta desafiadora | R$ 120.000 (120%) |
+
+**4. Configure Alertas**
+   - Notificação quando atingir 50%, 80%, 100%
+   - Alerta se performance estiver 20% abaixo do esperado
+   - Celebração automática ao bater a meta
+
+**5. Salve e Monitore**
+   - A meta aparece no dashboard do vendedor
+   - Você vê o consolidado de toda a equipe
+
+---
+
+## ✅ Aprovação de Descontos
+
+### Onde Encontrar Propostas Pendentes
+
+**Acesso Rápido:**
+- Menu: CRM → Aprovações Pendentes
+- Ou acesse: CRM → Pipeline → Filtro "Pendente Aprovação"
+- Badge vermelho no menu indica quantidade pendente
+
+### Como Aprovar
+
+**1. Clique na proposta pendente**
+   - Veja o resumo: cliente, valor total, desconto solicitado
+
+**2. Analise a justificativa**
+   - O vendedor pode ter adicionado uma nota explicando o desconto
+   - Consulte o histórico do cliente
+
+**3. Tome a decisão**
+   - ✅ **Aprovar**: Libera o desconto solicitado
+   - ❌ **Rejeitar**: O vendedor é notificado para ajustar
+   - ✏️ **Ajustar**: Aprove com um desconto diferente
+
+**4. Notificação Automática**
+   - O vendedor recebe notificação instantânea da decisão
+   - Se aprovado, a proposta pode ser enviada ao cliente
+
+### Hierarquia de Aprovação
+
+| Desconto | Quem Aprova |
+|----------|-------------|
+| 0% - 10% | Vendedor (automático) |
+| 11% - 20% | Gerente de Vendas |
+| 21% - 30% | Diretor Comercial |
+| > 30% | Diretoria + Financeiro |
+
+---
+
+## 📈 Dashboard do Gestor
+
+### Métricas Disponíveis
+
+- **Pipeline Value**: Valor total de oportunidades abertas
+- **Weighted Pipeline**: Valor ponderado por probabilidade
+- **Win Rate**: Taxa de conversão (Ganhos / Total)
+- **Ciclo Médio**: Dias médios para fechar uma venda
+- **Ticket Médio**: Valor médio por venda fechada
+- **Ranking da Equipe**: Performance comparativa
+
+### Filtros Úteis
+
+- Por vendedor específico
+- Por território/região
+- Por período (semana, mês, trimestre)
+- Por produto/categoria
+
+---
+
+## 🔔 Alertas Importantes para Gestores
+
+O sistema notifica você automaticamente sobre:
+
+- 📌 Propostas aguardando sua aprovação
+- ⚠️ Oportunidades estagnadas da equipe
+- 🎯 Vendedores abaixo da meta no mês
+- 💰 Grandes negócios movendo para fechamento
+- 🏆 Metas batidas (para parabenizar)
+
+---
+
+## 💡 Dica da IA
+
+Pergunte ao Copilot:
+- *"Quais vendedores estão abaixo da meta este mês?"*
+- *"Mostre propostas pendentes de aprovação"*
+- *"Qual a taxa de conversão da minha equipe?"*
+- *"Quais oportunidades estão paradas há mais de 5 dias?"*
+
+A IA consolida os dados e apresenta insights acionáveis.`
+      },
+      {
+        id: 'crm-copilot-training',
+        title: 'Treinamento do Copilot (CRM)',
+        icon: Brain,
+        content: `## 🤖 Treinamento do Copilot para CRM & Vendas
+
+O CFO Virtual / Copilot do Caixa Forte entende perguntas em linguagem natural sobre suas vendas. Veja como extrair o máximo da IA:
+
+---
+
+## 📊 Perguntas sobre Metas
+
+### "Quanto falta para bater minha meta?"
+
+**O que a IA faz:**
+1. Lê a tabela \`sales_goals\` para obter sua meta mensal
+2. Consulta \`sales_orders\` para somar vendas fechadas no período
+3. Calcula a diferença e apresenta:
+
+**Exemplo de resposta:**
+> *"Sua meta de fevereiro é R$ 100.000. Você já fechou R$ 73.500 (73,5%). Faltam R$ 26.500 para bater a meta. Com base no seu pipeline, você tem R$ 45.000 em oportunidades qualificadas que podem ajudar a atingir o objetivo."*
+
+**Variações aceitas:**
+- "Qual minha meta do mês?"
+- "Como estou na meta?"
+- "Vou bater a meta?"
+- "Quanto já vendi este mês?"
+
+---
+
+## ⏰ Perguntas sobre Propostas Paradas
+
+### "Quais propostas estão paradas há mais de 5 dias?"
+
+**O que a IA faz:**
+1. Consulta \`crm_opportunities\` filtrando por \`stage = 'proposal'\`
+2. Verifica \`last_activity_at\` para encontrar as estagnadas
+3. Lista as oportunidades que precisam de atenção
+
+**Exemplo de resposta:**
+> *"Encontrei 3 propostas paradas há mais de 5 dias:*
+> *1. Empresa ABC — R$ 25.000 — 8 dias sem atividade*
+> *2. Cliente XYZ — R$ 15.000 — 6 dias sem atividade*
+> *3. Loja 123 — R$ 8.500 — 5 dias sem atividade*
+> *Deseja que eu sugira uma ação de follow-up?"*
+
+**Variações aceitas:**
+- "Quais oportunidades estão estagnadas?"
+- "Tem proposta sem follow-up?"
+- "Quais deals estão rotting?"
+- "Oportunidades paradas há X dias"
+
+---
+
+## 📈 Perguntas sobre Taxa de Conversão
+
+### "Qual a minha taxa de conversão?"
+
+**O que a IA faz:**
+1. Conta oportunidades com \`stage = 'won'\` (Ganhos)
+2. Conta total de oportunidades fechadas (won + lost)
+3. Calcula: **Win Rate = Ganhos / Total × 100**
+
+**Exemplo de resposta:**
+> *"Sua taxa de conversão em janeiro foi de 32% (8 ganhos de 25 oportunidades fechadas). Isso está 5% acima da média da equipe. Parabéns! Suas melhores conversões foram no segmento de Tecnologia."*
+
+**Variações aceitas:**
+- "Qual meu win rate?"
+- "Quantas vendas fechei?"
+- "Qual minha taxa de ganho?"
+- "Porcentagem de fechamento"
+
+---
+
+## 🔍 Outras Perguntas Úteis
+
+| Pergunta | O que a IA consulta |
+|----------|---------------------|
+| "Quais meus maiores negócios no pipeline?" | \`crm_opportunities\` ORDER BY amount DESC |
+| "Quanto tenho em proposta?" | SUM de oportunidades no stage 'proposal' |
+| "Qual cliente mais comprou?" | \`sales_orders\` GROUP BY customer |
+| "Próximas atividades agendadas?" | \`crm_activities\` filtro is_completed = false |
+| "Quais leads entraram esta semana?" | \`crm_leads\` filtro created_at |
+| "Quanto de comissão vou receber?" | Calcula baseado em sales_orders × commission_rate |
+
+---
+
+## 🎯 Dicas para Perguntas Eficientes
+
+**Seja específico:**
+- ❌ "Como estão as vendas?" (muito vago)
+- ✅ "Qual foi meu faturamento em janeiro?" (específico)
+
+**Use períodos:**
+- "... este mês"
+- "... esta semana"
+- "... nos últimos 30 dias"
+- "... em janeiro"
+
+**Combine critérios:**
+- "Propostas paradas há mais de 5 dias no território Sul"
+- "Meta do vendedor João em fevereiro"
+- "Win rate da equipe no último trimestre"
+
+---
+
+## 💡 Atalhos do Copilot
+
+Digite estes comandos rápidos:
+- \`/meta\` — Mostra progresso da meta atual
+- \`/pipeline\` — Resumo do funil de vendas
+- \`/pendentes\` — Atividades e aprovações pendentes
+- \`/ranking\` — Sua posição no ranking da equipe
+
+---
+
+## 🔧 Configurando o Copilot
+
+O Copilot pode ser configurado em **Configurações > IA > Preferências**:
+- **Frequência de alertas**: Tempo real, Diário, Semanal
+- **Tom das mensagens**: Direto, Amigável, Formal
+- **Idioma**: Português, English, Español
+- **Notificações**: Email, WhatsApp, Push
+
+O CFO Virtual aprende com suas interações e se torna mais preciso ao longo do tempo!`
       }
     ]
   },
