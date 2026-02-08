@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { useCRM, Pipeline, Stage } from "@/hooks/useCRM";
+import { usePipelines, useStages, Pipeline, Stage } from "@/hooks/useCRM";
 import { Plus, GripVertical, Trash2, Settings, Layers } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -30,8 +30,7 @@ const STAGE_COLORS = [
 ];
 
 export function PipelineConfigModal({ open, onClose }: PipelineConfigModalProps) {
-  const { usePipelines, useStages, createPipeline, createStage } = useCRM();
-  const { data: pipelines = [] } = usePipelines();
+  const { data: pipelines = [], createPipeline } = usePipelines();
   
   const [activeTab, setActiveTab] = useState("pipelines");
   const [selectedPipeline, setSelectedPipeline] = useState<string | null>(null);
@@ -57,7 +56,7 @@ export function PipelineConfigModal({ open, onClose }: PipelineConfigModalProps)
     color: STAGE_COLORS[0],
   });
 
-  const { data: stages = [] } = useStages(selectedPipeline || undefined);
+  const { data: stages = [], createStage } = useStages(selectedPipeline || undefined);
 
   useEffect(() => {
     if (pipelines.length > 0 && !selectedPipeline) {
@@ -70,7 +69,7 @@ export function PipelineConfigModal({ open, onClose }: PipelineConfigModalProps)
     setIsCreatingPipeline(true);
     
     try {
-      await createPipeline.mutateAsync(newPipeline);
+      await createPipeline.mutateAsync(newPipeline as Partial<Pipeline>);
       setNewPipeline({
         name: "",
         description: "",

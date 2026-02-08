@@ -30,16 +30,40 @@ export interface Seller {
 
 export interface PipelineStage {
   id: string;
-  company_id: string;
+  company_id?: string;
+  pipeline_id?: string;
   name: string;
   color: string;
   position: number;
+  sort_order?: number;
   probability: number;
-  days_expected: number;
+  days_expected?: number;
+  rotting_days?: number;
+  stage_type?: string;
   is_won: boolean;
   is_lost: boolean;
   is_active: boolean;
   created_at: string;
+}
+
+// Alias for compatibility
+export type Stage = PipelineStage;
+
+export interface Pipeline {
+  id: string;
+  company_id: string;
+  name: string;
+  description?: string;
+  pipeline_type: string;
+  is_default: boolean;
+  is_active: boolean;
+  won_action_type?: string;
+  won_create_order?: boolean;
+  won_create_cashflow?: boolean;
+  won_create_stock_order?: boolean;
+  won_create_project?: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface Lead {
@@ -67,6 +91,13 @@ export interface Lead {
   updated_at: string;
 }
 
+export interface Counterparty {
+  id: string;
+  name: string;
+  document?: string;
+  type?: string;
+}
+
 export interface Opportunity {
   id: string;
   company_id: string;
@@ -74,11 +105,14 @@ export interface Opportunity {
   title: string;
   description?: string;
   counterparty_id?: string;
+  counterparty?: Counterparty;
   lead_id?: string;
+  pipeline_id?: string;
   stage_id: string;
   stage?: PipelineStage;
   seller_id?: string;
   seller?: Seller;
+  owner_id?: string;
   amount: number;
   probability: number;
   expected_close_date?: string;
@@ -93,6 +127,10 @@ export interface Opportunity {
   last_activity_at?: string;
   next_step?: string;
   next_step_date?: string;
+  contact_name?: string;
+  contact_email?: string;
+  contact_phone?: string;
+  notes?: string;
   created_at: string;
   updated_at: string;
 }
@@ -104,6 +142,7 @@ export interface CRMActivity {
   lead_id?: string;
   counterparty_id?: string;
   seller_id?: string;
+  owner_id?: string;
   activity_type: string;
   subject: string;
   description?: string;
@@ -113,6 +152,61 @@ export interface CRMActivity {
   outcome?: string;
   next_action?: string;
   is_completed: boolean;
+  created_at: string;
+  owner?: { full_name?: string };
+}
+
+// Alias for compatibility
+export type Activity = CRMActivity;
+
+export interface Quote {
+  id: string;
+  company_id: string;
+  opportunity_id?: string;
+  quote_number: string;
+  title?: string;
+  total_amount: number;
+  status: string;
+  valid_until?: string;
+  created_at: string;
+}
+
+export interface Commission {
+  id: string;
+  company_id: string;
+  seller_id: string;
+  seller?: Seller;
+  venda_id?: string;
+  opportunity_id?: string;
+  rule_id?: string;
+  reference_period?: string;
+  sale_amount: number;
+  commission_percent?: number;
+  commission_amount: number;
+  bonus_amount: number;
+  total_amount: number;
+  status: string;
+  approved_at?: string;
+  paid_at?: string;
+  payment_reference?: string;
+  notes?: string;
+  created_at: string;
+}
+
+export interface SalesGoal {
+  id: string;
+  company_id: string;
+  seller_id?: string;
+  seller?: Seller;
+  goal_type: string;
+  period_type: string;
+  period_year: number;
+  period_month?: number;
+  target_amount: number;
+  achieved_amount: number;
+  achievement_percent: number;
+  status: string;
+  notes?: string;
   created_at: string;
 }
 
@@ -642,50 +736,253 @@ export function useSalesGoals(filters?: { seller_id?: string; year?: number; mon
 }
 
 // ========================================
-// Pipeline Stats Hook
+// Pipelines Hook
 // ========================================
 
-export function usePipelineStats() {
+export function usePipelines() {
   const { currentCompany } = useAuth();
+  const queryClient = useQueryClient();
 
-  return useQuery({
-    queryKey: ["pipeline_stats", currentCompany?.id],
+  const query = useQuery({
+    queryKey: ["crm_pipelines", currentCompany?.id],
     queryFn: async () => {
-      if (!currentCompany?.id) return null;
-
-      const { data: opportunities, error } = await supabase
-        .from("opportunities")
-        .select("status, amount, stage:pipeline_stages(name, color, position)")
-        .eq("company_id", currentCompany.id);
-
+      if (!currentCompany?.id) return [];
+      const { data, error } = await supabase
+        .from("crm_pipelines")
+        .select("*")
+        .eq("company_id", currentCompany.id)
+        .eq("is_active", true)
+        .order("created_at");
       if (error) throw error;
-
-      const open = (opportunities || []).filter((o) => o.status === "open");
-      const won = (opportunities || []).filter((o) => o.status === "won");
-      const lost = (opportunities || []).filter((o) => o.status === "lost");
-
-      const totalValue = open.reduce((sum, o) => sum + (o.amount || 0), 0);
-      const wonValue = won.reduce((sum, o) => sum + (o.amount || 0), 0);
-
-      // Group by stage
-      const byStage = open.reduce((acc, opp) => {
-        const stageName = (opp.stage as PipelineStage)?.name || "Sem estágio";
-        if (!acc[stageName]) acc[stageName] = { count: 0, value: 0, color: (opp.stage as PipelineStage)?.color || "#888" };
-        acc[stageName].count++;
-        acc[stageName].value += opp.amount || 0;
-        return acc;
-      }, {} as Record<string, { count: number; value: number; color: string }>);
-
-      return {
-        totalOpen: open.length,
-        totalWon: won.length,
-        totalLost: lost.length,
-        totalValue,
-        wonValue,
-        winRate: won.length + lost.length > 0 ? (won.length / (won.length + lost.length)) * 100 : 0,
-        byStage,
-      };
+      return (data || []) as Pipeline[];
     },
     enabled: !!currentCompany?.id,
   });
+
+  const createPipeline = useMutation({
+    mutationFn: async (pipeline: Partial<Pipeline>) => {
+      if (!currentCompany?.id) throw new Error("Empresa não selecionada");
+      const { data, error } = await supabase
+        .from("crm_pipelines")
+        .insert({ ...pipeline, company_id: currentCompany.id } as never)
+        .select()
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["crm_pipelines"] });
+      toast.success("Pipeline criado");
+    },
+    onError: (error) => toast.error("Erro: " + error.message),
+  });
+
+  return { ...query, createPipeline };
+}
+
+// ========================================
+// Stages Hook (for CRM Pipelines)
+// ========================================
+
+export function useStages(pipelineId?: string) {
+  const { currentCompany } = useAuth();
+  const queryClient = useQueryClient();
+
+  const query = useQuery({
+    queryKey: ["crm_stages", currentCompany?.id, pipelineId],
+    queryFn: async (): Promise<Stage[]> => {
+      if (!currentCompany?.id) return [];
+      
+      // Get all stages for the pipeline
+      let stagesQuery = supabase
+        .from("crm_stages")
+        .select("*")
+        .eq("is_active", true)
+        .order("sort_order");
+      
+      if (pipelineId) {
+        stagesQuery = stagesQuery.eq("pipeline_id", pipelineId);
+      }
+
+      const { data, error } = await stagesQuery;
+      if (error) throw error;
+      
+      return (data || []).map((s): Stage => ({
+        id: s.id,
+        pipeline_id: s.pipeline_id,
+        name: s.name,
+        color: s.color || '#3B82F6',
+        position: s.sort_order || 0,
+        sort_order: s.sort_order || 0,
+        probability: s.probability || 50,
+        days_expected: s.rotting_days || 7,
+        rotting_days: s.rotting_days || 7,
+        stage_type: s.stage_type || 'open',
+        is_won: s.stage_type === 'won',
+        is_lost: s.stage_type === 'lost',
+        is_active: s.is_active ?? true,
+        created_at: s.created_at || new Date().toISOString(),
+      }));
+    },
+    enabled: !!currentCompany?.id,
+  });
+
+  const createStage = useMutation({
+    mutationFn: async (stage: { 
+      pipeline_id: string; 
+      name?: string;
+      stage_type?: string; 
+      probability?: number;
+      rotting_days?: number; 
+      sort_order?: number;
+      color?: string;
+    }) => {
+      if (!currentCompany?.id) throw new Error("Empresa não selecionada");
+      const { data, error } = await supabase
+        .from("crm_stages")
+        .insert({
+          pipeline_id: stage.pipeline_id,
+          name: stage.name || 'Nova Etapa',
+          stage_type: stage.stage_type || 'open',
+          probability: stage.probability || 50,
+          rotting_days: stage.rotting_days || 7,
+          color: stage.color || '#3B82F6',
+          sort_order: stage.sort_order || 0,
+        })
+        .select()
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["crm_stages"] });
+      toast.success("Etapa criada");
+    },
+    onError: (error) => toast.error("Erro: " + error.message),
+  });
+
+  return { ...query, createStage };
+}
+
+// ========================================
+// Quotes Hook
+// ========================================
+
+export function useQuotes(opportunityId?: string) {
+  const { currentCompany } = useAuth();
+
+  return useQuery({
+    queryKey: ["quotes", currentCompany?.id, opportunityId],
+    queryFn: async () => {
+      if (!currentCompany?.id) return [];
+      let q = supabase
+        .from("quotes")
+        .select("*")
+        .eq("company_id", currentCompany.id)
+        .order("created_at", { ascending: false });
+
+      if (opportunityId) {
+        q = q.eq("opportunity_id", opportunityId);
+      }
+
+      const { data, error } = await q.limit(100);
+      if (error) throw error;
+      return (data || []) as Quote[];
+    },
+    enabled: !!currentCompany?.id,
+  });
+}
+
+// ========================================
+// Activities Hook (alternate with opportunity_id param)
+// ========================================
+
+export function useActivities(opportunityId?: string) {
+  const { currentCompany } = useAuth();
+
+  return useQuery({
+    queryKey: ["crm_activities", currentCompany?.id, opportunityId],
+    queryFn: async () => {
+      if (!currentCompany?.id || !opportunityId) return [];
+      const { data, error } = await supabase
+        .from("crm_activities")
+        .select("*")
+        .eq("company_id", currentCompany.id)
+        .eq("opportunity_id", opportunityId)
+        .order("created_at", { ascending: false })
+        .limit(100);
+      if (error) throw error;
+      return (data || []) as Activity[];
+    },
+    enabled: !!currentCompany?.id && !!opportunityId,
+  });
+}
+
+// ========================================
+// Aggregated useCRM Hook
+// ========================================
+
+export function useCRM() {
+  const { currentCompany } = useAuth();
+  const queryClient = useQueryClient();
+  
+  // Opportunities
+  const createOpportunity = useMutation({
+    mutationFn: async (opp: Partial<Opportunity>) => {
+      if (!currentCompany?.id) throw new Error("Empresa não selecionada");
+      const { data, error } = await supabase
+        .from("opportunities")
+        .insert({ ...opp, company_id: currentCompany.id } as never)
+        .select()
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["opportunities"] });
+      toast.success("Oportunidade criada");
+    },
+    onError: (error) => toast.error("Erro: " + error.message),
+  });
+
+  const updateOpportunity = useMutation({
+    mutationFn: async ({ id, ...updates }: Partial<Opportunity> & { id: string }) => {
+      const { error } = await supabase.from("opportunities").update(updates).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["opportunities"] });
+      toast.success("Oportunidade atualizada");
+    },
+    onError: (error) => toast.error("Erro: " + error.message),
+  });
+
+  // Activities
+  const createActivity = useMutation({
+    mutationFn: async (activity: Partial<Activity>) => {
+      if (!currentCompany?.id) throw new Error("Empresa não selecionada");
+      const { data, error } = await supabase
+        .from("crm_activities")
+        .insert({ ...activity, company_id: currentCompany.id } as never)
+        .select()
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["crm_activities"] });
+      toast.success("Atividade registrada");
+    },
+    onError: (error) => toast.error("Erro: " + error.message),
+  });
+
+  return {
+    createOpportunity,
+    updateOpportunity,
+    createActivity,
+    useActivities,
+    useQuotes,
+    usePipelines,
+    useStages,
+  };
 }

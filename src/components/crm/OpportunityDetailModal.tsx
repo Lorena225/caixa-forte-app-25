@@ -10,7 +10,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useCRM, Opportunity, Activity } from "@/hooks/useCRM";
+import { useCRM, Opportunity, Activity, useActivities, useQuotes } from "@/hooks/useCRM";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import {
@@ -30,7 +30,6 @@ import {
   Video,
   CheckCircle2,
   Circle,
-  AlertTriangle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -41,7 +40,7 @@ interface OpportunityDetailModalProps {
 }
 
 export function OpportunityDetailModal({ opportunity, open, onClose }: OpportunityDetailModalProps) {
-  const { useActivities, createActivity, useQuotes, updateOpportunity } = useCRM();
+  const { createActivity } = useCRM();
   const { data: activities = [], isLoading: loadingActivities } = useActivities(opportunity.id);
   const { data: quotes = [] } = useQuotes(opportunity.id);
   

@@ -4,13 +4,53 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Users, Target, TrendingUp, DollarSign, UserPlus, Kanban, Award, BarChart3 } from "lucide-react";
-import { usePipelineStats, useSellers, useLeads } from "@/hooks/useCRM";
+import { usePipelineStages, useSellers, useLeads, useOpportunities } from "@/hooks/useCRM";
+
+interface StageStats {
+  count: number;
+  value: number;
+  color: string;
+}
 
 export default function CRMIndex() {
   const navigate = useNavigate();
-  const { data: stats } = usePipelineStats();
+  const { data: stages } = usePipelineStages();
   const { data: sellers } = useSellers();
   const { data: leads } = useLeads({ status: "new" });
+  const { data: opportunities } = useOpportunities();
+
+  // Calculate stats from opportunities
+  const stats = (() => {
+    if (!opportunities) return null;
+    
+    const open = opportunities.filter(o => o.status === "open");
+    const won = opportunities.filter(o => o.status === "won");
+    const lost = opportunities.filter(o => o.status === "lost");
+    
+    const totalValue = open.reduce((sum, o) => sum + (o.amount || 0), 0);
+    const wonValue = won.reduce((sum, o) => sum + (o.amount || 0), 0);
+    
+    // Group by stage
+    const byStage = open.reduce((acc, opp) => {
+      const stageName = opp.stage?.name || "Sem estágio";
+      if (!acc[stageName]) {
+        acc[stageName] = { count: 0, value: 0, color: opp.stage?.color || "#888" };
+      }
+      acc[stageName].count++;
+      acc[stageName].value += opp.amount || 0;
+      return acc;
+    }, {} as Record<string, StageStats>);
+
+    return {
+      totalOpen: open.length,
+      totalWon: won.length,
+      totalLost: lost.length,
+      totalValue,
+      wonValue,
+      winRate: won.length + lost.length > 0 ? (won.length / (won.length + lost.length)) * 100 : 0,
+      byStage,
+    };
+  })();
 
   const menuItems = [
     {
