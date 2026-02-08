@@ -302,7 +302,7 @@ export function useQuoteBuilder(opportunityId?: string) {
 
       if (quoteError) throw quoteError;
 
-      // Create quote items
+      // Create quote items with correct column names for tax persistence
       const quoteItems = items.map((item) => ({
         quote_id: quote.id,
         product_id: item.product_id,
@@ -310,12 +310,19 @@ export function useQuoteBuilder(opportunityId?: string) {
         quantity: item.quantity,
         unit_price: item.unit_price,
         discount_percent: item.discount_percent,
-        icms: item.taxes?.icms || 0,
-        icms_st: item.taxes?.icms_st || 0,
-        ipi: item.taxes?.ipi || 0,
-        pis: item.taxes?.pis || 0,
-        cofins: item.taxes?.cofins || 0,
-        total: item.total,
+        // Tax rates (for audit trail)
+        tax_icms_rate: item.taxes?.icms_rate || 0,
+        tax_ipi_rate: item.taxes?.ipi_rate || 0,
+        tax_pis_rate: item.taxes?.pis_rate || 0,
+        tax_cofins_rate: item.taxes?.cofins_rate || 0,
+        // Tax amounts (calculated values)
+        tax_icms_amount: item.taxes?.icms || 0,
+        tax_icms_st_amount: item.taxes?.icms_st || 0,
+        tax_ipi_amount: item.taxes?.ipi || 0,
+        tax_pis_amount: item.taxes?.pis || 0,
+        tax_cofins_amount: item.taxes?.cofins || 0,
+        // Total
+        total_amount: item.total,
       }));
 
       if (quoteItems.length > 0) {
