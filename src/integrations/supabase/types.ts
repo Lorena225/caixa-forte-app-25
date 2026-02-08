@@ -34056,6 +34056,28 @@ export type Database = {
         Args: { p_production_order_id: string; p_quantity_completed: number }
         Returns: boolean
       }
+      convert_mrp_batch: {
+        Args: { p_mrp_ids: string[] }
+        Returns: {
+          converted_id: string
+          converted_type: string
+          error_message: string
+          mrp_id: string
+          success: boolean
+        }[]
+      }
+      convert_mrp_to_production_order: {
+        Args: { p_mrp_id: string }
+        Returns: string
+      }
+      convert_mrp_to_purchase_requisition: {
+        Args: { p_mrp_id: string }
+        Returns: string
+      }
+      create_bom_revision: {
+        Args: { p_bom_id: string; p_new_revision?: string }
+        Returns: string
+      }
       create_production_order_from_sales: {
         Args: { p_sales_order_id: string; p_sales_order_item_id?: string }
         Returns: string
@@ -34088,6 +34110,15 @@ export type Database = {
       }
       finalize_inventory_with_adjustments: {
         Args: { p_inventory_id: string }
+        Returns: undefined
+      }
+      finish_production_appointment: {
+        Args: {
+          p_appointment_id: string
+          p_quantity_produced: number
+          p_quantity_rejected?: number
+          p_rejection_reason?: string
+        }
         Returns: undefined
       }
       generate_api_key: { Args: never; Returns: string }
@@ -34300,6 +34331,10 @@ export type Database = {
         Returns: string
       }
       mask_sensitive_audit_data: { Args: { data: Json }; Returns: Json }
+      pause_production_appointment: {
+        Args: { p_appointment_id: string; p_reason: string }
+        Returns: undefined
+      }
       process_purchase_entry: { Args: { p_entry_id: string }; Returns: Json }
       process_settlement: {
         Args: {
@@ -34380,6 +34415,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      resume_production_appointment: {
+        Args: { p_appointment_id: string }
+        Returns: undefined
+      }
       reverse_settlement: {
         Args: { p_notes?: string; p_settlement_id: string; p_user_id: string }
         Returns: string
@@ -34392,6 +34431,14 @@ export type Database = {
       schedule_collection_actions: {
         Args: { p_company_id: string; p_transaction_id: string }
         Returns: number
+      }
+      start_production_appointment: {
+        Args: {
+          p_operation_id?: string
+          p_operator_id?: string
+          p_order_id: string
+        }
+        Returns: string
       }
       update_credit_portfolio_summary: {
         Args: { p_company_id: string }

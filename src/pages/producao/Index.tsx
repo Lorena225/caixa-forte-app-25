@@ -22,6 +22,20 @@ const modules = [
     color: 'bg-blue-500/10 text-blue-600',
   },
   {
+    title: 'Kanban de Produção',
+    description: 'Visualização Kanban do status das Ordens de Produção',
+    icon: Package,
+    route: '/producao/kanban',
+    color: 'bg-indigo-500/10 text-indigo-600',
+  },
+  {
+    title: 'Chão de Fábrica',
+    description: 'Interface tablet para apontamento de produção',
+    icon: ClipboardList,
+    route: '/producao/chao-fabrica',
+    color: 'bg-teal-500/10 text-teal-600',
+  },
+  {
     title: 'Engenharia de Produto',
     description: 'Cadastre BOMs (estrutura de produto) e roteiros de fabricação',
     icon: Cog,
@@ -41,13 +55,6 @@ const modules = [
     icon: RouteIcon,
     route: '/producao/centros-trabalho',
     color: 'bg-orange-500/10 text-orange-600',
-  },
-  {
-    title: 'Apontamento Mobile',
-    description: 'Interface para operadores registrarem produção',
-    icon: ClipboardList,
-    route: '/producao/apontamento',
-    color: 'bg-cyan-500/10 text-cyan-600',
   },
   {
     title: 'Requisições de Compra',
