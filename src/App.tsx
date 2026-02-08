@@ -94,6 +94,8 @@ import Apontamento from "./pages/producao/Apontamento";
 import CentrosTrabalho from "./pages/producao/CentrosTrabalho";
 import Requisicoes from "./pages/producao/Requisicoes";
 import Custeio from "./pages/producao/Custeio";
+import ChaoFabrica from "./pages/producao/ChaoFabrica";
+import ProducaoKanban from "./pages/producao/Kanban";
 // Compras
 import ComprasIndex from "./pages/compras/Index";
 import ComprasPedidos from "./pages/compras/Pedidos";
@@ -453,6 +455,8 @@ const App = () => (
                 <Route path="/producao/centros-trabalho" element={<CentrosTrabalho />} />
                 <Route path="/producao/requisicoes" element={<Requisicoes />} />
                 <Route path="/producao/custeio" element={<Custeio />} />
+                <Route path="/producao/chao-fabrica" element={<ChaoFabrica />} />
+                <Route path="/producao/kanban" element={<ProducaoKanban />} />
                 
                 {/* AP/AR Index */}
                 <Route path="/ap" element={<APIndex />} />

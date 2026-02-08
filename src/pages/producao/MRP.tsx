@@ -1,25 +1,20 @@
 import { useState } from "react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { PageHeader } from "@/components/common/PageHeader";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { 
-  Calculator, 
   Play, 
   RefreshCw, 
   Package, 
   Factory, 
   ShoppingCart,
-  AlertTriangle,
-  CheckCircle2,
-  Clock,
-  TrendingUp
+  Clock
 } from "lucide-react";
 import { useMRPRequirements, useRunMRP } from "@/hooks/usePCP";
+import { RequirementsTable } from "@/components/producao/RequirementsTable";
 import { toast } from "sonner";
 
 export default function MRP() {
@@ -39,7 +34,7 @@ export default function MRP() {
 
   const productionRequirements = requirements.filter(r => r.requirement_type === 'production');
   const purchaseRequirements = requirements.filter(r => r.requirement_type === 'purchase');
-  const pendingRequirements = requirements.filter(r => r.status === 'pending');
+  const pendingRequirements = requirements.filter(r => r.status !== 'converted');
 
   const stats = [
     {
@@ -71,7 +66,7 @@ export default function MRP() {
         <div className="flex items-center justify-between">
           <PageHeader
             title="MRP - Planejamento de Materiais"
-            description="Cálculo de necessidades e planejamento de produção"
+            description="Cálculo de necessidades e conversão automática em OPs/RCs"
           />
           <div className="flex items-center gap-2">
             <Select value={dateRange} onValueChange={setDateRange}>
@@ -148,92 +143,5 @@ export default function MRP() {
         </Tabs>
       </div>
     </AppLayout>
-  );
-}
-
-function RequirementsTable({ requirements, isLoading }: { requirements: any[]; isLoading: boolean }) {
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'pending':
-        return <Badge variant="outline" className="gap-1"><Clock className="h-3 w-3" /> Pendente</Badge>;
-      case 'planned':
-        return <Badge variant="secondary" className="gap-1"><TrendingUp className="h-3 w-3" /> Planejado</Badge>;
-      case 'released':
-        return <Badge className="gap-1"><CheckCircle2 className="h-3 w-3" /> Liberado</Badge>;
-      default:
-        return <Badge variant="outline">{status}</Badge>;
-    }
-  };
-
-  const getTypeBadge = (type: string) => {
-    switch (type) {
-      case 'production':
-        return <Badge variant="default" className="bg-blue-500/10 text-blue-600 hover:bg-blue-500/20">Produção</Badge>;
-      case 'purchase':
-        return <Badge variant="default" className="bg-green-500/10 text-green-600 hover:bg-green-500/20">Compra</Badge>;
-      default:
-        return <Badge variant="outline">{type}</Badge>;
-    }
-  };
-
-  return (
-    <Card>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Produto</TableHead>
-            <TableHead>Tipo</TableHead>
-            <TableHead className="text-right">Quantidade</TableHead>
-            <TableHead>Data Necessária</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Origem</TableHead>
-            <TableHead className="w-[100px]">Ações</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {isLoading ? (
-            <TableRow>
-              <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
-                Carregando...
-              </TableCell>
-            </TableRow>
-          ) : requirements.length === 0 ? (
-            <TableRow>
-              <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
-                <Calculator className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>Nenhuma necessidade calculada.</p>
-                <p className="text-sm">Execute o MRP para gerar as necessidades.</p>
-              </TableCell>
-            </TableRow>
-          ) : (
-            requirements.map(req => (
-              <TableRow key={req.id}>
-                <TableCell className="font-medium">
-                  {req.products?.name || 'Produto não encontrado'}
-                </TableCell>
-                <TableCell>{getTypeBadge(req.requirement_type)}</TableCell>
-                <TableCell className="text-right font-mono">
-                  {req.required_quantity?.toLocaleString('pt-BR')}
-                </TableCell>
-                <TableCell>
-                  {new Date(req.required_date).toLocaleDateString('pt-BR')}
-                </TableCell>
-                <TableCell>{getStatusBadge(req.status)}</TableCell>
-                <TableCell className="text-muted-foreground text-sm">
-                  {req.source_type === 'sales_order' ? 'Pedido de Venda' : 
-                   req.source_type === 'forecast' ? 'Previsão' : 
-                   req.source_type === 'bom_explosion' ? 'Explosão BOM' : req.source_type}
-                </TableCell>
-                <TableCell>
-                  <Button variant="outline" size="sm">
-                    {req.requirement_type === 'production' ? 'Criar OP' : 'Criar RC'}
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))
-          )}
-        </TableBody>
-      </Table>
-    </Card>
   );
 }
