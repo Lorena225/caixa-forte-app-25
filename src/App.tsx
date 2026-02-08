@@ -160,13 +160,14 @@ import SettingsPermissions from "./pages/settings/Permissions";
 import SettingsBackup from "./pages/settings/Backup";
 // CRM
 import CRMIndex from "./pages/crm/Index";
-// Projetos
-import GestaoProjetosPage from "./pages/projetos/GestaoProjetosPage";
 import CRMPipeline from "./pages/crm/Pipeline";
 import CRMLeads from "./pages/crm/Leads";
 import CRMVendedores from "./pages/crm/Vendedores";
 import CRMComissoes from "./pages/crm/Comissoes";
 import CRMMetas from "./pages/crm/Metas";
+import SellerCockpit from "./pages/crm/SellerCockpit";
+// Projetos
+import GestaoProjetosPage from "./pages/projetos/GestaoProjetosPage";
 // Contratos / Recorrência
 import RecorrenciaPage from "./pages/contratos/Recorrencia";
 // Admin
@@ -618,6 +619,7 @@ const App = () => (
                 <Route path="/crm/vendedores" element={<CRMVendedores />} />
                 <Route path="/crm/comissoes" element={<CRMComissoes />} />
                 <Route path="/crm/metas" element={<CRMMetas />} />
+                <Route path="/crm/meu-painel" element={<SellerCockpit />} />
                 
                 {/* ============ CONTRATOS / RECORRÊNCIA ============ */}
                 <Route path="/contratos/recorrencia" element={<RecorrenciaPage />} />
