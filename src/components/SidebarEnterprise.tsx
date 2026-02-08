@@ -281,6 +281,7 @@ const menuItems: MenuItem[] = [
       // Integrações
       { key: 'conexoes-integ', label: 'Conexões', icon: Link2, route: '/integracoes/conexoes' },
       { key: 'config-integracoes', label: 'Configurar Integrações', icon: Plug, route: '/integracoes/configurar' },
+      { key: 'governanca', label: 'Governança', icon: Settings, route: '/configuracoes' },
       { key: 'admin-geral', label: 'Administração', icon: UserCog, route: '/admin' },
     ]
   },

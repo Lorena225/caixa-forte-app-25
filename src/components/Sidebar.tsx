@@ -288,7 +288,7 @@ const menuItems: MenuItem[] = [
   },
   
   // 13. CONFIGURAÇÕES
-  { key: 'configuracoes', label: 'Configurações', icon: Settings, route: '/admin', colorClass: 'text-menu-config' },
+  { key: 'configuracoes', label: 'Configurações', icon: Settings, route: '/configuracoes', colorClass: 'text-menu-config' },
 ];
 
 // Color map for active states using CSS variable classes
