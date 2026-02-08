@@ -166,6 +166,7 @@ import CRMVendedores from "./pages/crm/Vendedores";
 import CRMComissoes from "./pages/crm/Comissoes";
 import CRMMetas from "./pages/crm/Metas";
 import SellerCockpit from "./pages/crm/SellerCockpit";
+import QuoteBuilder from "./pages/crm/QuoteBuilder";
 // Projetos
 import GestaoProjetosPage from "./pages/projetos/GestaoProjetosPage";
 // Contratos / Recorrência
@@ -620,6 +621,7 @@ const App = () => (
                 <Route path="/crm/comissoes" element={<CRMComissoes />} />
                 <Route path="/crm/metas" element={<CRMMetas />} />
                 <Route path="/crm/meu-painel" element={<SellerCockpit />} />
+                <Route path="/crm/proposta/:opportunityId" element={<QuoteBuilder />} />
                 
                 {/* ============ CONTRATOS / RECORRÊNCIA ============ */}
                 <Route path="/contratos/recorrencia" element={<RecorrenciaPage />} />
