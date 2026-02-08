@@ -1,390 +1,320 @@
 
-# CRM & Vendas 4.0 - Sistema Lead-to-Cash Integrado
 
-## Resumo Executivo
-Este plano descreve a construção completa do módulo CRM & Vendas 4.0, um sistema Lead-to-Cash totalmente integrado, multi-moeda e multi-canal. O módulo expande significativamente a infraestrutura existente de CRM.
+# Plano de Implementação: Módulo PCP & Chão de Fábrica (Industrial)
 
----
+## Diagnóstico Atual
 
-## 1. Situacao Atual vs. Requisitos
+O sistema já possui uma infraestrutura sólida com:
+- Tabelas de produção configuradas (`industrial_boms`, `work_centers`, `routing_operations`, `production_orders`, etc.)
+- Funções de banco de dados funcionais (`explode_bom`, `run_mrp_calculation`, `close_production_order`)
+- Interface básica para as principais telas
 
-### O que ja existe
-- Tabelas base: `crm_pipelines`, `crm_stages`, `opportunities`, `quotes`, `quote_items`, `leads`, `sellers`
-- Tabelas CPQ: `price_books`, `price_book_items` com campos fiscais
-- Tabelas de suporte: `sales_territories`, `sales_teams`, `sales_team_members`, `commissions`, `commission_rules`
-- Tabelas de Inbox: `crm_inbox_channels`, `crm_inbox_conversations`, `crm_inbox_messages`
-- Hooks funcionais: `useCRM.ts` com operacoes CRUD
-- UI basica: Kanban, Leads, Metas, Comissoes
-
-### Lacunas Identificadas
-1. **Indices de performance** em `close_date`, `amount`, `owner_id` nao existem
-2. **Triggers de automacao Won** nao implementados
-3. **Funcao de Aprovacao de Desconto** ausente
-4. **RLS hierarquico** (Vendedor -> Gerente -> Diretor) nao configurado
-5. **Cockpit do Vendedor** nao existe
-6. **Motor CPQ com calculo fiscal** nao integrado na UI
-7. **Timeline Omnichannel** nao renderiza mensagens do Inbox
+**Gaps identificados:**
+1. BOMs sem versionamento robusto e conversão de unidades
+2. Interface de MRP sem conversão de sugestões em Pedidos de Compra com um clique
+3. Apontamento com interface desktop (não otimizada para tablet)
+4. Falta visualização hierárquica de árvore de produto
+5. Falta painel Kanban de controle de OPs
 
 ---
 
-## 2. Arquitetura de Banco de Dados
+## Fase 1: Aprimoramento do Schema de Banco de Dados
 
-### 2.1 Novos Indices para Performance
+### 1.1 Melhorias na Tabela `industrial_boms`
+
+Adicionar colunas para versionamento robusto:
+
+| Coluna | Tipo | Descrição |
+|--------|------|-----------|
+| `revision` | TEXT | Identificador da revisão (Rev. 01, Rev. 02) |
+| `is_locked` | BOOLEAN | Impede edição quando ativo |
+| `parent_bom_id` | UUID | Referência à versão anterior |
+
+### 1.2 Melhorias na Tabela `bom_components`
+
+Adicionar conversão de unidades:
+
+| Coluna | Tipo | Descrição |
+|--------|------|-----------|
+| `purchase_unit_id` | UUID | Unidade de compra (kg, caixa) |
+| `consumption_unit_id` | UUID | Unidade de consumo (g, un) |
+| `conversion_factor` | NUMERIC | Fator de conversão entre unidades |
+
+### 1.3 Trigger para Proteção de BOM Ativa
+
 ```text
-opportunities:
-  - idx_opportunities_close_date (company_id, expected_close_date DESC)
-  - idx_opportunities_amount (company_id, amount DESC)
-  - idx_opportunities_owner (owner_id) [ja existe]
-
-quotes:
-  - idx_quotes_status_approval (company_id, status, approval_status)
-  - idx_quotes_valid_until (valid_until)
-```
-
-### 2.2 Novas Colunas em Tabelas Existentes
-**opportunities:**
-- `currency_code` (text, default 'BRL')
-- `exchange_rate` (numeric, default 1)
-- `amount_converted` (numeric) - valor em moeda base
-
-**sellers:**
-- `max_discount_percent` (numeric, default 10)
-- `hierarchy_level` (text: 'seller', 'team_leader', 'manager', 'director')
-
-### 2.3 Nova Tabela: seller_territories
-```text
-seller_territories
-  - id (uuid, PK)
-  - seller_id (FK -> sellers)
-  - territory_id (FK -> sales_territories)
-  - is_primary (boolean)
-  - created_at
+Regra de negócio:
+- BOM com status='active' → is_locked=true
+- Para alterar: criar nova revisão (cópia)
+- Histórico de revisões mantido via parent_bom_id
 ```
 
 ---
 
-## 3. Regras de Negocio (Database Functions)
+## Fase 2: Função MRP Aprimorada
 
-### 3.1 Funcao de Validacao de Desconto
+### 2.1 Nova Função: `convert_mrp_to_purchase_order`
+
 ```text
-check_quote_discount_approval(quote_id uuid)
-RETURNS void
-
-Logica:
-1. Obtem discount_percent da quote
-2. Obtem max_discount_percent do seller (via opportunity.seller_id)
-3. Se discount > max_allowed:
-   - UPDATE quotes SET requires_approval = true, approval_status = 'pending'
-   - INSERT notificacao para manager_id do seller
-4. Caso contrario: approval_status = 'auto_approved'
+Entrada: mrp_requirement_id (UUID)
+Processo:
+  1. Validar se requirement_type = 'purchase'
+  2. Criar registro em 'purchase_requisitions' com dados do MRP
+  3. Atualizar status do MRP para 'converted'
+  4. Registrar converted_to_id na tabela
+Saída: ID da Requisição de Compra criada
 ```
 
-### 3.2 Trigger de Automacao Won
+### 2.2 Nova Função: `convert_mrp_to_production_order`
+
 ```text
-FUNCTION trigger_opportunity_won()
-TRIGGER: AFTER UPDATE ON opportunities
-WHEN: NEW.status = 'won' AND OLD.status != 'won'
-
-Acoes baseadas em crm_pipelines config:
-1. Se won_create_order = true:
-   - INSERT INTO sales_orders (...)
-   - UPDATE opportunities SET converted_order_id = new_order.id
-
-2. Se won_create_cashflow = true:
-   - INSERT INTO transactions (tipo='receita', status='lancado')
-
-3. Se won_create_stock_order = true:
-   - INSERT INTO inventory_reservations para cada item da quote aceita
-
-4. Se won_create_project = true:
-   - INSERT INTO projects usando template won_project_template_id
+Entrada: mrp_requirement_id (UUID)
+Processo:
+  1. Validar se requirement_type = 'production'
+  2. Buscar BOM ativa do produto
+  3. Criar OP com materiais e operações
+  4. Atualizar status do MRP para 'converted'
+Saída: ID da Ordem de Produção criada
 ```
 
-### 3.3 Funcao de Calculo Fiscal CPQ
-```text
-calculate_quote_item_taxes(
-  product_id uuid,
-  quantity numeric,
-  unit_price numeric,
-  company_id uuid,
-  counterparty_id uuid
-)
-RETURNS jsonb (icms, icms_st, ipi, pis, cofins, total)
+### 2.3 Função Batch: Converter Múltiplas Sugestões
 
-Logica:
-1. Busca NCM do produto
-2. Busca tax_rules aplicaveis para NCM + UF destino
-3. Calcula cada imposto
-4. Retorna breakdown completo
-```
-
-### 3.4 Funcao de Hierarquia RLS
-```text
-can_view_opportunity(opp_id uuid)
-RETURNS boolean
-SECURITY DEFINER
-
-Logica:
-1. Se user eh 'director' -> true (ve tudo)
-2. Se user eh 'manager' -> ve oportunidades do seu team
-3. Se user eh 'team_leader' -> ve sua equipe
-4. Se user eh 'seller' -> apenas suas proprias
-```
+Para permitir conversão em lote com um clique.
 
 ---
 
-## 4. Politicas RLS Hierarquicas
+## Fase 3: Interface Shop Floor (Tablet)
 
-### Oportunidades
+### 3.1 Nova Página: `/producao/chao-fabrica`
+
+Tela otimizada para tablet com:
+
 ```text
-Policy "opportunities_hierarchical_select":
-  FOR SELECT USING (
-    public.can_view_opportunity(id)
-  )
-
-Policy "opportunities_seller_modify":
-  FOR UPDATE/DELETE USING (
-    seller_id IN (SELECT id FROM sellers WHERE user_id = auth.uid())
-    OR public.has_role(auth.uid(), 'admin')
-  )
+┌──────────────────────────────────────────────────────────────┐
+│  🏭 APONTAMENTO - CHÃO DE FÁBRICA          [Operador: João] │
+├──────────────────────────────────────────────────────────────┤
+│                                                              │
+│  ┌────────────────────────────────────────────────────────┐ │
+│  │  OP-20260208-0001                                      │ │
+│  │  Mesa Escritório Premium                               │ │
+│  │  Qtd: 10 un | Operação: Montagem Final                 │ │
+│  └────────────────────────────────────────────────────────┘ │
+│                                                              │
+│            ┌────────────────────────────────┐               │
+│            │         02:45:32               │               │
+│            │        ⏱️ Tempo                 │               │
+│            └────────────────────────────────┘               │
+│                                                              │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐    │
+│  │          │  │          │  │          │  │          │    │
+│  │  ▶️ INICIAR │  │ ⏸️ PAUSAR │  │ ⏹️ PARAR  │  │ ❌ REFUGO│    │
+│  │          │  │          │  │          │  │          │    │
+│  └──────────┘  └──────────┘  └──────────┘  └──────────┘    │
+│                                                              │
+│  Motivo da Pausa: [▼ Selecione                          ]   │
+│  - Aguardando material                                       │
+│  - Manutenção                                                │
+│  - Troca de turno                                            │
+│  - Intervalo                                                 │
+│                                                              │
+│  ┌─────────────────┐  ┌─────────────────┐                   │
+│  │ Qtd Produzida   │  │ Qtd Refugo      │                   │
+│  │ [     5      ]  │  │ [     0      ]  │                   │
+│  └─────────────────┘  └─────────────────┘                   │
+│                                                              │
+└──────────────────────────────────────────────────────────────┘
 ```
 
-### Quotes
-```text
-Policy "quotes_hierarchical_access":
-  FOR ALL USING (
-    EXISTS (
-      SELECT 1 FROM opportunities o
-      WHERE o.id = opportunity_id
-      AND public.can_view_opportunity(o.id)
-    )
-  )
-```
+### Características:
+- Botões grandes para toque (min 48x48px)
+- Fonte aumentada (18px+)
+- Cores contrastantes
+- Feedback visual claro
+- Timer em tempo real
+- Lista de motivos de pausa pré-definidos
 
 ---
 
-## 5. Interface de Alta Performance
+## Fase 4: Visualização Hierárquica de BOM
 
-### 5.1 Kanban Board Aprimorado
-**Arquivo:** `src/pages/crm/Pipeline.tsx`
+### 4.1 Componente: `BOMTreeView`
 
-Melhorias:
-- Header de coluna com: Total R$ + Total Ponderado (Valor x Probabilidade%)
-- Indicador visual de "rotting" (oportunidades paradas)
-- Filtros por vendedor, periodo, pipeline
-- Drag-and-drop fluido (ja existe, aprimorar feedback visual)
-
-### 5.2 Cockpit do Vendedor (Nova Pagina)
-**Arquivo:** `src/pages/crm/SellerCockpit.tsx`
-**Rota:** `/crm/meu-painel`
-
-Componentes:
-```text
-+------------------------------------------+
-| COCKPIT DO VENDEDOR - [Nome]             |
-+------------------------------------------+
-| [Velocimetro]  | Meta:    R$ 150.000     |
-| 67%            | Realizado: R$ 100.500   |
-|                | Gap:       R$ 49.500    |
-+----------------+-------------------------+
-| PROXIMAS TAREFAS          | OPORTUNIDADES HOT
-| - Ligar Cliente X (hoje)  | - Deal ABC (R$50k)
-| - Reuniao Y (amanha)      | - Deal XYZ (R$30k)
-+---------------------------+---------------+
-| PIPELINE RESUMIDO (mini-kanban)          |
-+------------------------------------------+
-```
-
-### 5.3 CPQ Builder (Nova Pagina)
-**Arquivo:** `src/pages/crm/QuoteBuilder.tsx`
-**Rota:** `/crm/proposta/:opportunityId`
-
-Features:
-- Selecao de Price Book
-- Adicao de produtos com preco automatico
-- Calculo fiscal em tempo real
-- Preview de impostos: Base + IPI + ICMS ST = Total
-- Validacao de desconto maximo
-- Geracao de PDF
-
-### 5.4 Timeline Omnichannel
-**Arquivo:** `src/components/crm/OmnichannelTimeline.tsx`
-
-Integracao:
-- E-mails (crm_activities type='email')
-- WhatsApp (crm_inbox_messages via conversation_id)
-- Notas (crm_activities type='note')
-- Logs de sistema (crm_activities type='system')
-
-Visualizacao cronologica unificada com icones por canal.
-
----
-
-## 6. Hooks e Services
-
-### 6.1 Novos Hooks
-```text
-useQuoteBuilder(opportunityId)
-  - createQuote, addItem, removeItem, updateItem
-  - calculateTaxes (chama funcao do banco)
-  - submitForApproval
-
-useSellerCockpit(sellerId)
-  - currentGoal, achieved, gap
-  - upcomingTasks
-  - hotOpportunities
-  - pipelineSummary
-
-useOmnichannelTimeline(opportunityId)
-  - activities + inboxMessages merged
-  - sorted by timestamp
-```
-
-### 6.2 Service de Calculo CPQ
-**Arquivo:** `src/services/cpqService.ts`
+Árvore expansível mostrando estrutura multinível:
 
 ```text
-calculateItemTotal(item, taxRules)
-calculateQuoteTotal(items[])
-validateDiscount(quote, seller)
+📦 Mesa Escritório Premium (v1.0)
+├── 📦 Tampo MDF Laminado (2 un)
+│   ├── 🔧 Chapa MDF 18mm (0.8 m²)
+│   └── 🔧 Laminado Melamínico (1 m²)
+├── 📦 Estrutura Metálica (1 un)
+│   ├── 🔧 Tubo Aço 40x40mm (4 m)
+│   └── 🔧 Parafusos Sextavados (16 un)
+└── 🔧 Kit Niveladores (4 un)
+
+📦 = Fabricado (tem BOM)
+🔧 = Comprado (Matéria-Prima)
 ```
 
----
-
-## 7. Estrutura de Arquivos
-
-### Novos Arquivos
-```text
-src/pages/crm/
-  - SellerCockpit.tsx (Cockpit do Vendedor)
-  - QuoteBuilder.tsx (CPQ)
-  - Territories.tsx (Gestao de Territorios)
-
-src/components/crm/
-  - OmnichannelTimeline.tsx
-  - QuoteItemRow.tsx
-  - TaxBreakdown.tsx
-  - SellerSpeedometer.tsx
-  - ApprovalBadge.tsx
-  - PipelineMiniKanban.tsx
-
-src/hooks/
-  - useQuoteBuilder.ts
-  - useSellerCockpit.ts
-  - useOmnichannelTimeline.ts
-  - useTaxCalculation.ts
-
-src/services/
-  - cpqService.ts
-```
-
-### Arquivos Modificados
-```text
-src/hooks/useCRM.ts
-  - Adicionar mutations para hierarchy queries
-  - Expandir useOpportunities com filtros avancados
-
-src/pages/crm/Pipeline.tsx
-  - Adicionar Total Ponderado no header
-  - Adicionar indicador de rotting
-
-src/components/crm/OpportunityDetailModal.tsx
-  - Integrar OmnichannelTimeline
-  - Adicionar botao "Nova Proposta CPQ"
-```
+### Funcionalidades:
+- Expandir/colapsar níveis
+- Mostrar quantidade total calculada
+- Indicar disponibilidade em estoque
+- Link para edição de componentes
 
 ---
 
-## 8. Migracao SQL Consolidada
+## Fase 5: Painel Kanban de OPs
 
-A migracao sera executada em uma unica transacao com:
-
-1. **Indices de performance**
-2. **Novas colunas** (currency, hierarchy)
-3. **Tabela seller_territories**
-4. **Funcao check_quote_discount_approval**
-5. **Funcao trigger_opportunity_won + TRIGGER**
-6. **Funcao calculate_quote_item_taxes**
-7. **Funcao can_view_opportunity (SECURITY DEFINER)**
-8. **Atualizacao de RLS policies**
-
----
-
-## 9. Fluxo de Implementacao
-
-### Fase 1: Infraestrutura (Database)
-1. Executar migracao SQL completa
-2. Validar indices e funcoes criadas
-
-### Fase 2: Backend Hooks
-3. Implementar useQuoteBuilder
-4. Implementar useSellerCockpit
-5. Implementar useOmnichannelTimeline
-6. Expandir useCRM.ts
-
-### Fase 3: UI Core
-7. Construir QuoteBuilder (CPQ)
-8. Construir SellerCockpit
-9. Construir OmnichannelTimeline
-
-### Fase 4: Integracao
-10. Atualizar Pipeline com Total Ponderado
-11. Integrar CPQ no OpportunityDetailModal
-12. Integrar Timeline no modal de oportunidade
-
-### Fase 5: Navegacao
-13. Adicionar rotas no App.tsx
-14. Atualizar sidebar com novos itens
-
----
-
-## 10. Consideracoes de Seguranca
-
-### RLS Hierarquico
-- Todas as funcoes de hierarquia usam SECURITY DEFINER
-- SET search_path = public para prevenir injecao
-- Validacao dupla: company_id + hierarchy_level
-
-### Aprovacao de Descontos
-- Bloqueio hard no banco (requires_approval = true)
-- PDF/envio bloqueado ate approval_status = 'approved'
-- Log de auditoria para todas as aprovacoes
-
-### Multi-Tenant
-- Todas as queries filtram por company_id
-- Triggers validam company_id antes de criar registros relacionados
-
----
-
-## 11. Diagrama de Fluxo Lead-to-Cash
+### 5.1 Nova Página: `/producao/kanban`
 
 ```text
-  +-------+     +-------------+     +-------+     +-------+
-  | LEAD  | --> | OPPORTUNITY | --> | QUOTE | --> | ORDER |
-  +-------+     +-------------+     +-------+     +-------+
-      |               |                 |             |
-      |               |                 v             v
-      |               |           [CPQ Engine]   [Estoque]
-      |               |           [Tax Calc]     [Reserva]
-      |               v                 |             |
-      |         [Won Trigger]           v             v
-      |               |           [Aprovacao]    [Financeiro]
-      |               |                 |             |
-      |               +-----------------+-------------+
-      |                         |
-      v                         v
-  [Timeline]              [Comissao]
-  [Omnichannel]           [Calculo]
+┌─────────────────────────────────────────────────────────────────────┐
+│  KANBAN - CONTROLE DE PRODUÇÃO                                      │
+├───────────┬───────────┬───────────┬───────────┬───────────┬────────┤
+│ PLANEJADA │ LIBERADA  │ EM PROD.  │ PAUSADA   │ CONCLUÍDA │        │
+│    (5)    │    (3)    │    (2)    │    (1)    │    (8)    │        │
+├───────────┼───────────┼───────────┼───────────┼───────────┼────────┤
+│ ┌───────┐ │ ┌───────┐ │ ┌───────┐ │ ┌───────┐ │ ┌───────┐ │        │
+│ │OP-001 │ │ │OP-004 │ │ │OP-007 │ │ │OP-009 │ │ │OP-010 │ │        │
+│ │Mesa   │→│ │Cadeira│→│ │Armário│→│ │Estante│→│ │Mesa P │ │        │
+│ │10 un  │ │ │25 un  │ │ │5 un   │ │ │3 un   │ │ │10 un  │ │        │
+│ │📅 15/02│ │ │📅 14/02│ │ │75%    │ │ │⚠️ Manut│ │ │✅ 100%│ │        │
+│ └───────┘ │ └───────┘ │ └───────┘ │ └───────┘ │ └───────┘ │        │
+│ ┌───────┐ │ ┌───────┐ │ ┌───────┐ │           │ ┌───────┐ │        │
+│ │OP-002 │ │ │OP-005 │ │ │OP-008 │ │           │ │OP-011 │ │        │
+│ │...    │ │ │...    │ │ │...    │ │           │ │...    │ │        │
+│ └───────┘ │ └───────┘ │ └───────┘ │           │ └───────┘ │        │
+└───────────┴───────────┴───────────┴───────────┴───────────┴────────┘
 ```
+
+### Funcionalidades:
+- Drag and drop para mudar status
+- Indicadores visuais de atraso
+- Filtros por centro de trabalho, produto, data
+- Atualização em tempo real
 
 ---
 
-## Proximos Passos Apos Aprovacao
+## Fase 6: Relatório MRP Aprimorado
 
-1. Criar migracao SQL com todos os elementos de banco
-2. Implementar hooks na sequencia definida
-3. Construir componentes UI
-4. Integrar e testar fluxos completos
-5. Adicionar navegacao
+### 6.1 Tela de MRP com Conversão em Um Clique
 
-Este plano cobre 100% dos requisitos solicitados para o modulo CRM & Vendas 4.0.
+Adicionar à página existente:
+
+| Ação | Tipo | Comportamento |
+|------|------|---------------|
+| **Criar RC** | Compra | Gera Requisição de Compra automaticamente |
+| **Criar OP** | Produção | Gera Ordem de Produção com BOM vinculada |
+| **Converter Todas** | Batch | Converte todas as sugestões pendentes |
+
+Componente de alerta para itens críticos (lead time curto).
+
+---
+
+## Resumo de Arquivos
+
+### Novos Arquivos a Criar:
+1. `src/pages/producao/ChaoFabrica.tsx` - Interface tablet
+2. `src/pages/producao/Kanban.tsx` - Painel Kanban
+3. `src/components/producao/BOMTreeView.tsx` - Árvore de BOM
+4. `src/components/producao/ProductionTimer.tsx` - Timer de apontamento
+5. `src/components/producao/KanbanColumn.tsx` - Coluna do Kanban
+6. `src/components/producao/KanbanCard.tsx` - Card de OP
+
+### Arquivos a Modificar:
+1. `src/pages/producao/MRP.tsx` - Adicionar conversão em um clique
+2. `src/pages/producao/Engenharia.tsx` - Adicionar visualização de árvore
+3. `src/pages/producao/Index.tsx` - Adicionar novos módulos
+4. `src/hooks/usePCP.ts` - Novos hooks para conversão MRP
+5. `src/App.tsx` - Novas rotas
+
+### Migrações de Banco de Dados:
+1. Alterações em `industrial_boms` (revision, is_locked)
+2. Alterações em `bom_components` (conversão de unidades)
+3. Novas funções: `convert_mrp_to_purchase_order`, `convert_mrp_to_production_order`
+4. Trigger de proteção de BOM ativa
+
+---
+
+## Seção Técnica
+
+### Estrutura do Banco de Dados Atualizada
+
+```text
+industrial_boms
+├── id (PK)
+├── company_id (FK)
+├── product_id (FK)
+├── version (TEXT) ─────────► "1.0", "1.1", "2.0"
+├── revision (TEXT) ────────► "Rev. 01", "Rev. 02" [NOVO]
+├── is_locked (BOOLEAN) ────► Impede edição quando ativo [NOVO]
+├── parent_bom_id (FK) ─────► Referência à versão anterior [NOVO]
+├── status (TEXT) ──────────► draft | active | obsolete
+└── ...
+
+bom_components
+├── id (PK)
+├── bom_id (FK)
+├── component_product_id (FK)
+├── quantity (NUMERIC)
+├── purchase_unit_id (FK) ──► Unidade de compra [NOVO]
+├── consumption_unit_id (FK)► Unidade de consumo [NOVO]
+├── conversion_factor (NUM) ► Fator de conversão [NOVO]
+└── scrap_rate (NUMERIC)
+```
+
+### Função de Conversão MRP → Pedido de Compra
+
+```text
+create_purchase_order_from_mrp(p_mrp_id UUID)
+├── 1. Validar requirement_type = 'purchase'
+├── 2. Buscar fornecedor preferencial (histórico)
+├── 3. Inserir em purchase_requisitions
+│   ├── product_id
+│   ├── quantity = net_requirement
+│   ├── required_date
+│   └── estimated_unit_cost (custo médio do produto)
+├── 4. Atualizar mrp_requirements
+│   ├── status = 'converted'
+│   └── converted_to_id = requisition.id
+└── 5. Retornar requisition.id
+```
+
+### Trigger de Proteção de BOM
+
+```text
+BEFORE UPDATE ON industrial_boms
+├── IF OLD.is_locked = TRUE AND NEW.status != 'obsolete' THEN
+│   └── RAISE EXCEPTION 'BOM bloqueada para edição'
+└── IF NEW.status = 'active' THEN
+    └── SET NEW.is_locked = TRUE
+```
+
+### Componente React: Timer de Produção
+
+```text
+ProductionTimer
+├── Props: appointmentId, startTime, status
+├── State: elapsedSeconds, isRunning
+├── useEffect: setInterval(1000ms) para atualizar
+├── useEffect: sincronizar com servidor a cada 30s
+└── Render: display HH:MM:SS formatado
+```
+
+### Performance: Índices Recomendados
+
+```text
+-- Índice para busca de BOMs ativas
+CREATE INDEX idx_boms_product_active 
+ON industrial_boms(product_id, status) 
+WHERE status = 'active';
+
+-- Índice para MRP por empresa e status
+CREATE INDEX idx_mrp_company_status 
+ON mrp_requirements(company_id, status, requirement_type);
+
+-- Índice para OPs por centro de trabalho
+CREATE INDEX idx_po_operations_workcenter 
+ON production_order_operations(work_center_id, status);
+```
+
