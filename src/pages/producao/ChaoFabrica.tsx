@@ -202,7 +202,7 @@ export default function ChaoFabrica() {
           {/* Finalizar */}
           <Button
             size="lg"
-            className="h-24 text-xl font-bold gap-3 bg-green-600 hover:bg-green-700"
+            className="h-24 text-xl font-bold gap-3 bg-success hover:bg-success/90 text-success-foreground"
             disabled={!hasActiveAppointment || isLoading}
             onClick={handleFinish}
           >

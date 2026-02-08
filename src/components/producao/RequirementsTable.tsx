@@ -78,7 +78,7 @@ export function RequirementsTable({ requirements, isLoading, showSelection = tru
         return <Badge variant="secondary" className="gap-1"><TrendingUp className="h-3 w-3" /> Aprovado</Badge>;
       case 'converted':
       case 'released':
-        return <Badge className="gap-1 bg-green-600"><CheckCircle2 className="h-3 w-3" /> Convertido</Badge>;
+        return <Badge className="gap-1 bg-success"><CheckCircle2 className="h-3 w-3" /> Convertido</Badge>;
       default:
         return <Badge variant="outline">{status}</Badge>;
     }
@@ -87,11 +87,11 @@ export function RequirementsTable({ requirements, isLoading, showSelection = tru
   const getTypeBadge = (type: string) => {
     switch (type) {
       case 'production':
-        return <Badge variant="default" className="bg-blue-500/10 text-blue-600 hover:bg-blue-500/20 gap-1">
+        return <Badge variant="default" className="bg-primary/10 text-primary hover:bg-primary/20 gap-1">
           <Factory className="h-3 w-3" /> Produção
         </Badge>;
       case 'purchase':
-        return <Badge variant="default" className="bg-green-500/10 text-green-600 hover:bg-green-500/20 gap-1">
+        return <Badge variant="default" className="bg-success/10 text-success hover:bg-success/20 gap-1">
           <ShoppingCart className="h-3 w-3" /> Compra
         </Badge>;
       default:

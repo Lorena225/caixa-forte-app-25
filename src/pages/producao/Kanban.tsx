@@ -16,10 +16,10 @@ import {
 type KanbanStatus = 'planned' | 'released' | 'in_progress' | 'completed' | 'cancelled';
 
 const KANBAN_COLUMNS: { status: KanbanStatus; label: string; color: string }[] = [
-  { status: 'planned', label: 'Planejada', color: 'bg-slate-100' },
-  { status: 'released', label: 'Liberada', color: 'bg-blue-50' },
-  { status: 'in_progress', label: 'Em Produção', color: 'bg-amber-50' },
-  { status: 'completed', label: 'Concluída', color: 'bg-green-50' },
+  { status: 'planned', label: 'Planejada', color: 'bg-muted' },
+  { status: 'released', label: 'Liberada', color: 'bg-info-light' },
+  { status: 'in_progress', label: 'Em Produção', color: 'bg-warning-light' },
+  { status: 'completed', label: 'Concluída', color: 'bg-success-light' },
 ];
 
 export default function Kanban() {
@@ -111,15 +111,15 @@ export default function Kanban() {
           <CardContent className="py-3">
             <div className="flex items-center justify-center gap-6 text-sm">
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-amber-500" />
+                <div className="w-3 h-3 rounded-full bg-warning" />
                 <span>Atrasado</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-green-500" />
+                <div className="w-3 h-3 rounded-full bg-success" />
                 <span>No Prazo</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-blue-500" />
+                <div className="w-3 h-3 rounded-full bg-primary" />
                 <span>Alta Prioridade</span>
               </div>
             </div>

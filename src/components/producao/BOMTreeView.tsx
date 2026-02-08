@@ -91,7 +91,7 @@ function BOMTreeNode({ component, parentQuantity, level, onSelect }: BOMTreeNode
         {/* Icon */}
         <Icon className={cn(
           "h-4 w-4",
-          isManufactured ? "text-blue-600" : "text-green-600"
+          isManufactured ? "text-primary" : "text-success"
         )} />
 
         {/* Product info */}
@@ -124,11 +124,11 @@ function BOMTreeNode({ component, parentQuantity, level, onSelect }: BOMTreeNode
         <div className="flex items-center gap-1">
           <Box className={cn(
             "h-4 w-4",
-            hasEnoughStock ? "text-green-600" : "text-destructive"
+            hasEnoughStock ? "text-success" : "text-destructive"
           )} />
           <span className={cn(
             "text-xs font-mono",
-            hasEnoughStock ? "text-green-600" : "text-destructive"
+            hasEnoughStock ? "text-success" : "text-destructive"
           )}>
             {stock}
           </span>

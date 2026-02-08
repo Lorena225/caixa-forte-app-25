@@ -64,7 +64,7 @@ export function KanbanCard({ order, onStatusChange, currentStatus }: KanbanCardP
   const availableTransitions = STATUS_TRANSITIONS[currentStatus] || [];
 
   return (
-    <Card className={`shadow-sm hover:shadow-md transition-shadow cursor-pointer ${isLate ? 'border-amber-500' : ''}`}>
+    <Card className={`shadow-sm hover:shadow-md transition-shadow cursor-pointer ${isLate ? 'border-warning' : ''}`}>
       <CardContent className="p-3 space-y-2">
         {/* Header */}
         <div className="flex items-start justify-between">
@@ -120,8 +120,8 @@ export function KanbanCard({ order, onStatusChange, currentStatus }: KanbanCardP
 
         {/* Footer */}
         <div className="flex items-center justify-between">
-          {endDate && (
-            <div className={`flex items-center gap-1 text-xs ${isLate ? 'text-amber-600' : isDueToday ? 'text-blue-600' : 'text-muted-foreground'}`}>
+        {endDate && (
+            <div className={`flex items-center gap-1 text-xs ${isLate ? 'text-warning' : isDueToday ? 'text-primary' : 'text-muted-foreground'}`}>
               {isLate && <AlertTriangle className="h-3 w-3" />}
               <Calendar className="h-3 w-3" />
               {format(endDate, 'dd/MM', { locale: ptBR })}
