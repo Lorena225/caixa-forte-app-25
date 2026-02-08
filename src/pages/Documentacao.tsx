@@ -2418,6 +2418,627 @@ A barra de busca global (Cmd+K) entende linguagem natural:
       }
     ]
   },
+  crm: {
+    title: 'CRM & Vendas',
+    icon: Users,
+    color: 'text-indigo-500',
+    bgColor: 'bg-indigo-50',
+    description: 'Gestão completa do relacionamento com clientes, pipelines de vendas e motor de propostas (CPQ).',
+    modules: [
+      {
+        id: 'crm-visao-geral',
+        title: 'Visão Geral do CRM',
+        icon: Users,
+        content: `## 📊 O que é o CRM do Caixa Forte?
+
+O módulo de **CRM (Customer Relationship Management)** implementa o ciclo completo **Lead-to-Cash**, integrando gestão de oportunidades, propostas comerciais e automação de vendas ao core do ERP financeiro.
+
+---
+
+## 🎯 Funcionalidades Principais
+
+| Funcionalidade | Descrição |
+|----------------|-----------|
+| **Pipeline Visual** | Kanban drag-and-drop para gerenciar oportunidades |
+| **Motor CPQ** | Configure, Price, Quote - geração automatizada de propostas |
+| **Lead Scoring** | Pontuação automática de leads por potencial |
+| **Automação** | Converte oportunidades ganhas em pedidos/projetos |
+| **Territórios** | Segmentação geográfica da equipe comercial |
+| **Comissões** | Cálculo automático baseado em regras configuráveis |
+
+---
+
+## 📍 Localização no Sistema
+
+- **Dashboard CRM**: Visão executiva com KPIs de vendas
+- **Pipeline**: Gestão visual de oportunidades (Kanban)
+- **Leads**: Prospecção e qualificação de contatos
+- **Comissões**: Acompanhamento de comissionamento
+- **Metas**: Definição e tracking de objetivos
+
+**Acesso:** Menu Operacional → CRM
+
+---
+
+## 💡 Dica da IA
+
+Pergunte ao Copilot: "Quais oportunidades têm maior chance de fechar este mês?" — a IA analisa o pipeline e identifica deals com maior probabilidade de conversão.`
+      },
+      {
+        id: 'crm-pipeline',
+        title: 'Pipeline de Vendas',
+        icon: FolderKanban,
+        content: `## 📊 O que é?
+
+O **Pipeline de Vendas** é uma visualização Kanban das suas oportunidades comerciais, organizadas por estágios configuráveis (Lead, Qualificação, Proposta, Negociação, Fechamento).
+
+---
+
+## 📝 Passo a Passo
+
+**1. Criar uma Oportunidade**
+   - Clique em "+ Nova Oportunidade" no topo do pipeline
+   - Preencha: Cliente, Valor Estimado, Produtos/Serviços
+   - A oportunidade aparece no primeiro estágio
+
+**2. Mover entre Estágios**
+   - Arraste o card para o próximo estágio
+   - O sistema registra automaticamente a data de transição
+   - Cada movimento gera uma entrada na linha do tempo
+
+**3. Registrar Atividades**
+   - Clique no card para abrir detalhes
+   - Na aba "Timeline", registre: Ligações, E-mails, Reuniões
+   - Defina follow-ups com data e responsável
+
+**4. Gerar Proposta**
+   - No estágio "Proposta", clique em "Criar Proposta CPQ"
+   - O sistema abre o configurador de produtos e preços
+   - A proposta gerada fica vinculada à oportunidade
+
+---
+
+## ⚠️ Oportunidades "Rotting" (Estagnadas)
+
+O sistema destaca em vermelho oportunidades paradas há mais de X dias (configurável por estágio). Isso ajuda a identificar deals que precisam de atenção.
+
+---
+
+## 🔄 Automações de Fechamento
+
+Quando uma oportunidade é movida para "Ganho":
+- ✅ Gera automaticamente Pedido de Venda
+- ✅ Cria previsão no Fluxo de Caixa
+- ✅ Dispara notificação para Faturamento
+- ✅ Calcula comissão do vendedor
+
+---
+
+## 💡 Dica da IA
+
+A IA monitora o pipeline e alerta: "3 oportunidades estão paradas há mais de 15 dias no estágio Negociação. Deseja enviar um follow-up automático?"`
+      },
+      {
+        id: 'cpq-listas-precos',
+        title: 'CPQ — Listas de Preços',
+        icon: DollarSign,
+        content: `## 📊 O que é?
+
+**Listas de Preços (Price Books)** são tabelas que definem os preços de produtos/serviços para diferentes contextos: clientes VIP, regiões, canais de venda ou promoções sazonais.
+
+---
+
+## 📝 Como Criar uma Lista de Preços
+
+**1. Acesse Configurações do CRM**
+   - Menu: CRM → Configurações → Listas de Preços
+   - Clique em "+ Nova Lista de Preços"
+
+**2. Configure a Lista**
+   - **Nome**: Ex: "Preços Premium 2024", "Black Friday", "Região Sul"
+   - **Moeda**: BRL, USD, EUR
+   - **Validade**: Data início e fim (opcional)
+   - **Prioridade**: Define qual lista prevalece em conflitos
+
+**3. Adicione Itens**
+   - Selecione produtos do catálogo
+   - Defina o preço específico para cada item
+   - Opcional: Configure preços por faixa de quantidade
+
+**4. Defina Regras de Aplicação**
+   - Por Cliente específico ou Segmento
+   - Por Região/Território
+   - Por Canal de Venda (Direto, Revenda, E-commerce)
+
+---
+
+## 📋 Estrutura de uma Lista de Preços
+
+| Campo | Descrição |
+|-------|-----------|
+| **SKU** | Código do produto |
+| **Preço Base** | Valor padrão do catálogo |
+| **Preço Lista** | Valor na lista atual |
+| **Desconto Máximo** | Limite de desconto permitido |
+| **Margem Mínima** | Margem de lucro mínima obrigatória |
+
+---
+
+## 🔒 Hierarquia de Preços
+
+O motor CPQ busca o preço na seguinte ordem:
+1. Preço especial para o cliente
+2. Preço da lista vinculada ao território
+3. Preço da lista padrão da empresa
+4. Preço base do catálogo
+
+---
+
+## 💡 Dica da IA
+
+Pergunte: "Qual o preço do produto X para o cliente Y?" — a IA considera todas as listas aplicáveis e retorna o preço final com justificativa.`
+      },
+      {
+        id: 'cpq-regras-desconto',
+        title: 'CPQ — Regras de Desconto',
+        icon: Calculator,
+        content: `## 📊 O que é?
+
+**Regras de Desconto** controlam quem pode aplicar qual percentual de desconto, evitando margens negativas e garantindo governança comercial.
+
+---
+
+## 📝 Configurando Regras de Desconto
+
+**1. Acesse o Módulo**
+   - Menu: CRM → Configurações → Regras de Desconto
+   - Clique em "+ Nova Regra"
+
+**2. Defina os Parâmetros**
+
+| Parâmetro | Exemplo |
+|-----------|---------|
+| **Nome da Regra** | "Desconto Padrão Vendedor" |
+| **Faixa Percentual** | 0% a 10% |
+| **Aprovador** | Automático (Vendedor) |
+| **Nível de Alçada** | 1 - Operacional |
+
+**3. Configure Alçadas de Aprovação**
+
+| Desconto | Aprovador Necessário |
+|----------|---------------------|
+| 0% - 10% | Vendedor (automático) |
+| 11% - 20% | Gerente de Vendas |
+| 21% - 30% | Diretor Comercial |
+| > 30% | Diretoria + Financeiro |
+
+**4. Defina Exceções**
+   - Produtos com desconto bloqueado
+   - Clientes com limite especial
+   - Promoções temporárias
+
+---
+
+## 🚦 Fluxo de Aprovação
+
+Quando um vendedor aplica desconto acima do seu limite:
+1. A proposta fica com status "Pendente Aprovação"
+2. O aprovador recebe notificação
+3. Pode aprovar, rejeitar ou ajustar o desconto
+4. O vendedor é notificado do resultado
+
+---
+
+## ⚠️ Proteções Automáticas
+
+- **Margem Mínima**: Bloqueia descontos que resultem em prejuízo
+- **Desconto Máximo por Produto**: Limite individual por SKU
+- **Desconto Máximo por Proposta**: Limite global da proposta
+
+---
+
+## 💡 Dica da IA
+
+A IA sugere: "Este cliente tem histórico de compras de alto volume. Considere oferecer 8% de desconto para garantir o fechamento sem comprometer a margem."`
+      },
+      {
+        id: 'cpq-modelos-proposta',
+        title: 'CPQ — Modelos de Proposta',
+        icon: FileText,
+        content: `## 📊 O que é?
+
+**Modelos de Proposta** são templates personalizáveis que padronizam a apresentação comercial, garantindo identidade visual e informações obrigatórias.
+
+---
+
+## 📝 Criando um Modelo de Proposta
+
+**1. Acesse o Editor de Templates**
+   - Menu: CRM → Configurações → Modelos de Proposta
+   - Clique em "+ Novo Modelo"
+
+**2. Configure o Cabeçalho**
+   - Logo da empresa
+   - Dados do cliente (variáveis dinâmicas)
+   - Número e data da proposta
+   - Validade da proposta
+
+**3. Defina as Seções**
+
+| Seção | Conteúdo |
+|-------|----------|
+| **Resumo Executivo** | Visão geral da solução proposta |
+| **Detalhamento** | Tabela de produtos/serviços |
+| **Precificação** | Valores unitários e totais |
+| **Impostos** | Cálculo fiscal automático |
+| **Condições** | Prazo, forma de pagamento, garantias |
+| **Termos** | Cláusulas contratuais padrão |
+
+**4. Configure Variáveis Dinâmicas**
+
+\`\`\`
+{{cliente.nome}} - Nome do cliente
+{{cliente.cnpj}} - CNPJ do cliente
+{{proposta.numero}} - Número da proposta (auto)
+{{proposta.validade}} - Data de validade
+{{vendedor.nome}} - Nome do vendedor
+{{itens}} - Tabela de produtos/serviços
+{{total.bruto}} - Valor total bruto
+{{total.impostos}} - Total de impostos
+{{total.liquido}} - Valor líquido
+\`\`\`
+
+---
+
+## 📄 Formatos de Exportação
+
+- **PDF**: Para envio por e-mail
+- **DOCX**: Para edição manual
+- **Link**: Proposta online com aceite digital
+
+---
+
+## ✍️ Aceite Digital
+
+O cliente pode:
+1. Visualizar a proposta no navegador
+2. Revisar todos os itens e valores
+3. Aceitar digitalmente com registro de IP e timestamp
+4. A oportunidade avança automaticamente para "Ganho"
+
+---
+
+## 💡 Dica da IA
+
+Ao gerar uma proposta, a IA analisa o histórico do cliente e sugere: "Este cliente costuma negociar prazo de pagamento. Considere oferecer parcelamento em 3x para facilitar o fechamento."`
+      },
+      {
+        id: 'crm-fluxo-vendas',
+        title: 'Fluxo Lead-to-Cash',
+        icon: TrendingUp,
+        content: `## 📊 O Ciclo Completo de Vendas
+
+O Caixa Forte implementa o fluxo **Lead-to-Cash** end-to-end, conectando prospecção comercial ao recebimento financeiro.
+
+---
+
+## 🔄 Etapas do Fluxo
+
+### 1️⃣ LEAD (Prospecção)
+
+**Origem dos Leads:**
+- Formulários do site
+- Importação de listas
+- Indicações
+- Campanhas de marketing
+- WhatsApp Business
+
+**Qualificação:**
+- Lead Scoring automático (baseado em comportamento)
+- Classificação BANT: Budget, Authority, Need, Timeline
+- Distribuição Round Robin para a equipe
+
+---
+
+### 2️⃣ OPORTUNIDADE (Qualificação)
+
+**Conversão Lead → Oportunidade:**
+- Lead qualificado vira oportunidade
+- Vendedor assume ownership
+- Define-se valor estimado e produtos de interesse
+
+**Pipeline Stages:**
+1. Descoberta - Entendimento das necessidades
+2. Proposta - Elaboração da oferta
+3. Negociação - Ajustes e aprovações
+4. Fechamento - Decisão do cliente
+
+---
+
+### 3️⃣ PROPOSTA (CPQ)
+
+**Geração da Proposta:**
+- Motor CPQ seleciona preços da lista correta
+- Aplica descontos dentro das alçadas
+- Calcula impostos automaticamente (integração fiscal)
+- Gera PDF/link para aceite digital
+
+**Revisões:**
+- Histórico de versões mantido
+- Comparativo entre versões
+- Aprovações em cadeia
+
+---
+
+### 4️⃣ PEDIDO (Order Management)
+
+**Após Aceite da Proposta:**
+- Sistema gera Pedido de Venda automaticamente
+- Verifica disponibilidade de estoque
+- Agenda produção/entrega se necessário
+- Notifica áreas envolvidas (logística, financeiro)
+
+---
+
+### 5️⃣ FATURA (Billing)
+
+**Faturamento:**
+- Gera NF-e/NFS-e automaticamente
+- Emite boleto ou link de pagamento
+- Registra Conta a Receber
+- Atualiza previsão de caixa
+
+---
+
+### 6️⃣ RECEBIMENTO (Cash)
+
+**Conciliação:**
+- Baixa automática via Open Banking
+- Notificação de pagamento recebido
+- Atualização do status da venda
+- Liberação de comissão do vendedor
+
+---
+
+## 📈 Métricas do Funil
+
+| Métrica | Descrição |
+|---------|-----------|
+| **Taxa de Conversão** | % de leads que viram oportunidades |
+| **Win Rate** | % de oportunidades ganhas |
+| **Ciclo de Vendas** | Dias médios para fechar |
+| **Ticket Médio** | Valor médio por venda |
+| **CAC** | Custo de aquisição por cliente |
+
+---
+
+## 💡 Dica da IA
+
+A IA analisa o funil e sugere: "Suas oportunidades estão travando no estágio 'Proposta' por média de 12 dias. Recomendo implementar follow-up automático no 5º dia para acelerar decisões."`
+      },
+      {
+        id: 'crm-gestor-metas',
+        title: 'Gestão de Metas',
+        icon: Target,
+        content: `## 📊 O que é?
+
+O módulo de **Metas** permite definir objetivos de vendas por período, vendedor, equipe ou território, com acompanhamento em tempo real.
+
+---
+
+## 📝 Configurando Metas
+
+**1. Acesse o Módulo de Metas**
+   - Menu: CRM → Metas
+   - Clique em "+ Nova Meta"
+
+**2. Defina os Parâmetros**
+
+| Campo | Descrição |
+|-------|-----------|
+| **Tipo** | Valor Monetário, Quantidade, Novos Clientes |
+| **Período** | Mensal, Trimestral, Anual |
+| **Responsável** | Vendedor, Equipe ou Território |
+| **Valor Alvo** | Meta a ser atingida |
+| **Stretch Goal** | Meta desafiadora (120% do alvo) |
+
+**3. Configure Marcos Intermediários**
+   - Semana 1: 20% da meta
+   - Semana 2: 45% da meta
+   - Semana 3: 70% da meta
+   - Semana 4: 100% da meta
+
+**4. Defina Alertas**
+   - Notificação quando atingir 50%, 80%, 100%
+   - Alerta se estiver 20% abaixo do esperado
+   - Celebração automática ao bater a meta
+
+---
+
+## 📈 Dashboard de Metas
+
+O painel exibe:
+- **Velocímetro**: Progresso atual vs. meta
+- **Projeção**: Estimativa de fechamento baseada no pipeline
+- **Ranking**: Posição em relação à equipe
+- **Tendência**: Comparativo com meses anteriores
+
+---
+
+## 🏆 Gamificação
+
+- Badges por conquistas (Primeira venda, Meta batida, Recorde)
+- Ranking mensal da equipe
+- Pontos por atividades (ligações, reuniões, propostas)
+
+---
+
+## 💡 Dica da IA
+
+A IA analisa o histórico e projeta: "Com o pipeline atual, você deve atingir 87% da meta. Para garantir 100%, foque nas 3 oportunidades em estágio de Negociação — juntas somam R$ 45.000."`
+      },
+      {
+        id: 'crm-gestor-comissoes',
+        title: 'Gestão de Comissões',
+        icon: DollarSign,
+        content: `## 📊 O que é?
+
+O módulo de **Comissões** automatiza o cálculo e acompanhamento de comissionamento da equipe comercial, com regras flexíveis e transparência total.
+
+---
+
+## 📝 Configurando Regras de Comissão
+
+**1. Acesse Configurações**
+   - Menu: CRM → Comissões → Regras
+   - Clique em "+ Nova Regra de Comissão"
+
+**2. Defina a Estrutura Base**
+
+| Parâmetro | Exemplo |
+|-----------|---------|
+| **Nome** | "Comissão Padrão Vendedor" |
+| **Tipo** | % sobre valor, Valor fixo, Escalonado |
+| **Base de Cálculo** | Valor Bruto, Valor Líquido, Margem |
+| **Momento** | No fechamento, No faturamento, No recebimento |
+
+**3. Configure Escalonamento (Opcional)**
+
+| Faixa | Comissão |
+|-------|----------|
+| Até R$ 10.000 | 3% |
+| R$ 10.001 - R$ 50.000 | 5% |
+| Acima de R$ 50.000 | 7% |
+
+**4. Regras Especiais**
+
+- **Por Produto/Categoria**: Comissão diferenciada por linha
+- **Por Cliente**: Clientes estratégicos com taxa especial
+- **Por Margem**: Maior margem = maior comissão
+- **Por Meta**: Bônus adicional ao bater meta
+
+---
+
+## 📊 Relatório de Comissões
+
+O sistema gera automaticamente:
+- Resumo mensal por vendedor
+- Detalhamento por venda
+- Comparativo com metas
+- Histórico de pagamentos
+
+---
+
+## 💰 Workflow de Pagamento
+
+1. Vendedor fecha a venda
+2. Sistema calcula comissão automaticamente
+3. Gestor aprova (se necessário)
+4. Financeiro é notificado
+5. Pagamento é agendado
+6. Vendedor recebe confirmação
+
+---
+
+## ⚠️ Estornos e Ajustes
+
+Se uma venda for cancelada ou devolvida:
+- Comissão é automaticamente estornada
+- Vendedor é notificado
+- Ajuste aparece no próximo fechamento
+
+---
+
+## 💡 Dica da IA
+
+A IA projeta: "Com as vendas atuais, sua comissão estimada do mês é R$ 8.500. Se fechar as 2 oportunidades em negociação, pode chegar a R$ 12.200."`
+      },
+      {
+        id: 'crm-gestor-territorios',
+        title: 'Gestão de Territórios',
+        icon: Building2,
+        content: `## 📊 O que é?
+
+**Territórios** são segmentações geográficas ou lógicas que organizam a atuação da equipe comercial, garantindo cobertura adequada e evitando conflitos.
+
+---
+
+## 📝 Configurando Territórios
+
+**1. Acesse o Módulo**
+   - Menu: CRM → Configurações → Territórios
+   - Clique em "+ Novo Território"
+
+**2. Defina a Estrutura**
+
+| Campo | Descrição |
+|-------|-----------|
+| **Nome** | "Região Sudeste", "Key Accounts", "Canal Digital" |
+| **Tipo** | Geográfico, Segmento, Vertical, Canal |
+| **Gestor** | Responsável pelo território |
+| **Equipe** | Vendedores vinculados |
+
+**3. Critérios de Segmentação Geográfica**
+
+- Por Estado (UF)
+- Por Cidade
+- Por CEP/Faixa de CEP
+- Por DDD
+
+**4. Critérios de Segmentação por Conta**
+
+- Por Porte (PME, Médias, Enterprise)
+- Por CNAE (setor de atuação)
+- Por Faturamento anual
+- Por Histórico de compras
+
+---
+
+## 🔗 Hierarquia de Territórios
+
+\`\`\`
+Brasil (Nacional)
+├── Região Sul
+│   ├── RS
+│   ├── SC
+│   └── PR
+├── Região Sudeste
+│   ├── SP Capital
+│   ├── SP Interior
+│   ├── RJ
+│   └── MG
+└── Região Nordeste
+    └── ...
+\`\`\`
+
+---
+
+## 📊 Métricas por Território
+
+- Receita total
+- Número de clientes ativos
+- Ticket médio
+- Taxa de conversão
+- Oportunidades em pipeline
+
+---
+
+## 🔄 Distribuição Automática de Leads
+
+Quando um lead entra, o sistema:
+1. Identifica o território pelo CEP/Estado
+2. Distribui via Round Robin entre vendedores do território
+3. Respeita capacidade configurada de cada vendedor
+4. Notifica o vendedor designado
+
+---
+
+## 💡 Dica da IA
+
+A IA analisa a performance e sugere: "O território 'SP Interior' está com 40% mais leads que 'SP Capital', mas a equipe é do mesmo tamanho. Considere rebalancear para melhorar a cobertura."`
+      }
+    ]
+  },
   configuracoes: {
     title: 'Configurações',
     icon: Settings,
@@ -2535,6 +3156,7 @@ export default function Documentacao() {
       'inteligencia': 'inteligencia',
       'contratos': 'contratos',
       'projetos': 'projetos',
+      'crm': 'crm',
       'configuracoes': 'configuracoes',
     };
     return categoryMapping[param || ''] || 'financeiro';
