@@ -20485,6 +20485,7 @@ export type Database = {
           pipeline_id: string | null
           priority: string | null
           probability: number | null
+          requires_conversion_review: boolean | null
           seller_id: string | null
           source: string | null
           source_campaign: string | null
@@ -20530,6 +20531,7 @@ export type Database = {
           pipeline_id?: string | null
           priority?: string | null
           probability?: number | null
+          requires_conversion_review?: boolean | null
           seller_id?: string | null
           source?: string | null
           source_campaign?: string | null
@@ -20575,6 +20577,7 @@ export type Database = {
           pipeline_id?: string | null
           priority?: string | null
           probability?: number | null
+          requires_conversion_review?: boolean | null
           seller_id?: string | null
           source?: string | null
           source_campaign?: string | null
