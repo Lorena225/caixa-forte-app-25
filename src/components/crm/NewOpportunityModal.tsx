@@ -9,7 +9,7 @@ import { useCRM, Stage } from "@/hooks/useCRM";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { CalendarIcon, DollarSign, Percent, Search, User, Building2 } from "lucide-react";
+import { CalendarIcon, DollarSign, Percent, Building2 } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Calendar } from "@/components/ui/calendar";
