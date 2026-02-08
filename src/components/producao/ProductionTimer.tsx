@@ -59,8 +59,8 @@ export function ProductionTimer({
 
   const getStatusColor = () => {
     if (!startTime) return "text-muted-foreground";
-    if (isPaused) return "text-amber-600";
-    if (isRunning) return "text-green-600";
+    if (isPaused) return "text-warning";
+    if (isRunning) return "text-success";
     return "text-muted-foreground";
   };
 
