@@ -65,6 +65,9 @@ import {
   Layers,
   CircleDollarSign,
   Store,
+  Factory,
+  Cog,
+  Route as RouteIcon,
   type LucideIcon,
 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -91,7 +94,7 @@ export function useSidebarCollapse() {
 }
 
 // ============ CATEGORY COLOR DEFINITIONS ============
-type CategoryKey = 'inicio' | 'favoritos' | 'operacional' | 'suprimentos' | 'financeiro' | 'controladoria' | 'inteligencia' | 'configuracoes';
+type CategoryKey = 'inicio' | 'favoritos' | 'operacional' | 'suprimentos' | 'producao' | 'financeiro' | 'controladoria' | 'inteligencia' | 'configuracoes';
 
 const categoryColors: Record<CategoryKey, { icon: string; bg: string; border: string; text: string; hoverBg: string }> = {
   inicio: { 
@@ -121,6 +124,13 @@ const categoryColors: Record<CategoryKey, { icon: string; bg: string; border: st
     border: 'border-l-orange-500', 
     text: 'text-orange-600',
     hoverBg: 'hover:bg-orange-50/60'
+  },
+  producao: { 
+    icon: 'text-indigo-500', 
+    bg: 'bg-indigo-50', 
+    border: 'border-l-indigo-500', 
+    text: 'text-indigo-600',
+    hoverBg: 'hover:bg-indigo-50/60'
   },
   financeiro: { 
     icon: 'text-green-500', 
@@ -268,6 +278,47 @@ const menuItems: MenuItem[] = [
           { key: 'cotacoes', label: 'Cotações', icon: Calculator, route: '/compras/cotacoes' },
           { key: 'entradas', label: 'Entradas', icon: Package, route: '/compras/entradas' },
           { key: 'fornecedores', label: 'Fornecedores', icon: Users, route: '/cadastros/clientes-fornecedores?tipo=fornecedor' },
+        ]
+      }
+    ]
+  },
+
+  // 🏭 PCP & MRP (PRODUÇÃO)
+  {
+    key: 'producao',
+    label: 'PCP & MRP',
+    icon: Factory,
+    category: 'producao',
+    subGroups: [
+      {
+        key: 'producao-ordens',
+        label: 'Produção',
+        items: [
+          { key: 'ordens-producao', label: 'Ordens de Produção', icon: Factory, route: '/producao/ordens' },
+          { key: 'apontamento', label: 'Apontamento', icon: ClipboardList, route: '/producao/apontamento' },
+        ]
+      },
+      {
+        key: 'engenharia',
+        label: 'Engenharia',
+        items: [
+          { key: 'bom-estrutura', label: 'BOM (Estrutura)', icon: Layers, route: '/producao/engenharia' },
+          { key: 'centros-trabalho', label: 'Centros de Trabalho', icon: RouteIcon, route: '/producao/centros-trabalho' },
+        ]
+      },
+      {
+        key: 'planejamento-mrp',
+        label: 'Planejamento',
+        items: [
+          { key: 'mrp', label: 'MRP', icon: Calculator, route: '/producao/mrp' },
+          { key: 'requisicoes-compra', label: 'Requisições', icon: FileText, route: '/producao/requisicoes' },
+        ]
+      },
+      {
+        key: 'custeio',
+        label: 'Custeio',
+        items: [
+          { key: 'custeio-industrial', label: 'Custeio Industrial', icon: BarChart3, route: '/producao/custeio' },
         ]
       }
     ]

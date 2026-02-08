@@ -508,3 +508,147 @@ export function useMRPResults(runId: string | undefined) {
     enabled: !!runId && !!currentCompany?.id,
   });
 }
+
+// ============ INDIVIDUAL HOOKS FOR PAGES ============
+
+export function useWorkCenters() {
+  const { currentCompany } = useAuth();
+  return useQuery({
+    queryKey: ['work-centers', currentCompany?.id],
+    queryFn: async () => {
+      if (!currentCompany?.id) return [];
+      const { data, error } = await supabase
+        .from('work_centers')
+        .select('*')
+        .eq('company_id', currentCompany.id)
+        .order('code');
+      if (error) throw error;
+      return (data || []) as unknown as WorkCenter[];
+    },
+    enabled: !!currentCompany?.id,
+  });
+}
+
+export function useBOMs() {
+  const { currentCompany } = useAuth();
+  return useQuery({
+    queryKey: ['industrial-boms', currentCompany?.id],
+    queryFn: async () => {
+      if (!currentCompany?.id) return [];
+      const { data, error } = await supabase
+        .from('industrial_boms')
+        .select(`*, products:product_id (name, code), bom_components (id)`)
+        .eq('company_id', currentCompany.id)
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return (data || []).map(bom => ({
+        ...bom,
+        is_active: bom.status === 'active',
+      })) as unknown as (IndustrialBOM & { is_active: boolean; bom_components: { id: string }[] })[];
+    },
+    enabled: !!currentCompany?.id,
+  });
+}
+
+export function useProducts() {
+  const { currentCompany } = useAuth();
+  return useQuery({
+    queryKey: ['products', currentCompany?.id],
+    queryFn: async () => {
+      if (!currentCompany?.id) return [];
+      const { data, error } = await supabase
+        .from('products')
+        .select('id, code, name')
+        .eq('company_id', currentCompany.id)
+        .order('name');
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!currentCompany?.id,
+  });
+}
+
+export function useProductionOrders() {
+  const { currentCompany } = useAuth();
+  return useQuery({
+    queryKey: ['production-orders', currentCompany?.id],
+    queryFn: async () => {
+      if (!currentCompany?.id) return [];
+      const { data, error } = await supabase
+        .from('production_orders')
+        .select(`*, products:product_id (name, code)`)
+        .eq('company_id', currentCompany.id)
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return (data || []).map(order => ({
+        ...order,
+        planned_quantity: order.quantity_planned,
+        completed_quantity: order.quantity_completed,
+        standard_overhead_cost: 0,
+        actual_overhead_cost: 0,
+      })) as unknown as ProductionOrder[];
+    },
+    enabled: !!currentCompany?.id,
+  });
+}
+
+export function useMRPRequirements() {
+  const { currentCompany } = useAuth();
+  return useQuery({
+    queryKey: ['mrp-requirements-latest', currentCompany?.id],
+    queryFn: async () => {
+      if (!currentCompany?.id) return [];
+      const { data, error } = await supabase
+        .from('mrp_requirements')
+        .select(`*, products:product_id (name, code)`)
+        .eq('company_id', currentCompany.id)
+        .order('required_date');
+      if (error) throw error;
+      return (data || []).map(req => ({
+        ...req,
+        required_quantity: req.net_requirement,
+      })) as unknown as MRPRequirement[];
+    },
+    enabled: !!currentCompany?.id,
+  });
+}
+
+export function useRunMRP() {
+  const { currentCompany } = useAuth();
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async (horizonDays: number = 30) => {
+      if (!currentCompany?.id) throw new Error('Empresa não selecionada');
+      const { data, error } = await supabase
+        .rpc('run_mrp_calculation', { p_company_id: currentCompany.id, p_horizon_days: horizonDays });
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['mrp-requirements-latest'] });
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
+}
+
+export function usePurchaseRequisitions() {
+  const { currentCompany } = useAuth();
+  return useQuery({
+    queryKey: ['purchase-requisitions', currentCompany?.id],
+    queryFn: async () => {
+      if (!currentCompany?.id) return [];
+      const { data, error } = await supabase
+        .from('purchase_requisitions')
+        .select(`*, products:product_id (name, code)`)
+        .eq('company_id', currentCompany.id)
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return (data || []).map(req => ({
+        ...req,
+        source_document: 'MRP',
+      })) as unknown as PurchaseRequisition[];
+    },
+    enabled: !!currentCompany?.id,
+  });
+}
