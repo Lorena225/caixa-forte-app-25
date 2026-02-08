@@ -91,14 +91,14 @@ export default function QuoteBuilder() {
   const getApprovalBadge = (item: typeof items[0]) => {
     if (!item.discount_percent || item.discount_percent <= 10) {
       return (
-        <Badge variant="outline" className="text-green-600 border-green-600">
+        <Badge variant="outline" className="text-emerald-600 dark:text-emerald-400 border-emerald-600 dark:border-emerald-400">
           <CheckCircle2 className="h-3 w-3 mr-1" />
           Auto-aprovado
         </Badge>
       );
     }
     return (
-      <Badge variant="outline" className="text-amber-600 border-amber-600">
+      <Badge variant="outline" className="text-amber-600 dark:text-amber-400 border-amber-600 dark:border-amber-400">
         <Clock className="h-3 w-3 mr-1" />
         Requer Aprovação
       </Badge>
@@ -443,8 +443,8 @@ export default function QuoteBuilder() {
                 </div>
 
                 {items.some((i) => (i.discount_percent || 0) > 10) && (
-                  <div className="flex items-start gap-2 p-3 bg-amber-50 dark:bg-amber-950 rounded-lg border border-amber-200 dark:border-amber-800">
-                    <AlertTriangle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                  <div className="flex items-start gap-2 p-3 bg-amber-50/50 dark:bg-amber-950/50 rounded-lg border border-amber-200/50 dark:border-amber-800/50">
+                    <AlertTriangle className="h-5 w-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
                     <div className="text-sm">
                       <p className="font-medium text-amber-800 dark:text-amber-200">
                         Aprovação Necessária
