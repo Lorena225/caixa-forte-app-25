@@ -278,6 +278,12 @@ import AISettingsPage from "./pages/ia/AISettingsPage";
 import AnomalyMonitorPage from "./pages/ia/AnomalyMonitorPage";
 import DigitalAgentsPage from "./pages/ia/DigitalAgentsPage";
 import AIDecisionLogsPage from "./pages/ia/AIDecisionLogsPage";
+// HCM & Departamento Pessoal
+import HCMIndex from "./pages/hcm/Index";
+import HCMColaboradores from "./pages/hcm/Colaboradores";
+import HCMIntegracoesPonto from "./pages/hcm/IntegracoesPonto";
+import HCMFolhaInteligente from "./pages/hcm/FolhaInteligente";
+import HCMPeopleAnalytics from "./pages/hcm/PeopleAnalytics";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -659,6 +665,13 @@ const App = () => (
                 <Route path="/api/docs" element={<APIDocs />} />
                 <Route path="/settings/api-keys" element={<APIKeysPage />} />
                 <Route path="/configuracoes/api-keys" element={<APIKeysPage />} />
+                
+                {/* ============ HCM & DEPARTAMENTO PESSOAL ============ */}
+                <Route path="/hcm" element={<HCMIndex />} />
+                <Route path="/hcm/colaboradores" element={<HCMColaboradores />} />
+                <Route path="/hcm/integracoes-ponto" element={<HCMIntegracoesPonto />} />
+                <Route path="/hcm/folha" element={<HCMFolhaInteligente />} />
+                <Route path="/hcm/people-analytics" element={<HCMPeopleAnalytics />} />
                 
                 {/* ============ AUTOPILOTO (PT-BR) ============ */}
                 <Route path="/autopiloto/caixa-entrada" element={<Inbox />} />

@@ -68,6 +68,9 @@ import {
   Factory,
   Cog,
   Route as RouteIcon,
+  Clock,
+  Calendar,
+  Smartphone,
   type LucideIcon,
 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -94,7 +97,7 @@ export function useSidebarCollapse() {
 }
 
 // ============ CATEGORY COLOR DEFINITIONS ============
-type CategoryKey = 'inicio' | 'favoritos' | 'operacional' | 'suprimentos' | 'producao' | 'financeiro' | 'controladoria' | 'inteligencia' | 'configuracoes';
+type CategoryKey = 'inicio' | 'favoritos' | 'operacional' | 'suprimentos' | 'producao' | 'financeiro' | 'controladoria' | 'inteligencia' | 'hcm' | 'configuracoes';
 
 const categoryColors: Record<CategoryKey, { icon: string; bg: string; border: string; text: string; hoverBg: string }> = {
   inicio: { 
@@ -152,6 +155,13 @@ const categoryColors: Record<CategoryKey, { icon: string; bg: string; border: st
     border: 'border-l-violet-500', 
     text: 'text-violet-600',
     hoverBg: 'hover:bg-violet-50/60'
+  },
+  hcm: { 
+    icon: 'text-rose-500', 
+    bg: 'bg-rose-50', 
+    border: 'border-l-rose-500', 
+    text: 'text-rose-600',
+    hoverBg: 'hover:bg-rose-50/60'
   },
   configuracoes: { 
     icon: 'text-slate-500', 
@@ -456,6 +466,33 @@ const menuItems: MenuItem[] = [
           { key: 'config-ia', label: 'Configurações de IA', icon: Settings, route: '/ia/configuracoes' },
         ]
       }
+    ]
+  },
+
+  // 👥 HCM & DEPARTAMENTO PESSOAL
+  {
+    key: 'hcm',
+    label: 'HCM & DP',
+    icon: UserCheck,
+    category: 'hcm',
+    subGroups: [
+      {
+        key: 'gestao-pessoas',
+        label: 'Gestão de Pessoas',
+        items: [
+          { key: 'hcm-dashboard', label: 'Dashboard', icon: BarChart3, route: '/hcm' },
+          { key: 'hcm-colaboradores', label: 'Colaboradores', icon: Users, route: '/hcm/colaboradores' },
+          { key: 'hcm-people-analytics', label: 'People Analytics', icon: PieChart, route: '/hcm/people-analytics' },
+        ]
+      },
+      {
+        key: 'dp-operacional',
+        label: 'Departamento Pessoal',
+        items: [
+          { key: 'hcm-folha', label: 'Folha Inteligente', icon: DollarSign, route: '/hcm/folha' },
+          { key: 'hcm-ponto', label: 'Integrações Ponto', icon: Clock, route: '/hcm/integracoes-ponto' },
+        ]
+      },
     ]
   },
 
