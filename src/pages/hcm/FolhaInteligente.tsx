@@ -21,7 +21,9 @@ import {
   Clock, TrendingUp, Users, AlertTriangle, Download,
   Sparkles, ArrowRight, RefreshCw
 } from 'lucide-react';
-import { useHCM, PayrollPeriod } from '@/hooks/useHCM';
+import { usePayroll } from '@/hooks/hcm/usePayroll';
+import { useEmployees } from '@/hooks/hcm/useEmployees';
+import type { PayrollPeriod } from '@/hooks/hcm/usePayroll';
 import { formatCurrency } from '@/lib/formatters';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
