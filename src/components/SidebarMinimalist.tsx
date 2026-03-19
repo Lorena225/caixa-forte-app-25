@@ -491,6 +491,10 @@ const menuItems: MenuItem[] = [
         items: [
           { key: 'hcm-folha', label: 'Folha Inteligente', icon: DollarSign, route: '/hcm/folha' },
           { key: 'hcm-ponto', label: 'Integrações Ponto', icon: Clock, route: '/hcm/integracoes-ponto' },
+          { key: 'hcm-banco-horas', label: 'Banco de Horas', icon: Clock, route: '/hcm/banco-horas' },
+          { key: 'hcm-beneficios', label: 'Benefícios', icon: Gift, route: '/hcm/beneficios' },
+          { key: 'hcm-solicitacoes', label: 'Solicitações', icon: Calendar, route: '/hcm/solicitacoes' },
+          { key: 'hcm-holerites', label: 'Holerites', icon: FileText, route: '/hcm/holerites' },
         ]
       },
     ]
