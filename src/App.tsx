@@ -284,6 +284,10 @@ import HCMColaboradores from "./pages/hcm/Colaboradores";
 import HCMIntegracoesPonto from "./pages/hcm/IntegracoesPonto";
 import HCMFolhaInteligente from "./pages/hcm/FolhaInteligente";
 import HCMPeopleAnalytics from "./pages/hcm/PeopleAnalytics";
+import HCMBeneficios from "./pages/hcm/Beneficios";
+import HCMSolicitacoes from "./pages/hcm/Solicitacoes";
+import HCMHolerites from "./pages/hcm/Holerites";
+import HCMBancoHoras from "./pages/hcm/BancoHoras";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
