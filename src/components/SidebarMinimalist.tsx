@@ -496,6 +496,7 @@ const menuItems: MenuItem[] = [
           { key: 'hcm-beneficios', label: 'Benefícios', icon: Gift, route: '/hcm/beneficios' },
           { key: 'hcm-solicitacoes', label: 'Solicitações', icon: Calendar, route: '/hcm/solicitacoes' },
           { key: 'hcm-holerites', label: 'Holerites', icon: FileText, route: '/hcm/holerites' },
+          { key: 'hcm-portal', label: 'Portal Colaborador', icon: Smartphone, route: '/hcm/portal' },
         ]
       },
     ]
