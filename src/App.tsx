@@ -676,6 +676,10 @@ const App = () => (
                 <Route path="/hcm/integracoes-ponto" element={<HCMIntegracoesPonto />} />
                 <Route path="/hcm/folha" element={<HCMFolhaInteligente />} />
                 <Route path="/hcm/people-analytics" element={<HCMPeopleAnalytics />} />
+                <Route path="/hcm/beneficios" element={<HCMBeneficios />} />
+                <Route path="/hcm/solicitacoes" element={<HCMSolicitacoes />} />
+                <Route path="/hcm/holerites" element={<HCMHolerites />} />
+                <Route path="/hcm/banco-horas" element={<HCMBancoHoras />} />
                 
                 {/* ============ AUTOPILOTO (PT-BR) ============ */}
                 <Route path="/autopiloto/caixa-entrada" element={<Inbox />} />
