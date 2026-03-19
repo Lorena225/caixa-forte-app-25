@@ -132,7 +132,15 @@ export default function PeopleAnalytics() {
             <p className="text-muted-foreground">
               Métricas em tempo real e insights estratégicos de RH
             </p>
-          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleGenerateSnapshot}
+            disabled={generating}
+          >
+            <RefreshCw className={`h-4 w-4 mr-1 ${generating ? 'animate-spin' : ''}`} />
+            Gerar Snapshot
+          </Button>
         </div>
 
         {/* Main KPIs */}
