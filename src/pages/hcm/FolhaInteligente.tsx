@@ -43,10 +43,8 @@ const months = [
 ];
 
 export default function FolhaInteligente() {
-  const { 
-    payrollPeriods, payrollPeriodsLoading, createPayrollPeriod,
-    employees, commissions
-  } = useHCM();
+  const { payrollPeriods, payrollPeriodsLoading, createPayrollPeriod, commissions } = usePayroll();
+  const { employees } = useEmployees();
   
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedPeriod, setSelectedPeriod] = useState<PayrollPeriod | null>(null);
