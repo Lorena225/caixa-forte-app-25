@@ -132,6 +132,7 @@ export default function PeopleAnalytics() {
             <p className="text-muted-foreground">
               Métricas em tempo real e insights estratégicos de RH
             </p>
+          </div>
           <Button
             variant="outline"
             size="sm"
