@@ -35635,6 +35635,10 @@ export type Database = {
         }
         Returns: string
       }
+      generate_people_analytics_snapshot: {
+        Args: { p_company_id: string }
+        Returns: undefined
+      }
       generate_recurring_transactions: {
         Args: { p_transaction_id: string }
         Returns: number

@@ -1,14 +1,22 @@
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { 
   BarChart3, TrendingUp, TrendingDown, Users, DollarSign, 
-  Clock, AlertTriangle, Target, Brain, Sparkles, ArrowUp, ArrowDown
+  Clock, AlertTriangle, Target, Brain, Sparkles, ArrowUp, ArrowDown,
+  RefreshCw
 } from 'lucide-react';
-import { useHCM } from '@/hooks/useHCM';
+import { useHCMKpis, usePeopleAnalytics } from '@/hooks/hcm/useHCMKpis';
+import { useEmployees } from '@/hooks/hcm/useEmployees';
 import { formatCurrency } from '@/lib/formatters';
 import { Skeleton } from '@/components/ui/skeleton';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
+import { toast } from 'sonner';
+import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   BarChart, Bar, PieChart, Pie, Cell, Legend
@@ -17,32 +25,33 @@ import {
 const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6'];
 
 export default function PeopleAnalytics() {
-  const { 
-    hcmKpis, hcmKpisLoading, 
-    employees, 
-    analytics 
-  } = useHCM();
+  const { currentCompany } = useAuth();
+  const queryClient = useQueryClient();
+  const [generating, setGenerating] = useState(false);
+  
+  const hcmKpisQuery = useHCMKpis();
+  const hcmKpis = hcmKpisQuery.data;
+  const hcmKpisLoading = hcmKpisQuery.isLoading;
+  
+  const analyticsQuery = usePeopleAnalytics();
+  const analytics = analyticsQuery.data || [];
+  
+  const { employees } = useEmployees();
 
-  // Mock data for charts (in real implementation, this comes from analytics snapshots)
-  const headcountTrend = [
-    { month: 'Jul', count: 42 },
-    { month: 'Ago', count: 45 },
-    { month: 'Set', count: 44 },
-    { month: 'Out', count: 48 },
-    { month: 'Nov', count: 52 },
-    { month: 'Dez', count: 55 },
-    { month: 'Jan', count: employees.length || 58 },
-  ];
+  // Use real analytics snapshots for chart data
+  const headcountTrend = analytics.length > 0
+    ? analytics.slice(0, 7).reverse().map(s => ({
+        month: new Date(s.snapshot_date).toLocaleDateString('pt-BR', { month: 'short' }),
+        count: s.total_employees,
+      }))
+    : [{ month: 'Atual', count: employees.length }];
 
-  const turnoverTrend = [
-    { month: 'Jul', rate: 2.1 },
-    { month: 'Ago', rate: 1.8 },
-    { month: 'Set', rate: 2.5 },
-    { month: 'Out', rate: 1.2 },
-    { month: 'Nov', rate: 1.9 },
-    { month: 'Dez', rate: 2.3 },
-    { month: 'Jan', rate: hcmKpis?.turnoverRate || 1.5 },
-  ];
+  const turnoverTrend = analytics.length > 0
+    ? analytics.slice(0, 7).reverse().map(s => ({
+        month: new Date(s.snapshot_date).toLocaleDateString('pt-BR', { month: 'short' }),
+        rate: s.turnover_rate || 0,
+      }))
+    : [{ month: 'Atual', rate: hcmKpis?.turnoverRate || 0 }];
 
   // Calculate department distribution
   const departmentData = employees.reduce((acc, emp) => {
@@ -64,6 +73,23 @@ export default function PeopleAnalytics() {
   }, {} as Record<string, number>);
 
   const contractChartData = Object.entries(contractData).map(([name, value]) => ({ name, value }));
+
+  const handleGenerateSnapshot = async () => {
+    if (!currentCompany?.id) return;
+    setGenerating(true);
+    try {
+      const { error } = await supabase.rpc('generate_people_analytics_snapshot', {
+        p_company_id: currentCompany.id,
+      });
+      if (error) throw error;
+      toast.success('Snapshot de analytics gerado com sucesso!');
+      queryClient.invalidateQueries({ queryKey: ['people_analytics_snapshots'] });
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : 'Erro ao gerar snapshot');
+    } finally {
+      setGenerating(false);
+    }
+  };
 
   // AI Insights
   const aiInsights = [
@@ -107,6 +133,15 @@ export default function PeopleAnalytics() {
               Métricas em tempo real e insights estratégicos de RH
             </p>
           </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleGenerateSnapshot}
+            disabled={generating}
+          >
+            <RefreshCw className={`h-4 w-4 mr-1 ${generating ? 'animate-spin' : ''}`} />
+            Gerar Snapshot
+          </Button>
         </div>
 
         {/* Main KPIs */}

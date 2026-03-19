@@ -78,9 +78,10 @@ export function useTimeTracking() {
   const createIntegration = useMutation({
     mutationFn: async (data: Partial<TimeTrackingIntegration>) => {
       if (!companyId) throw new Error('Company required');
+      const { id, ...rest } = data as TimeTrackingIntegration;
       const { error } = await supabase
         .from('time_tracking_integrations')
-        .insert({ ...data, company_id: companyId } as never);
+        .insert({ ...rest, company_id: companyId });
       if (error) throw error;
     },
     onSuccess: () => {

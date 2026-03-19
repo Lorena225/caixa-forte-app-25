@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -21,7 +22,9 @@ import {
   Clock, TrendingUp, Users, AlertTriangle, Download,
   Sparkles, ArrowRight, RefreshCw
 } from 'lucide-react';
-import { useHCM, PayrollPeriod } from '@/hooks/useHCM';
+import { usePayroll } from '@/hooks/hcm/usePayroll';
+import { useEmployees } from '@/hooks/hcm/useEmployees';
+import type { PayrollPeriod } from '@/hooks/hcm/usePayroll';
 import { formatCurrency } from '@/lib/formatters';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
@@ -41,10 +44,8 @@ const months = [
 ];
 
 export default function FolhaInteligente() {
-  const { 
-    payrollPeriods, payrollPeriodsLoading, createPayrollPeriod,
-    employees, commissions
-  } = useHCM();
+  const { payrollPeriods, payrollPeriodsLoading, createPayrollPeriod, commissions } = usePayroll();
+  const { employees } = useEmployees();
   
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedPeriod, setSelectedPeriod] = useState<PayrollPeriod | null>(null);
@@ -87,10 +88,73 @@ export default function FolhaInteligente() {
 
   const handleCalculate = async (periodId: string) => {
     setCalculating(true);
-    // Simula cálculo
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    toast.success('Folha calculada com sucesso! Verifique o preview.');
-    setCalculating(false);
+    try {
+      // Update period status to 'calculando'
+      const { error: updateErr } = await supabase
+        .from('payroll_periods')
+        .update({ status: 'calculando' as const })
+        .eq('id', periodId);
+      if (updateErr) throw updateErr;
+
+      // Generate payroll entries for each active employee
+      const activeEmployees = employees.filter(e => e.status === 'ativo');
+      const entries = activeEmployees.map(emp => ({
+        company_id: emp.company_id,
+        period_id: periodId,
+        employee_id: emp.id,
+        base_salary: emp.base_salary,
+        worked_days: 22,
+        salary_amount: emp.base_salary,
+        overtime_50_hours: 0,
+        overtime_50_amount: 0,
+        overtime_100_hours: 0,
+        overtime_100_amount: 0,
+        night_hours: 0,
+        night_amount: 0,
+        commission_amount: commissions
+          .filter(c => c.employee_id === emp.id && c.status === 'pending')
+          .reduce((sum, c) => sum + c.commission_amount, 0),
+        bonus_amount: 0,
+        total_earnings: emp.base_salary,
+        inss_amount: Math.min(emp.base_salary * 0.14, 908.85),
+        irrf_amount: 0,
+        fgts_amount: emp.base_salary * 0.08,
+        total_deductions: Math.min(emp.base_salary * 0.14, 908.85),
+        net_salary: emp.base_salary - Math.min(emp.base_salary * 0.14, 908.85),
+        status: 'preview' as const,
+      }));
+
+      if (entries.length > 0) {
+        const { error: insertErr } = await supabase
+          .from('payroll_entries')
+          .insert(entries);
+        if (insertErr) throw insertErr;
+      }
+
+      // Update period totals
+      const totalGross = entries.reduce((s, e) => s + e.total_earnings, 0);
+      const totalDeductions = entries.reduce((s, e) => s + e.total_deductions, 0);
+      const totalNet = entries.reduce((s, e) => s + e.net_salary, 0);
+
+      await supabase
+        .from('payroll_periods')
+        .update({
+          status: 'preview' as const,
+          total_employees: entries.length,
+          total_gross: totalGross,
+          total_deductions: totalDeductions,
+          total_net: totalNet,
+          total_employer_cost: totalGross + entries.reduce((s, e) => s + e.fgts_amount, 0),
+          calculated_at: new Date().toISOString(),
+        })
+        .eq('id', periodId);
+
+      toast.success('Folha calculada com sucesso! Verifique o preview.');
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : 'Erro ao calcular folha');
+    } finally {
+      setCalculating(false);
+    }
   };
 
   return (

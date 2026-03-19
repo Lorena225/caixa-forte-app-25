@@ -117,7 +117,7 @@ export default function HCMIndex() {
       title: 'People Analytics',
       description: 'Métricas e IA preditiva',
       icon: BarChart3,
-      href: '/hcm/analytics',
+      href: '/hcm/people-analytics',
       color: 'border-l-amber-500',
       iconColor: 'text-amber-500',
     },
