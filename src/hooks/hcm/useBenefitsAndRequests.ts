@@ -80,7 +80,7 @@ export function useBenefitsAndRequests() {
     mutationFn: async (requestId: string) => {
       const { error } = await supabase
         .from('employee_requests')
-        .update({ status: 'aprovado', approved_at: new Date().toISOString() } as never)
+        .update({ status: 'aprovado' as const, approved_at: new Date().toISOString() })
         .eq('id', requestId);
       if (error) throw error;
     },
