@@ -1,14 +1,22 @@
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { 
   BarChart3, TrendingUp, TrendingDown, Users, DollarSign, 
-  Clock, AlertTriangle, Target, Brain, Sparkles, ArrowUp, ArrowDown
+  Clock, AlertTriangle, Target, Brain, Sparkles, ArrowUp, ArrowDown,
+  RefreshCw
 } from 'lucide-react';
-import { useHCM } from '@/hooks/useHCM';
+import { useHCMKpis, usePeopleAnalytics } from '@/hooks/hcm/useHCMKpis';
+import { useEmployees } from '@/hooks/hcm/useEmployees';
 import { formatCurrency } from '@/lib/formatters';
 import { Skeleton } from '@/components/ui/skeleton';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
+import { toast } from 'sonner';
+import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   BarChart, Bar, PieChart, Pie, Cell, Legend
