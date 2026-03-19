@@ -284,6 +284,10 @@ import HCMColaboradores from "./pages/hcm/Colaboradores";
 import HCMIntegracoesPonto from "./pages/hcm/IntegracoesPonto";
 import HCMFolhaInteligente from "./pages/hcm/FolhaInteligente";
 import HCMPeopleAnalytics from "./pages/hcm/PeopleAnalytics";
+import HCMBeneficios from "./pages/hcm/Beneficios";
+import HCMSolicitacoes from "./pages/hcm/Solicitacoes";
+import HCMHolerites from "./pages/hcm/Holerites";
+import HCMBancoHoras from "./pages/hcm/BancoHoras";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -672,6 +676,10 @@ const App = () => (
                 <Route path="/hcm/integracoes-ponto" element={<HCMIntegracoesPonto />} />
                 <Route path="/hcm/folha" element={<HCMFolhaInteligente />} />
                 <Route path="/hcm/people-analytics" element={<HCMPeopleAnalytics />} />
+                <Route path="/hcm/beneficios" element={<HCMBeneficios />} />
+                <Route path="/hcm/solicitacoes" element={<HCMSolicitacoes />} />
+                <Route path="/hcm/holerites" element={<HCMHolerites />} />
+                <Route path="/hcm/banco-horas" element={<HCMBancoHoras />} />
                 
                 {/* ============ AUTOPILOTO (PT-BR) ============ */}
                 <Route path="/autopiloto/caixa-entrada" element={<Inbox />} />

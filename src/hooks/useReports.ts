@@ -37,7 +37,7 @@ async function getCompanyId(): Promise<string> {
     .from('user_profiles')
     .select('company_id')
     .eq('user_id', user.id)
-    .single();
+    .maybeSingle();
 
   if (!profile?.company_id) throw new Error('Empresa não encontrada');
   return profile.company_id;
