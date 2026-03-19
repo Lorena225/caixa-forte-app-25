@@ -27080,9 +27080,9 @@ export type Database = {
           entrada_2: string | null
           entrada_3: string | null
           funcionario_id: string
-          horas_extras: unknown
-          horas_falta: unknown
-          horas_trabalhadas: unknown
+          horas_extras: string | null
+          horas_falta: string | null
+          horas_trabalhadas: string | null
           id: string
           justificativa: string | null
           saida_1: string | null
@@ -27099,9 +27099,9 @@ export type Database = {
           entrada_2?: string | null
           entrada_3?: string | null
           funcionario_id: string
-          horas_extras?: unknown
-          horas_falta?: unknown
-          horas_trabalhadas?: unknown
+          horas_extras?: string | null
+          horas_falta?: string | null
+          horas_trabalhadas?: string | null
           id?: string
           justificativa?: string | null
           saida_1?: string | null
@@ -27118,9 +27118,9 @@ export type Database = {
           entrada_2?: string | null
           entrada_3?: string | null
           funcionario_id?: string
-          horas_extras?: unknown
-          horas_falta?: unknown
-          horas_trabalhadas?: unknown
+          horas_extras?: string | null
+          horas_falta?: string | null
+          horas_trabalhadas?: string | null
           id?: string
           justificativa?: string | null
           saida_1?: string | null
