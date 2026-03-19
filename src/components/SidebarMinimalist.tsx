@@ -71,6 +71,7 @@ import {
   Clock,
   Calendar,
   Smartphone,
+  Gift,
   type LucideIcon,
 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
