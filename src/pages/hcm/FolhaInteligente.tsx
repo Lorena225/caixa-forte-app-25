@@ -121,7 +121,7 @@ export default function FolhaInteligente() {
         fgts_amount: emp.base_salary * 0.08,
         total_deductions: Math.min(emp.base_salary * 0.14, 908.85),
         net_salary: emp.base_salary - Math.min(emp.base_salary * 0.14, 908.85),
-        status: 'calculado',
+        status: 'calculado' as const,
       }));
 
       if (entries.length > 0) {
