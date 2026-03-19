@@ -95,7 +95,7 @@ export function useBenefitsAndRequests() {
     mutationFn: async ({ requestId, reason }: { requestId: string; reason: string }) => {
       const { error } = await supabase
         .from('employee_requests')
-        .update({ status: 'rejeitado', rejection_reason: reason } as never)
+        .update({ status: 'rejeitado' as const, rejection_reason: reason })
         .eq('id', requestId);
       if (error) throw error;
     },

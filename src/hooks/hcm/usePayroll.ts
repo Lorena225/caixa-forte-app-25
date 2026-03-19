@@ -100,9 +100,11 @@ export function usePayroll() {
   const createPayrollPeriod = useMutation({
     mutationFn: async (data: Partial<PayrollPeriod>) => {
       if (!companyId) throw new Error('Company required');
+      const insertData = { ...data, company_id: companyId };
+      delete (insertData as Record<string, unknown>).id;
       const { data: result, error } = await supabase
         .from('payroll_periods')
-        .insert({ ...data, company_id: companyId } as never)
+        .insert(insertData as Database['public']['Tables']['payroll_periods']['Insert'])
         .select()
         .single();
       if (error) throw error;

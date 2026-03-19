@@ -97,13 +97,11 @@ export default function PortalColaborador() {
       const { error } = await supabase
         .from('employee_requests')
         .insert({
-          company_id: myProfile?.company_id,
+          company_id: myProfile?.company_id!,
           employee_id: myId,
-          request_type: requestForm.request_type,
+          request_type: requestForm.request_type as 'ferias' | 'reembolso' | 'ajuste_ponto' | 'documento' | 'abono' | 'licenca',
           title: requestForm.title,
           description: requestForm.description || null,
-          status: 'pendente',
-          submitted_at: new Date().toISOString(),
         });
       if (error) throw error;
       toast.success('Solicitação enviada com sucesso!');
