@@ -288,6 +288,7 @@ import HCMBeneficios from "./pages/hcm/Beneficios";
 import HCMSolicitacoes from "./pages/hcm/Solicitacoes";
 import HCMHolerites from "./pages/hcm/Holerites";
 import HCMBancoHoras from "./pages/hcm/BancoHoras";
+import HCMPortalColaborador from "./pages/hcm/PortalColaborador";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
