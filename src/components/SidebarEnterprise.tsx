@@ -67,6 +67,7 @@ import {
   Search,
   Eye,
   TrendingDown,
+  FolderKanban,
   type LucideIcon,
 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -146,24 +147,12 @@ const menuItems: MenuItem[] = [
       { key: 'centros-custodia', label: 'Centros de Custódia', icon: FolderTree, route: '/operacional/centros-custodia' },
       { key: 'departamentos', label: 'Departamentos', icon: Building2, route: '/operacional/departamentos' },
       { key: 'responsaveis-cc', label: 'Responsáveis por CC', icon: UserCheck, route: '/operacional/responsaveis' },
+      { key: 'projetos', label: 'Projetos', icon: FolderKanban, route: '/projetos' },
+      { key: 'gestor-ponto', label: 'Gestão de Ponto', icon: ClipboardList, route: '/hcm/gestor-ponto' },
     ]
   },
 
-  // 4. SUPRIMENTOS
-  {
-    key: 'suprimentos',
-    label: 'Suprimentos',
-    icon: Truck,
-    colorClass: 'text-menu-compras',
-    children: [
-      { key: 'pedidos-compra', label: 'Pedidos de Compra', icon: FileText, route: '/compras/pedidos' },
-      { key: 'cotacoes', label: 'Cotações', icon: Calculator, route: '/compras/cotacoes' },
-      { key: 'entradas', label: 'Entradas', icon: Package, route: '/compras/entradas' },
-      { key: 'fornecedores', label: 'Fornecedores', icon: Users, route: '/cadastros/clientes-fornecedores' },
-    ]
-  },
-
-  // 5. FINANCEIRO
+  // 4. FINANCEIRO
   {
     key: 'financeiro',
     label: 'Financeiro',
