@@ -291,6 +291,7 @@ import HCMSolicitacoes from "./pages/hcm/Solicitacoes";
 import HCMHolerites from "./pages/hcm/Holerites";
 import HCMBancoHoras from "./pages/hcm/BancoHoras";
 import HCMPortalColaborador from "./pages/hcm/PortalColaborador";
+import HCMGestorPonto from "./pages/hcm/GestorPonto";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -686,6 +687,7 @@ const App = () => (
                 <Route path="/hcm/holerites" element={<HCMHolerites />} />
                 <Route path="/hcm/banco-horas" element={<HCMBancoHoras />} />
                 <Route path="/hcm/portal" element={<HCMPortalColaborador />} />
+                <Route path="/hcm/gestor-ponto" element={<HCMGestorPonto />} />
                 
                 {/* ============ AUTOPILOTO (PT-BR) ============ */}
                 <Route path="/autopiloto/caixa-entrada" element={<Inbox />} />
