@@ -3,11 +3,12 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
-import { FileText, Package, History, User, Calendar, DollarSign } from "lucide-react";
+import { FileText, Package, History, User, Calendar, DollarSign, PenLine } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import type { Contract } from "@/hooks/useContracts";
 import { useContractItems, useContractBillings } from "@/hooks/useContracts";
+import { ClickSignPanel } from "@/components/contratos/ClickSignPanel";
 
 interface ContractDetailsDialogProps {
   contract: Contract | null;
@@ -65,6 +66,10 @@ export function ContractDetailsDialog({ contract, open, onOpenChange }: Contract
             <TabsTrigger value="billing" className="gap-2">
               <History className="h-4 w-4" />
               Faturamentos ({billings?.length || 0})
+            </TabsTrigger>
+            <TabsTrigger value="assinatura" className="gap-2">
+              <PenLine className="h-4 w-4" />
+              Assinatura
             </TabsTrigger>
           </TabsList>
 
@@ -230,6 +235,10 @@ export function ContractDetailsDialog({ contract, open, onOpenChange }: Contract
                 Nenhum faturamento gerado ainda.
               </p>
             )}
+          </TabsContent>
+
+          <TabsContent value="assinatura">
+            <ClickSignPanel contract={contract} />
           </TabsContent>
         </Tabs>
       </DialogContent>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { PageHeader } from "@/components/common/PageHeader";
 import { BackButton } from "@/components/common/BackButton";
@@ -7,14 +7,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { Plus, Search, Pencil, Trash2 } from "lucide-react";
-import { useContracts, useCreateContract, useUpdateContract, useDeleteContract } from "@/hooks/useContracts";
+import { Plus, Search, Pencil, Trash2, Eye, AlertTriangle, Bell } from "lucide-react";
+import { useContracts, useCreateContract, useUpdateContract, useDeleteContract, type Contract } from "@/hooks/useContracts";
 import { useClients, useSuppliers } from "@/hooks/useCounterpartiesFiltered";
-import { format } from "date-fns";
+import { ContractDetailsDialog } from "@/components/contratos/ContractDetailsDialog";
+import { format, differenceInDays, parseISO } from "date-fns";
 
 const STATUS_LABELS: Record<string, string> = {
   rascunho: 'Rascunho',
@@ -38,6 +40,7 @@ export default function ContratosLista() {
   const [statusFilter, setStatusFilter] = useState<string>('');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [viewingContract, setViewingContract] = useState<Contract | null>(null);
   
   const [formData, setFormData] = useState({
     tipo: 'cliente' as 'cliente' | 'fornecedor',
@@ -63,6 +66,15 @@ export default function ContratosLista() {
   const deleteContract = useDeleteContract();
 
   const counterparties = formData.tipo === 'cliente' ? clients : suppliers;
+
+  // Contratos vencendo em até 30 dias
+  const expiringContracts = useMemo(() => {
+    return (contracts || []).filter(c => {
+      if (!c.data_fim || c.status === 'encerrado' || c.status === 'cancelado') return false;
+      const days = differenceInDays(parseISO(c.data_fim), new Date());
+      return days >= 0 && days <= (c.alertar_antes_dias || 30);
+    });
+  }, [contracts]);
 
   const handleNew = () => {
     setEditingId(null);
@@ -162,17 +174,35 @@ export default function ContratosLista() {
         (Number(contract.valor_total) || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
       )
     },
-    { 
-      key: 'actions', 
+    {
+      key: 'vencimento',
+      header: 'Vencimento',
+      render: (contract: typeof contracts extends (infer T)[] ? T : never) => {
+        if (!contract.data_fim) return <span className="text-xs text-muted-foreground">Indeterminado</span>;
+        const days = differenceInDays(parseISO(contract.data_fim), new Date());
+        if (days < 0) return <Badge variant="destructive" className="text-xs">Vencido</Badge>;
+        if (days <= (contract.alertar_antes_dias || 30)) {
+          return <Badge className="bg-amber-100 text-amber-800 border-amber-200 text-xs gap-1">
+            <AlertTriangle className="h-3 w-3" /> {days}d
+          </Badge>;
+        }
+        return <span className="text-xs">{format(parseISO(contract.data_fim), 'dd/MM/yyyy')}</span>;
+      }
+    },
+    {
+      key: 'actions',
       header: '',
       render: (contract: typeof contracts extends (infer T)[] ? T : never) => (
-        <div className="flex gap-2">
+        <div className="flex gap-1">
+          <Button variant="ghost" size="icon" onClick={() => setViewingContract(contract as Contract)}>
+            <Eye className="h-4 w-4" />
+          </Button>
           <Button variant="ghost" size="icon" onClick={() => handleEdit(contract)}>
             <Pencil className="h-4 w-4" />
           </Button>
-          <Button 
-            variant="ghost" 
-            size="icon" 
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={() => deleteContract.mutate(contract.id)}
           >
             <Trash2 className="h-4 w-4 text-destructive" />
@@ -189,6 +219,17 @@ export default function ContratosLista() {
           <BackButton to="/contratos" />
           <PageHeader title="Contratos" description="Lista de contratos" />
         </div>
+
+        {/* Alerta de contratos vencendo */}
+        {expiringContracts.length > 0 && (
+          <Alert className="border-amber-200 bg-amber-50">
+            <Bell className="h-4 w-4 text-amber-600" />
+            <AlertDescription className="text-amber-800">
+              <span className="font-semibold">{expiringContracts.length} contrato(s)</span> vencendo em breve:{' '}
+              {expiringContracts.map(c => c.contract_number).join(', ')}
+            </AlertDescription>
+          </Alert>
+        )}
 
         <div className="flex flex-wrap gap-4 items-center">
           <div className="relative flex-1 min-w-[200px]">
@@ -331,6 +372,13 @@ export default function ContratosLista() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+
+        {/* Dialog: detalhe + assinatura ClickSign */}
+        <ContractDetailsDialog
+          contract={viewingContract}
+          open={!!viewingContract}
+          onOpenChange={(open) => { if (!open) setViewingContract(null); }}
+        />
       </div>
     </MainLayout>
   );
