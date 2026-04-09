@@ -257,10 +257,9 @@ const menuItems: MenuItem[] = [
       },
       {
         key: 'projetos-ponto',
-        label: 'Projetos & Ponto',
+        label: 'Projetos',
         items: [
           { key: 'projetos', label: 'Gestão de Projetos', icon: FolderKanban, route: '/projetos' },
-          { key: 'gestor-ponto', label: 'Gestão de Ponto', icon: ClipboardList, route: '/hcm/gestor-ponto' },
         ]
       }
     ]
@@ -422,6 +421,7 @@ const menuItems: MenuItem[] = [
         label: 'Departamento Pessoal',
         items: [
           { key: 'hcm-folha', label: 'Folha Inteligente', icon: DollarSign, route: '/hcm/folha' },
+          { key: 'gestor-ponto', label: 'Gestão de Ponto', icon: ClipboardList, route: '/hcm/gestor-ponto' },
           { key: 'hcm-ponto', label: 'Integrações Ponto', icon: Clock, route: '/hcm/integracoes-ponto' },
           { key: 'hcm-banco-horas', label: 'Banco de Horas', icon: Clock, route: '/hcm/banco-horas' },
           { key: 'hcm-beneficios', label: 'Benefícios', icon: Gift, route: '/hcm/beneficios' },

@@ -68,6 +68,9 @@ import {
   Eye,
   TrendingDown,
   FolderKanban,
+  Clock,
+  Gift,
+  Calendar,
   type LucideIcon,
 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -148,11 +151,29 @@ const menuItems: MenuItem[] = [
       { key: 'departamentos', label: 'Departamentos', icon: Building2, route: '/operacional/departamentos' },
       { key: 'responsaveis-cc', label: 'Responsáveis por CC', icon: UserCheck, route: '/operacional/responsaveis' },
       { key: 'projetos', label: 'Projetos', icon: FolderKanban, route: '/projetos' },
-      { key: 'gestor-ponto', label: 'Gestão de Ponto', icon: ClipboardList, route: '/hcm/gestor-ponto' },
     ]
   },
 
-  // 4. FINANCEIRO
+  // 4. HCM & DP
+  {
+    key: 'hcm',
+    label: 'HCM & DP',
+    icon: UserCheck,
+    colorClass: 'text-menu-hcm',
+    children: [
+      { key: 'hcm-dashboard', label: 'Dashboard', icon: BarChart3, route: '/hcm' },
+      { key: 'hcm-colaboradores', label: 'Colaboradores', icon: Users, route: '/hcm/colaboradores' },
+      { key: 'gestor-ponto', label: 'Gestão de Ponto', icon: ClipboardList, route: '/hcm/gestor-ponto' },
+      { key: 'hcm-ponto', label: 'Integrações Ponto', icon: Clock, route: '/hcm/integracoes-ponto' },
+      { key: 'hcm-banco-horas', label: 'Banco de Horas', icon: Clock, route: '/hcm/banco-horas' },
+      { key: 'hcm-folha', label: 'Folha Inteligente', icon: DollarSign, route: '/hcm/folha' },
+      { key: 'hcm-beneficios', label: 'Benefícios', icon: Gift, route: '/hcm/beneficios' },
+      { key: 'hcm-holerites', label: 'Holerites', icon: FileText, route: '/hcm/holerites' },
+      { key: 'hcm-solicitacoes', label: 'Solicitações', icon: Calendar, route: '/hcm/solicitacoes' },
+    ]
+  },
+
+  // 5. FINANCEIRO
   {
     key: 'financeiro',
     label: 'Financeiro',
@@ -287,6 +308,7 @@ const categoryColorMap: Record<string, { bg: string; border: string; text: strin
   favoritos: { bg: 'bg-menu-favoritos/10', border: 'border-l-menu-favoritos', text: 'text-menu-favoritos' },
   operacional: { bg: 'bg-menu-operacoes/10', border: 'border-l-menu-operacoes', text: 'text-menu-operacoes' },
   suprimentos: { bg: 'bg-menu-compras/10', border: 'border-l-menu-compras', text: 'text-menu-compras' },
+  hcm: { bg: 'bg-emerald-500/10', border: 'border-l-emerald-500', text: 'text-emerald-600' },
   financeiro: { bg: 'bg-menu-financeiro/10', border: 'border-l-menu-financeiro', text: 'text-menu-financeiro' },
   'controladoria-fiscal': { bg: 'bg-menu-contabil/10', border: 'border-l-menu-contabil', text: 'text-menu-contabil' },
   'inteligencia-ia': { bg: 'bg-violet-500/10', border: 'border-l-violet-500', text: 'text-violet-600' },
