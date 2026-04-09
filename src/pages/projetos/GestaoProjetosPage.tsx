@@ -11,14 +11,16 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   Plus, Search, FolderKanban, LayoutList,
   Clock, AlertTriangle, Target, ArrowLeft,
-  Play, CheckCircle2, Pause, DollarSign, Calendar,
-  RefreshCw, ExternalLink, Loader2, Link2, Link2Off
+  Play, CheckCircle2, Pause, DollarSign, Calendar, BarChart2,
+  RefreshCw, ExternalLink, Loader2, Link2
 } from "lucide-react";
 import { useProjects, useProjectStats, useProject } from "@/hooks/useProjects";
 import { ProjectFormDialog } from "@/components/projetos/ProjectFormDialog";
 import { ProjectsList } from "@/components/projetos/ProjectsList";
 import { KanbanBoard } from "@/components/projetos/KanbanBoard";
 import { ProjectProfitabilityPanel } from "@/components/projetos/ProjectProfitabilityPanel";
+import { GanttView } from "@/components/projetos/GanttView";
+import { TimesheetPanel } from "@/components/projetos/TimesheetPanel";
 import { useGoogleIntegration, type GoogleCalendarEvent } from "@/hooks/useGoogleIntegration";
 import { cn } from "@/lib/utils";
 import { format, addDays } from "date-fns";
@@ -121,6 +123,14 @@ export default function GestaoProjetosPage() {
                 <LayoutList className="h-4 w-4" />
                 Tarefas
               </TabsTrigger>
+              <TabsTrigger value="gantt" className="gap-2">
+                <BarChart2 className="h-4 w-4" />
+                Gantt
+              </TabsTrigger>
+              <TabsTrigger value="horas" className="gap-2">
+                <Clock className="h-4 w-4" />
+                Horas
+              </TabsTrigger>
               <TabsTrigger value="financeiro" className="gap-2">
                 <DollarSign className="h-4 w-4" />
                 Financeiro
@@ -133,6 +143,14 @@ export default function GestaoProjetosPage() {
 
             <TabsContent value="kanban">
               <KanbanBoard projectId={selectedProjectId} />
+            </TabsContent>
+
+            <TabsContent value="gantt">
+              <GanttView projectId={selectedProjectId} />
+            </TabsContent>
+
+            <TabsContent value="horas">
+              <TimesheetPanel projectId={selectedProjectId} />
             </TabsContent>
 
             <TabsContent value="financeiro">
