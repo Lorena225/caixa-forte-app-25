@@ -163,7 +163,7 @@ export default function DeveloperPortal() {
                 <DialogHeader>
                   <DialogTitle>Criar API Key</DialogTitle>
                   <DialogDescription>
-                    Crie uma nova chave de API para integrar com o Caixa Forte
+                    Crie uma nova chave de API para integrar com o Vitrio
                   </DialogDescription>
                 </DialogHeader>
                 
@@ -571,7 +571,7 @@ export default function DeveloperPortal() {
           <Card>
             <CardHeader>
               <CardTitle>Exemplos de Código</CardTitle>
-              <CardDescription>Como fazer requisições à API do Caixa Forte</CardDescription>
+              <CardDescription>Como fazer requisições à API do Vitrio</CardDescription>
             </CardHeader>
             <CardContent>
               <Tabs defaultValue="curl">

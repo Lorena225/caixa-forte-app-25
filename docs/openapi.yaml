@@ -1,8 +1,8 @@
 openapi: 3.0.3
 info:
-  title: Caixa Forte Financeiro API
+  title: Vitrio API
   description: |
-    API REST pública para integração com o sistema ERP Caixa Forte Financeiro.
+    API REST pública para integração com o sistema ERP Vitrio.
     
     ## Autenticação
     Todas as requisições devem incluir uma API Key válida no header Authorization.

@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS public.company_branding (
   default_theme TEXT DEFAULT 'light' CHECK (default_theme IN ('light', 'dark', 'system')),
   
   -- Textos Customizados
-  app_name TEXT DEFAULT 'Caixa Forte',
+  app_name TEXT DEFAULT 'Vitrio',
   app_tagline TEXT,
   footer_text TEXT,
   
@@ -256,7 +256,7 @@ SET search_path TO public
 AS $$
 BEGIN
   INSERT INTO public.company_branding (company_id, app_name)
-  VALUES (NEW.id, COALESCE(NEW.name, 'Caixa Forte'))
+  VALUES (NEW.id, COALESCE(NEW.name, 'Vitrio'))
   ON CONFLICT (company_id) DO NOTHING;
   RETURN NEW;
 END;
@@ -270,6 +270,6 @@ CREATE TRIGGER create_company_branding
 
 -- Criar branding padrão para empresas existentes
 INSERT INTO public.company_branding (company_id, app_name)
-SELECT id, COALESCE(name, 'Caixa Forte')
+SELECT id, COALESCE(name, 'Vitrio')
 FROM public.companies
 ON CONFLICT (company_id) DO NOTHING;

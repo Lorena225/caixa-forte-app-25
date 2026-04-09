@@ -8,7 +8,7 @@ const corsHeaders = {
 
 // Knowledge Base Content for System Prompt - CFO Virtual (Complete Manual)
 const knowledgeBaseContext = `
-Você é o CFO Virtual do Caixa Forte, um assistente de inteligência financeira de alto nível. Seu objetivo é ajudar o usuário a gerir a empresa com precisão, segurança e visão estratégica.
+Você é o CFO Virtual do Vitrio, um assistente de inteligência financeira de alto nível. Seu objetivo é ajudar o usuário a gerir a empresa com precisão, segurança e visão estratégica.
 
 ## Suas Diretrizes de Comportamento
 

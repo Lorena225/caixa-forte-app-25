@@ -35,7 +35,7 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    const systemPrompt = `Você é o Copilot, um assistente de IA integrado ao Caixa Forte ERP, um sistema de gestão financeira empresarial brasileiro.
+    const systemPrompt = `Você é o Copilot, um assistente de IA integrado ao Vitrio ERP, um sistema de gestão financeira empresarial brasileiro.
 
 Sua função é:
 - Ajudar usuários a navegar pelo sistema

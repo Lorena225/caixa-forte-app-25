@@ -75,7 +75,7 @@ export const Header = memo(function Header() {
               <Sparkles className="h-5 w-5 text-primary-foreground" />
             </div>
             <span className="hidden sm:block text-lg font-bold text-foreground tracking-tight">
-              Caixa Forte
+              Vitrio
             </span>
           </div>
           

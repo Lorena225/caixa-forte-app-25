@@ -64,7 +64,7 @@ export default function HomeDashboard() {
     <div className="space-y-6 animate-fade-in">
       <PageHeader
         title="Início"
-        description="Bem-vindo ao Caixa Forte ERP"
+        description="Bem-vindo ao Vitrio"
       >
         <div className="flex gap-2">
           <Button 

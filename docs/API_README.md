@@ -1,6 +1,6 @@
-# Caixa Forte Financeiro - API REST
+# Vitrio - API REST
 
-API REST para integração com o sistema ERP Caixa Forte Financeiro. Esta documentação cobre autenticação, endpoints disponíveis, exemplos de uso e boas práticas.
+API REST para integração com o sistema ERP Vitrio. Esta documentação cobre autenticação, endpoints disponíveis, exemplos de uso e boas práticas.
 
 ## Sumário
 
@@ -677,9 +677,9 @@ curl -X PUT "https://hwiyewggonhyppwaikss.supabase.co/functions/v1/api-v1-fiscal
 ### JavaScript/TypeScript
 
 ```typescript
-import { CaixaForteAPI } from '@caixaforte/sdk';
+import { VitrioAPI } from '@vitrio/sdk';
 
-const api = new CaixaForteAPI({
+const api = new VitrioAPI({
   apiKey: 'cfin_sua_api_key',
   baseUrl: 'https://hwiyewggonhyppwaikss.supabase.co/functions/v1'
 });
@@ -710,9 +710,9 @@ const impostos = await api.fiscal.calcularImpostos({
 ### Python
 
 ```python
-from caixaforte import CaixaForteAPI
+from vitrio import VitrioAPI
 
-api = CaixaForteAPI(api_key='cfin_sua_api_key')
+api = VitrioAPI(api_key='cfin_sua_api_key')
 
 # Listar clientes
 clientes = api.crm.clientes.list(page=1, limit=50, status='active')
@@ -810,4 +810,4 @@ Mudanças breaking serão comunicadas com 90 dias de antecedência.
 
 ---
 
-© 2026 Caixa Forte Financeiro. Todos os direitos reservados.
+© 2026 Vitrio. Todos os direitos reservados.

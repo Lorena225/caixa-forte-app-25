@@ -271,7 +271,7 @@ const helpSections: HelpSection[] = [
         content: (
           <div className="space-y-3 text-sm text-muted-foreground">
             <p>
-              O <strong className="text-foreground">Caixa Forte</strong> usa inteligência artificial avançada para 
+              O <strong className="text-foreground">Vitrio</strong> usa inteligência artificial avançada para 
               automatizar tarefas e fornecer insights valiosos.
             </p>
             <div className="bg-gradient-to-r from-menu-ia/10 to-primary/10 rounded-lg p-4 space-y-3">
@@ -518,7 +518,7 @@ export const SmartHelpPanel = memo(function SmartHelpPanel({ className }: SmartH
             <div>
               <SheetTitle className="text-left text-lg">Manual do Usuário</SheetTitle>
               <SheetDescription className="text-left text-xs">
-                Guia completo do ERP Caixa Forte
+                Guia completo do Vitrio ERP
               </SheetDescription>
             </div>
           </div>

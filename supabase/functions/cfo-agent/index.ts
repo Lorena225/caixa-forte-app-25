@@ -332,7 +332,7 @@ serve(async (req) => {
       aggressive: "Você é um CFO focado em crescimento, busque oportunidades de investimento e expansão. Priorize ROI e escalabilidade."
     };
 
-    const systemPrompt = `Você é o CFO Virtual do Caixa Forte ERP, um assistente financeiro inteligente para empresas brasileiras.
+    const systemPrompt = `Você é o CFO Virtual do Vitrio ERP, um assistente financeiro inteligente para empresas brasileiras.
 
 ${personalityPrompts[personalityMode]}
 

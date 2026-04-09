@@ -403,7 +403,7 @@ export default function Branding() {
                         id="app_name"
                         value={formData.app_name || ""}
                         onChange={(e) => updateField("app_name", e.target.value)}
-                        placeholder="Caixa Forte"
+                        placeholder="Vitrio"
                       />
                     </div>
                     <div className="space-y-2">

@@ -84,7 +84,7 @@ export default function LivroDiario() {
               <BookOpen className="h-6 w-6 text-primary" />
               <div>
                 <CardTitle>Livro Diário - Janeiro/2026</CardTitle>
-                <p className="text-sm text-muted-foreground">Empresa: Caixa Forte Ltda | CNPJ: 12.345.678/0001-90</p>
+                <p className="text-sm text-muted-foreground">Empresa: Vitrio Ltda | CNPJ: 12.345.678/0001-90</p>
               </div>
             </div>
           </CardHeader>

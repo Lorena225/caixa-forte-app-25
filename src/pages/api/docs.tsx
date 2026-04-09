@@ -110,7 +110,7 @@ if (signature !== expectedSignature) {
     <MainLayout>
       <PageHeader
         title="Documentação da API"
-        description="Referência completa da API REST do Caixa Forte"
+        description="Referência completa da API REST do Vitrio"
         action={{
           label: "Portal do Desenvolvedor",
           onClick: () => window.location.href = '/developers',
@@ -587,11 +587,11 @@ if (signature !== expectedSignature) {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="bg-muted rounded-lg p-4 font-mono text-sm">
-                  npm install @caixaforte/sdk
+                  npm install @vitrio/sdk
                 </div>
-                <pre className="bg-muted rounded-lg p-4 text-sm overflow-x-auto">{`import { CaixaForte } from '@caixaforte/sdk';
+                <pre className="bg-muted rounded-lg p-4 text-sm overflow-x-auto">{`import { Vitrio } from '@vitrio/sdk';
 
-const client = new CaixaForte({
+const client = new Vitrio({
   apiKey: 'cf_sua_api_key'
 });
 
@@ -625,9 +625,9 @@ const nova = await client.financeiro.contasPagar.create({
                 <div className="bg-muted rounded-lg p-4 font-mono text-sm">
                   pip install caixaforte
                 </div>
-                <pre className="bg-muted rounded-lg p-4 text-sm overflow-x-auto">{`from caixaforte import CaixaForte
+                <pre className="bg-muted rounded-lg p-4 text-sm overflow-x-auto">{`from vitrio import Vitrio
 
-client = CaixaForte(api_key='cf_sua_api_key')
+client = Vitrio(api_key='cf_sua_api_key')
 
 # Listar contas a pagar
 contas = client.financeiro.contas_pagar.list(

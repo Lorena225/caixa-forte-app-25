@@ -129,6 +129,87 @@ export function useTimeTracking() {
     enabled: !!companyId,
   });
 
+  const saveTimeSummary = useMutation({
+    mutationFn: async (data: {
+      employee_id: string;
+      work_date: string;
+      entry_1?: string | null;
+      exit_1?: string | null;
+      entry_2?: string | null;
+      exit_2?: string | null;
+    }) => {
+      if (!companyId) throw new Error('Empresa não encontrada');
+
+      // Calcula horas trabalhadas
+      const toMinutes = (t?: string | null) => {
+        if (!t) return null;
+        const [h, m] = t.split(':').map(Number);
+        return h * 60 + m;
+      };
+      const e1 = toMinutes(data.entry_1);
+      const s1 = toMinutes(data.exit_1);
+      const e2 = toMinutes(data.entry_2);
+      const s2 = toMinutes(data.exit_2);
+
+      let workedMinutes = 0;
+      let breakMinutes = 0;
+      if (e1 !== null && s1 !== null) workedMinutes += s1 - e1;
+      if (e2 !== null && s2 !== null) workedMinutes += s2 - e2;
+      if (s1 !== null && e2 !== null) breakMinutes = e2 - s1;
+
+      const workedHours = workedMinutes / 60;
+      const breakHours = breakMinutes / 60;
+      const expectedHours = 8;
+      const bankHours = workedHours - expectedHours;
+
+      const payload = {
+        company_id: companyId,
+        employee_id: data.employee_id,
+        work_date: data.work_date,
+        entry_1: data.entry_1 || null,
+        exit_1: data.exit_1 || null,
+        entry_2: data.entry_2 || null,
+        exit_2: data.exit_2 || null,
+        worked_hours: Math.max(0, workedHours),
+        break_hours: Math.max(0, breakHours),
+        expected_hours: expectedHours,
+        bank_hours: bankHours,
+        overtime_50: bankHours > 0 && bankHours <= 2 ? bankHours : 0,
+        overtime_100: bankHours > 2 ? bankHours - 2 : 0,
+        night_hours: 0,
+        is_holiday: false,
+        is_weekend: [0, 6].includes(new Date(data.work_date + 'T12:00:00').getDay()),
+      };
+
+      const { data: existing } = await supabase
+        .from('time_daily_summary')
+        .select('id')
+        .eq('company_id', companyId)
+        .eq('employee_id', data.employee_id)
+        .eq('work_date', data.work_date)
+        .maybeSingle();
+
+      if (existing) {
+        const { error } = await supabase
+          .from('time_daily_summary')
+          .update(payload)
+          .eq('id', existing.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from('time_daily_summary')
+          .insert(payload);
+        if (error) throw error;
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['time_daily_summary'] });
+      queryClient.invalidateQueries({ queryKey: ['hour_bank'] });
+      toast.success('Ponto registrado com sucesso!');
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
   return {
     integrations: integrationsQuery.data || [],
     integrationsLoading: integrationsQuery.isLoading,
@@ -137,5 +218,6 @@ export function useTimeTracking() {
     timeSummaryLoading: timeSummaryQuery.isLoading,
     hourBank: hourBankQuery.data || [],
     hourBankLoading: hourBankQuery.isLoading,
+    saveTimeSummary,
   };
 }

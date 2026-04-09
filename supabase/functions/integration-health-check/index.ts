@@ -222,7 +222,7 @@ async function performHealthCheck(
     const response = await fetch(endpoint.url, {
       method: endpoint.method,
       headers: {
-        "User-Agent": "CaixaForte-ERP/1.0",
+        "User-Agent": "Vitrio-ERP/1.0",
       },
       signal: controller.signal,
     });

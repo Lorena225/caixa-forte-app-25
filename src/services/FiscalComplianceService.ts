@@ -526,7 +526,7 @@ export class FiscalComplianceService {
       <indFinal>1</indFinal>
       <indPres>1</indPres>
       <procEmi>0</procEmi>
-      <verProc>CaixaForte 1.0</verProc>
+      <verProc>Vitrio 1.0</verProc>
     </ide>
     <emit>
       <CNPJ>${invoice.issuer.cnpj.replace(/\D/g, '')}</CNPJ>

@@ -104,7 +104,7 @@ export default function Marketplace() {
     <MainLayout>
       <PageHeader
         title="Marketplace de Integrações"
-        description="Conecte o Caixa Forte às suas ferramentas favoritas"
+        description="Conecte o Vitrio às suas ferramentas favoritas"
       />
 
       {/* Search and Filters */}

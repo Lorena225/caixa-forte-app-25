@@ -307,7 +307,7 @@ export default function APIKeysPage() {
           <DialogHeader>
             <DialogTitle>Criar API Key</DialogTitle>
             <DialogDescription>
-              Crie uma nova chave de API para integrar com o Caixa Forte
+              Crie uma nova chave de API para integrar com o Vitrio
             </DialogDescription>
           </DialogHeader>
 

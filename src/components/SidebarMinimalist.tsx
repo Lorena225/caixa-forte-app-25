@@ -852,7 +852,7 @@ const SidebarContent = memo(function SidebarContent({ collapsed = false, onNavig
           <div className="px-4 py-3 border-t border-slate-100">
             <div className="flex items-center gap-2 text-xs text-slate-400">
               <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
-              <span>Caixa Forte v2.0</span>
+              <span>Vitrio v2.0</span>
             </div>
           </div>
         )}

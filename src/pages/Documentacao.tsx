@@ -121,7 +121,7 @@ Marque checkboxes na lista para: Baixar Selecionados, Alterar Status, Gerar Lote
 
 | Esquerda (Extrato do Banco) | Direita (Seu Sistema) |
 |----------------------------|----------------------|
-| Transações importadas | Lançamentos do Caixa Forte |
+| Transações importadas | Lançamentos do Vitrio |
 | Data, valor, descrição | Data, valor, favorecido |
 
 ---
@@ -186,7 +186,7 @@ A **Conciliação Bancária** é o processo de comparar e validar as transaçõe
    - O sistema carregará automaticamente as transações
 
 **3. Faça o match das transações**
-   - O Caixa Forte exibe lado a lado: lançamentos internos x extrato bancário
+   - O Vitrio exibe lado a lado: lançamentos internos x extrato bancário
    - Transações com correspondência exata são destacadas em verde
    - Clique em "Vincular" para confirmar o match
    - Para itens sem correspondência, você pode criar o lançamento ou marcar como divergência
@@ -216,7 +216,7 @@ Quando houver duplicidade ou cobrança suspeita, o sistema emitirá um alerta au
         icon: TrendingUp,
         content: `## 📊 O que é?
 
-O **Fluxo de Caixa** é a visualização de todas as entradas e saídas de dinheiro da empresa em um período determinado. No Caixa Forte, você tem acesso a três visões:
+O **Fluxo de Caixa** é a visualização de todas as entradas e saídas de dinheiro da empresa em um período determinado. No Vitrio, você tem acesso a três visões:
 
 - **Fluxo Realizado**: O que já aconteceu (histórico)
 - **Fluxo Projetado**: Previsão baseada em contas a receber/pagar
@@ -690,7 +690,7 @@ O Copilot pode ajudar:
 
 A **DRE (Demonstração do Resultado do Exercício)** é o relatório que mostra se a empresa teve lucro ou prejuízo em um período.
 
-No Caixa Forte, a DRE é gerada **em tempo real**, lendo as transações financeiras e aplicando o Mapeamento Contábil.
+No Vitrio, a DRE é gerada **em tempo real**, lendo as transações financeiras e aplicando o Mapeamento Contábil.
 
 ---
 
@@ -896,7 +896,7 @@ Pergunte: *"Minha contabilidade está equilibrada?"*`
         icon: TrendingUp,
         content: `## 📊 O que é?
 
-O módulo de **Gestão de Contratos e Recorrência** é o motor de receitas previsíveis do Caixa Forte. Ele permite automatizar cobranças de serviços contínuos como:
+O módulo de **Gestão de Contratos e Recorrência** é o motor de receitas previsíveis do Vitrio. Ele permite automatizar cobranças de serviços contínuos como:
 
 - **Consultorias mensais** (Contabilidade, Jurídico, Marketing)
 - **Mensalidades** (Academias, Escolas, Clubes)
@@ -1052,7 +1052,7 @@ O CFO Virtual monitora o faturamento e alerta:
         icon: Activity,
         content: `## 🔄 Gestão do Ciclo de Vida
 
-Todo contrato passa por fases: Ativo → Suspenso → Cancelado/Renovado. O Caixa Forte oferece controle total sobre cada etapa.
+Todo contrato passa por fases: Ativo → Suspenso → Cancelado/Renovado. O Vitrio oferece controle total sobre cada etapa.
 
 ---
 
@@ -1554,7 +1554,7 @@ O Copilot pode ajudar com ações em massa:
         icon: Brain,
         content: `## 📊 O que é?
 
-O **CFO Virtual** é o assistente de inteligência artificial do Caixa Forte. Ele atua como um diretor financeiro digital que monitora, analisa e recomenda ações para otimizar a saúde financeira da sua empresa.
+O **CFO Virtual** é o assistente de inteligência artificial do Vitrio. Ele atua como um diretor financeiro digital que monitora, analisa e recomenda ações para otimizar a saúde financeira da sua empresa.
 
 **O que ele analisa:**
 - Fluxo de caixa e liquidez
@@ -1746,7 +1746,7 @@ Quanto mais feedback você dá, melhor a IA fica:
         icon: MessageSquare,
         content: `## 📊 O que é?
 
-O **Agente WhatsApp** permite interagir com o Caixa Forte via mensagens de texto, facilitando consultas e aprovações de qualquer lugar.
+O **Agente WhatsApp** permite interagir com o Vitrio via mensagens de texto, facilitando consultas e aprovações de qualquer lugar.
 
 ---
 
@@ -1793,7 +1793,7 @@ O agente entende linguagem natural:
         icon: ShoppingCart,
         content: `## 📊 O que é?
 
-O **PDV (Ponto de Venda)** é o módulo de frente de caixa do Caixa Forte. Ele permite registrar vendas de forma rápida, com interface otimizada para operadores e múltiplas formas de pagamento.
+O **PDV (Ponto de Venda)** é o módulo de frente de caixa do Vitrio. Ele permite registrar vendas de forma rápida, com interface otimizada para operadores e múltiplas formas de pagamento.
 
 ---
 
@@ -1924,7 +1924,7 @@ O **Inventário** é o processo de **conferência física periódica** do estoqu
    - Registre a quantidade encontrada
 
 **3. Compare com o sistema**
-   - O Caixa Forte mostra: **Esperado vs Contado**
+   - O Vitrio mostra: **Esperado vs Contado**
    - Divergências são destacadas em vermelho
    - Valor financeiro da diferença é calculado
 
@@ -2105,7 +2105,7 @@ O CFO Virtual analisa seu catálogo:
         icon: Zap,
         content: `## 🚀 Visão Geral
 
-O **Fluxo de Aquisição Inteligente** do Caixa Forte organiza todo o processo de compras em três etapas conectadas:
+O **Fluxo de Aquisição Inteligente** do Vitrio organiza todo o processo de compras em três etapas conectadas:
 
 **Cotação → Pedido → Entrada**
 
@@ -2237,7 +2237,7 @@ A **Entrada** é o registro do recebimento físico de mercadorias no seu estoque
 
 ## ⚡ As 3 Ações Automáticas da Entrada
 
-Ao confirmar uma "Nova Entrada", o Caixa Forte executa automaticamente:
+Ao confirmar uma "Nova Entrada", o Vitrio executa automaticamente:
 
 | # | Ação | Descrição |
 |---|------|-----------|
@@ -2432,7 +2432,7 @@ A barra de busca global (Cmd+K) entende linguagem natural:
         id: 'crm-visao-geral',
         title: 'Visão Geral do CRM',
         icon: Users,
-        content: `## 📊 O que é o CRM do Caixa Forte?
+        content: `## 📊 O que é o CRM do Vitrio?
 
 O módulo de **CRM (Customer Relationship Management)** implementa o ciclo completo **Lead-to-Cash**, integrando gestão de oportunidades, propostas comerciais e automação de vendas ao core do ERP financeiro.
 
@@ -2721,7 +2721,7 @@ Ao gerar uma proposta, a IA analisa o histórico do cliente e sugere: "Este clie
         icon: TrendingUp,
         content: `## 📊 O Ciclo Completo de Vendas
 
-O Caixa Forte implementa o fluxo **Lead-to-Cash** end-to-end, conectando prospecção comercial ao recebimento financeiro.
+O Vitrio implementa o fluxo **Lead-to-Cash** end-to-end, conectando prospecção comercial ao recebimento financeiro.
 
 ---
 
@@ -3046,7 +3046,7 @@ A IA analisa a performance e sugere: "O território 'SP Interior' está com 40% 
         icon: Briefcase,
         content: `## 📖 Playbook de Vendas — Guia Completo
 
-Bem-vindo ao **Playbook de Vendas** do Caixa Forte! Este guia prático ensina tudo o que você precisa saber para operar o CRM e fechar mais negócios.
+Bem-vindo ao **Playbook de Vendas** do Vitrio! Este guia prático ensina tudo o que você precisa saber para operar o CRM e fechar mais negócios.
 
 ---
 
@@ -3282,7 +3282,7 @@ A IA consolida os dados e apresenta insights acionáveis.`
         icon: Brain,
         content: `## 🤖 Treinamento do Copilot para CRM & Vendas
 
-O CFO Virtual / Copilot do Caixa Forte entende perguntas em linguagem natural sobre suas vendas. Veja como extrair o máximo da IA:
+O CFO Virtual / Copilot do Vitrio entende perguntas em linguagem natural sobre suas vendas. Veja como extrair o máximo da IA:
 
 ---
 
@@ -3879,7 +3879,7 @@ Cadastros bem configurados permitem análises mais precisas pela IA.`
         icon: Plug,
         content: `## 📊 O que é?
 
-Conecte o Caixa Forte com outros sistemas e serviços financeiros.
+Conecte o Vitrio com outros sistemas e serviços financeiros.
 
 ---
 
@@ -4168,7 +4168,7 @@ export default function Documentacao() {
             📚 Central de Ajuda
           </h1>
           <p className="text-primary-foreground/80 text-lg mb-6">
-            Manual operacional completo do Caixa Forte — seu guia para dominar o sistema
+            Manual operacional completo do Vitrio — seu guia para dominar o sistema
           </p>
           
           {/* Search */}

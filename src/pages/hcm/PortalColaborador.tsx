@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -18,8 +18,11 @@ import {
 } from '@/components/ui/select';
 import {
   User, FileText, Gift, Clock, Calendar, Plus, Download,
-  Smartphone, Heart, Bus, UtensilsCrossed, Shield, CheckCircle2
+  Smartphone, Heart, Bus, UtensilsCrossed, Shield, CheckCircle2,
+  ClipboardCheck, ChevronLeft, ChevronRight, FileSpreadsheet, FileText as FilePDF
 } from 'lucide-react';
+import { exportPontoExcel, exportPontoPDF } from '@/lib/exportPonto';
+import { ptBR } from 'date-fns/locale';
 import { usePayroll } from '@/hooks/hcm/usePayroll';
 import { useBenefitsAndRequests } from '@/hooks/hcm/useBenefitsAndRequests';
 import { useTimeTracking } from '@/hooks/hcm/useTimeTracking';
@@ -68,7 +71,82 @@ export default function PortalColaborador() {
   const { employees } = useEmployees();
   const { payslips, payslipsLoading } = usePayroll();
   const { employeeBenefits, employeeBenefitsLoading, requests, requestsLoading } = useBenefitsAndRequests();
-  const { hourBank } = useTimeTracking();
+  const { hourBank, timeSummary, saveTimeSummary } = useTimeTracking();
+
+  // Perfil do colaborador logado — declarado antes de ser usado
+  const myProfile = employees.find(e => e.user_id === userId);
+  const myId = myProfile?.id;
+
+  // Estados de ponto
+  const today = format(new Date(), 'yyyy-MM-dd');
+  const [pontoDate, setPontoDate] = useState(today);
+  const [pontoForm, setPontoForm] = useState({ entry_1: '', exit_1: '', entry_2: '', exit_2: '' });
+
+  const pontoHoje = timeSummary.find(t => t.work_date === pontoDate && t.employee_id === myId);
+
+  // Sincroniza form ao trocar de dia ou quando o banco retorna dados
+  const pontoHojeKey = `${pontoDate}|${pontoHoje?.entry_1 ?? ''}|${pontoHoje?.exit_2 ?? ''}`;
+  useMemo(() => {
+    setPontoForm({
+      entry_1: pontoHoje?.entry_1?.slice(0, 5) || '',
+      exit_1: pontoHoje?.exit_1?.slice(0, 5) || '',
+      entry_2: pontoHoje?.entry_2?.slice(0, 5) || '',
+      exit_2: pontoHoje?.exit_2?.slice(0, 5) || '',
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pontoHojeKey]);
+
+  const handleDateStep = (delta: number) => {
+    const d = new Date(pontoDate + 'T12:00:00');
+    d.setDate(d.getDate() + delta);
+    setPontoDate(format(d, 'yyyy-MM-dd'));
+  };
+
+  const handleSavePonto = () => {
+    if (!myId) return;
+    saveTimeSummary.mutate({
+      employee_id: myId,
+      work_date: pontoDate,
+      entry_1: pontoForm.entry_1 || null,
+      exit_1: pontoForm.exit_1 || null,
+      entry_2: pontoForm.entry_2 || null,
+      exit_2: pontoForm.exit_2 || null,
+    });
+  };
+
+  // Estados de exportação
+  const [exportMonth, setExportMonth] = useState(new Date().getMonth() + 1);
+  const [exportYear, setExportYear] = useState(new Date().getFullYear());
+  const monthLabel = format(new Date(exportYear, exportMonth - 1, 1), 'MMMM yyyy', { locale: ptBR });
+
+  const monthlyRecords = useMemo(() => {
+    if (!myId) return [];
+    return timeSummary.filter(t => {
+      if (t.employee_id !== myId) return false;
+      const d = new Date(t.work_date + 'T12:00:00');
+      return d.getMonth() + 1 === exportMonth && d.getFullYear() === exportYear;
+    });
+  }, [timeSummary, myId, exportMonth, exportYear]);
+
+  const handleExportExcel = () => {
+    exportPontoExcel({
+      employeeName: myProfile?.full_name || 'Colaborador',
+      companyName: 'Empresa',
+      month: exportMonth,
+      year: exportYear,
+      records: monthlyRecords,
+    });
+  };
+
+  const handleExportPDF = () => {
+    exportPontoPDF({
+      employeeName: myProfile?.full_name || 'Colaborador',
+      companyName: 'Empresa',
+      month: exportMonth,
+      year: exportYear,
+      records: monthlyRecords,
+    });
+  };
 
   const [newRequestOpen, setNewRequestOpen] = useState(false);
   const [requestForm, setRequestForm] = useState({
@@ -76,10 +154,6 @@ export default function PortalColaborador() {
     title: '',
     description: '',
   });
-
-  // Find current user's employee profile
-  const myProfile = employees.find(e => e.user_id === userId);
-  const myId = myProfile?.id;
 
   // Filter data for current employee
   const myPayslips = payslips.filter(p => p.employee_id === myId);
@@ -209,13 +283,226 @@ export default function PortalColaborador() {
         )}
 
         {/* Tabs */}
-        <Tabs defaultValue="holerites">
-          <TabsList className="grid w-full grid-cols-4">
+        <Tabs defaultValue="ponto">
+          <TabsList className="grid w-full grid-cols-5">
+            <TabsTrigger value="ponto">Ponto</TabsTrigger>
             <TabsTrigger value="holerites">Holerites</TabsTrigger>
             <TabsTrigger value="beneficios">Benefícios</TabsTrigger>
             <TabsTrigger value="solicitacoes">Solicitações</TabsTrigger>
             <TabsTrigger value="dados">Meus Dados</TabsTrigger>
           </TabsList>
+
+          {/* Ponto Tab */}
+          <TabsContent value="ponto">
+            <div className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <ClipboardCheck className="h-5 w-5 text-primary" />
+                    Registro de Ponto
+                  </CardTitle>
+                  <CardDescription>Preencha seus horários de entrada e saída</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {/* Seletor de data */}
+                  <div className="flex items-center justify-between gap-4 bg-muted/40 rounded-lg p-3">
+                    <Button variant="ghost" size="icon" onClick={() => handleDateStep(-1)}>
+                      <ChevronLeft className="h-4 w-4" />
+                    </Button>
+                    <div className="text-center">
+                      <p className="font-semibold text-base">
+                        {format(new Date(pontoDate + 'T12:00:00'), 'EEEE', { locale: undefined })}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {format(new Date(pontoDate + 'T12:00:00'), 'dd/MM/yyyy')}
+                      </p>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleDateStep(1)}
+                      disabled={pontoDate >= today}
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </Button>
+                  </div>
+
+                  {!myProfile ? (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <ClipboardCheck className="h-10 w-10 mx-auto mb-3 opacity-30" />
+                      <p>Vincule seu perfil ao RH para registrar ponto</p>
+                    </div>
+                  ) : (
+                    <>
+                      {/* Manhã */}
+                      <div>
+                        <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">Manhã</p>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-1">
+                            <Label>Entrada</Label>
+                            <Input
+                              type="time"
+                              value={pontoForm.entry_1}
+                              onChange={e => setPontoForm(f => ({ ...f, entry_1: e.target.value }))}
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <Label>Saída (almoço)</Label>
+                            <Input
+                              type="time"
+                              value={pontoForm.exit_1}
+                              onChange={e => setPontoForm(f => ({ ...f, exit_1: e.target.value }))}
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Tarde */}
+                      <div>
+                        <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">Tarde</p>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-1">
+                            <Label>Retorno almoço</Label>
+                            <Input
+                              type="time"
+                              value={pontoForm.entry_2}
+                              onChange={e => setPontoForm(f => ({ ...f, entry_2: e.target.value }))}
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <Label>Saída</Label>
+                            <Input
+                              type="time"
+                              value={pontoForm.exit_2}
+                              onChange={e => setPontoForm(f => ({ ...f, exit_2: e.target.value }))}
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Resumo calculado */}
+                      {pontoHoje && (
+                        <div className="grid grid-cols-3 gap-3">
+                          <div className="bg-success/10 rounded-lg p-3 text-center">
+                            <p className="text-xs text-muted-foreground">Trabalhadas</p>
+                            <p className="text-lg font-bold text-success">
+                              {pontoHoje.worked_hours.toFixed(1)}h
+                            </p>
+                          </div>
+                          <div className="bg-muted rounded-lg p-3 text-center">
+                            <p className="text-xs text-muted-foreground">Intervalo</p>
+                            <p className="text-lg font-bold">
+                              {pontoHoje.break_hours.toFixed(1)}h
+                            </p>
+                          </div>
+                          <div className={`rounded-lg p-3 text-center ${pontoHoje.bank_hours >= 0 ? 'bg-primary/10' : 'bg-destructive/10'}`}>
+                            <p className="text-xs text-muted-foreground">Banco de Horas</p>
+                            <p className={`text-lg font-bold ${pontoHoje.bank_hours >= 0 ? 'text-primary' : 'text-destructive'}`}>
+                              {pontoHoje.bank_hours >= 0 ? '+' : ''}{pontoHoje.bank_hours.toFixed(1)}h
+                            </p>
+                          </div>
+                        </div>
+                      )}
+
+                      <Button
+                        className="w-full"
+                        onClick={handleSavePonto}
+                        disabled={saveTimeSummary.isPending || (!pontoForm.entry_1 && !pontoForm.exit_1 && !pontoForm.entry_2 && !pontoForm.exit_2)}
+                      >
+                        <CheckCircle2 className="h-4 w-4 mr-2" />
+                        {saveTimeSummary.isPending ? 'Salvando...' : pontoHoje ? 'Atualizar Ponto' : 'Registrar Ponto'}
+                      </Button>
+                    </>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Exportação mensal */}
+              {myProfile && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base flex items-center gap-2">
+                      <FileSpreadsheet className="h-4 w-4 text-primary" />
+                      Exportar Relatório Mensal
+                    </CardTitle>
+                    <CardDescription>Baixe o espelho de ponto em Excel ou PDF</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex flex-wrap items-center gap-3">
+                      <div className="flex items-center gap-2">
+                        <Button variant="outline" size="icon" onClick={() => {
+                          const d = new Date(exportYear, exportMonth - 2, 1);
+                          setExportMonth(d.getMonth() + 1);
+                          setExportYear(d.getFullYear());
+                        }}>
+                          <ChevronLeft className="h-4 w-4" />
+                        </Button>
+                        <span className="text-sm font-medium min-w-[120px] text-center capitalize">{monthLabel}</span>
+                        <Button variant="outline" size="icon" onClick={() => {
+                          const d = new Date(exportYear, exportMonth, 1);
+                          setExportMonth(d.getMonth() + 1);
+                          setExportYear(d.getFullYear());
+                        }} disabled={exportMonth === new Date().getMonth() + 1 && exportYear === new Date().getFullYear()}>
+                          <ChevronRight className="h-4 w-4" />
+                        </Button>
+                      </div>
+                      <span className="text-sm text-muted-foreground">{monthlyRecords.length} registros</span>
+                      <div className="flex gap-2 ml-auto">
+                        <Button variant="outline" size="sm" onClick={handleExportExcel} disabled={monthlyRecords.length === 0}>
+                          <FileSpreadsheet className="h-4 w-4 mr-1" /> Excel
+                        </Button>
+                        <Button variant="outline" size="sm" onClick={handleExportPDF} disabled={monthlyRecords.length === 0}>
+                          <FilePDF className="h-4 w-4 mr-1" /> PDF
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Histórico recente */}
+              {myId && timeSummary.filter(t => t.employee_id === myId).length > 0 && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">Histórico Recente</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Data</TableHead>
+                          <TableHead>Entrada</TableHead>
+                          <TableHead>Saída</TableHead>
+                          <TableHead>Trabalhadas</TableHead>
+                          <TableHead>Banco</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {timeSummary
+                          .filter(t => t.employee_id === myId)
+                          .slice(0, 10)
+                          .map(t => (
+                            <TableRow key={t.id}>
+                              <TableCell className="font-medium">
+                                {format(new Date(t.work_date + 'T12:00:00'), 'dd/MM/yyyy')}
+                              </TableCell>
+                              <TableCell>{t.entry_1?.slice(0, 5) || '-'}</TableCell>
+                              <TableCell>{t.exit_2?.slice(0, 5) || '-'}</TableCell>
+                              <TableCell>{t.worked_hours.toFixed(1)}h</TableCell>
+                              <TableCell>
+                                <span className={t.bank_hours >= 0 ? 'text-success' : 'text-destructive'}>
+                                  {t.bank_hours >= 0 ? '+' : ''}{t.bank_hours.toFixed(1)}h
+                                </span>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                      </TableBody>
+                    </Table>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          </TabsContent>
 
           {/* Holerites Tab */}
           <TabsContent value="holerites">

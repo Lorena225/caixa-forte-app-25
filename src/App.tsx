@@ -31,6 +31,8 @@ import MetasFinanceiras from "./pages/MetasFinanceiras";
 import Cartoes from "./pages/Cartoes";
 import Lancamentos from "./pages/Lancamentos";
 import IntegracoesIndex from "./pages/integracoes/Index";
+import GoogleIntegracao from "./pages/integracoes/GoogleIntegracao";
+import GoogleCallback from "./pages/integracoes/GoogleCallback";
 import IntegracoesImportar from "./pages/integracoes/Importar";
 import IntegracoesConciliacao from "./pages/integracoes/Conciliacao";
 import IntegracoesConfigurar from "./pages/integracoes/Configurar";
@@ -523,6 +525,8 @@ const App = () => (
                 <Route path="/integracoes/logs-enterprise" element={<IntegracoesEnterpriseLogs />} />
                 <Route path="/integracoes/dlq" element={<IntegracoesDLQ />} />
                 <Route path="/integracoes/ia" element={<IAConfig />} />
+                <Route path="/integracoes/google" element={<GoogleIntegracao />} />
+                <Route path="/google-callback" element={<GoogleCallback />} />
                 <Route path="/integracoes/ia-teste" element={<IATest />} />
                 
                 {/* ============ IA / CHATGPT FINANCEIRO ============ */}

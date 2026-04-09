@@ -171,7 +171,7 @@ export const OnboardingCards = memo(function OnboardingCards() {
             <Sparkles className="h-8 w-8 text-white" />
           </div>
           <div className="flex-1">
-            <h2 className="text-xl font-bold">Bem-vindo ao Caixa Forte!</h2>
+            <h2 className="text-xl font-bold">Bem-vindo ao Vitrio!</h2>
             <p className="text-muted-foreground">Complete os passos abaixo para configurar seu sistema.</p>
             <div className="mt-3 flex items-center gap-4">
               <Progress value={overallProgress} className="h-3 flex-1 max-w-xs" />

@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
+import { VitrioLogo } from './VitrioLogo';
 
 interface BrandLogoProps {
   className?: string;
@@ -31,7 +32,7 @@ export const BrandLogo = memo(function BrandLogo({ className }: BrandLogoProps) 
     return (words[0][0] + words[1][0]).toUpperCase();
   };
 
-  const companyName = currentCompany?.name || 'Caixa Forte';
+  const companyName = currentCompany?.name || 'Vitrio';
   // @ts-ignore - logo_url may be added via branding system
   const companyLogo = (currentCompany as any)?.logo_url;
   const initials = getInitials(companyName);
@@ -57,7 +58,7 @@ export const BrandLogo = memo(function BrandLogo({ className }: BrandLogoProps) 
           aria-label="Selecionar empresa"
           aria-haspopup="menu"
         >
-          {/* Logo or Avatar */}
+          {/* Logo ou Vitrio padrão */}
           {companyLogo && !imageError ? (
             <img
               src={companyLogo}
@@ -65,16 +66,20 @@ export const BrandLogo = memo(function BrandLogo({ className }: BrandLogoProps) 
               className="h-8 w-auto max-w-[120px] object-contain"
               onError={() => setImageError(true)}
             />
+          ) : companyName === 'Vitrio' || !currentCompany ? (
+            <VitrioLogo size="sm" variant="full" />
           ) : (
             <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
               <span className="text-white text-sm font-bold">{initials}</span>
             </div>
           )}
 
-          {/* Company Name (desktop only) */}
-          <span className="hidden lg:block text-sm font-medium text-gray-700 max-w-[150px] truncate">
-            {companyName}
-          </span>
+          {/* Nome da empresa (somente quando não é o Vitrio padrão) */}
+          {currentCompany && companyName !== 'Vitrio' && (
+            <span className="hidden lg:block text-sm font-medium text-gray-700 max-w-[150px] truncate">
+              {companyName}
+            </span>
+          )}
 
           {/* Chevron */}
           <ChevronDown className="h-4 w-4 text-gray-400" aria-hidden="true" />
