@@ -3,7 +3,7 @@ import { PageHeader } from '@/components/common/PageHeader';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { 
+import {
   LayoutDashboard,
   Wallet,
   TrendingUp,
@@ -13,6 +13,7 @@ import {
   ArrowRight,
   PieChart,
   BarChart3,
+  Building2,
 } from 'lucide-react';
 
 const dashboards = [
@@ -71,6 +72,13 @@ const dashboards = [
     href: '/dashboards/kpis',
     icon: BarChart3,
     color: 'text-info',
+  },
+  {
+    title: 'Por Polo / Unidade',
+    description: 'Resultado financeiro comparativo por centro de custo',
+    href: '/paineis/polo',
+    icon: Building2,
+    color: 'text-violet-600',
   },
 ];
 

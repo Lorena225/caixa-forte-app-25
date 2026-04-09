@@ -126,6 +126,7 @@ import ARDashboard from "./pages/dashboards/ARDashboard";
 import APDashboard from "./pages/dashboards/APDashboard";
 import BudgetDashboard from "./pages/dashboards/BudgetDashboard";
 import BudgetByAccountDashboard from "./pages/dashboards/BudgetByAccountDashboard";
+import PoloDashboard from "./pages/dashboards/PoloDashboard";
 // Reports
 import ReportsIndex from "./pages/reports/Index";
 import DrilldownPage from "./pages/reports/DrilldownPage";
@@ -484,7 +485,8 @@ const App = () => (
                 <Route path="/paineis/contas-pagar" element={<APDashboard />} />
                 <Route path="/paineis/orcamento" element={<BudgetDashboard />} />
                 <Route path="/paineis/conta-orcamentaria" element={<BudgetByAccountDashboard />} />
-                
+                <Route path="/paineis/polo" element={<PoloDashboard />} />
+
                 {/* ============ INTELIGÊNCIA (IA) ============ */}
                 <Route path="/ia/feed" element={<IntelligenceFeed />} />
                 <Route path="/ia/configuracoes" element={<AISettingsPage />} />
