@@ -34,8 +34,26 @@ export default function Auth() {
   const [companyName, setCompanyName] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [touched, setTouched] = useState({ email: false, password: false, fullName: false });
+  const [showForgot, setShowForgot] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState('');
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!forgotEmail) return;
+    setLoading(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(forgotEmail, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    if (error) {
+      toast({ title: 'Erro', description: error.message, variant: 'destructive' });
+    } else {
+      toast({ title: 'E-mail enviado!', description: 'Verifique sua caixa de entrada para redefinir a senha.' });
+      setShowForgot(false);
+    }
+    setLoading(false);
+  };
 
   const passwordStrength = getPasswordStrength(password);
   const emailValid = isValidEmail(email);
@@ -175,8 +193,8 @@ export default function Auth() {
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary text-primary-foreground mb-4">
             <Building2 className="w-8 h-8" />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight">Sistema Financeiro</h1>
-          <p className="text-muted-foreground">Gerencie suas finanças de forma simples</p>
+          <h1 className="text-2xl font-bold tracking-tight">Vitrio ERP</h1>
+          <p className="text-muted-foreground">Gerencie sua empresa de forma inteligente</p>
         </div>
 
         <Card>
@@ -235,6 +253,29 @@ export default function Auth() {
                     {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                     Entrar
                   </Button>
+                  <button
+                    type="button"
+                    className="w-full text-center text-sm text-muted-foreground hover:text-primary underline-offset-4 hover:underline mt-1"
+                    onClick={() => setShowForgot(!showForgot)}
+                  >
+                    Esqueci minha senha
+                  </button>
+                  {showForgot && (
+                    <form onSubmit={handleForgotPassword} className="space-y-3 pt-2 border-t">
+                      <p className="text-sm text-muted-foreground">Informe seu e-mail para receber o link de redefinição:</p>
+                      <Input
+                        type="email"
+                        placeholder="seu@email.com"
+                        value={forgotEmail}
+                        onChange={e => setForgotEmail(e.target.value)}
+                        required
+                      />
+                      <Button type="submit" variant="outline" className="w-full" disabled={loading}>
+                        {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                        Enviar link de redefinição
+                      </Button>
+                    </form>
+                  )}
                 </form>
               </TabsContent>
 
