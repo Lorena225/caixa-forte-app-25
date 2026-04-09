@@ -71,6 +71,7 @@ import {
   Clock,
   Gift,
   Calendar,
+  GitBranch,
   type LucideIcon,
 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -110,14 +111,23 @@ interface MenuItem {
 
 const menuItems: MenuItem[] = [
   // 1. INÍCIO
-  { 
-    key: 'inicio', 
-    label: 'Início', 
-    icon: Home, 
-    route: '/', 
-    colorClass: 'text-menu-inicio' 
+  {
+    key: 'inicio',
+    label: 'Início',
+    icon: Home,
+    route: '/',
+    colorClass: 'text-menu-inicio'
   },
-  
+
+  // 1b. PAINEL INDIVIDUAL
+  {
+    key: 'painel-individual',
+    label: 'Meu Painel',
+    icon: LayoutGrid,
+    route: '/painel',
+    colorClass: 'text-menu-inicio',
+  },
+
   // 2. FAVORITOS
   { 
     key: 'favoritos', 
@@ -151,6 +161,7 @@ const menuItems: MenuItem[] = [
       { key: 'departamentos', label: 'Departamentos', icon: Building2, route: '/operacional/departamentos' },
       { key: 'responsaveis-cc', label: 'Responsáveis por CC', icon: UserCheck, route: '/operacional/responsaveis' },
       { key: 'projetos', label: 'Projetos', icon: FolderKanban, route: '/projetos' },
+      { key: 'gestao-processos', label: 'Gestão de Processos', icon: GitBranch, route: '/processos/gestao' },
     ]
   },
 
@@ -196,6 +207,8 @@ const menuItems: MenuItem[] = [
       { key: 'cheques', label: 'Cheques', icon: FileCheck, route: '/tesouraria/cheques' },
       // Planejamento
       { key: 'metas-financeiras', label: 'Metas Financeiras', icon: Target, route: '/metas-financeiras' },
+      { key: 'gestao-metas', label: 'Gestão por Metas', icon: Target, route: '/metas/gestao' },
+      { key: 'mapa-estrategico', label: 'Mapa Estratégico', icon: BarChart3, route: '/metas/mapa' },
       { key: 'orcamento-real', label: 'Orçamento vs Real', icon: Target, route: '/financeiro/orcamento-real' },
       { key: 'rolling-forecast', label: 'Rolling Forecast', icon: TrendingUp, route: '/financeiro/rolling-forecast' },
       { key: 'simulacoes-whatif', label: 'Simulações What-If', icon: Calculator, route: '/financeiro/simulacoes-orcamento' },
@@ -249,8 +262,20 @@ const menuItems: MenuItem[] = [
       { key: 'tempo-real', label: 'Finanças Tempo Real', icon: Gauge, route: '/financeiro/tempo-real' },
       { key: 'roadmap-ia', label: 'Roadmap IA & Finance', icon: Lightbulb, route: '/inovacao' },
       { key: 'logs-ia', label: 'Logs & Auditoria IA', icon: FileText, route: '/ia/logs' },
+      { key: 'ia-operacional', label: 'IA Operacional', icon: Zap, route: '/ia/operacional' },
       { key: 'caixa-entrada', label: 'Caixa de Entrada', icon: Inbox, route: '/autopiloto/caixa-entrada' },
       { key: 'config-ia', label: 'Configurações de IA', icon: Settings, route: '/ia/configuracoes' },
+    ]
+  },
+
+  // 8b. QUALIDADE
+  {
+    key: 'qualidade',
+    label: 'Qualidade',
+    icon: Shield,
+    colorClass: 'text-orange-600',
+    children: [
+      { key: 'investigacao-falhas', label: 'Investigação de Falhas', icon: AlertTriangle, route: '/qualidade/falhas' },
     ]
   },
 
@@ -313,6 +338,7 @@ const categoryColorMap: Record<string, { bg: string; border: string; text: strin
   'controladoria-fiscal': { bg: 'bg-menu-contabil/10', border: 'border-l-menu-contabil', text: 'text-menu-contabil' },
   'inteligencia-ia': { bg: 'bg-violet-500/10', border: 'border-l-violet-500', text: 'text-violet-600' },
   'relatorios-bi': { bg: 'bg-menu-relatorios/10', border: 'border-l-menu-relatorios', text: 'text-menu-relatorios' },
+  qualidade: { bg: 'bg-orange-500/10', border: 'border-l-orange-500', text: 'text-orange-600' },
   'configuracoes-ecossistema': { bg: 'bg-menu-config/10', border: 'border-l-menu-config', text: 'text-menu-config' },
 };
 

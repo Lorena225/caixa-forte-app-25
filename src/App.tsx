@@ -293,6 +293,13 @@ import HCMHolerites from "./pages/hcm/Holerites";
 import HCMBancoHoras from "./pages/hcm/BancoHoras";
 import HCMPortalColaborador from "./pages/hcm/PortalColaborador";
 import HCMGestorPonto from "./pages/hcm/GestorPonto";
+// Novos módulos PRD
+import PainelIndividual from "./pages/PainelIndividual";
+import GestaoMetas from "./pages/metas/GestaoMetas";
+import MapaEstrategico from "./pages/metas/MapaEstrategico";
+import InvestigacaoFalhas from "./pages/qualidade/InvestigacaoFalhas";
+import GestaoProcessos from "./pages/processos/GestaoProcessos";
+import IAOperacional from "./pages/ia/IAOperacional";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -690,7 +697,15 @@ const App = () => (
                 <Route path="/hcm/banco-horas" element={<HCMBancoHoras />} />
                 <Route path="/hcm/portal" element={<HCMPortalColaborador />} />
                 <Route path="/hcm/gestor-ponto" element={<HCMGestorPonto />} />
-                
+
+                {/* ============ NOVOS MÓDULOS PRD ============ */}
+                <Route path="/painel" element={<PainelIndividual />} />
+                <Route path="/metas/gestao" element={<GestaoMetas />} />
+                <Route path="/metas/mapa" element={<MapaEstrategico />} />
+                <Route path="/qualidade/falhas" element={<InvestigacaoFalhas />} />
+                <Route path="/processos/gestao" element={<GestaoProcessos />} />
+                <Route path="/ia/operacional" element={<IAOperacional />} />
+
                 {/* ============ AUTOPILOTO (PT-BR) ============ */}
                 <Route path="/autopiloto/caixa-entrada" element={<Inbox />} />
                 <Route path="/autopiloto/pendente" element={<PendingCenter />} />

@@ -70,6 +70,8 @@ import {
   Calendar,
   Smartphone,
   Gift,
+  GitBranch,
+  LayoutGrid,
   type LucideIcon,
 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -96,7 +98,7 @@ export function useSidebarCollapse() {
 }
 
 // ============ CATEGORY COLOR DEFINITIONS ============
-type CategoryKey = 'inicio' | 'favoritos' | 'operacional' | 'financeiro' | 'controladoria' | 'inteligencia' | 'hcm' | 'configuracoes';
+type CategoryKey = 'inicio' | 'favoritos' | 'operacional' | 'financeiro' | 'controladoria' | 'inteligencia' | 'hcm' | 'qualidade' | 'configuracoes';
 
 const categoryColors: Record<CategoryKey, { icon: string; bg: string; border: string; text: string; hoverBg: string }> = {
   inicio: { 
@@ -148,10 +150,17 @@ const categoryColors: Record<CategoryKey, { icon: string; bg: string; border: st
     text: 'text-rose-600',
     hoverBg: 'hover:bg-rose-50/60'
   },
-  configuracoes: { 
-    icon: 'text-slate-500', 
-    bg: 'bg-slate-50', 
-    border: 'border-l-slate-400', 
+  qualidade: {
+    icon: 'text-orange-500',
+    bg: 'bg-orange-50',
+    border: 'border-l-orange-500',
+    text: 'text-orange-600',
+    hoverBg: 'hover:bg-orange-50/60'
+  },
+  configuracoes: {
+    icon: 'text-slate-500',
+    bg: 'bg-slate-50',
+    border: 'border-l-slate-400',
     text: 'text-slate-600',
     hoverBg: 'hover:bg-slate-50/60'
   },
@@ -194,12 +203,21 @@ const menuItems: MenuItem[] = [
     category: 'inicio'
   },
   
+  // MEU PAINEL
+  {
+    key: 'painel-individual',
+    label: 'Meu Painel',
+    icon: LayoutGrid,
+    route: '/painel',
+    category: 'inicio'
+  },
+
   // FAVORITOS
-  { 
-    key: 'favoritos', 
-    label: 'Favoritos', 
-    icon: Star, 
-    route: '/favoritos', 
+  {
+    key: 'favoritos',
+    label: 'Favoritos',
+    icon: Star,
+    route: '/favoritos',
     category: 'favoritos'
   },
 
@@ -260,6 +278,7 @@ const menuItems: MenuItem[] = [
         label: 'Projetos',
         items: [
           { key: 'projetos', label: 'Gestão de Projetos', icon: FolderKanban, route: '/projetos' },
+          { key: 'gestao-processos', label: 'Gestão de Processos', icon: GitBranch, route: '/processos/gestao' },
         ]
       }
     ]
@@ -313,6 +332,8 @@ const menuItems: MenuItem[] = [
         label: 'Planejamento',
         items: [
           { key: 'metas-financeiras', label: 'Metas', icon: Target, route: '/metas-financeiras' },
+          { key: 'gestao-metas', label: 'Gestão por Metas', icon: Target, route: '/metas/gestao' },
+          { key: 'mapa-estrategico', label: 'Mapa Estratégico', icon: BarChart3, route: '/metas/mapa' },
           { key: 'orcamento-real', label: 'Orçamento vs Real', icon: BarChart3, route: '/financeiro/orcamento-real' },
           { key: 'rolling-forecast', label: 'Rolling Forecast', icon: TrendingUp, route: '/financeiro/rolling-forecast' },
           { key: 'simulacoes-whatif', label: 'Simulações What-If', icon: Calculator, route: '/financeiro/simulacoes-orcamento' },
@@ -382,6 +403,7 @@ const menuItems: MenuItem[] = [
         key: 'monitoramento',
         label: 'Monitoramento',
         items: [
+          { key: 'ia-operacional', label: 'IA Operacional', icon: Zap, route: '/ia/operacional' },
           { key: 'feed-inteligencia', label: 'Feed de Inteligência', icon: Sparkles, route: '/ia/feed' },
           { key: 'anomalias', label: 'Monitor de Anomalias', icon: AlertTriangle, route: '/ia/anomalias' },
           { key: 'tempo-real', label: 'Finanças Tempo Real', icon: Gauge, route: '/financeiro/tempo-real' },
@@ -430,6 +452,23 @@ const menuItems: MenuItem[] = [
           { key: 'hcm-portal', label: 'Portal Colaborador', icon: Smartphone, route: '/hcm/portal' },
         ]
       },
+    ]
+  },
+
+  // 🔍 QUALIDADE
+  {
+    key: 'qualidade',
+    label: 'Qualidade',
+    icon: Shield,
+    category: 'qualidade',
+    subGroups: [
+      {
+        key: 'investigacao',
+        label: 'Investigação',
+        items: [
+          { key: 'investigacao-falhas', label: 'Investigação de Falhas', icon: AlertTriangle, route: '/qualidade/falhas' },
+        ]
+      }
     ]
   },
 
