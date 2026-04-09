@@ -15,6 +15,7 @@ interface AuthContextType {
   companies: Company[];
   currentCompany: Company | null;
   setCurrentCompany: (company: Company | null) => void;
+  refreshCompanies: () => Promise<void>;
   signOut: () => Promise<void>;
 }
 
@@ -97,6 +98,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const refreshCompanies = async () => {
+    if (user) await fetchUserCompanies(user.id);
+  };
+
   const signOut = async () => {
     await supabase.auth.signOut();
     setCurrentCompany(null);
@@ -105,14 +110,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ 
-      user, 
-      session, 
-      loading, 
-      companies, 
-      currentCompany, 
+    <AuthContext.Provider value={{
+      user,
+      session,
+      loading,
+      companies,
+      currentCompany,
       setCurrentCompany: handleSetCurrentCompany,
-      signOut 
+      refreshCompanies,
+      signOut
     }}>
       {children}
     </AuthContext.Provider>
