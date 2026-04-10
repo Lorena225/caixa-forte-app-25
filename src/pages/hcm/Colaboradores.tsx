@@ -139,7 +139,7 @@ export default function Colaboradores() {
                   </TabsList>
                   
                   <TabsContent value="dados" className="space-y-4 mt-4">
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="col-span-2">
                         <Label>Nome Completo *</Label>
                         <Input 
@@ -185,7 +185,7 @@ export default function Colaboradores() {
                   </TabsContent>
                   
                   <TabsContent value="contrato" className="space-y-4 mt-4">
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
                         <Label>Tipo de Contrato *</Label>
                         <Select 
@@ -234,7 +234,7 @@ export default function Colaboradores() {
                   </TabsContent>
                   
                   <TabsContent value="financeiro" className="space-y-4 mt-4">
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
                         <Label>Salário Base *</Label>
                         <Input 
@@ -455,7 +455,7 @@ export default function Colaboradores() {
                 </TabsList>
 
                 <TabsContent value="info" className="mt-4 space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="flex items-center gap-2">
                       <Mail className="h-4 w-4 text-muted-foreground" />
                       <span className="text-sm">{selectedEmployee.personal_email || '-'}</span>
@@ -484,7 +484,7 @@ export default function Colaboradores() {
                 </TabsContent>
 
                 <TabsContent value="contrato" className="mt-4 space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <Card className="p-4">
                       <p className="text-sm text-muted-foreground">Tipo de Contrato</p>
                       <p className="font-medium">
@@ -513,7 +513,7 @@ export default function Colaboradores() {
                 </TabsContent>
 
                 <TabsContent value="financeiro" className="mt-4 space-y-4">
-                  <div className="grid grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <Card className="p-4 bg-success/5 border-success/20">
                       <DollarSign className="h-5 w-5 text-success mb-2" />
                       <p className="text-sm text-muted-foreground">Salário Base</p>
@@ -545,7 +545,7 @@ export default function Colaboradores() {
                 </TabsContent>
 
                 <TabsContent value="beneficios" className="mt-4 space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <Card className="p-4">
                       <p className="font-medium">Vale Transporte</p>
                       <p className={selectedEmployee.has_vt ? 'text-success' : 'text-muted-foreground'}>

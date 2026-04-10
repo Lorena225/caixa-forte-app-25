@@ -394,7 +394,7 @@ export default function ContasBancarias() {
               </div>
 
               {/* Agência */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label className="text-sm font-medium">
                     Agência <span className="text-destructive">*</span>
@@ -462,7 +462,7 @@ export default function ContasBancarias() {
               </div>
 
               {/* Número da Conta */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label className="text-sm font-medium">
                     Número da Conta <span className="text-destructive">*</span>
@@ -511,7 +511,7 @@ export default function ContasBancarias() {
               </div>
 
               {/* Titular */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label className="text-sm font-medium">Nome do Titular</Label>
                   <Input

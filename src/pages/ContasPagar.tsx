@@ -364,7 +364,7 @@ export default function ContasPagar() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-grid">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 lg:w-auto lg:inline-grid">
             <TabsTrigger value="titulos" className="flex items-center gap-2">
               <FileText className="h-4 w-4" /><span className="hidden sm:inline">Títulos</span>
             </TabsTrigger>
@@ -552,15 +552,15 @@ export default function ContasPagar() {
             <DialogHeader><DialogTitle>{editingItem ? 'Editar Despesa' : 'Nova Despesa'}</DialogTitle></DialogHeader>
             <form onSubmit={(e) => { e.preventDefault(); saveMutation.mutate(formData); }} className="space-y-4">
               <div className="space-y-2"><Label>Descrição</Label><Input value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} placeholder="Ex: Aluguel" required /></div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2"><Label>Data do Lançamento</Label><Input type="date" value={formData.transaction_date} onChange={(e) => setFormData({ ...formData, transaction_date: e.target.value })} required /></div>
                 <div className="space-y-2"><Label>Vencimento</Label><Input type="date" value={formData.due_date} onChange={(e) => setFormData({ ...formData, due_date: e.target.value })} required /></div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2"><Label>Valor (R$)</Label><Input type="number" step="0.01" min="0" value={formData.original_amount} onChange={(e) => setFormData({ ...formData, original_amount: parseFloat(e.target.value) || 0 })} required /></div>
                 <div className="space-y-2"><Label>Juros/Multa (R$)</Label><Input type="number" step="0.01" min="0" value={formData.interest_amount} onChange={(e) => setFormData({ ...formData, interest_amount: parseFloat(e.target.value) || 0 })} /></div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Plano de Contas</Label>
                   <Select value={formData.account_id} onValueChange={(v) => setFormData({ ...formData, account_id: v })}>
@@ -576,7 +576,7 @@ export default function ContasPagar() {
                   </Select>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Fornecedor (opcional)</Label>
                   <Select value={formData.counterparty_id || "__none__"} onValueChange={(v) => setFormData({ ...formData, counterparty_id: v === "__none__" ? "" : v })}>

@@ -166,7 +166,7 @@ export function ClienteFormDialog({
               </TabsList>
 
               <TabsContent value="dados" className="space-y-4 pt-4">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
                     name="tipo_pessoa"
@@ -251,7 +251,7 @@ export function ClienteFormDialog({
                   />
                 )}
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
                     name="email"
@@ -285,7 +285,7 @@ export function ClienteFormDialog({
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
                     name="celular"
@@ -358,7 +358,7 @@ export function ClienteFormDialog({
                   />
                 </div>
 
-                <div className="grid grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   <div className="col-span-3">
                     <FormField
                       control={form.control}
@@ -390,7 +390,7 @@ export function ClienteFormDialog({
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
                     name="complemento"
@@ -473,7 +473,7 @@ export function ClienteFormDialog({
               </TabsContent>
 
               <TabsContent value="financeiro" className="space-y-4 pt-4">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
                     name="limite_credito"
@@ -545,7 +545,7 @@ export function ClienteFormDialog({
 
               <TabsContent value="fiscal" className="space-y-4 pt-4">
                 {tipoPessoa === 'J' && (
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <FormField
                       control={form.control}
                       name="inscricao_estadual"

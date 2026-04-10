@@ -300,6 +300,7 @@ import MapaEstrategico from "./pages/metas/MapaEstrategico";
 import InvestigacaoFalhas from "./pages/qualidade/InvestigacaoFalhas";
 import GestaoProcessos from "./pages/processos/GestaoProcessos";
 import IAOperacional from "./pages/ia/IAOperacional";
+import SupplyChainIndex from "./pages/supplychain/Index";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -697,6 +698,9 @@ const App = () => (
                 <Route path="/hcm/banco-horas" element={<HCMBancoHoras />} />
                 <Route path="/hcm/portal" element={<HCMPortalColaborador />} />
                 <Route path="/hcm/gestor-ponto" element={<HCMGestorPonto />} />
+
+                {/* ============ SUPPLY CHAIN ============ */}
+                <Route path="/supplychain" element={<SupplyChainIndex />} />
 
                 {/* ============ NOVOS MÓDULOS PRD ============ */}
                 <Route path="/painel" element={<PainelIndividual />} />

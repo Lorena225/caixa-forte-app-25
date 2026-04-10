@@ -293,7 +293,7 @@ export default function Carteiras() {
         />
 
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogContent className="max-w-lg">
+          <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>{editingItem ? 'Editar Carteira' : 'Nova Carteira'}</DialogTitle>
               <DialogDescription>
@@ -301,7 +301,7 @@ export default function Carteiras() {
               </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Nome *</Label>
                   <Input 
@@ -357,7 +357,7 @@ export default function Carteiras() {
                   </div>
 
                   {/* Agência */}
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label>Agência <span className="text-destructive">*</span></Label>
                       <Input
@@ -409,7 +409,7 @@ export default function Carteiras() {
                   </div>
 
                   {/* Número da Conta */}
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label>Número da Conta <span className="text-destructive">*</span></Label>
                       <Input
@@ -455,7 +455,7 @@ export default function Carteiras() {
               </div>
 
               {formData.type === 'cartao' && (
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label>Dia de Fechamento</Label>
                     <Input

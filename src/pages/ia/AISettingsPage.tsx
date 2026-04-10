@@ -184,7 +184,7 @@ export default function AISettingsPage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {(Object.keys(personalityDescriptions) as Array<keyof typeof personalityDescriptions>).map((mode) => {
                   const config = personalityDescriptions[mode];
                   const Icon = config.icon;

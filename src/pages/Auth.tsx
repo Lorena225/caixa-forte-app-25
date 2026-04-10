@@ -137,7 +137,10 @@ export default function Auth() {
       password,
       options: {
         emailRedirectTo: redirectUrl,
-        data: { full_name: fullName },
+        data: {
+          full_name: fullName,
+          company_name: companyName || 'Minha Empresa',
+        },
       },
     });
 
@@ -152,36 +155,20 @@ export default function Auth() {
     }
 
     if (authData.user) {
-      // Criar empresa
-      const { data: company, error: companyError } = await supabase
-        .from('companies')
-        .insert({ name: companyName || 'Minha Empresa' })
-        .select()
-        .single();
-
-      if (companyError) {
+      if (authData.session) {
+        // Email confirmation desativado — usuário já está logado
         toast({
-          title: 'Erro ao criar empresa',
-          description: companyError.message,
-          variant: 'destructive',
+          title: 'Conta criada!',
+          description: 'Bem-vindo ao Vitrio.',
         });
-        setLoading(false);
-        return;
+        navigate('/');
+      } else {
+        // Email confirmation ativado — empresa será criada pelo trigger ao confirmar
+        toast({
+          title: 'Cadastro realizado!',
+          description: 'Verifique seu email para confirmar o cadastro.',
+        });
       }
-
-      // Vincular usuário à empresa como admin
-      await supabase.from('company_users').insert({
-        company_id: company.id,
-        user_id: authData.user.id,
-        role: 'admin',
-        is_default: true,
-      });
-
-      toast({
-        title: 'Conta criada!',
-        description: 'Bem-vindo ao Sistema Financeiro.',
-      });
-      navigate('/');
     }
     setLoading(false);
   };

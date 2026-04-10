@@ -170,7 +170,7 @@ export function FornecedorFormDialog({
               </TabsList>
 
               <TabsContent value="dados" className="space-y-4 pt-4">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
                     name="tipo_pessoa"
@@ -255,7 +255,7 @@ export function FornecedorFormDialog({
                   />
                 )}
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
                     name="email"
@@ -289,7 +289,7 @@ export function FornecedorFormDialog({
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
                     name="celular"
@@ -372,7 +372,7 @@ export function FornecedorFormDialog({
                   />
                 </div>
 
-                <div className="grid grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   <div className="col-span-3">
                     <FormField
                       control={form.control}
@@ -404,7 +404,7 @@ export function FornecedorFormDialog({
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
                     name="complemento"
@@ -531,7 +531,7 @@ export function FornecedorFormDialog({
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
                     name="pix_tipo"
@@ -596,7 +596,7 @@ export function FornecedorFormDialog({
 
               <TabsContent value="fiscal" className="space-y-4 pt-4">
                 {tipoPessoa === 'J' && (
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <FormField
                       control={form.control}
                       name="inscricao_estadual"

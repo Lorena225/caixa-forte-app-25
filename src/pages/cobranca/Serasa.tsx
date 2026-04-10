@@ -431,7 +431,7 @@ export default function SerasaPage() {
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Tipo</Label>
                 <Select
@@ -462,7 +462,7 @@ export default function SerasaPage() {
                 onChange={(e) => setNegativacaoForm({ ...negativacaoForm, nome_devedor: e.target.value })}
               />
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Valor da Dívida</Label>
                 <Input

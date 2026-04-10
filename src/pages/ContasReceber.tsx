@@ -411,7 +411,7 @@ export default function ContasReceber() {
 
         {/* Main Tabs */}
         <Tabs value={mainTab} onValueChange={setMainTab}>
-          <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-flex">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 lg:w-auto lg:inline-flex">
             <TabsTrigger value="titulos" className="gap-2">
               <FileText className="h-4 w-4" />
               Títulos
@@ -702,7 +702,7 @@ export default function ContasReceber() {
                 />
               </div>
               
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Data do Lançamento</Label>
                   <Input 
@@ -723,7 +723,7 @@ export default function ContasReceber() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Valor (R$)</Label>
                   <Input 
@@ -747,7 +747,7 @@ export default function ContasReceber() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Plano de Contas</Label>
                   <Select 
@@ -788,7 +788,7 @@ export default function ContasReceber() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Cliente (opcional)</Label>
                   <Select 

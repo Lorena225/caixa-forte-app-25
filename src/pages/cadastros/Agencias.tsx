@@ -192,7 +192,7 @@ export default function Agencias() {
         />
 
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogContent className="max-w-lg">
+          <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>{editingItem ? 'Editar Agência' : 'Nova Agência'}</DialogTitle>
             </DialogHeader>
@@ -259,7 +259,7 @@ export default function Agencias() {
                 )}
               </div>
 
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="col-span-2 space-y-2">
                   <Label>Número da Agência *</Label>
                   <Input

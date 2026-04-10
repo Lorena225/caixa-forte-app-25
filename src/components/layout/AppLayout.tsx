@@ -4,7 +4,6 @@ import { Header } from '@/components/Header';
 import { CopilotChat } from '@/components/common/CopilotChat';
 import { CommandPalette } from '@/components/navigation/CommandPalette';
 import { SkipLinks } from '@/components/common/SkipLinks';
-import { TimesheetWidget } from '@/components/projetos/TimesheetWidget';
 import { cn } from '@/lib/utils';
 
 interface AppLayoutProps {
@@ -39,9 +38,6 @@ export function AppLayout({ children }: AppLayoutProps) {
       
       {/* Main Content Area - Offset for header and sidebar */}
       <MainContent>{children}</MainContent>
-      
-      {/* Timesheet Widget - Global time tracking */}
-      <TimesheetWidget />
       
       {/* Copilot Chat - Always visible, fixed bottom-right */}
       <CopilotChat />

@@ -552,7 +552,7 @@ export default function PlanoContas() {
               }}
               className="space-y-4"
             >
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Código *</Label>
                   <Input
@@ -654,7 +654,7 @@ export default function PlanoContas() {
               <div className="space-y-4">
                 <h4 className="font-medium text-sm text-muted-foreground uppercase tracking-wider">Informações Básicas</h4>
                 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label>Código * (máx. 30 caracteres)</Label>
                     <Input
@@ -702,7 +702,7 @@ export default function PlanoContas() {
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label>Categoria</Label>
                     <Select
@@ -797,7 +797,7 @@ export default function PlanoContas() {
                   </div>
                 )}
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label>Saldo Normal</Label>
                     <Select
@@ -884,7 +884,7 @@ export default function PlanoContas() {
               <div className="space-y-4 pt-4 border-t">
                 <h4 className="font-medium text-sm text-muted-foreground uppercase tracking-wider">Classificação Financeira</h4>
                 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label>Código da classificação</Label>
                     <Input

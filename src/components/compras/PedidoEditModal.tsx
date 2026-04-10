@@ -115,7 +115,7 @@ export function PedidoEditModal({ open, onOpenChange, pedido }: PedidoEditModalP
 
         <div className="space-y-6 py-4">
           {/* Status e Previsão */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Status do Pedido</Label>
               <Select value={status} onValueChange={setStatus}>

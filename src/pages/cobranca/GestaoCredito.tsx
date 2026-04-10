@@ -404,7 +404,7 @@ export default function GestaoCredito() {
             <DialogTitle>{selectedProfile?.counterparty?.name}</DialogTitle>
           </DialogHeader>
           {selectedProfile && (
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <Card><CardContent className="pt-4">
                 <p className="text-sm text-muted-foreground">Score</p>
                 <p className="text-3xl font-bold">{selectedProfile.credit_score}</p>

@@ -352,7 +352,7 @@ export default function SystemHealth() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="grid grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
                       <p className="text-xs text-muted-foreground">Queries (avg)</p>
                       <p className="text-lg font-semibold">{performanceStats?.query.avgDuration || 0}ms</p>
@@ -366,7 +366,7 @@ export default function SystemHealth() {
                       <p className="text-lg font-semibold text-warning">{performanceStats?.query.count || 0}</p>
                     </div>
                   </div>
-                  <div className="grid grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
                       <p className="text-xs text-muted-foreground">Page Load (avg)</p>
                       <p className="text-lg font-semibold">{performanceStats?.page.avgDuration || 0}ms</p>
@@ -390,7 +390,7 @@ export default function SystemHealth() {
                 <CardTitle className="text-base">Estatísticas de Cache</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   <div>
                     <p className="text-xs text-muted-foreground">Entradas</p>
                     <p className="text-lg font-semibold">{cacheStats?.totalEntries || 0}</p>

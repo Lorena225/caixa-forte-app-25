@@ -626,7 +626,7 @@ export default function Lancamentos() {
           </DialogHeader>
 
           <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Tipo *</Label>
                 <Select
@@ -692,7 +692,7 @@ export default function Lancamentos() {
             </div>
 
             {/* Categoria e Conta */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <Label>Categoria *</Label>
@@ -752,7 +752,7 @@ export default function Lancamentos() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Valor Original *</Label>
                 <Input
@@ -778,7 +778,7 @@ export default function Lancamentos() {
                 />
               </div>
             </div>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="space-y-2">
                 <Label>Data Lançamento</Label>
                 <Popover>
@@ -865,7 +865,7 @@ export default function Lancamentos() {
             </div>
 
             {/* Documento */}
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="space-y-2">
                 <Label>Tipo Documento</Label>
                 <Select
@@ -905,7 +905,7 @@ export default function Lancamentos() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Carteira *</Label>
                 <Select

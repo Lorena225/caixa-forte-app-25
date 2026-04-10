@@ -112,7 +112,7 @@ export function KanbanBoard({ projectId }: KanbanBoardProps) {
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {statusColumns.map((col) => (
           <Card key={col.id} className={cn("min-h-[500px]", col.color)}>
             <CardHeader className="pb-3">
@@ -131,7 +131,7 @@ export function KanbanBoard({ projectId }: KanbanBoardProps) {
 
   return (
     <>
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {statusColumns.map((column) => {
           const columnTasks = getTasksByStatus(column.id);
           
