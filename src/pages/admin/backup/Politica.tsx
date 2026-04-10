@@ -164,7 +164,7 @@ export default function BackupPolitica() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="grid gap-6 md:grid-cols-3">
+                <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
                   <div className="space-y-2">
                     <Label htmlFor="rpo">RPO (minutos)</Label>
                     <Input
@@ -414,7 +414,7 @@ export default function BackupPolitica() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="prose prose-sm max-w-none dark:prose-invert">
-                <div className="grid gap-6 md:grid-cols-2">
+                <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-2">
                   <div className="space-y-4">
                     <h4 className="font-semibold flex items-center gap-2">
                       <Database className="h-4 w-4" />

@@ -89,7 +89,7 @@ export default function DeveloperPortal() {
       />
 
       {/* KPIs */}
-      <div className="grid gap-4 md:grid-cols-4 mb-6">
+      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 mb-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Requests Hoje</CardTitle>
@@ -528,7 +528,7 @@ export default function DeveloperPortal() {
 
         {/* Docs Tab */}
         <TabsContent value="docs" className="space-y-4">
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-2">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">

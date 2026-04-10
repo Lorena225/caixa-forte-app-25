@@ -415,7 +415,7 @@ export default function OrcamentoReal() {
             <CardDescription>Análise automática do desempenho orçamentário</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
               <div className="p-4 rounded-lg bg-background border">
                 <div className="flex items-center gap-2 mb-2">
                   <TrendingUp className="h-4 w-4 text-success" />

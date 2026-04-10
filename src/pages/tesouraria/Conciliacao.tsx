@@ -130,7 +130,7 @@ export default function Conciliacao() {
           description="Importar extratos e conciliar movimentos automaticamente"
         />
 
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-2">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">

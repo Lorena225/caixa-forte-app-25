@@ -510,7 +510,7 @@ export default function Compensacao() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid gap-4 md:grid-cols-3">
+                <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
                   <div>
                     <Label>Data da Compensação</Label>
                     <Input 
@@ -624,7 +624,7 @@ export default function Compensacao() {
                 <CardTitle>Resumo da Compensação</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid gap-6 md:grid-cols-3">
+                <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
                   <div className="text-center p-4 bg-green-50 dark:bg-green-950/30 rounded-lg">
                     <p className="text-sm text-muted-foreground">Créditos</p>
                     <p className="text-xl font-bold text-green-600">

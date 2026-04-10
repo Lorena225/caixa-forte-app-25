@@ -399,7 +399,7 @@ export default function ContasPagar() {
               </Select>
             </div>
             
-            <div className="grid gap-4 md:grid-cols-4">
+            <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
               <Card><CardContent className="p-4"><div className="flex items-center gap-3"><div className="rounded-full p-2 bg-success/10"><ArrowUpCircle className="h-5 w-5 text-success" /></div><div><p className="text-xs text-muted-foreground">Pago</p><p className="text-lg font-semibold">{formatCurrency(totals.paid)}</p></div></div></CardContent></Card>
               <Card><CardContent className="p-4"><div className="flex items-center gap-3"><div className="rounded-full p-2 bg-warning/10"><ArrowUpCircle className="h-5 w-5 text-warning" /></div><div><p className="text-xs text-muted-foreground">A Pagar</p><p className="text-lg font-semibold text-warning">{formatCurrency(totals.pending)}</p></div></div></CardContent></Card>
               <Card><CardContent className="p-4"><div className="flex items-center gap-3"><div className="rounded-full p-2 bg-destructive/10"><ArrowUpCircle className="h-5 w-5 text-destructive" /></div><div><p className="text-xs text-muted-foreground">Atrasado</p><p className="text-lg font-semibold value-negative">{formatCurrency(totals.overdue)}</p></div></div></CardContent></Card>

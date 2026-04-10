@@ -265,7 +265,7 @@ export default function AuditCompliance() {
       </PageHeader>
 
       {/* Summary Cards */}
-      <div className="grid gap-4 md:grid-cols-4 mt-6">
+      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 mt-6">
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
@@ -352,7 +352,7 @@ export default function AuditCompliance() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-4 md:grid-cols-5">
+              <div className="grid gap-4 sm:grid-cols-3 md:grid-cols-5">
                 <div className="space-y-2">
                   <Label>Tabela</Label>
                   <Select
@@ -627,7 +627,7 @@ export default function AuditCompliance() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-4 md:grid-cols-3">
+              <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
                 {[
                   { code: 'PAYMENT_APPROVAL', name: 'Aprovação de Pagamentos', threshold: 10000 },
                   { code: 'CREDIT_LIMIT_CHANGE', name: 'Alteração de Limites', threshold: null },
@@ -818,7 +818,7 @@ export default function AuditCompliance() {
           </div>
 
           {/* Compliance Cards */}
-          <div className="grid gap-4 md:grid-cols-4">
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
             {[
               { type: 'LGPD', title: 'LGPD', icon: Building2, color: 'blue' },
               { type: 'SOX', title: 'SOX 404', icon: Scale, color: 'purple' },

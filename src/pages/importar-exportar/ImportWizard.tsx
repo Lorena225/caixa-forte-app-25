@@ -530,7 +530,7 @@ export default function ImportWizard() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid gap-4 md:grid-cols-3">
+              <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
                 <Card>
                   <CardContent className="pt-4">
                     <div className="flex items-center gap-3">
@@ -763,7 +763,7 @@ export default function ImportWizard() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="grid gap-4 md:grid-cols-5">
+              <div className="grid gap-4 sm:grid-cols-3 md:grid-cols-5">
                 <Card>
                   <CardContent className="pt-4 text-center">
                     <p className="text-2xl font-bold text-green-600">{result.imported}</p>

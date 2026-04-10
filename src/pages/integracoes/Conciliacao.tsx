@@ -138,7 +138,7 @@ export default function Conciliacao() {
       </PageHeader>
 
       {/* Summary Cards */}
-      <div className="grid gap-4 md:grid-cols-3 mt-6">
+      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 mt-6">
         <Card className="cursor-pointer hover:bg-muted/50" onClick={() => setActiveTab('reconciled')}>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium flex items-center gap-2">

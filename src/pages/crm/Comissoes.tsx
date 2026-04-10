@@ -54,7 +54,7 @@ export default function Comissoes() {
         <PageHeader title="Comissões" description="Cálculo e pagamento de comissões da equipe" />
 
         {/* KPIs */}
-        <div className="grid gap-4 md:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium flex items-center gap-2">

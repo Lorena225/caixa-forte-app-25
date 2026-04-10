@@ -341,7 +341,7 @@ export default function ImportarExtrato() {
         {/* Preview */}
         {parsedData.length > 0 && !summary && (
           <>
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
               <Card>
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm font-medium text-muted-foreground">Entradas</CardTitle>
@@ -438,7 +438,7 @@ export default function ImportarExtrato() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-4 md:grid-cols-4">
+              <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
                 <div className="text-center">
                   <div className="text-3xl font-bold">{summary.total}</div>
                   <div className="text-sm text-muted-foreground">Importadas</div>

@@ -85,7 +85,7 @@ export default function SecurityDashboard() {
         />
 
         {/* Security KPIs */}
-        <div className="grid gap-4 md:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
           {isLoadingStatus ? (
             Array(4).fill(0).map((_, i) => (
               <Card key={i}>
@@ -133,7 +133,7 @@ export default function SecurityDashboard() {
         </div>
 
         {/* Additional Security Metrics */}
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
           <SecurityKPICard
             title="Tentativas de Replay (24h)"
             value={securityStatus?.replay_attempts_24h || 0}

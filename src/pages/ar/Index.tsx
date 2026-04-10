@@ -292,7 +292,7 @@ export default function ARIndex() {
                     </div>
                   </div>
                   
-                  <div className="grid gap-4 md:grid-cols-3">
+                  <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
                     <div>
                       <Label>Número do Documento</Label>
                       <Input
@@ -372,7 +372,7 @@ export default function ARIndex() {
           {/* Títulos Tab */}
           <TabsContent value="titulos" className="space-y-6">
             {/* Aging Summary */}
-            <div className="grid gap-4 md:grid-cols-5">
+            <div className="grid gap-4 sm:grid-cols-3 md:grid-cols-5">
               <Card>
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">

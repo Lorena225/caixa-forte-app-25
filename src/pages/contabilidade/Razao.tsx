@@ -115,7 +115,7 @@ export default function Razao() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid gap-4 md:grid-cols-4">
+            <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
               <div className="md:col-span-2">
                 <Label>Conta Contábil</Label>
                 <Select value={selectedAccount} onValueChange={setSelectedAccount}>

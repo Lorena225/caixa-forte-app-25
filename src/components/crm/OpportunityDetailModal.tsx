@@ -255,7 +255,7 @@ export function OpportunityDetailModal({ opportunity, open, onClose }: Opportuni
             </TabsContent>
 
             <TabsContent value="details" className="p-6 pt-4 m-0">
-              <div className="grid gap-6 md:grid-cols-2">
+              <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-2">
                 {/* Contact Info */}
                 <Card>
                   <CardHeader>

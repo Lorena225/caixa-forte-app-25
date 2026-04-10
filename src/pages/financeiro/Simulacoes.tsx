@@ -172,7 +172,7 @@ export default function Simulacoes() {
 
           {/* FORECAST TAB */}
           <TabsContent value="forecast" className="space-y-6">
-            <div className="grid gap-4 md:grid-cols-4">
+            <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
               <Card>
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm font-medium text-muted-foreground">Saldo Atual</CardTitle>
@@ -399,7 +399,7 @@ export default function Simulacoes() {
                     </ResponsiveContainer>
                   </div>
 
-                  <div className="grid gap-4 md:grid-cols-3 mt-6">
+                  <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 mt-6">
                     <div className="p-4 rounded-lg bg-success/10 border border-success/20">
                       <div className="flex items-center gap-2 text-success mb-1">
                         <ArrowUpRight className="h-4 w-4" />

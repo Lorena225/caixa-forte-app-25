@@ -292,7 +292,7 @@ export default function InovacaoIndex() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
               <div className="p-4 rounded-lg border bg-muted/30">
                 <h4 className="font-medium mb-2 flex items-center gap-2">
                   <Shield className="h-4 w-4 text-success" />

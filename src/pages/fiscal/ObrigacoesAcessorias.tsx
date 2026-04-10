@@ -113,7 +113,7 @@ export default function ObrigacoesAcessorias() {
       />
 
       {/* KPIs */}
-      <div className="grid gap-4 md:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
         <Card>
           <CardHeader className="pb-2"><CardTitle className="text-sm font-medium">Pendentes</CardTitle></CardHeader>
           <CardContent><p className="text-2xl font-bold">{pending.length}</p></CardContent>
@@ -150,7 +150,7 @@ export default function ObrigacoesAcessorias() {
       )}
 
       {/* Obligation type cards */}
-      <div className="grid gap-4 md:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
         {OBLIGATION_TYPES.slice(0, 4).map((type) => {
           const typeObligations = obligations.filter(o => o.obligation_type === type.code);
           const pendingCount = typeObligations.filter(o => !['aceita', 'transmitida'].includes(o.status)).length;

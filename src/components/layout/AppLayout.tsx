@@ -1,10 +1,14 @@
-import { ReactNode } from 'react';
+import { ReactNode, createContext, useContext } from 'react';
 import SidebarMinimalist, { useSidebarCollapse } from '@/components/SidebarMinimalist';
 import { Header } from '@/components/Header';
 import { CopilotChat } from '@/components/common/CopilotChat';
 import { CommandPalette } from '@/components/navigation/CommandPalette';
 import { SkipLinks } from '@/components/common/SkipLinks';
 import { cn } from '@/lib/utils';
+
+/** Previne duplo-render: se AppLayout já estiver ativo no contexto, renderiza só children */
+const AppLayoutContext = createContext(false);
+export const useAppLayoutActive = () => useContext(AppLayoutContext);
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -22,26 +26,33 @@ interface AppLayoutProps {
  * - Skip links for keyboard navigation
  */
 export function AppLayout({ children }: AppLayoutProps) {
+  const isNested = useAppLayoutActive();
+
+  // Se já estiver dentro de um AppLayout (ex: MainLayout aninhado), apenas repassa children
+  if (isNested) return <>{children}</>;
+
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      {/* Skip Links for Accessibility */}
-      <SkipLinks />
-      
-      {/* Fixed Header - Always on top */}
-      <Header />
-      
-      {/* Sidebar Navigation - Fixed position, below header */}
-      <SidebarMinimalist />
-      
-      {/* Command Palette */}
-      <CommandPalette />
-      
-      {/* Main Content Area - Offset for header and sidebar */}
-      <MainContent>{children}</MainContent>
-      
-      {/* Copilot Chat - Always visible, fixed bottom-right */}
-      <CopilotChat />
-    </div>
+    <AppLayoutContext.Provider value={true}>
+      <div className="min-h-screen bg-background flex flex-col">
+        {/* Skip Links for Accessibility */}
+        <SkipLinks />
+
+        {/* Fixed Header - Always on top */}
+        <Header />
+
+        {/* Sidebar Navigation - Fixed position, below header */}
+        <SidebarMinimalist />
+
+        {/* Command Palette */}
+        <CommandPalette />
+
+        {/* Main Content Area - Offset for header and sidebar */}
+        <MainContent>{children}</MainContent>
+
+        {/* Copilot Chat - Always visible, fixed bottom-right */}
+        <CopilotChat />
+      </div>
+    </AppLayoutContext.Provider>
   );
 }
 

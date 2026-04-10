@@ -55,7 +55,7 @@ export default function ContratosIndex() {
           description="Gestão de contratos, fornecedores e clientes"
         />
 
-        <div className="grid gap-4 md:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total de Contratos</CardTitle>
@@ -96,7 +96,7 @@ export default function ContratosIndex() {
           </Card>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-5">
+        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
           {menuItems.map((item) => (
             <Card 
               key={item.route}

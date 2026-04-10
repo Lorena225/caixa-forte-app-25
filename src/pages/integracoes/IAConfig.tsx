@@ -126,7 +126,7 @@ export default function IAConfig() {
           </Alert>
         )}
         
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-2">
           {/* API Key Card */}
           <Card>
             <CardHeader>

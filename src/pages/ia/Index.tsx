@@ -109,7 +109,7 @@ export default function IAIndex() {
         </Card>
 
         {/* Agents Overview - Consistent with AP/AR Cards */}
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
@@ -197,7 +197,7 @@ export default function IAIndex() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
               <div className="space-y-2">
                 <h4 className="font-medium flex items-center gap-2">
                   <span className="flex h-6 w-6 items-center justify-center rounded-full bg-success/20 text-success text-sm font-bold">1</span>

@@ -106,7 +106,7 @@ export default function CRMIndex() {
         />
 
         {/* KPIs */}
-        <div className="grid gap-4 md:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Pipeline Aberto</CardTitle>
@@ -154,7 +154,7 @@ export default function CRMIndex() {
         </div>
 
         {/* Menu Cards */}
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
           {menuItems.map((item) => (
             <Card 
               key={item.route}
@@ -186,7 +186,7 @@ export default function CRMIndex() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-4 md:grid-cols-5">
+              <div className="grid gap-4 sm:grid-cols-3 md:grid-cols-5">
                 {Object.entries(stats.byStage).map(([stage, data]) => (
                   <div key={stage} className="text-center p-4 rounded-lg bg-muted/50">
                     <div 

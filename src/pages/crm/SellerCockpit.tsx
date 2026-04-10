@@ -18,7 +18,7 @@ export default function SellerCockpit() {
       <MainLayout>
         <div className="space-y-6">
           <PageHeader title="Meu Painel" description="Carregando..." />
-          <div className="grid gap-4 md:grid-cols-4">
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
             {[1, 2, 3, 4].map((i) => <Skeleton key={i} className="h-32" />)}
           </div>
         </div>
@@ -52,7 +52,7 @@ export default function SellerCockpit() {
         />
 
         {/* Goal Speedometer */}
-        <div className="grid gap-4 md:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
           <Card className="md:col-span-2">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm flex items-center gap-2">
@@ -192,7 +192,7 @@ export default function SellerCockpit() {
             {pipelineSummary.length === 0 ? (
               <p className="text-sm text-muted-foreground text-center py-4">Nenhuma oportunidade no pipeline</p>
             ) : (
-              <div className="grid gap-4 md:grid-cols-4">
+              <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
                 {pipelineSummary.map((stage) => (
                   <div key={stage.stage_id} className="p-4 rounded-lg border">
                     <div className="flex items-center gap-2 mb-2">

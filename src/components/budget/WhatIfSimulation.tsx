@@ -79,7 +79,7 @@ export function WhatIfSimulation({ budgetId, baseRevenue, baseExpense }: WhatIfS
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Sliders */}
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-2">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <Label className="flex items-center gap-2">

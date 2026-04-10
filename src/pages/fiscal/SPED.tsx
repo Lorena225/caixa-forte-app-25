@@ -86,7 +86,7 @@ export default function SpedPage() {
           </div>
         </PageHeader>
 
-        <div className="grid gap-4 md:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
           {spedTypes.map((type) => {
             const typeJobs = jobs.filter((j) => j.sped_type === type);
             const completedCount = typeJobs.filter((j) => j.status === 'completed' || j.status === 'transmitted').length;

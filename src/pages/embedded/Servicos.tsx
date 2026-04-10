@@ -202,7 +202,7 @@ export default function ServicosFinanceiros() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
               {PARTNERS.map((partner, idx) => (
                 <div key={idx} className="flex items-center gap-3 p-4 rounded-lg border">
                   <span className="text-2xl">{partner.logo}</span>

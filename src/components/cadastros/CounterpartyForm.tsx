@@ -541,7 +541,7 @@ export function CounterpartyForm({
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid gap-4 md:grid-cols-3">
+              <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
                 <div className="space-y-2 md:col-span-2">
                   <Label>Logradouro</Label>
                   <Input
@@ -577,7 +577,7 @@ export function CounterpartyForm({
                   />
                 </div>
               </div>
-              <div className="grid gap-4 md:grid-cols-3">
+              <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
                 <div className="space-y-2">
                   <Label>Cidade</Label>
                   <Input
@@ -634,7 +634,7 @@ export function CounterpartyForm({
 
               {!formData.delivery_same_as_billing && (
                 <>
-                  <div className="grid gap-4 md:grid-cols-3">
+                  <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
                     <div className="space-y-2 md:col-span-2">
                       <Label>Logradouro</Label>
                       <Input
@@ -666,7 +666,7 @@ export function CounterpartyForm({
                       />
                     </div>
                   </div>
-                  <div className="grid gap-4 md:grid-cols-3">
+                  <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
                     <div className="space-y-2">
                       <Label>Cidade</Label>
                       <Input
@@ -714,7 +714,7 @@ export function CounterpartyForm({
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid gap-4 md:grid-cols-3">
+              <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
                 <div className="space-y-2">
                   <Label>Nome</Label>
                   <Input
@@ -752,7 +752,7 @@ export function CounterpartyForm({
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid gap-4 md:grid-cols-3">
+              <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
                 <div className="space-y-2">
                   <Label>Nome</Label>
                   <Input
@@ -831,7 +831,7 @@ export function CounterpartyForm({
                     />
                   </div>
                 </div>
-                <div className="grid gap-4 md:grid-cols-4">
+                <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
                   <div className="space-y-2">
                     <Label>Agência</Label>
                     <Input

@@ -103,7 +103,7 @@ export default function ReconciliationHistory() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4 md:grid-cols-4">
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
             <div className="space-y-2">
               <label className="text-sm font-medium">Data De</label>
               <Input

@@ -212,7 +212,7 @@ export default function NovaVenda() {
           description="PDV - Frente de Caixa"
         />
 
-        <div className="grid gap-4 lg:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {/* Coluna Principal - Itens */}
           <div className="lg:col-span-2 space-y-4">
             {/* Seleção de Cliente */}

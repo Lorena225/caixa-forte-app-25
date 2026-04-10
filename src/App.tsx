@@ -2,9 +2,10 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { NavigationProvider } from "@/contexts/NavigationContext";
+import { AppLayout } from "@/components/layout/AppLayout";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
@@ -332,8 +333,12 @@ const App = () => (
           <AuthProvider>
             <NavigationProvider>
               <Routes>
-                <Route path="/" element={<Index />} />
+                {/* Rotas públicas — sem layout */}
                 <Route path="/auth" element={<Auth />} />
+
+                {/* Rotas protegidas — AppLayout garante header+sidebar em todas */}
+                <Route element={<AppLayout><Outlet /></AppLayout>}>
+                <Route path="/" element={<Index />} />
                 <Route path="/favoritos" element={<Favoritos />} />
                 <Route path="/frente-caixa" element={<FrenteCaixa />} />
                 <Route path="/lancamentos" element={<Lancamentos />} />
@@ -728,7 +733,9 @@ const App = () => (
                 <Route path="/autopilot/pending" element={<Navigate to="/autopiloto/pendente" replace />} />
                 <Route path="/autopilot/rules" element={<Navigate to="/autopiloto/regras" replace />} />
                 <Route path="/autopilot/whatsapp" element={<Navigate to="/autopiloto/whatsapp" replace />} />
-                
+
+                </Route>{/* fecha Route element={<AppLayout>} */}
+
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </NavigationProvider>

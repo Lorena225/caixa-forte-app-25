@@ -180,7 +180,7 @@ export function GeneralSettingsTab() {
             </div>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
             <div className="space-y-2">
               <Label htmlFor="cnpj">CNPJ *</Label>
               <Input
@@ -257,7 +257,7 @@ export function GeneralSettingsTab() {
               placeholder="Rua, número, complemento, bairro"
             />
           </div>
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
             <div className="space-y-2">
               <Label htmlFor="city">Cidade</Label>
               <Input
@@ -305,7 +305,7 @@ export function GeneralSettingsTab() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
             <div className="space-y-2">
               <Label htmlFor="phone">Telefone</Label>
               <Input

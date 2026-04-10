@@ -45,7 +45,7 @@ export function BrandingSettingsTab() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-2">
             {/* Logo Upload */}
             <div className="space-y-4">
               <Label>Logo Principal</Label>

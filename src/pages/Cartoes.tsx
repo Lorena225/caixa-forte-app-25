@@ -156,7 +156,7 @@ export default function Cartoes() {
         />
 
         {/* Cards Summary */}
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
           {cards.map(card => (
             <Card key={card.id}>
               <CardContent className="p-4">

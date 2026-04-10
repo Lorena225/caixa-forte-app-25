@@ -130,7 +130,7 @@ if (signature !== expectedSignature) {
 
         {/* Overview Tab */}
         <TabsContent value="overview" className="space-y-6">
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
             <Card>
               <CardHeader className="flex flex-row items-center gap-2 pb-2">
                 <Zap className="h-5 w-5 text-primary" />
@@ -653,7 +653,7 @@ nova = client.financeiro.contas_pagar.create(
               <CardTitle>Recursos Adicionais</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-4 md:grid-cols-3">
+              <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
                 <Button variant="outline" className="h-auto py-4 flex-col gap-2">
                   <FileText className="h-6 w-6" />
                   <span>OpenAPI Spec</span>

@@ -184,7 +184,7 @@ export default function AuditLogs() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-4 md:grid-cols-5">
+              <div className="grid gap-4 sm:grid-cols-3 md:grid-cols-5">
                 <div className="space-y-2">
                   <Label>Tabela</Label>
                   <Select
@@ -453,7 +453,7 @@ export default function AuditLogs() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-4 md:grid-cols-3">
+              <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
                 <div className="p-4 border rounded-lg">
                   <p className="text-sm text-muted-foreground">LGPD</p>
                   <div className="flex items-center gap-2 mt-1">
@@ -492,7 +492,7 @@ export default function AuditLogs() {
         {/* STATS TAB */}
         <TabsContent value="stats" className="space-y-4">
           {/* Quick Stats */}
-          <div className="grid gap-4 md:grid-cols-4">
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Hoje</CardTitle>

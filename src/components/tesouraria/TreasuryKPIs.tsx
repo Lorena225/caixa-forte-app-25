@@ -10,7 +10,7 @@ export function TreasuryKPIs() {
 
   if (isLoading) {
     return (
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
         {[...Array(3)].map((_, i) => (
           <Card key={i}>
             <CardContent className="pt-6">
@@ -32,7 +32,7 @@ export function TreasuryKPIs() {
   const isHealthy = coverageDays >= 30;
 
   return (
-    <div className="grid gap-4 md:grid-cols-3">
+    <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
       <Card className="border-l-4 border-l-primary">
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">

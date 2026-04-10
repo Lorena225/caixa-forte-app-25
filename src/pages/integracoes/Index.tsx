@@ -118,7 +118,7 @@ export default function IntegracoesIndex() {
       </PageHeader>
 
       {/* Enterprise Integration Summary */}
-      <div className="grid gap-4 md:grid-cols-4 mt-6">
+      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 mt-6">
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">Conexões Ativas</CardTitle>

@@ -156,7 +156,7 @@ export default function Balanco() {
 
             <Card className="border-2">
               <CardContent className="pt-6">
-                <div className="grid gap-6 md:grid-cols-2">
+                <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-2">
                   <div className="flex justify-between items-center p-4 bg-primary/5 rounded-lg">
                     <div className="flex items-center gap-2">
                       <Scale className="h-5 w-5 text-primary" />

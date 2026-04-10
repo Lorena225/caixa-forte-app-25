@@ -162,7 +162,7 @@ export default function SystemTierPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid gap-4 md:grid-cols-3">
+                <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
                   <div className="flex items-center gap-2">
                     <CheckCircle2 className="h-4 w-4 text-success" />
                     <span className="text-sm">Financeiro: Ativo</span>
@@ -213,7 +213,7 @@ export default function SystemTierPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <RadioGroup value={currentTier} className="grid gap-4 md:grid-cols-3">
+                <RadioGroup value={currentTier} className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
                   {tiers.map((tier) => {
                     const isActive = tier === currentTier;
                     const template = templates?.find(t => t.template_key === tier);

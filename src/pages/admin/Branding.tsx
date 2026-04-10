@@ -305,7 +305,7 @@ export default function Branding() {
 
           {/* Identidade Visual */}
           <TabsContent value="identity">
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-2">
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -443,7 +443,7 @@ export default function Branding() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
                   <ColorPicker
                     label="Cor Primária"
                     value={formData.primary_color || "142 76% 36%"}
@@ -534,7 +534,7 @@ export default function Branding() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="grid gap-6 md:grid-cols-2">
+                <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-2">
                   <div className="space-y-2">
                     <Label>Fonte de Títulos</Label>
                     <Select
@@ -613,7 +613,7 @@ export default function Branding() {
 
           {/* Configurações */}
           <TabsContent value="settings">
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-2">
               <Card>
                 <CardHeader>
                   <CardTitle>Tema Padrão</CardTitle>

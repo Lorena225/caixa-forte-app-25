@@ -27,7 +27,7 @@ export function ProjectProfitabilityPanel({ projectId }: ProjectProfitabilityPan
   if (isLoading) {
     return (
       <div className="space-y-4">
-        <div className="grid gap-4 md:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
           {[1, 2, 3, 4].map((i) => (
             <Card key={i}>
               <CardHeader className="pb-2">
@@ -63,7 +63,7 @@ export function ProjectProfitabilityPanel({ projectId }: ProjectProfitabilityPan
   return (
     <div className="space-y-6">
       {/* KPI Cards */}
-      <div className="grid gap-4 md:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
         {/* Receita do Contrato */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">

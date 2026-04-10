@@ -60,7 +60,7 @@ export default function JobsMonitor() {
       </PageHeader>
 
       {/* Metrics Cards */}
-      <div className="grid gap-4 md:grid-cols-5 mt-6">
+      <div className="grid gap-4 sm:grid-cols-3 md:grid-cols-5 mt-6">
         <Card>
           <CardHeader className="pb-2">
             <CardDescription>Pendentes</CardDescription>
