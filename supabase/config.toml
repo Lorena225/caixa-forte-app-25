@@ -1,112 +1,44 @@
-project_id = "hwiyewggonhyppwaikss"
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
 
-[functions.whatsapp-webhook]
-verify_jwt = false
+[db]
+port = 54322
+shadow_port = 54320
+major_version = 15
 
-[functions.ai-parse-message]
-verify_jwt = true
+[studio]
+enabled = true
+port = 54323
+api_url = "http://127.0.0.1"
 
-[functions.ai-execute-actions]
-verify_jwt = true
+[inbucket]
+enabled = true
+port = 54324
+smtp_port = 54325
+pop3_port = 54326
 
-[functions.ai-rollback-action]
-verify_jwt = true
+[storage]
+enabled = true
+file_size_limit = "50MiB"
 
-[functions.whatsapp-send-message]
-verify_jwt = true
+[auth]
+enabled = true
+site_url = "https://www.erpvitrio.com.br"
+additional_redirect_urls = ["https://www.erpvitrio.com.br"]
+jwt_expiry = 3600
+enable_refresh_token_rotation = true
+refresh_token_reuse_interval = 10
+enable_signup = true
+enable_anonymous_sign_ins = false
 
-[functions.process-jobs]
-verify_jwt = true
+[auth.email]
+enable_signup = true
+double_confirm_changes = true
+enable_confirmations = false
 
-[functions.create-user]
-verify_jwt = false
-
-[functions.ai-parse-statement-file]
-verify_jwt = true
-
-[functions.reconcile-engine]
-verify_jwt = true
-
-[functions.ai-key-status]
-verify_jwt = false
-
-[functions.ai-key-set]
-verify_jwt = true
-
-[functions.ai-key-rotate]
-verify_jwt = true
-
-[functions.ai-key-revoke]
-verify_jwt = true
-
-[functions.ai-key-test]
-verify_jwt = true
-
-[functions.ai-health]
-verify_jwt = true
-
-[functions.ai-intent-parser]
-verify_jwt = true
-
-[functions.ai-statement-parser]
-verify_jwt = true
-
-[functions.ai-propose-plan]
-verify_jwt = true
-
-[functions.ai-execute-plan]
-verify_jwt = true
-
-[functions.webhook-receive]
-verify_jwt = false
-
-[functions.pix-webhook]
-verify_jwt = false
-
-[functions.pix-create-charge]
-verify_jwt = true
-
-[functions.fiscal-emit]
-verify_jwt = true
-
-[functions.cnab-process-return]
-verify_jwt = true
-
-[functions.cnab-generate-remittance]
-verify_jwt = true
-
-[functions.refresh-cache]
-verify_jwt = true
-
-[functions.api-v1-faturamento]
-verify_jwt = false
-
-[functions.api-v1-crm]
-verify_jwt = false
-
-[functions.api-v1-fiscal]
-verify_jwt = false
-
-[functions.webhook-worker]
-verify_jwt = false
-
-[functions.copilot-message]
-verify_jwt = false
-
-[functions.backup-api]
-verify_jwt = false
-
-[functions.ai-reconcile-match]
-verify_jwt = true
-
-[functions.cfo-agent]
-verify_jwt = false
-
-[functions.ai-multimodal-processor]
-verify_jwt = false
-
-[functions.ai-morning-briefing]
-verify_jwt = false
-
-[functions.integration-health-check]
-verify_jwt = true
+[analytics]
+enabled = false

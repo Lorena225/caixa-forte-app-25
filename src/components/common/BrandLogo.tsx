@@ -62,18 +62,12 @@ export const BrandLogo = memo(function BrandLogo({ className }: BrandLogoProps) 
     setSaving(true);
     try {
       const { data: company, error: companyError } = await supabase
-        .from('companies')
-        .insert({ name: formData.name.trim(), cnpj: formData.cnpj.trim() || null })
-        .select()
-        .single();
+        .rpc('create_company_with_owner', {
+          p_name: formData.name.trim(),
+          p_cnpj: formData.cnpj.trim() || null,
+        });
 
       if (companyError) throw companyError;
-
-      const { error: linkError } = await supabase
-        .from('company_users')
-        .insert({ company_id: company.id, user_id: user.id, role: 'admin', is_default: false });
-
-      if (linkError) throw linkError;
 
       await refreshCompanies();
       setCurrentCompany({ id: company.id, name: company.name, role: 'admin' });

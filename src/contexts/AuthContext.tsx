@@ -70,6 +70,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       `)
       .eq('user_id', userId);
 
+    console.log('[AuthContext] fetchUserCompanies', { userId, data, error });
+
     if (!error && data) {
       const userCompanies = data.map((item: any) => ({
         id: item.companies.id,

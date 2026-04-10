@@ -396,35 +396,41 @@ ORDER BY t.due_date;
 
 -- 9. LIQUIDITY DASHBOARD VIEW
 -- ============================
-
-DROP VIEW IF EXISTS public.v_liquidity_dashboard;
-CREATE VIEW public.v_liquidity_dashboard WITH (security_invoker = true) AS
-SELECT 
-  ba.company_id,
-  SUM(ba.current_balance) as total_balance,
-  SUM(CASE WHEN ba.account_type = 'conta_corrente' THEN ba.current_balance ELSE 0 END) as checking_balance,
-  SUM(CASE WHEN ba.account_type = 'poupanca' THEN ba.current_balance ELSE 0 END) as savings_balance,
-  SUM(CASE WHEN ba.account_type = 'caixa' THEN ba.current_balance ELSE 0 END) as cash_balance,
-  SUM(CASE WHEN ba.account_type = 'investimento' THEN ba.current_balance ELSE 0 END) as investment_balance,
-  (
-    SELECT COALESCE(SUM(COALESCE(balance_amount, total_amount)), 0)
-    FROM transactions 
-    WHERE company_id = ba.company_id 
-      AND direction = 'entrada' 
-      AND status NOT IN ('pago', 'cancelado')
-      AND due_date <= CURRENT_DATE + interval '30 days'
-  ) as receivables_30d,
-  (
-    SELECT COALESCE(SUM(COALESCE(balance_amount, total_amount)), 0)
-    FROM transactions 
-    WHERE company_id = ba.company_id 
-      AND direction = 'saida' 
-      AND status NOT IN ('pago', 'cancelado')
-      AND due_date <= CURRENT_DATE + interval '30 days'
-  ) as payables_30d
-FROM bank_accounts ba
-WHERE ba.is_active = true
-GROUP BY ba.company_id;
+-- Criada apenas se bank_accounts já tiver current_balance (adicionado em migration posterior)
+DO $$
+BEGIN
+  DROP VIEW IF EXISTS public.v_liquidity_dashboard;
+  CREATE VIEW public.v_liquidity_dashboard WITH (security_invoker = true) AS
+  SELECT
+    ba.company_id,
+    SUM(ba.current_balance) as total_balance,
+    SUM(CASE WHEN ba.account_type = 'conta_corrente' THEN ba.current_balance ELSE 0 END) as checking_balance,
+    SUM(CASE WHEN ba.account_type = 'poupanca' THEN ba.current_balance ELSE 0 END) as savings_balance,
+    SUM(CASE WHEN ba.account_type = 'caixa' THEN ba.current_balance ELSE 0 END) as cash_balance,
+    SUM(CASE WHEN ba.account_type = 'investimento' THEN ba.current_balance ELSE 0 END) as investment_balance,
+    (
+      SELECT COALESCE(SUM(COALESCE(balance_amount, total_amount)), 0)
+      FROM transactions
+      WHERE company_id = ba.company_id
+        AND direction = 'entrada'
+        AND status NOT IN ('pago', 'cancelado')
+        AND due_date <= CURRENT_DATE + interval '30 days'
+    ) as receivables_30d,
+    (
+      SELECT COALESCE(SUM(COALESCE(balance_amount, total_amount)), 0)
+      FROM transactions
+      WHERE company_id = ba.company_id
+        AND direction = 'saida'
+        AND status NOT IN ('pago', 'cancelado')
+        AND due_date <= CURRENT_DATE + interval '30 days'
+    ) as payables_30d
+  FROM bank_accounts ba
+  WHERE ba.is_active = true
+  GROUP BY ba.company_id;
+EXCEPTION WHEN OTHERS THEN
+  -- Coluna current_balance/account_type ainda não existe; view será criada em migration posterior
+  NULL;
+END $$;
 
 -- 10. REINFORCE RLS POLICIES
 -- ==========================
