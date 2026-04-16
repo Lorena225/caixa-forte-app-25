@@ -303,35 +303,21 @@ export default function Colaboradores() {
         </Card>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-          <Card className="p-4 text-center">
-            <p className="text-2xl font-bold">{employees.length}</p>
-            <p className="text-sm text-muted-foreground">Total</p>
-          </Card>
-          <Card className="p-4 text-center">
-            <p className="text-2xl font-bold text-success">
-              {employees.filter(e => e.status === 'ativo').length}
-            </p>
-            <p className="text-sm text-muted-foreground">Ativos</p>
-          </Card>
-          <Card className="p-4 text-center">
-            <p className="text-2xl font-bold text-info">
-              {employees.filter(e => e.contract_type === 'clt').length}
-            </p>
-            <p className="text-sm text-muted-foreground">CLT</p>
-          </Card>
-          <Card className="p-4 text-center">
-            <p className="text-2xl font-bold text-purple-500">
-              {employees.filter(e => e.contract_type === 'pj').length}
-            </p>
-            <p className="text-sm text-muted-foreground">PJ</p>
-          </Card>
-          <Card className="p-4 text-center">
-            <p className="text-2xl font-bold text-warning">
-              {employees.filter(e => e.contract_type === 'estagio').length}
-            </p>
-            <p className="text-sm text-muted-foreground">Estágio</p>
-          </Card>
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+          {[
+            { label: 'Total', value: employees.length, border: 'border-l-primary', text: 'text-primary' },
+            { label: 'Ativos', value: employees.filter(e => e.status === 'ativo').length, border: 'border-l-success', text: 'text-success' },
+            { label: 'CLT', value: employees.filter(e => e.contract_type === 'clt').length, border: 'border-l-info', text: 'text-info' },
+            { label: 'PJ', value: employees.filter(e => e.contract_type === 'pj').length, border: 'border-l-purple-500', text: 'text-purple-500' },
+            { label: 'Estágio', value: employees.filter(e => e.contract_type === 'estagio').length, border: 'border-l-warning', text: 'text-warning' },
+          ].map(item => (
+            <Card key={item.label} className={`border-l-4 ${item.border}`}>
+              <CardContent className="p-3">
+                <p className={`text-2xl font-bold font-mono ${item.text}`}>{item.value}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">{item.label}</p>
+              </CardContent>
+            </Card>
+          ))}
         </div>
 
         {/* Table */}
@@ -344,6 +330,7 @@ export default function Colaboradores() {
                 ))}
               </div>
             ) : (
+              <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -421,6 +408,7 @@ export default function Colaboradores() {
                   )}
                 </TableBody>
               </Table>
+              </div>
             )}
           </CardContent>
         </Card>

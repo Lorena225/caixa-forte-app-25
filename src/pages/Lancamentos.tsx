@@ -350,14 +350,14 @@ export default function Lancamentos() {
   };
 
   const getStatusBadge = (status: TransactionStatus) => {
-    const variants: Record<TransactionStatus, { variant: 'default' | 'secondary' | 'destructive' | 'outline', label: string }> = {
-      rascunho: { variant: 'secondary', label: 'Rascunho' },
-      lancado: { variant: 'outline', label: 'Lançado' },
-      pago: { variant: 'default', label: 'Pago' },
-      cancelado: { variant: 'destructive', label: 'Cancelado' },
+    const styles: Record<TransactionStatus, { cls: string; label: string }> = {
+      rascunho:  { cls: 'bg-muted text-muted-foreground',          label: 'Rascunho' },
+      lancado:   { cls: 'bg-warning/10 text-warning',              label: 'Lançado'  },
+      pago:      { cls: 'bg-success/10 text-success',              label: 'Pago'     },
+      cancelado: { cls: 'bg-destructive/10 text-destructive',      label: 'Cancelado'},
     };
-    const config = variants[status];
-    return <Badge variant={config.variant}>{config.label}</Badge>;
+    const { cls, label } = styles[status] ?? { cls: 'bg-muted text-muted-foreground', label: status };
+    return <Badge className={cls}>{label}</Badge>;
   };
 
   const months = [
@@ -398,33 +398,26 @@ export default function Lancamentos() {
 
       <div className="space-y-6">
         {/* Summary Cards */}
-        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardDescription>Total Receitas</CardDescription>
-              <CardTitle className="text-2xl text-green-600">
-                {formatCurrency(totals.receitas)}
-              </CardTitle>
-            </CardHeader>
+        <div className="grid gap-3 sm:grid-cols-3">
+          <Card className="border-l-4 border-l-success">
+            <CardContent className="p-4">
+              <p className="text-xs text-muted-foreground font-medium mb-1">Total Receitas</p>
+              <p className="text-xl font-bold font-mono text-success">{formatCurrency(totals.receitas)}</p>
+            </CardContent>
           </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardDescription>Total Despesas</CardDescription>
-              <CardTitle className="text-2xl text-red-600">
-                {formatCurrency(totals.despesas)}
-              </CardTitle>
-            </CardHeader>
+          <Card className="border-l-4 border-l-destructive">
+            <CardContent className="p-4">
+              <p className="text-xs text-muted-foreground font-medium mb-1">Total Despesas</p>
+              <p className="text-xl font-bold font-mono text-destructive">{formatCurrency(totals.despesas)}</p>
+            </CardContent>
           </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardDescription>Saldo</CardDescription>
-              <CardTitle className={cn(
-                "text-2xl",
-                totals.receitas - totals.despesas >= 0 ? "text-green-600" : "text-red-600"
-              )}>
+          <Card className={cn('border-l-4', totals.receitas - totals.despesas >= 0 ? 'border-l-primary' : 'border-l-destructive')}>
+            <CardContent className="p-4">
+              <p className="text-xs text-muted-foreground font-medium mb-1">Saldo</p>
+              <p className={cn('text-xl font-bold font-mono', totals.receitas - totals.despesas >= 0 ? 'text-primary' : 'text-destructive')}>
                 {formatCurrency(totals.receitas - totals.despesas)}
-              </CardTitle>
-            </CardHeader>
+              </p>
+            </CardContent>
           </Card>
         </div>
 
@@ -487,6 +480,7 @@ export default function Lancamentos() {
           <TabsContent value={activeTab} className="mt-4">
             <Card>
               <CardContent className="p-0">
+                <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -519,9 +513,9 @@ export default function Lancamentos() {
                         <TableRow key={t.id}>
                           <TableCell>
                             {t.direction === 'entrada' ? (
-                              <ArrowDownCircle className="h-5 w-5 text-green-600" />
+                              <ArrowDownCircle className="h-5 w-5 text-success" />
                             ) : (
-                              <ArrowUpCircle className="h-5 w-5 text-red-600" />
+                              <ArrowUpCircle className="h-5 w-5 text-destructive" />
                             )}
                           </TableCell>
                           <TableCell>
@@ -544,8 +538,8 @@ export default function Lancamentos() {
                           <TableCell>{t.accounts?.name}</TableCell>
                           <TableCell>{t.wallets?.name}</TableCell>
                           <TableCell className={cn(
-                            "text-right font-medium",
-                            t.direction === 'entrada' ? "text-green-600" : "text-red-600"
+                            "text-right font-medium font-mono",
+                            t.direction === 'entrada' ? "text-success" : "text-destructive"
                           )}>
                             {t.direction === 'saida' && '-'}
                             {formatCurrency(t.total_amount)}
@@ -606,6 +600,7 @@ export default function Lancamentos() {
                     )}
                   </TableBody>
                 </Table>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>

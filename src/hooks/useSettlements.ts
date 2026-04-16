@@ -340,6 +340,11 @@ export function useProcessSettlement() {
       queryClient.invalidateQueries({ queryKey: ['transactions'] });
       queryClient.invalidateQueries({ queryKey: ['open-titles'] });
       queryClient.invalidateQueries({ queryKey: ['settlements'] });
+      // AP/AR indexes — precisam recarregar após qualquer baixa
+      queryClient.invalidateQueries({ queryKey: ['vendor-bills'] });
+      queryClient.invalidateQueries({ queryKey: ['ap-aging-summary'] });
+      queryClient.invalidateQueries({ queryKey: ['customer-invoices'] });
+      queryClient.invalidateQueries({ queryKey: ['ar-aging-summary'] });
       toast({ title: 'Baixa processada com sucesso!' });
     },
     onError: (error: any) => {
@@ -378,6 +383,11 @@ export function useReverseSettlement() {
       queryClient.invalidateQueries({ queryKey: ['open-titles'] });
       queryClient.invalidateQueries({ queryKey: ['settlements'] });
       queryClient.invalidateQueries({ queryKey: ['settlement-history'] });
+      // AP/AR indexes — precisam recarregar após estorno
+      queryClient.invalidateQueries({ queryKey: ['vendor-bills'] });
+      queryClient.invalidateQueries({ queryKey: ['ap-aging-summary'] });
+      queryClient.invalidateQueries({ queryKey: ['customer-invoices'] });
+      queryClient.invalidateQueries({ queryKey: ['ar-aging-summary'] });
       toast({ title: 'Estorno processado com sucesso!' });
     },
     onError: (error: any) => {

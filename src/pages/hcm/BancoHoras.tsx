@@ -92,6 +92,7 @@ export default function HCMBancoHoras() {
                 <p className="text-sm mt-1">As movimentações serão registradas automaticamente pela integração de ponto</p>
               </div>
             ) : (
+              <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -144,6 +145,7 @@ export default function HCMBancoHoras() {
                   ))}
                 </TableBody>
               </Table>
+              </div>
             )}
           </CardContent>
         </Card>

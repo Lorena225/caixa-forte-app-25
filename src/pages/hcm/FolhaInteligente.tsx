@@ -29,15 +29,19 @@ import type { PayrollPeriod } from '@/hooks/hcm/usePayroll';
 import { formatCurrency } from '@/lib/formatters';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
+import { gerarHoleritePDF } from '@/lib/gerarHoleritePDF';
+import { useAuth } from '@/contexts/AuthContext';
 
-// ─── Tabela INSS 2024 (progressiva) ───────────────────────────────────────────
+// ─── Tabela INSS 2025 — Portaria MPS nº 1.730/2024 (progressiva) ─────────────
+// Verificar anualmente: https://www.gov.br/previdencia
 function calcularINSS(salarioBruto: number): number {
   const faixas = [
-    { limite: 1412.00, aliquota: 0.075 },
-    { limite: 2666.68, aliquota: 0.09 },
-    { limite: 4000.03, aliquota: 0.12 },
-    { limite: 7786.02, aliquota: 0.14 },
+    { limite: 1518.00,  aliquota: 0.075 },
+    { limite: 2793.88,  aliquota: 0.09  },
+    { limite: 4190.83,  aliquota: 0.12  },
+    { limite: 8157.41,  aliquota: 0.14  },
   ];
+  const teto = 951.62; // teto INSS 2025
   let inss = 0;
   let base = salarioBruto;
   let prev = 0;
@@ -48,16 +52,17 @@ function calcularINSS(salarioBruto: number): number {
     base -= porcao;
     prev = faixa.limite;
   }
-  return Math.min(inss, 908.86);
+  return Math.min(inss, teto);
 }
 
-// ─── Tabela IRRF 2024 ──────────────────────────────────────────────────────────
+// ─── Tabela IRRF 2025 — IN RFB 2.178/2024 ────────────────────────────────────
+// Verificar anualmente: https://www.gov.br/receitafederal
 function calcularIRRF(baseCalculo: number): number {
-  if (baseCalculo <= 2824.00) return 0;
-  if (baseCalculo <= 3751.05) return baseCalculo * 0.075 - 211.80;
-  if (baseCalculo <= 4664.68) return baseCalculo * 0.15 - 492.45;
-  if (baseCalculo <= 7786.02) return baseCalculo * 0.225 - 839.17;
-  return baseCalculo * 0.275 - 1228.47;
+  if (baseCalculo <= 3036.00) return 0;
+  if (baseCalculo <= 3751.05) return baseCalculo * 0.075 - 227.70;
+  if (baseCalculo <= 4664.68) return baseCalculo * 0.15  - 508.45;
+  if (baseCalculo <= 7786.02) return baseCalculo * 0.225 - 859.02;
+  return baseCalculo * 0.275 - 1248.47;
 }
 
 const statusConfig: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
@@ -78,10 +83,12 @@ export default function FolhaInteligente() {
   const { payrollPeriods, payrollPeriodsLoading, createPayrollPeriod, commissions } = usePayroll();
   const { employees } = useEmployees();
   const { timeSummary } = useTimeTracking();
+  const { currentCompany } = useAuth();
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedPeriod, setSelectedPeriod] = useState<PayrollPeriod | null>(null);
   const [calculating, setCalculating] = useState(false);
+  const [downloading, setDownloading] = useState<string | null>(null);
 
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth() + 1;
@@ -141,8 +148,29 @@ export default function FolhaInteligente() {
     }
   };
 
-  const handleDownload = (period: PayrollPeriod) => {
-    toast.info('Gerando holerites em PDF... Em breve disponível para download.');
+  const handleDownload = async (period: PayrollPeriod) => {
+    setDownloading(period.id);
+    try {
+      const { data: entries, error } = await supabase
+        .from('payroll_entries')
+        .select('*, employee:employees(id, full_name, registration_number)')
+        .eq('period_id', period.id)
+        .order('employee_id');
+
+      if (error) throw error;
+      if (!entries || entries.length === 0) {
+        toast.warning('Nenhum funcionário calculado neste período. Calcule a folha primeiro.');
+        return;
+      }
+
+      const empresaNome = currentCompany?.name ?? 'Empresa';
+      await gerarHoleritePDF(period, entries as any, empresaNome);
+      toast.success(`${entries.length} holerite(s) gerado(s) com sucesso!`);
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : 'Erro ao gerar holerites');
+    } finally {
+      setDownloading(null);
+    }
   };
 
   const handleCalculate = async (periodId: string) => {
@@ -527,9 +555,17 @@ export default function FolhaInteligente() {
                               <CheckCircle2 className="h-4 w-4" />
                             </Button>
                           )}
-                          {['aprovado', 'pago'].includes(period.status) && (
-                            <Button size="sm" variant="ghost" onClick={() => handleDownload(period)}>
-                              <Download className="h-4 w-4" />
+                          {['aprovado', 'pago', 'preview'].includes(period.status) && (
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => handleDownload(period)}
+                              disabled={downloading === period.id}
+                              title="Baixar holerites em PDF"
+                            >
+                              {downloading === period.id
+                                ? <RefreshCw className="h-4 w-4 animate-spin" />
+                                : <Download className="h-4 w-4" />}
                             </Button>
                           )}
                         </div>

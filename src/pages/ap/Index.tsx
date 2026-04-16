@@ -326,113 +326,92 @@ export default function APIndex() {
           </Dialog>
         </PageHeader>
 
-        {/* Aging Summary */}
-        <div className="grid gap-4 sm:grid-cols-3 md:grid-cols-5">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                <CheckCircle className="h-4 w-4 text-success" />
-                A Vencer
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-xl font-bold">{formatCurrency(agingSummary?.a_vencer || 0)}</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">1-30 dias</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-xl font-bold text-warning">{formatCurrency(agingSummary?.['1_30'] || 0)}</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">31-60 dias</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-xl font-bold text-warning">{formatCurrency(agingSummary?.['31_60'] || 0)}</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">61-90 dias</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-xl font-bold text-destructive">{formatCurrency(agingSummary?.['61_90'] || 0)}</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                <AlertTriangle className="h-4 w-4 text-destructive" />
-                +90 dias
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-xl font-bold text-destructive">{formatCurrency(agingSummary?.['90_plus'] || 0)}</p>
-            </CardContent>
-          </Card>
+        {/* Aging Summary — cards com border-left e total */}
+        <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
+          {[
+            { label: 'Total a Pagar', value: agingSummary?.total || 0, border: 'border-l-primary', text: 'text-primary', icon: <FileText className="h-4 w-4 text-primary" /> },
+            { label: 'A Vencer', value: agingSummary?.a_vencer || 0, border: 'border-l-success', text: 'text-success', icon: <CheckCircle className="h-4 w-4 text-success" /> },
+            { label: '1–30 dias', value: agingSummary?.['1_30'] || 0, border: 'border-l-warning', text: 'text-warning', icon: <Clock className="h-4 w-4 text-warning" /> },
+            { label: '31–60 dias', value: agingSummary?.['31_60'] || 0, border: 'border-l-warning', text: 'text-warning', icon: <Clock className="h-4 w-4 text-warning" /> },
+            { label: '61–90 dias', value: agingSummary?.['61_90'] || 0, border: 'border-l-destructive', text: 'text-destructive', icon: <AlertTriangle className="h-4 w-4 text-destructive" /> },
+            { label: '+90 dias', value: agingSummary?.['90_plus'] || 0, border: 'border-l-destructive', text: 'text-destructive', icon: <AlertTriangle className="h-4 w-4 text-destructive" /> },
+          ].map((item) => (
+            <Card key={item.label} className={`border-l-4 ${item.border} min-h-[80px]`}>
+              <CardContent className="p-3">
+                <div className="flex items-center gap-1.5 mb-1">
+                  {item.icon}
+                  <span className="text-xs text-muted-foreground font-medium">{item.label}</span>
+                </div>
+                <p className={`text-base font-bold font-mono ${item.text}`}>
+                  {formatCurrency(item.value)}
+                </p>
+              </CardContent>
+            </Card>
+          ))}
         </div>
 
         <Card>
-          <CardHeader>
+          <CardHeader className="border-b pb-0">
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList>
+              <TabsList className="mb-0">
                 <TabsTrigger value="pending" className="gap-2">
-                  <Clock className="h-4 w-4" />
-                  Pendentes
+                  <Clock className="h-4 w-4" /> Pendentes
                 </TabsTrigger>
-                <TabsTrigger value="overdue" className="gap-2">
-                  <AlertTriangle className="h-4 w-4" />
-                  Vencidos
+                <TabsTrigger value="overdue" className="gap-2 data-[state=active]:text-destructive">
+                  <AlertTriangle className="h-4 w-4" /> Vencidos
                 </TabsTrigger>
                 <TabsTrigger value="paid" className="gap-2">
-                  <CheckCircle className="h-4 w-4" />
-                  Pagos
+                  <CheckCircle className="h-4 w-4" /> Pagos
                 </TabsTrigger>
                 <TabsTrigger value="all" className="gap-2">
-                  <FileText className="h-4 w-4" />
-                  Todos
+                  <FileText className="h-4 w-4" /> Todos
                 </TabsTrigger>
               </TabsList>
             </Tabs>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-0">
             {bills && bills.length > 0 ? (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Documento</TableHead>
-                    <TableHead>Fornecedor</TableHead>
-                    <TableHead>Vencimento</TableHead>
-                    <TableHead className="text-right">Valor</TableHead>
-                    <TableHead>Status</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {bills.map((bill) => (
-                    <TableRow key={bill.id}>
-                      <TableCell>
-                        <div>
-                          <span className="font-mono">{bill.document_number}</span>
-                          <p className="text-xs text-muted-foreground uppercase">{bill.document_type}</p>
-                        </div>
-                      </TableCell>
-                      <TableCell>{bill.counterparty?.name}</TableCell>
-                      <TableCell>{format(new Date(bill.due_date), 'dd/MM/yyyy')}</TableCell>
-                      <TableCell className="text-right font-medium">
-                        {formatCurrency(bill.net_amount)}
-                      </TableCell>
-                      <TableCell>{getStatusBadge(bill.status, bill.due_date)}</TableCell>
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="bg-muted/30 hover:bg-muted/30">
+                      <TableHead className="pl-4">Documento</TableHead>
+                      <TableHead>Fornecedor</TableHead>
+                      <TableHead>Vencimento</TableHead>
+                      <TableHead className="text-right pr-4">Valor</TableHead>
+                      <TableHead>Status</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {bills.map((bill) => {
+                      const overdue = new Date(bill.due_date) < new Date() && bill.status !== 'paid';
+                      return (
+                        <TableRow
+                          key={bill.id}
+                          className={overdue ? 'bg-destructive/5 hover:bg-destructive/10' : 'hover:bg-muted/20'}
+                        >
+                          <TableCell className="pl-4">
+                            <span className="font-mono text-sm">{bill.document_number}</span>
+                            <p className="text-xs text-muted-foreground uppercase">{bill.document_type}</p>
+                          </TableCell>
+                          <TableCell className="text-sm">{bill.counterparty?.name || '—'}</TableCell>
+                          <TableCell className={`text-sm ${overdue ? 'text-destructive font-medium' : ''}`}>
+                            {format(new Date(bill.due_date), 'dd/MM/yyyy')}
+                          </TableCell>
+                          <TableCell className="text-right font-mono font-medium pr-4">
+                            {formatCurrency(bill.net_amount)}
+                          </TableCell>
+                          <TableCell>{getStatusBadge(bill.status, bill.due_date)}</TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </div>
             ) : (
-              <div className="text-center py-8 text-muted-foreground">
-                Nenhum documento encontrado
+              <div className="text-center py-12 text-muted-foreground">
+                <FileText className="h-10 w-10 mx-auto mb-3 opacity-30" />
+                <p className="text-sm">Nenhum documento encontrado</p>
               </div>
             )}
           </CardContent>

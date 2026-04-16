@@ -42,7 +42,10 @@ import type { DateRange } from 'react-day-picker';
 import {
   Wallet, Target, ArrowDownCircle, ArrowUpCircle, BarChart3,
   AlertTriangle, FileDown, TrendingUp, PieChart, Activity, Settings,
+  Users, UserCheck, Clock, Banknote,
 } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 
 type PeriodType = 'today' | 'week' | 'month' | 'quarter' | 'year' | 'custom';
 
@@ -212,6 +215,52 @@ export default function DashboardModern() {
   const { 
     data: recentTransactions = [] 
   } = useRecentTransactions(10);
+
+  // RH KPIs
+  const { data: rhMetrics } = useQuery({
+    queryKey: ['dashboard-rh-metrics', currentCompany?.id],
+    queryFn: async () => {
+      if (!currentCompany?.id) return null;
+      const today = new Date().toISOString().split('T')[0];
+
+      const [empRes, pontoRes, folhaRes] = await Promise.all([
+        supabase
+          .from('employees')
+          .select('id, status')
+          .eq('company_id', currentCompany.id)
+          .in('status', ['ativo', 'experiencia']),
+        supabase
+          .from('time_daily_summary')
+          .select('employee_id, worked_hours, bank_hours')
+          .eq('company_id', currentCompany.id)
+          .eq('work_date', today)
+          .gt('worked_hours', 0),
+        supabase
+          .from('payroll_periods')
+          .select('id, status, total_net')
+          .eq('company_id', currentCompany.id)
+          .in('status', ['preview', 'rascunho', 'calculando'])
+          .order('created_at', { ascending: false })
+          .limit(1),
+      ]);
+
+      const totalAtivos = (empRes.data || []).length;
+      const comPontoHoje = (pontoRes.data || []).length;
+      const folhaPendente = (folhaRes.data || [])[0] ?? null;
+
+      const bankRes = await supabase
+        .from('time_daily_summary')
+        .select('bank_hours')
+        .eq('company_id', currentCompany.id)
+        .gte('work_date', new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0]);
+
+      const totalBanco = (bankRes.data || []).reduce((s, r) => s + (r.bank_hours || 0), 0);
+
+      return { totalAtivos, comPontoHoje, folhaPendente, totalBanco };
+    },
+    enabled: !!currentCompany?.id,
+    staleTime: 2 * 60 * 1000,
+  });
 
   // Refresh all data
   const handleRefresh = useCallback(() => {
@@ -509,6 +558,56 @@ export default function DashboardModern() {
                     variant={metrics?.execucaoOrcamento?.status === 'danger' ? 'danger' : 'default'}
                     isLoading={metricsLoading}
                     onClick={() => navigate('/paineis/orcamento')}
+                    delay={0.3}
+                  />
+                </div>
+              </section>
+
+              {/* RH KPI Cards */}
+              <section aria-label="Indicadores de RH">
+                <div className="flex items-center gap-2 mb-3">
+                  <Users className="h-4 w-4 text-muted-foreground" />
+                  <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Recursos Humanos</h2>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 lg:gap-6">
+                  <ModernKPICard
+                    title="Colaboradores Ativos"
+                    value={rhMetrics?.totalAtivos?.toString() ?? '—'}
+                    subtitle="em situação ativo / experiência"
+                    icon={Users}
+                    variant="primary"
+                    isLoading={!rhMetrics}
+                    onClick={() => navigate('/hcm/colaboradores')}
+                    delay={0}
+                  />
+                  <ModernKPICard
+                    title="Ponto Hoje"
+                    value={rhMetrics ? `${rhMetrics.comPontoHoje} / ${rhMetrics.totalAtivos}` : '—'}
+                    subtitle="colaboradores com registro hoje"
+                    icon={UserCheck}
+                    variant={rhMetrics && rhMetrics.totalAtivos > 0 && rhMetrics.comPontoHoje / rhMetrics.totalAtivos < 0.5 ? 'warning' : 'success'}
+                    isLoading={!rhMetrics}
+                    onClick={() => navigate('/hcm/gestor-ponto')}
+                    delay={0.1}
+                  />
+                  <ModernKPICard
+                    title="Folha Pendente"
+                    value={rhMetrics?.folhaPendente ? formatCurrency(rhMetrics.folhaPendente.total_net || 0) : 'Nenhuma'}
+                    subtitle={rhMetrics?.folhaPendente ? `Status: ${rhMetrics.folhaPendente.status}` : 'sem folha aberta'}
+                    icon={Banknote}
+                    variant={rhMetrics?.folhaPendente ? 'warning' : 'default'}
+                    isLoading={!rhMetrics}
+                    onClick={() => navigate('/hcm/folha')}
+                    delay={0.2}
+                  />
+                  <ModernKPICard
+                    title="Banco de Horas"
+                    value={rhMetrics ? `${rhMetrics.totalBanco >= 0 ? '+' : ''}${rhMetrics.totalBanco.toFixed(1)}h` : '—'}
+                    subtitle="saldo acumulado no mês"
+                    icon={Clock}
+                    variant={rhMetrics && rhMetrics.totalBanco < -20 ? 'danger' : rhMetrics && rhMetrics.totalBanco > 40 ? 'warning' : 'default'}
+                    isLoading={!rhMetrics}
+                    onClick={() => navigate('/hcm/banco-horas')}
                     delay={0.3}
                   />
                 </div>
