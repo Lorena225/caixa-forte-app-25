@@ -9,7 +9,8 @@
 // =====================================================
 
 import { useState, useCallback, useRef } from "react";
-import { useSupabaseClient } from "@supabase/auth-helpers-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   Building2, TrendingUp, TrendingDown, DollarSign,
   AlertTriangle, BarChart3, PieChart, ArrowLeftRight,
@@ -277,7 +278,7 @@ function DashboardBlockCard({
 // ─── Componente Principal ─────────────────────────────
 
 export default function GroupDashboard() {
-  const supabase = useSupabaseClient();
+  const { user } = useAuth();
 
   // Filtros globais persistentes
   const [filters, setFilters] = useState<GlobalFilters>({
