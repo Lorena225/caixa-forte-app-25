@@ -1,284 +1,268 @@
-import { useState } from 'react';
-import { MainLayout } from '@/components/layout/MainLayout';
-import { PageHeader } from '@/components/common/PageHeader';
-import { DataTableWithSelection } from '@/components/common/DataTableWithSelection';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Plus, Search, Eye, Edit, XCircle, Truck, CheckCircle, Trash2, RefreshCw } from 'lucide-react';
-import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
-import { PedidoCompraModal } from '@/components/compras/PedidoCompraModal';
-import { PedidoEditModal } from '@/components/compras/PedidoEditModal';
-import { usePurchaseOrders } from '@/hooks/usePurchaseOrders';
-import { toast } from 'sonner';
-import { BulkAction } from '@/components/bulk/BulkActionsBar';
+import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  ShoppingCart, CheckCircle2, XCircle, AlertTriangle, Clock,
+  Eye, RefreshCw, FileText, Package, CreditCard, ChevronDown, ChevronUp
+} from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { toast } from "sonner";
+import { formatCurrency } from "@/lib/formatters";
+import { cn } from "@/lib/utils";
 
-const statusConfig: Record<string, { label: string; color: string }> = {
-  rascunho: { label: 'Rascunho', color: 'bg-gray-100 text-gray-800' },
-  aberto: { label: 'Aberto', color: 'bg-blue-100 text-blue-800' },
-  enviado: { label: 'Enviado', color: 'bg-blue-100 text-blue-800' },
-  confirmado: { label: 'Confirmado', color: 'bg-purple-100 text-purple-800' },
-  parcial: { label: 'Entrega Parcial', color: 'bg-yellow-100 text-yellow-800' },
-  entregue: { label: 'Entregue', color: 'bg-green-100 text-green-800' },
-  recebido: { label: 'Recebido', color: 'bg-green-100 text-green-800' },
-  cancelado: { label: 'Cancelado', color: 'bg-red-100 text-red-800' },
+// ─── Tipos ───────────────────────────────────────────────────────────────────
+interface ThreeWayMatch {
+  id: string;
+  po_number: string;
+  supplier_name: string;
+  po_amount: number;
+  invoice_amount: number | null;
+  receipt_amount: number | null;
+  match_score: number | null;
+  match_status: "pending" | "matched" | "partial" | "divergent";
+  created_at: string;
+  invoice_number?: string;
+  notes?: string;
+}
+
+// ─── Cores por status ────────────────────────────────────────────────────────
+const STATUS_META = {
+  matched:   { label: "Match Perfeito",  color: "text-green-700", bg: "bg-green-50 border-green-300",  icon: CheckCircle2 },
+  partial:   { label: "Parcial",         color: "text-amber-700", bg: "bg-amber-50 border-amber-300",  icon: AlertTriangle },
+  divergent: { label: "Divergente",      color: "text-red-700",   bg: "bg-red-50 border-red-300",      icon: XCircle },
+  pending:   { label: "Pendente",        color: "text-blue-700",  bg: "bg-blue-50 border-blue-300",    icon: Clock },
 };
 
-// Mock data
-const mockPedidos = [
-  { id: '1', numero: 'PC-2026-0001', fornecedor: 'Distribuidora ABC', data: '2026-01-10', previsao_entrega: '2026-01-20', valor_total: 15000, status: 'confirmado', itens: 5 },
-  { id: '2', numero: 'PC-2026-0002', fornecedor: 'Tech Supplies', data: '2026-01-12', previsao_entrega: '2026-01-25', valor_total: 8500, status: 'enviado', itens: 3 },
-  { id: '3', numero: 'PC-2026-0003', fornecedor: 'Atacado XYZ', data: '2026-01-13', previsao_entrega: '2026-01-18', valor_total: 3200, status: 'entregue', itens: 8 },
-  { id: '4', numero: 'PC-2026-0004', fornecedor: 'Import & Export', data: '2026-01-14', previsao_entrega: null, valor_total: 22000, status: 'rascunho', itens: 12 },
-];
+export default function ComprasPedidos() {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+  const [expanded, setExpanded] = useState<string | null>(null);
+  const [tab, setTab] = useState("all");
 
-export default function PedidosCompra() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [modalOpen, setModalOpen] = useState(false);
-  const [editModalOpen, setEditModalOpen] = useState(false);
-  const [selectedPedido, setSelectedPedido] = useState<any>(null);
-  
-  const { orders, isLoading, updateOrder } = usePurchaseOrders();
-  const pedidos = mockPedidos; // Will switch to orders when data available
-
-  const filteredPedidos = pedidos.filter(pedido => {
-    const matchesSearch = pedido.numero.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      pedido.fornecedor.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = statusFilter === 'all' || pedido.status === statusFilter;
-    return matchesSearch && matchesStatus;
+  const { data: matches = [], isLoading, refetch } = useQuery<ThreeWayMatch[]>({
+    queryKey: ["three-way-matches"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("three_way_matches")
+        .select("*, purchase_order:purchase_orders(po_number, supplier:counterparties(name))")
+        .order("created_at", { ascending: false });
+      return (data ?? []).map((d: any) => ({
+        id: d.id,
+        po_number: d.purchase_order?.po_number ?? d.id.slice(0, 8),
+        supplier_name: d.purchase_order?.supplier?.name ?? "Fornecedor",
+        po_amount: d.po_amount,
+        invoice_amount: d.invoice_amount,
+        receipt_amount: d.receipt_amount,
+        match_score: d.match_score,
+        match_status: d.match_status,
+        created_at: d.created_at,
+        invoice_number: d.invoice_number,
+        notes: d.notes,
+      }));
+    },
+    enabled: !!user,
   });
 
-  const handleEdit = (pedido: any) => {
-    setSelectedPedido(pedido);
-    setEditModalOpen(true);
-  };
+  const approveMutation = useMutation({
+    mutationFn: async (id: string) => {
+      await supabase.from("three_way_matches")
+        .update({ match_status: "matched", approved_at: new Date().toISOString() })
+        .eq("id", id);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["three-way-matches"] });
+      toast.success("Match aprovado! Título AP gerado automaticamente.");
+    },
+  });
 
-  const handleCancel = async (pedido: any) => {
-    try {
-      // updateOrder.mutate({ id: pedido.id, status: 'cancelado' });
-      toast.success('Pedido cancelado');
-    } catch (error) {
-      toast.error('Erro ao cancelar pedido');
-    }
-  };
+  const rejectMutation = useMutation({
+    mutationFn: async (id: string) => {
+      await supabase.from("three_way_matches")
+        .update({ match_status: "divergent" })
+        .eq("id", id);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["three-way-matches"] });
+      toast.warning("Match rejeitado. Aguardando correção do fornecedor.");
+    },
+  });
 
-  const handleBulkDelete = async (ids: string[]) => {
-    toast.success(`${ids.length} pedido(s) excluído(s)`);
-  };
+  const filtered = tab === "all" ? matches
+    : matches.filter(m => m.match_status === tab);
 
-  const handleBulkStatusChange = async (status: string) => {
-    toast.success(`Status alterado para os pedidos selecionados`);
-  };
-
-  const bulkActions: BulkAction[] = [
-    {
-      id: 'delete',
-      label: 'Excluir Selecionados',
-      icon: <Trash2 className="h-4 w-4" />,
-      onClick: () => handleBulkDelete([]),
-      variant: 'destructive',
-    },
-    {
-      id: 'status-enviado',
-      label: 'Marcar como Enviado',
-      icon: <RefreshCw className="h-4 w-4" />,
-      onClick: () => handleBulkStatusChange('enviado'),
-    },
-    {
-      id: 'status-confirmado',
-      label: 'Marcar como Confirmado',
-      icon: <CheckCircle className="h-4 w-4" />,
-      onClick: () => handleBulkStatusChange('confirmado'),
-    },
-    {
-      id: 'cancel',
-      label: 'Cancelar Selecionados',
-      icon: <XCircle className="h-4 w-4" />,
-      onClick: () => handleBulkStatusChange('cancelado'),
-      variant: 'destructive',
-    },
-  ];
-
-  const columns = [
-    {
-      key: 'numero',
-      header: 'Número',
-      cell: (row: any) => <div className="font-medium font-mono">{row.numero}</div>,
-    },
-    {
-      key: 'fornecedor',
-      header: 'Fornecedor',
-      cell: (row: any) => row.fornecedor,
-    },
-    {
-      key: 'data',
-      header: 'Data',
-      cell: (row: any) => format(new Date(row.data), 'dd/MM/yyyy', { locale: ptBR }),
-      hideOnMobile: true,
-    },
-    {
-      key: 'previsao_entrega',
-      header: 'Previsão Entrega',
-      cell: (row: any) => row.previsao_entrega 
-        ? format(new Date(row.previsao_entrega), 'dd/MM/yyyy', { locale: ptBR })
-        : '-',
-      hideOnMobile: true,
-    },
-    {
-      key: 'itens',
-      header: 'Itens',
-      cell: (row: any) => row.itens,
-      hideOnMobile: true,
-    },
-    {
-      key: 'valor_total',
-      header: 'Valor Total',
-      cell: (row: any) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(row.valor_total),
-    },
-    {
-      key: 'status',
-      header: 'Status',
-      cell: (row: any) => {
-        const status = statusConfig[row.status] || { label: row.status, color: 'bg-gray-100 text-gray-800' };
-        return <Badge className={status.color}>{status.label}</Badge>;
-      },
-    },
-    {
-      key: 'actions',
-      header: 'Ações',
-      cell: (row: any) => (
-        <div className="flex gap-1">
-          <Button variant="ghost" size="icon" title="Visualizar">
-            <Eye className="h-4 w-4" />
-          </Button>
-          <Button variant="ghost" size="icon" title="Editar" onClick={() => handleEdit(row)}>
-            <Edit className="h-4 w-4" />
-          </Button>
-          {['rascunho', 'aberto', 'enviado'].includes(row.status) && (
-            <Button variant="ghost" size="icon" title="Cancelar" onClick={() => handleCancel(row)}>
-              <XCircle className="h-4 w-4 text-destructive" />
-            </Button>
-          )}
-          {row.status === 'confirmado' && (
-            <Button variant="ghost" size="icon" title="Registrar Entrega">
-              <Truck className="h-4 w-4" />
-            </Button>
-          )}
-        </div>
-      ),
-    },
-  ];
-
-  // KPIs
-  const totalPendente = pedidos.filter(p => ['rascunho', 'enviado', 'confirmado', 'parcial', 'aberto'].includes(p.status))
-    .reduce((sum, p) => sum + p.valor_total, 0);
+  // ─── KPIs ────────────────────────────────────────────────────────────────
+  const total = matches.length;
+  const matched_count = matches.filter(m => m.match_status === "matched").length;
+  const pending_count = matches.filter(m => m.match_status === "pending").length;
+  const divergent_count = matches.filter(m => m.match_status === "divergent").length;
+  const avg_score = total > 0
+    ? Math.round(matches.filter(m => m.match_score).reduce((s, m) => s + (m.match_score ?? 0), 0) / total)
+    : 0;
 
   return (
-    <MainLayout>
-      <div className="space-y-6">
-        <PageHeader
-          title="Pedidos de Compra"
-          description="Formalize a intenção de compra e acompanhe o status até a entrega. Após receber, registre uma 'Entrada' para atualizar o estoque."
-        />
-
-        {/* KPIs */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Rascunhos</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{pedidos.filter(p => p.status === 'rascunho').length}</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Aguardando Entrega</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-blue-600">
-                {pedidos.filter(p => ['enviado', 'confirmado', 'aberto'].includes(p.status)).length}
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Entregues (Mês)</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-green-600">
-                {pedidos.filter(p => ['entregue', 'recebido'].includes(p.status)).length}
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Valor Pendente</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalPendente)}
-              </div>
-            </CardContent>
-          </Card>
+    <div className="p-6 space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between flex-wrap gap-3">
+        <div>
+          <h1 className="text-2xl font-bold flex items-center gap-2">
+            <ShoppingCart className="h-6 w-6 text-blue-600" />
+            Compras — 3-Way Match
+          </h1>
+          <p className="text-muted-foreground text-sm mt-1">
+            Pedido de Compra × Nota Fiscal × Recebimento físico — validação automática por IA
+          </p>
         </div>
-
-        {/* Filtros */}
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Buscar por número ou fornecedor..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todos</SelectItem>
-              <SelectItem value="rascunho">Rascunho</SelectItem>
-              <SelectItem value="enviado">Enviado</SelectItem>
-              <SelectItem value="confirmado">Confirmado</SelectItem>
-              <SelectItem value="entregue">Entregue</SelectItem>
-              <SelectItem value="cancelado">Cancelado</SelectItem>
-            </SelectContent>
-          </Select>
-          <Button onClick={() => setModalOpen(true)}>
-            <Plus className="h-4 w-4 mr-2" />
-            Novo Pedido
-          </Button>
-        </div>
-
-        {/* Modal de Novo Pedido */}
-        <PedidoCompraModal open={modalOpen} onOpenChange={setModalOpen} />
-        
-        {/* Modal de Edição */}
-        {selectedPedido && (
-          <PedidoEditModal 
-            open={editModalOpen} 
-            onOpenChange={setEditModalOpen}
-            pedido={selectedPedido}
-          />
-        )}
-
-        {/* Tabela com Seleção */}
-        <DataTableWithSelection
-          columns={columns}
-          data={filteredPedidos}
-          loading={isLoading}
-          enableSelection
-          bulkActions={bulkActions}
-          canSelect={(item) => !['cancelado', 'entregue', 'recebido'].includes(item.status)}
-        />
+        <Button variant="outline" className="gap-2" onClick={() => refetch()}>
+          <RefreshCw className="h-4 w-4" /> Atualizar
+        </Button>
       </div>
-    </MainLayout>
+
+      {/* KPIs */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        {[
+          { label: "Total",          value: total,           color: "text-foreground",  icon: FileText },
+          { label: "Aprovados",      value: matched_count,   color: "text-green-600",   icon: CheckCircle2 },
+          { label: "Pendentes",      value: pending_count,   color: "text-blue-600",    icon: Clock },
+          { label: "Divergentes",    value: divergent_count, color: "text-red-600",     icon: XCircle },
+        ].map(k => (
+          <Card key={k.label}>
+            <CardContent className="pt-5 pb-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs text-muted-foreground">{k.label}</p>
+                  <p className={cn("text-2xl font-bold", k.color)}>{k.value}</p>
+                </div>
+                <k.icon className={cn("h-7 w-7 opacity-20", k.color)} />
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* Score médio */}
+      {avg_score > 0 && (
+        <Card>
+          <CardContent className="pt-4 pb-4">
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-sm font-medium">Score médio de matching (IA)</p>
+              <span className={cn("font-bold text-lg", avg_score >= 90 ? "text-green-600" : avg_score >= 70 ? "text-amber-600" : "text-red-600")}>
+                {avg_score}%
+              </span>
+            </div>
+            <Progress value={avg_score} className="h-2" />
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Tabela por status */}
+      <Tabs value={tab} onValueChange={setTab}>
+        <TabsList>
+          <TabsTrigger value="all">Todos ({total})</TabsTrigger>
+          <TabsTrigger value="pending">Pendentes ({pending_count})</TabsTrigger>
+          <TabsTrigger value="matched">Aprovados ({matched_count})</TabsTrigger>
+          <TabsTrigger value="divergent">Divergentes ({divergent_count})</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value={tab} className="mt-4 space-y-3">
+          {isLoading ? (
+            Array.from({length: 3}).map((_,i) => (
+              <Card key={i} className="animate-pulse"><CardContent className="h-20 pt-6 bg-muted/30 rounded" /></Card>
+            ))
+          ) : filtered.length === 0 ? (
+            <div className="text-center py-12 text-muted-foreground">
+              <ShoppingCart className="h-12 w-12 mx-auto mb-3 opacity-20" />
+              <p>Nenhum match encontrado nesta categoria.</p>
+              <p className="text-sm mt-1">O sistema detecta matches automaticamente quando NFs e recebimentos são lançados.</p>
+            </div>
+          ) : (
+            filtered.map(match => {
+              const meta = STATUS_META[match.match_status];
+              const StatusIcon = meta.icon;
+              const isExp = expanded === match.id;
+              const poOk = match.po_amount != null;
+              const nfOk = match.invoice_amount != null;
+              const rcOk = match.receipt_amount != null;
+
+              return (
+                <Card key={match.id} className={cn("border-2 transition-all", meta.bg)}>
+                  {/* Linha principal */}
+                  <CardContent className="pt-4 pb-3">
+                    <div className="flex items-center gap-4 flex-wrap">
+                      <StatusIcon className={cn("h-5 w-5 flex-shrink-0", meta.color)} />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="font-semibold text-sm">PC #{match.po_number}</span>
+                          <span className="text-muted-foreground text-sm">{match.supplier_name}</span>
+                          {match.invoice_number && (
+                            <Badge variant="outline" className="text-xs">NF {match.invoice_number}</Badge>
+                          )}
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                          {new Date(match.created_at).toLocaleDateString("pt-BR")}
+                          {match.match_score != null && <> · Score: <span className="font-medium">{match.match_score}%</span></>}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge className={cn("text-xs", meta.color)}>{meta.label}</Badge>
+                        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setExpanded(isExp ? null : match.id)}>
+                          {isExp ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Detalhe expandido */}
+                    {isExp && (
+                      <div className="mt-4 space-y-3 border-t pt-3">
+                        {/* 3 pilares */}
+                        <div className="grid grid-cols-3 gap-3">
+                          {[
+                            { label: "Pedido de Compra", value: match.po_amount, ok: poOk, icon: FileText },
+                            { label: "Nota Fiscal",      value: match.invoice_amount, ok: nfOk, icon: CreditCard },
+                            { label: "Recebimento",      value: match.receipt_amount, ok: rcOk, icon: Package },
+                          ].map(p => (
+                            <div key={p.label} className={cn("p-3 rounded-lg border", p.ok ? "bg-white" : "bg-muted/30")}>
+                              <div className="flex items-center gap-1.5 mb-1">
+                                <p.icon className="h-3.5 w-3.5 text-muted-foreground" />
+                                <p className="text-xs text-muted-foreground">{p.label}</p>
+                              </div>
+                              {p.ok
+                                ? <p className="font-semibold font-mono text-sm">{formatCurrency(p.value!)}</p>
+                                : <p className="text-xs text-muted-foreground italic">Não lançado</p>}
+                            </div>
+                          ))}
+                        </div>
+
+                        {match.notes && (
+                          <p className="text-xs text-muted-foreground p-2 bg-muted/30 rounded">{match.notes}</p>
+                        )}
+
+                        {/* Ações */}
+                        {match.match_status === "pending" && (
+                          <div className="flex gap-2 justify-end">
+                            <Button size="sm" variant="outline" className="gap-2 text-red-600 border-red-300 hover:bg-red-50"
+                              onClick={() => rejectMutation.mutate(match.id)} disabled={rejectMutation.isPending}>
+                              <XCircle className="h-4 w-4" /> Rejeitar
+                            </Button>
+                            <Button size="sm" className="gap-2 bg-green-600 hover:bg-green-700"
+                              onClick={() => approveMutation.mutate(match.id)} disabled={approveMutation.isPending}>
+                              <CheckCircle2 className="h-4 w-4" /> Aprovar Match
+                            </Button>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              );
+            })
+          )}
+        </TabsContent>
+      </Tabs>
+    </div>
   );
 }
