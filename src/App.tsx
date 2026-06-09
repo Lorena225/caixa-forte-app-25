@@ -302,6 +302,7 @@ import InvestigacaoFalhas from "./pages/qualidade/InvestigacaoFalhas";
 import GestaoProcessos from "./pages/processos/GestaoProcessos";
 import IAOperacional from "./pages/ia/IAOperacional";
 import SupplyChainIndex from "./pages/supplychain/Index";
+import GroupDashboard from "./pages/grupo/VisaoGeral";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -735,6 +736,14 @@ const App = () => (
                 <Route path="/autopilot/whatsapp" element={<Navigate to="/autopiloto/whatsapp" replace />} />
 
                 </Route>{/* fecha Route element={<AppLayout>} */}
+
+                {/* Grupo Econômico — VirtruvIA Blueprint v1.0 */}
+                <Route path="/grupo/visao-geral" element={<GroupDashboard />} />
+                <Route path="/grupo/empresas" element={<GroupDashboard />} />
+                <Route path="/grupo/intercompany" element={<GroupDashboard />} />
+                <Route path="/grupo/balancete" element={<GroupDashboard />} />
+                <Route path="/grupo/demonstrativos" element={<GroupDashboard />} />
+                <Route path="/grupo/cambio" element={<GroupDashboard />} />
 
                 <Route path="*" element={<NotFound />} />
               </Routes>
