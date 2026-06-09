@@ -468,6 +468,29 @@ const menuItems: MenuItem[] = [
     ]
   },
 
+
+  // ─── GRUPO ECONÔMICO ────────────────────────────────────────────────────────
+  {
+    key: 'grupo-economico',
+    label: 'Grupo Econômico',
+    icon: Building2,
+    category: 'grupo',
+    subGroups: [
+      {
+        key: 'consolidacao',
+        label: 'Consolidação',
+        items: [
+          { key: 'grupo-visao-geral',    label: 'Visão do Grupo',         icon: LayoutDashboard, route: '/grupo/visao-geral' },
+          { key: 'grupo-empresas',       label: 'Empresas do Grupo',       icon: Building,        route: '/grupo/empresas' },
+          { key: 'grupo-intercompany',   label: 'Intercompany',            icon: ArrowLeftRight,  route: '/grupo/intercompany' },
+          { key: 'grupo-balancete',      label: 'Balancete Consolidado',   icon: TableProperties, route: '/grupo/balancete' },
+          { key: 'grupo-demonstrativos', label: 'Demonstrativos',          icon: FileBarChart2,   route: '/grupo/demonstrativos' },
+          { key: 'grupo-cambio',         label: 'Taxas de Câmbio',         icon: DollarSign,      route: '/grupo/cambio' },
+        ]
+      },
+    ]
+  },
+
   // ─── HCM & DEPARTAMENTO PESSOAL ─────────────────────────────────────────────
   {
     key: 'hcm',
