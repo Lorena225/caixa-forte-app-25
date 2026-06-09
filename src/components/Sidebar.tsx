@@ -153,6 +153,22 @@ const menuItems: MenuItem[] = [
     ]
   },
 
+
+  // GRUPO ECONÔMICO — VirtruvIA Blueprint v1.0
+  {
+    key: 'grupo-economico',
+    label: 'Grupo Econômico',
+    icon: Building2,
+    children: [
+      { key: 'grupo-visao-geral',    label: 'Visão do Grupo',        icon: Building2,   route: '/grupo/visao-geral' },
+      { key: 'grupo-empresas',       label: 'Empresas do Grupo',      icon: Building2,   route: '/grupo/empresas' },
+      { key: 'grupo-intercompany',   label: 'Intercompany',           icon: Building2,   route: '/grupo/intercompany' },
+      { key: 'grupo-balancete',      label: 'Balancete Consolidado',  icon: Building2,   route: '/grupo/balancete' },
+      { key: 'grupo-demonstrativos', label: 'Demonstrativos',         icon: Building2,   route: '/grupo/demonstrativos' },
+      { key: 'grupo-cambio',         label: 'Taxas de Câmbio',        icon: Building2,   route: '/grupo/cambio' },
+    ]
+  },
+
   // 7. CONFIGURAÇÕES
   { key: 'configuracoes', label: 'Configurações', icon: Settings, route: '/configuracoes', colorClass: 'text-menu-config' },
 ];
@@ -165,6 +181,7 @@ const categoryColorMap: Record<string, { bg: string; border: string; text: strin
   contratos: { bg: 'bg-menu-contabil/10', border: 'border-l-menu-contabil', text: 'text-menu-contabil' },
   cadastros: { bg: 'bg-menu-cadastros/10', border: 'border-l-menu-cadastros', text: 'text-menu-cadastros' },
   'ia-automacao': { bg: 'bg-menu-ia/10', border: 'border-l-menu-ia', text: 'text-menu-ia' },
+  'grupo-economico': { bg: 'bg-blue-500/10', border: 'border-l-blue-500', text: 'text-blue-500' },
   configuracoes: { bg: 'bg-menu-config/10', border: 'border-l-menu-config', text: 'text-menu-config' },
 };
 
