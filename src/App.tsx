@@ -303,6 +303,11 @@ import GestaoProcessos from "./pages/processos/GestaoProcessos";
 import IAOperacional from "./pages/ia/IAOperacional";
 import SupplyChainIndex from "./pages/supplychain/Index";
 import GroupDashboard from "./pages/grupo/VisaoGeral";
+import GrupoEmpresas from "./pages/grupo/Empresas";
+import GrupoIntercompany from "./pages/grupo/Intercompany";
+import GrupoBalancete from "./pages/grupo/Balancete";
+import GrupoDemonstrativos from "./pages/grupo/Demonstrativos";
+import GrupoCambio from "./pages/grupo/Cambio";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -739,11 +744,11 @@ const App = () => (
 
                 {/* Grupo Econômico — VirtruvIA Blueprint v1.0 */}
                 <Route path="/grupo/visao-geral" element={<GroupDashboard />} />
-                <Route path="/grupo/empresas" element={<GroupDashboard />} />
-                <Route path="/grupo/intercompany" element={<GroupDashboard />} />
-                <Route path="/grupo/balancete" element={<GroupDashboard />} />
-                <Route path="/grupo/demonstrativos" element={<GroupDashboard />} />
-                <Route path="/grupo/cambio" element={<GroupDashboard />} />
+                <Route path="/grupo/empresas" element={<GrupoEmpresas />} />
+                <Route path="/grupo/intercompany" element={<GrupoIntercompany />} />
+                <Route path="/grupo/balancete" element={<GrupoBalancete />} />
+                <Route path="/grupo/demonstrativos" element={<GrupoDemonstrativos />} />
+                <Route path="/grupo/cambio" element={<GrupoCambio />} />
 
                 <Route path="*" element={<NotFound />} />
               </Routes>
