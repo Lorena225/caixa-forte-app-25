@@ -161,6 +161,7 @@ import OrcamentoReal from "./pages/financeiro/OrcamentoReal";
 import RollingForecast from "./pages/financeiro/RollingForecast";
 import SimulacoesOrcamento from "./pages/financeiro/SimulacoesOrcamento";
 import Investimentos from "./pages/financeiro/Investimentos";
+import FinanceiroPDD from "./pages/financeiro/PDD";
 // Orçamento Avançado
 import OrcamentoCenarios from "./pages/financeiro/orcamento/Cenarios";
 import OrcamentoAprovacoes from "./pages/financeiro/orcamento/Aprovacoes";
@@ -464,6 +465,7 @@ const App = () => (
                 <Route path="/financeiro/rolling-forecast" element={<RollingForecast />} />
                 <Route path="/financeiro/simulacoes-orcamento" element={<SimulacoesOrcamento />} />
                 <Route path="/financeiro/investimentos" element={<Investimentos />} />
+                <Route path="/financeiro/pdd" element={<FinanceiroPDD />} />
                 
                 {/* ============ ORÇAMENTO AVANÇADO ============ */}
                 <Route path="/financeiro/orcamento/cenarios" element={<OrcamentoCenarios />} />
