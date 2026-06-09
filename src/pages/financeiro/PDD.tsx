@@ -70,7 +70,7 @@ export default function FinanceiroPDD() {
   // Agrupado por faixa
   const byBand = PDD_BANDS.map(band => {
     const items = provisions.filter((p: any) => p.days_overdue <= band.max_days &&
-      (band.max_days === 30 || p.days_overdue > (PDD_BANDS[PDD_BANDS.indexOf(band) - 1]?.max_days ?? 0));
+        (band.max_days === 30 || p.days_overdue > (PDD_BANDS[PDD_BANDS.indexOf(band) - 1]?.max_days ?? 0)));
     const total = items.reduce((s: number, p: any) => s + (p.provision_amount || 0), 0);
     return { ...band, count: items.length, total };
   }).filter(b => b.count > 0);
