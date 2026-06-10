@@ -332,33 +332,8 @@ const menuItems: MenuItem[] = [
         key: 'ciclo-credito',
         label: 'Crédito & Cobrança',
         items: [
-          {
-            key: 'contas-receber',
-            label: 'Contas a Receber',
-            icon: TrendingUp,
-            route: '/ar',
-            subItems: [
-              { key: 'ar-emissao',   label: 'Emitir Boleto/PIX',  icon: FileText,   route: '/ar/emissao-boleto' },
-              { key: 'ar-baixa-auto',label: 'Baixa Automática',   icon: Zap,        route: '/ar/baixa-automatica' },
-              { key: 'ar-baixa-man', label: 'Baixa Manual',       icon: CheckSquare2, route: '/ar/baixa-manual' },
-              { key: 'ar-regua',     label: 'Régua de Cobrança',  icon: BellRing,   route: '/ar/regua-cobranca' },
-              { key: 'ar-agente',    label: 'Agente IA',          icon: Bot,        route: '/ar/agente' },
-            ]
-          },
-          {
-            key: 'contas-pagar',
-            label: 'Contas a Pagar',
-            icon: TrendingDown,
-            route: '/ap',
-            subItems: [
-              { key: 'ap-lancamento',  label: 'Lançar NF',     icon: FileText,  route: '/ap/lancamento-nf' },
-              { key: 'ap-aprovacoes',  label: 'Aprovações',    icon: CheckCircle2, route: '/ap/aprovacoes' },
-              { key: 'ap-baixa-auto',  label: 'Baixa Automática', icon: Zap,    route: '/ap/baixa-automatica' },
-              { key: 'ap-baixa-man',   label: 'Baixa Manual',  icon: CheckSquare2, route: '/ap/baixa-manual' },
-              { key: 'ap-bordero',     label: 'Borderô',       icon: Send,      route: '/ap/bordero' },
-              { key: 'ap-agente',      label: 'Agente IA',     icon: Bot,       route: '/ap/agente' },
-            ]
-          },
+          { key: 'contas-receber', label: 'Contas a Receber', icon: TrendingUp,  route: '/ar' },
+          { key: 'contas-pagar',   label: 'Contas a Pagar',  icon: TrendingDown, route: '/ap' },
           { key: 'cobranca',       label: 'Cobrança',        icon: BellRing,     route: '/cobranca' },
           { key: 'cheques',        label: 'Cheques',         icon: FileCheck,    route: '/tesouraria/cheques' },
         ]
@@ -380,15 +355,15 @@ const menuItems: MenuItem[] = [
       },
       {
         key: 'emprestimos',
-            label: 'Empréstimos',
-            items: [
-              { key: 'emp-contratos',  label: 'Contratos',      icon: Building2,   route: '/emprestimos' },
-              { key: 'emp-novo',       label: 'Novo Contrato',  icon: Plus,        route: '/emprestimos/novo' },
-              { key: 'emp-agente',     label: 'Agente IA',      icon: Bot,         route: '/emprestimos/agente' },
-            ]
-          },
-          {
-            key: 'planejamento',
+        label: 'Empréstimos',
+        items: [
+          { key: 'emp-contratos',  label: 'Contratos',      icon: Building2,   route: '/emprestimos' },
+          { key: 'emp-novo',       label: 'Novo Contrato',  icon: Plus,        route: '/emprestimos/novo' },
+          { key: 'emp-agente',     label: 'Agente IA',      icon: Bot,         route: '/emprestimos/agente' },
+        ]
+      },
+      {
+        key: 'planejamento',
         label: 'Planejamento',
         items: [
           { key: 'metas-financeiras',  label: 'Metas Financeiras',  icon: Target,      route: '/metas-financeiras' },
