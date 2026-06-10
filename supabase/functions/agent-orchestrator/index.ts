@@ -1,5 +1,6 @@
 // =====================================================
 // BLOCO 3: ORQUESTRADOR DE AGENTES IA EXECUTORES
+// Redeploy: 2026-06-10
 // supabase/functions/agent-orchestrator/index.ts
 // VirtruvIA · Blueprint Sistema Financeiro v1.0
 // =====================================================
