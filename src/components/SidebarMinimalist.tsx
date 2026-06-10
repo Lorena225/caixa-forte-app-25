@@ -332,7 +332,19 @@ const menuItems: MenuItem[] = [
         key: 'ciclo-credito',
         label: 'Crédito & Cobrança',
         items: [
-          { key: 'contas-receber', label: 'Contas a Receber', icon: TrendingUp,  route: '/ar' },
+          {
+            key: 'contas-receber',
+            label: 'Contas a Receber',
+            icon: TrendingUp,
+            route: '/ar',
+            subItems: [
+              { key: 'ar-emissao',   label: 'Emitir Boleto/PIX',  icon: FileText,   route: '/ar/emissao-boleto' },
+              { key: 'ar-baixa-auto',label: 'Baixa Automática',   icon: Zap,        route: '/ar/baixa-automatica' },
+              { key: 'ar-baixa-man', label: 'Baixa Manual',       icon: CheckSquare2, route: '/ar/baixa-manual' },
+              { key: 'ar-regua',     label: 'Régua de Cobrança',  icon: BellRing,   route: '/ar/regua-cobranca' },
+              { key: 'ar-agente',    label: 'Agente IA',          icon: Bot,        route: '/ar/agente' },
+            ]
+          },
           {
             key: 'contas-pagar',
             label: 'Contas a Pagar',
