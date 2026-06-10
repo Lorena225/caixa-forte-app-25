@@ -37,6 +37,7 @@ import {
   ClipboardList,
   Network,
   Building2,
+  CheckCircle2,
   FolderTree,
   UserCheck,
   ArrowRightLeft,
@@ -332,7 +333,20 @@ const menuItems: MenuItem[] = [
         label: 'Crédito & Cobrança',
         items: [
           { key: 'contas-receber', label: 'Contas a Receber', icon: TrendingUp,  route: '/ar' },
-          { key: 'contas-pagar',   label: 'Contas a Pagar',  icon: TrendingDown, route: '/ap' },
+          {
+            key: 'contas-pagar',
+            label: 'Contas a Pagar',
+            icon: TrendingDown,
+            route: '/ap',
+            subItems: [
+              { key: 'ap-lancamento',  label: 'Lançar NF',     icon: FileText,  route: '/ap/lancamento-nf' },
+              { key: 'ap-aprovacoes',  label: 'Aprovações',    icon: CheckCircle2, route: '/ap/aprovacoes' },
+              { key: 'ap-baixa-auto',  label: 'Baixa Automática', icon: Zap,    route: '/ap/baixa-automatica' },
+              { key: 'ap-baixa-man',   label: 'Baixa Manual',  icon: CheckSquare2, route: '/ap/baixa-manual' },
+              { key: 'ap-bordero',     label: 'Borderô',       icon: Send,      route: '/ap/bordero' },
+              { key: 'ap-agente',      label: 'Agente IA',     icon: Bot,       route: '/ap/agente' },
+            ]
+          },
           { key: 'cobranca',       label: 'Cobrança',        icon: BellRing,     route: '/cobranca' },
           { key: 'cheques',        label: 'Cheques',         icon: FileCheck,    route: '/tesouraria/cheques' },
         ]
