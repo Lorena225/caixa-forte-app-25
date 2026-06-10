@@ -106,7 +106,7 @@ export function useSidebarCollapse() {
 }
 
 // ============ CATEGORY COLOR DEFINITIONS ============
-type CategoryKey = 'inicio' | 'favoritos' | 'operacional' | 'financeiro' | 'controladoria' | 'inteligencia' | 'hcm' | 'qualidade' | 'configuracoes';
+type CategoryKey = 'inicio' | 'favoritos' | 'operacional' | 'financeiro' | 'controladoria' | 'inteligencia' | 'hcm' | 'qualidade' | 'configuracoes' | 'grupo';
 
 const categoryColors: Record<CategoryKey, { icon: string; bg: string; border: string; text: string; hoverBg: string }> = {
   inicio: { 
@@ -171,6 +171,13 @@ const categoryColors: Record<CategoryKey, { icon: string; bg: string; border: st
     border: 'border-l-slate-400',
     text: 'text-slate-600',
     hoverBg: 'hover:bg-slate-50/60'
+  },
+  grupo: {
+    icon: 'text-indigo-500',
+    bg: 'bg-indigo-50',
+    border: 'border-l-indigo-500',
+    text: 'text-indigo-600',
+    hoverBg: 'hover:bg-indigo-50/60'
   },
 };
 
