@@ -86,7 +86,15 @@ const menuItems: MenuItem[] = [
       { key: 'tesouraria', label: 'Tesouraria', icon: CreditCard, route: '/tesouraria' },
       { key: 'posicao-caixa', label: 'Posição de Caixa', icon: Wallet, route: '/tesouraria/posicao' },
       { key: 'contas-receber', label: 'Contas a Receber', icon: Wallet, route: '/ar' },
-      { key: 'contas-pagar', label: 'Contas a Pagar', icon: Receipt, route: '/ap' },
+      { key: 'contas-pagar', label: 'Contas a Pagar', icon: Receipt, route: '/ap',
+        children: [
+          { key: 'ap-lancamento',  label: 'Lançar NF',          icon: Receipt, route: '/ap/lancamento-nf' },
+          { key: 'ap-aprovacoes',  label: 'Aprovações',          icon: Receipt, route: '/ap/aprovacoes' },
+          { key: 'ap-baixa-auto',  label: 'Baixa Automática',    icon: Receipt, route: '/ap/baixa-automatica' },
+          { key: 'ap-bordero',     label: 'Borderô',             icon: Receipt, route: '/ap/bordero' },
+          { key: 'ap-agente',      label: 'Agente IA',           icon: Receipt, route: '/ap/agente' },
+        ]
+      },
       { key: 'transferencias', label: 'Transferências', icon: ArrowRightLeft, route: '/tesouraria/transferencias' },
       { key: 'cheques', label: 'Cheques', icon: FileCheck, route: '/tesouraria/cheques' },
       { key: 'fluxo-caixa', label: 'Fluxo de Caixa', icon: TrendingUp, route: '/fluxo-caixa' },
