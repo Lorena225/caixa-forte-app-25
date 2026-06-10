@@ -118,6 +118,10 @@ import TesourariaBordero from "./pages/tesouraria/Bordero";
 import TesourariaCompensacao from "./pages/tesouraria/Compensacao";
 import TesourariaExtratos from "./pages/tesouraria/Extratos";
 import APIndex from "./pages/ap/Index";
+import APLancamentoNF from "./pages/ap/LancamentoNF";
+import APWorkflowAprovacao from "./pages/ap/WorkflowAprovacao";
+import APBordero from "./pages/ap/Bordero";
+import APAgentAP from "./pages/ap/AgentAP";
 import ARIndex from "./pages/ar/Index";
 // Dashboards
 import DashboardsIndex from "./pages/dashboards/Index";
@@ -496,6 +500,10 @@ const App = () => (
                 
                 {/* AP/AR Index */}
                 <Route path="/ap" element={<APIndex />} />
+                <Route path="/ap/lancamento-nf" element={<APLancamentoNF />} />
+                <Route path="/ap/aprovacoes" element={<APWorkflowAprovacao />} />
+                <Route path="/ap/bordero" element={<APBordero />} />
+                <Route path="/ap/agente" element={<APAgentAP />} />
                 <Route path="/ar" element={<ARIndex />} />
                 
                 {/* ============ PAINÉIS (PT-BR) ============ */}
