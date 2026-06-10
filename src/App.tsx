@@ -767,7 +767,19 @@ const App = () => (
 
                 <Route path="/emprestimos" element={<EmprestimosIndex />} />
                 <Route path="/emprestimos/novo" element={<EmprestimosNovo />} />
-                                </Route>{/* fecha Route element={<AppLayout>} */}
+                <Route path="/emprestimos/agente" element={<AgentEmprestimos />} />
+                <Route path="/emprestimos/:id" element={<EmprestimosCronograma />} />
+                <Route path="/ia/agente-caixa" element={<AgenteCaixa />} />
+                <Route path="/ia/agente-conciliacao" element={<AgenteConciliacao />} />
+                <Route path="/ia/agente-auditor" element={<AgenteAuditor />} />
+                <Route path="/ar/emissao-boleto" element={<AREmissaoBoleto />} />
+                <Route path="/ar/regua-cobranca" element={<ARReguaCobrancaIA />} />
+                <Route path="/ar/agente" element={<ARAgentAR />} />
+                <Route path="/ap/lancamento-nf" element={<APLancamentoNF />} />
+                <Route path="/ap/aprovacoes" element={<APWorkflowAprovacao />} />
+                <Route path="/ap/bordero" element={<APBordero />} />
+                <Route path="/ap/agente" element={<APAgentAP />} />
+                </Route>{/* fecha Route element={<AppLayout>} */}
 
                 {/* Grupo Econômico — VirtruvIA Blueprint v1.0 */}
                 <Route path="/grupo/visao-geral" element={<GroupDashboard />} />
