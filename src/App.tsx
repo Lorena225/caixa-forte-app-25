@@ -118,19 +118,19 @@ import TesourariaBordero from "./pages/tesouraria/Bordero";
 import TesourariaCompensacao from "./pages/tesouraria/Compensacao";
 import TesourariaExtratos from "./pages/tesouraria/Extratos";
 import APIndex from "./pages/ap/Index";
+import ARIndex from "./pages/ar/Index";
 import APLancamentoNF from "./pages/ap/LancamentoNF";
 import APWorkflowAprovacao from "./pages/ap/WorkflowAprovacao";
 import APBordero from "./pages/ap/Bordero";
 import APAgentAP from "./pages/ap/AgentAP";
-import ARIndex from "./pages/ar/Index";
+import AREmissaoBoleto from "./pages/ar/EmissaoBoleto";
+import ARReguaCobrancaIA from "./pages/ar/ReguaCobrancaIA";
+import ARAgentAR from "./pages/ar/AgentAR";
 import EmprestimosIndex from "./pages/emprestimos/Index";
 import EmprestimosNovo from "./pages/emprestimos/NovoContrato";
 import EmprestimosCronograma from "./pages/emprestimos/Cronograma";
 import AgentEmprestimos from "./pages/emprestimos/AgentEmprestimos";
 import AgenteCaixa from "./pages/ia/AgenteCaixa";
-import AREmissaoBoleto from "./pages/ar/EmissaoBoleto";
-import ARReguaCobrancaIA from "./pages/ar/ReguaCobrancaIA";
-import ARAgentAR from "./pages/ar/AgentAR";
 import AgenteConciliacao from "./pages/ia/AgenteConciliacao";
 import AgenteAuditor from "./pages/ia/AgenteAuditor";
 // Dashboards
@@ -756,20 +756,20 @@ const App = () => (
                 <Route path="/autopilot/rules" element={<Navigate to="/autopiloto/regras" replace />} />
                 <Route path="/autopilot/whatsapp" element={<Navigate to="/autopiloto/whatsapp" replace />} />
 
-                <Route path="/emprestimos" element={<EmprestimosIndex />} />
-                <Route path="/emprestimos/novo" element={<EmprestimosNovo />} />
-                <Route path="/emprestimos/agente" element={<AgentEmprestimos />} />
-                <Route path="/emprestimos/:id" element={<EmprestimosCronograma />} />
-                <Route path="/ia/agente-caixa" element={<AgenteCaixa />} />
-                <Route path="/ia/agente-conciliacao" element={<AgenteConciliacao />} />
-                <Route path="/ia/agente-auditor" element={<AgenteAuditor />} />
-                <Route path="/ar/emissao-boleto" element={<AREmissaoBoleto />} />
-                <Route path="/ar/regua-cobranca" element={<ARReguaCobrancaIA />} />
-                <Route path="/ar/agente" element={<ARAgentAR />} />
                 <Route path="/ap/lancamento-nf" element={<APLancamentoNF />} />
                 <Route path="/ap/aprovacoes" element={<APWorkflowAprovacao />} />
                 <Route path="/ap/bordero" element={<APBordero />} />
                 <Route path="/ap/agente" element={<APAgentAP />} />
+                <Route path="/ar/emissao-boleto" element={<AREmissaoBoleto />} />
+                <Route path="/ar/regua-cobranca" element={<ARReguaCobrancaIA />} />
+                <Route path="/ar/agente" element={<ARAgentAR />} />
+                <Route path="/ia/agente-caixa" element={<AgenteCaixa />} />
+                <Route path="/ia/agente-conciliacao" element={<AgenteConciliacao />} />
+                <Route path="/ia/agente-auditor" element={<AgenteAuditor />} />
+                <Route path="/emprestimos" element={<EmprestimosIndex />} />
+                <Route path="/emprestimos/novo" element={<EmprestimosNovo />} />
+                <Route path="/emprestimos/agente" element={<AgentEmprestimos />} />
+                <Route path="/emprestimos/:id" element={<EmprestimosCronograma />} />
                 </Route>{/* fecha Route element={<AppLayout>} */}
 
                 {/* Grupo Econômico — VirtruvIA Blueprint v1.0 */}
