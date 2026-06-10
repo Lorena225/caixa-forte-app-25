@@ -379,7 +379,16 @@ const menuItems: MenuItem[] = [
         ]
       },
       {
-        key: 'planejamento',
+        key: 'emprestimos',
+            label: 'Empréstimos',
+            items: [
+              { key: 'emp-contratos',  label: 'Contratos',      icon: Building2,   route: '/emprestimos' },
+              { key: 'emp-novo',       label: 'Novo Contrato',  icon: Plus,        route: '/emprestimos/novo' },
+              { key: 'emp-agente',     label: 'Agente IA',      icon: Bot,         route: '/emprestimos/agente' },
+            ]
+          },
+          {
+            key: 'planejamento',
         label: 'Planejamento',
         items: [
           { key: 'metas-financeiras',  label: 'Metas Financeiras',  icon: Target,      route: '/metas-financeiras' },
