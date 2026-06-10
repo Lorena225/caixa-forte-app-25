@@ -59,12 +59,14 @@ CREATE TABLE IF NOT EXISTS public.agent_autonomy_config (
 );
 
 ALTER TABLE public.agent_autonomy_config ENABLE ROW LEVEL SECURITY;
-CREATE INDEX idx_aac_company ON public.agent_autonomy_config(company_id);
+CREATE INDEX IF NOT EXISTS idx_aac_company ON public.agent_autonomy_config(company_id);
 
+DROP POLICY IF EXISTS "aac_select" ON public.agent_autonomy_config;
 CREATE POLICY "aac_select" ON public.agent_autonomy_config
   FOR SELECT USING (
     company_id IN (SELECT company_id FROM public.company_users WHERE user_id = auth.uid())
   );
+DROP POLICY IF EXISTS "aac_admin_all" ON public.agent_autonomy_config;
 CREATE POLICY "aac_admin_all" ON public.agent_autonomy_config
   FOR ALL USING (
     company_id IN (
@@ -73,6 +75,7 @@ CREATE POLICY "aac_admin_all" ON public.agent_autonomy_config
     )
   );
 
+DROP TRIGGER IF EXISTS update_aac_updated_at ON public.agent_autonomy_config;
 CREATE TRIGGER update_aac_updated_at
   BEFORE UPDATE ON public.agent_autonomy_config
   FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
@@ -97,12 +100,14 @@ CREATE TABLE IF NOT EXISTS public.action_autonomy_matrix (
 );
 
 ALTER TABLE public.action_autonomy_matrix ENABLE ROW LEVEL SECURITY;
-CREATE INDEX idx_aam_company ON public.action_autonomy_matrix(company_id);
+CREATE INDEX IF NOT EXISTS idx_aam_company ON public.action_autonomy_matrix(company_id);
 
+DROP POLICY IF EXISTS "aam_select" ON public.action_autonomy_matrix;
 CREATE POLICY "aam_select" ON public.action_autonomy_matrix
   FOR SELECT USING (
     company_id IN (SELECT company_id FROM public.company_users WHERE user_id = auth.uid())
   );
+DROP POLICY IF EXISTS "aam_admin_all" ON public.action_autonomy_matrix;
 CREATE POLICY "aam_admin_all" ON public.action_autonomy_matrix
   FOR ALL USING (
     company_id IN (
@@ -156,10 +161,12 @@ CREATE TABLE IF NOT EXISTS public.agent_kill_switch (
 
 ALTER TABLE public.agent_kill_switch ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "kill_switch_select" ON public.agent_kill_switch;
 CREATE POLICY "kill_switch_select" ON public.agent_kill_switch
   FOR SELECT USING (
     company_id IN (SELECT company_id FROM public.company_users WHERE user_id = auth.uid())
   );
+DROP POLICY IF EXISTS "kill_switch_admin_all" ON public.agent_kill_switch;
 CREATE POLICY "kill_switch_admin_all" ON public.agent_kill_switch
   FOR ALL USING (
     company_id IN (
@@ -234,13 +241,15 @@ CREATE TABLE IF NOT EXISTS public.agent_vendor_whitelist (
 );
 
 ALTER TABLE public.agent_vendor_whitelist ENABLE ROW LEVEL SECURITY;
-CREATE INDEX idx_avw_company      ON public.agent_vendor_whitelist(company_id);
-CREATE INDEX idx_avw_counterparty ON public.agent_vendor_whitelist(counterparty_id);
+CREATE INDEX IF NOT EXISTS idx_avw_company      ON public.agent_vendor_whitelist(company_id);
+CREATE INDEX IF NOT EXISTS idx_avw_counterparty ON public.agent_vendor_whitelist(counterparty_id);
 
+DROP POLICY IF EXISTS "avw_select" ON public.agent_vendor_whitelist;
 CREATE POLICY "avw_select" ON public.agent_vendor_whitelist
   FOR SELECT USING (
     company_id IN (SELECT company_id FROM public.company_users WHERE user_id = auth.uid())
   );
+DROP POLICY IF EXISTS "avw_admin_all" ON public.agent_vendor_whitelist;
 CREATE POLICY "avw_admin_all" ON public.agent_vendor_whitelist
   FOR ALL USING (
     company_id IN (
@@ -295,8 +304,9 @@ CREATE TABLE IF NOT EXISTS public.agent_drift_metrics (
 );
 
 ALTER TABLE public.agent_drift_metrics ENABLE ROW LEVEL SECURITY;
-CREATE INDEX idx_adm_company ON public.agent_drift_metrics(company_id, period_date DESC);
+CREATE INDEX IF NOT EXISTS idx_adm_company ON public.agent_drift_metrics(company_id, period_date DESC);
 
+DROP POLICY IF EXISTS "drift_select" ON public.agent_drift_metrics;
 CREATE POLICY "drift_select" ON public.agent_drift_metrics
   FOR SELECT USING (
     company_id IN (SELECT company_id FROM public.company_users WHERE user_id = auth.uid())
@@ -421,22 +431,24 @@ CREATE TABLE IF NOT EXISTS public.agent_action_log (
 
 ALTER TABLE public.agent_action_log ENABLE ROW LEVEL SECURITY;
 
-CREATE INDEX idx_aal_company     ON public.agent_action_log(company_id, created_at DESC);
-CREATE INDEX idx_aal_agent       ON public.agent_action_log(company_id, agent_type);
-CREATE INDEX idx_aal_status      ON public.agent_action_log(company_id, status);
-CREATE INDEX idx_aal_entity      ON public.agent_action_log(entity_type, entity_id);
-CREATE INDEX idx_aal_pending     ON public.agent_action_log(company_id, status)
+CREATE INDEX IF NOT EXISTS idx_aal_company     ON public.agent_action_log(company_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_aal_agent       ON public.agent_action_log(company_id, agent_type);
+CREATE INDEX IF NOT EXISTS idx_aal_status      ON public.agent_action_log(company_id, status);
+CREATE INDEX IF NOT EXISTS idx_aal_entity      ON public.agent_action_log(entity_type, entity_id);
+CREATE INDEX IF NOT EXISTS idx_aal_pending     ON public.agent_action_log(company_id, status)
   WHERE status = 'pending_approval';
 
+DROP POLICY IF EXISTS "aal_select" ON public.agent_action_log;
 CREATE POLICY "aal_select" ON public.agent_action_log
   FOR SELECT USING (
     company_id IN (SELECT company_id FROM public.company_users WHERE user_id = auth.uid())
   );
+DROP POLICY IF EXISTS "aal_insert_service" ON public.agent_action_log;
 CREATE POLICY "aal_insert_service" ON public.agent_action_log
   FOR INSERT WITH CHECK (true);  -- Edge Functions usam service_role
 
 -- Proíbe UPDATE e DELETE (append-only)
-CREATE RULE agent_action_log_no_update AS
+CREATE OR REPLACE RULE agent_action_log_no_update AS
   ON UPDATE TO public.agent_action_log DO INSTEAD NOTHING;
 -- Permite apenas update de status (aprovação/rejeição) via função
 CREATE OR REPLACE FUNCTION public.update_agent_action_status(
@@ -482,6 +494,7 @@ CREATE TABLE IF NOT EXISTS public.agent_daily_digest (
 
 ALTER TABLE public.agent_daily_digest ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "digest_select" ON public.agent_daily_digest;
 CREATE POLICY "digest_select" ON public.agent_daily_digest
   FOR SELECT USING (
     company_id IN (SELECT company_id FROM public.company_users WHERE user_id = auth.uid())
@@ -584,8 +597,9 @@ CREATE TABLE IF NOT EXISTS public.agent_dual_approval (
 );
 
 ALTER TABLE public.agent_dual_approval ENABLE ROW LEVEL SECURITY;
-CREATE INDEX idx_ada_company ON public.agent_dual_approval(company_id, final_status);
+CREATE INDEX IF NOT EXISTS idx_ada_company ON public.agent_dual_approval(company_id, final_status);
 
+DROP POLICY IF EXISTS "ada_select" ON public.agent_dual_approval;
 CREATE POLICY "ada_select" ON public.agent_dual_approval
   FOR SELECT USING (
     company_id IN (SELECT company_id FROM public.company_users WHERE user_id = auth.uid())
