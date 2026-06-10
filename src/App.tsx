@@ -765,7 +765,9 @@ const App = () => (
                 <Route path="/autopilot/rules" element={<Navigate to="/autopiloto/regras" replace />} />
                 <Route path="/autopilot/whatsapp" element={<Navigate to="/autopiloto/whatsapp" replace />} />
 
-                </Route>{/* fecha Route element={<AppLayout>} */}
+                <Route path="/emprestimos" element={<EmprestimosIndex />} />
+                <Route path="/emprestimos/novo" element={<EmprestimosNovo />} />
+                                </Route>{/* fecha Route element={<AppLayout>} */}
 
                 {/* Grupo Econômico — VirtruvIA Blueprint v1.0 */}
                 <Route path="/grupo/visao-geral" element={<GroupDashboard />} />
