@@ -510,14 +510,7 @@ const App = () => (
                 
                 {/* AP/AR Index */}
                 <Route path="/ap" element={<APIndex />} />
-                <Route path="/ap/lancamento-nf" element={<APLancamentoNF />} />
-                <Route path="/ap/aprovacoes" element={<APWorkflowAprovacao />} />
-                <Route path="/ap/bordero" element={<APBordero />} />
-                <Route path="/ap/agente" element={<APAgentAP />} />
                 <Route path="/ar" element={<ARIndex />} />
-                <Route path="/ar/emissao-boleto" element={<AREmissaoBoleto />} />
-                <Route path="/ar/regua-cobranca" element={<ARReguaCobrancaIA />} />
-                <Route path="/ar/agente" element={<ARAgentAR />} />
                 
                 {/* ============ PAINÉIS (PT-BR) ============ */}
                 <Route path="/paineis" element={<DashboardsIndex />} />
@@ -576,8 +569,6 @@ const App = () => (
                 
                 {/* ============ IA / CHATGPT FINANCEIRO ============ */}
                 <Route path="/ia" element={<IAIndex />} />
-                <Route path="/ia/agente-conciliacao" element={<AgenteConciliacao />} />
-                <Route path="/ia/agente-auditor" element={<AgenteAuditor />} />
                 <Route path="/ia/whatsapp" element={<IAWhatsAppAgent />} />
                 <Route path="/ia/alertas" element={<IAMonitorAlerts />} />
                 <Route path="/ia/analista" element={<IAAnalystChat />} />
