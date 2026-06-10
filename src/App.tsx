@@ -123,6 +123,11 @@ import APWorkflowAprovacao from "./pages/ap/WorkflowAprovacao";
 import APBordero from "./pages/ap/Bordero";
 import APAgentAP from "./pages/ap/AgentAP";
 import ARIndex from "./pages/ar/Index";
+import AREmissaoBoleto from "./pages/ar/EmissaoBoleto";
+import ARReguaCobrancaIA from "./pages/ar/ReguaCobrancaIA";
+import ARAgentAR from "./pages/ar/AgentAR";
+import AgenteConciliacao from "./pages/ia/AgenteConciliacao";
+import AgenteAuditor from "./pages/ia/AgenteAuditor";
 // Dashboards
 import DashboardsIndex from "./pages/dashboards/Index";
 import ExecutiveDashboard from "./pages/dashboards/ExecutiveDashboard";
@@ -505,6 +510,9 @@ const App = () => (
                 <Route path="/ap/bordero" element={<APBordero />} />
                 <Route path="/ap/agente" element={<APAgentAP />} />
                 <Route path="/ar" element={<ARIndex />} />
+                <Route path="/ar/emissao-boleto" element={<AREmissaoBoleto />} />
+                <Route path="/ar/regua-cobranca" element={<ARReguaCobrancaIA />} />
+                <Route path="/ar/agente" element={<ARAgentAR />} />
                 
                 {/* ============ PAINÉIS (PT-BR) ============ */}
                 <Route path="/paineis" element={<DashboardsIndex />} />
@@ -563,6 +571,8 @@ const App = () => (
                 
                 {/* ============ IA / CHATGPT FINANCEIRO ============ */}
                 <Route path="/ia" element={<IAIndex />} />
+                <Route path="/ia/agente-conciliacao" element={<AgenteConciliacao />} />
+                <Route path="/ia/agente-auditor" element={<AgenteAuditor />} />
                 <Route path="/ia/whatsapp" element={<IAWhatsAppAgent />} />
                 <Route path="/ia/alertas" element={<IAMonitorAlerts />} />
                 <Route path="/ia/analista" element={<IAAnalystChat />} />
