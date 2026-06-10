@@ -245,7 +245,7 @@ CREATE POLICY "avw_admin_all" ON public.agent_vendor_whitelist
   FOR ALL USING (
     company_id IN (
       SELECT company_id FROM public.company_users
-      WHERE user_id = auth.uid() AND role IN ('admin','manager')
+      WHERE user_id = auth.uid() AND role IN ('admin','gestor')
     )
   );
 
