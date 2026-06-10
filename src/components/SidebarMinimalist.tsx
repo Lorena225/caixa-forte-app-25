@@ -23,6 +23,7 @@ import {
   FileText,
   Users,
   UserPlus,
+  Plus,
   CreditCard,
   Receipt,
   Wallet,
