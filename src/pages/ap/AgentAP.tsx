@@ -35,7 +35,7 @@ const LEVEL_STYLE: Record<string, string> = {
 };
 
 export default function APAgentAP() {
-  const { user } = useAuth();
+  const { user, currentCompany } = useAuth();
   const queryClient = useQueryClient();
   const [running, setRunning] = useState<string | null>(null);
 
@@ -51,7 +51,7 @@ export default function APAgentAP() {
         .limit(20);
       return data ?? [];
     },
-    enabled: !!user,
+    enabled: !!user && !!currentCompany?.id,
     refetchInterval: 10000,
   });
 
@@ -65,7 +65,7 @@ export default function APAgentAP() {
         .maybeSingle();
       return data;
     },
-    enabled: !!user,
+    enabled: !!user && !!currentCompany?.id,
   });
 
   const isKilled = killSwitch?.is_paused;
@@ -80,7 +80,7 @@ export default function APAgentAP() {
     mutationFn: async (tool: string) => {
       setRunning(tool);
       const { data, error } = await supabase.functions.invoke("agent-orchestrator", {
-        body: { action: tool, payload: { company_id: user?.id } },
+        body: { action: tool, payload: { company_id: currentCompany?.id } },
       });
       if (error) throw error;
       return data;
@@ -100,7 +100,7 @@ export default function APAgentAP() {
   const autoRunMutation = useMutation({
     mutationFn: async () => {
       const { data, error } = await supabase.functions.invoke("agent-orchestrator", {
-        body: { action: "run_ap_cycle", payload: { company_id: user?.id } },
+        body: { action: "run_ap_cycle", payload: { company_id: currentCompany?.id } },
       });
       if (error) throw error;
       return data;
