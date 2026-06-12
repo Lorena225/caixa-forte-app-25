@@ -25,7 +25,7 @@ const PAYMENT_METHODS = [
 ];
 
 export default function APBordero() {
-  const { user } = useAuth();
+  const { user, currentCompany } = useAuth();
   const queryClient = useQueryClient();
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [payMethod, setPayMethod] = useState("pix");
@@ -33,19 +33,23 @@ export default function APBordero() {
   const [generating, setGenerating] = useState(false);
 
   const { data: titulos = [], isLoading, refetch } = useQuery({
-    queryKey: ["ap-bordero"],
+    queryKey: ["ap-bordero", currentCompany?.id],
     queryFn: async () => {
       const { data } = await supabase
         .from("transactions")
         .select("*, counterparty:counterparties(name, document_number)")
-        .lt("amount", 0)
-        .eq("payment_method", "scheduled")
+        .eq("company_id", currentCompany!.id)
+        .eq("direction", "saida")
+        .eq("status", "lancado")
+        .gt("balance_amount", 0)
         .order("due_date", { ascending: true })
         .limit(50);
       return data ?? [];
     },
-    enabled: !!user,
+    enabled: !!user && !!currentCompany?.id,
   });
+
+  const valorTitulo = (t: any) => Number(t.balance_amount ?? t.total_amount ?? 0);
 
   const toggleAll = () => {
     if (selected.size === titulos.length) {
@@ -62,7 +66,7 @@ export default function APBordero() {
   };
 
   const selectedTitulos = titulos.filter((t: any) => selected.has(t.id));
-  const totalSelecionado = selectedTitulos.reduce((s: number, t: any) => s + Math.abs(t.amount || 0), 0);
+  const totalSelecionado = selectedTitulos.reduce((s: number, t: any) => s + valorTitulo(t), 0);
 
   const gerarCNAB = useMutation({
     mutationFn: async () => {
@@ -76,7 +80,7 @@ export default function APBordero() {
           payload: {
             titulos: selectedTitulos.map((t: any) => ({
               id: t.id,
-              valor: Math.abs(t.amount),
+              valor: valorTitulo(t),
               vencimento: t.due_date,
               fornecedor: t.counterparty?.name,
               documento: t.counterparty?.document_number,
@@ -88,28 +92,30 @@ export default function APBordero() {
       });
       if (error) console.warn("Edge Function CNAB:", error.message);
 
-      // Atualizar status dos títulos
+      // Reagendar data de pagamento dos títulos (forma de pagamento fica no log)
       await supabase.from("transactions")
-        .update({ payment_method: payMethod, due_date: scheduleDate })
+        .update({ due_date: scheduleDate })
         .in("id", Array.from(selected));
 
       // Log no agente
-      for (const id of selected) {
-        await supabase.from("agent_action_log").insert({
-          agent_type: "AP",
-          autonomy_level: "N2_notify",
-          action_key: "agendar_pagamento",
-          action_label: "Pagamento agendado no borderô",
-          entity_type: "transaction",
-          entity_id: id,
-          reason: `Borderô gerado para pagamento em ${scheduleDate} via ${payMethod.toUpperCase()}`,
-          status: "executed",
+      for (const t of selectedTitulos) {
+        await supabase.rpc("ai_log_action", {
+          p_company_id: currentCompany!.id,
+          p_agent_type: "AP",
+          p_autonomy_level: "N2_notify",
+          p_action_key: "agendar_pagamento",
+          p_action_label: "Pagamento agendado no borderô",
+          p_entity_type: "transaction",
+          p_entity_id: t.id,
+          p_amount: valorTitulo(t),
+          p_reason: `Borderô gerado para pagamento em ${scheduleDate} via ${payMethod.toUpperCase()}`,
+          p_status: "executed",
         });
       }
 
       // Gerar arquivo CNAB simulado para download
       const cnabContent = selectedTitulos.map((t: any, i: number) =>
-        `0${(i+1).toString().padStart(5,"0")}${(t.counterparty?.document_number ?? "").replace(/\D/g,"").padStart(14,"0")}${Math.round(Math.abs(t.amount)*100).toString().padStart(13,"0")}${scheduleDate.replace(/-/g,"")}`
+        `0${(i+1).toString().padStart(5,"0")}${(t.counterparty?.document_number ?? "").replace(/\D/g,"").padStart(14,"0")}${Math.round(valorTitulo(t)*100).toString().padStart(13,"0")}${scheduleDate.replace(/-/g,"")}`
       ).join("\n");
 
       const blob = new Blob([cnabContent], { type: "text/plain" });
@@ -264,7 +270,7 @@ export default function APBordero() {
                         {isHoje && <span className="text-amber-600 font-medium">HOJE</span>}
                       </p>
                     </div>
-                    <p className="font-bold font-mono text-red-600">{formatCurrency(Math.abs(t.amount))}</p>
+                    <p className="font-bold font-mono text-red-600">{formatCurrency(valorTitulo(t))}</p>
                   </div>
                 );
               })}

@@ -38,39 +38,40 @@ const EMPTY: BoletoForm = {
 };
 
 export default function AREmissaoBoleto() {
-  const { user } = useAuth();
+  const { user, currentCompany } = useAuth();
   const queryClient = useQueryClient();
   const [form, setForm] = useState<BoletoForm>(EMPTY);
   const [generated, setGenerated] = useState<any>(null);
 
   const { data: clientes = [] } = useQuery({
-    queryKey: ["clientes-ar"],
+    queryKey: ["clientes-ar", currentCompany?.id],
     queryFn: async () => {
       const { data } = await supabase
         .from("counterparties")
         .select("id, name, document_number, email")
-        .eq("type", "customer")
+        .eq("company_id", currentCompany!.id)
+        .in("type", ["cliente", "ambos"])
         .order("name");
       return data ?? [];
     },
-    enabled: !!user,
+    enabled: !!user && !!currentCompany?.id,
   });
 
   const emitirMutation = useMutation({
     mutationFn: async () => {
       if (!form.valor || !form.vencimento || !form.cliente_nome)
         throw new Error("Preencha cliente, valor e vencimento");
+      if (!currentCompany?.id) throw new Error("Empresa não identificada");
 
-      // Criar transação AR
-      const { data: tx, error } = await supabase.from("transactions").insert({
-        description: form.descricao || `Cobrança — ${form.cliente_nome}`,
-        amount: Math.abs(form.valor),
-        transaction_date: new Date().toISOString().slice(0,10),
-        due_date: form.vencimento,
-        category: "receivable",
-        counterparty_id: form.cliente_id || null,
-        payment_method: form.tipo,
-        notes: JSON.stringify({
+      // Criar título AR via RPC (resolve conta/carteira e grava log do agente)
+      const { data: txId, error } = await supabase.rpc("ai_create_title", {
+        p_company_id: currentCompany.id,
+        p_direction: "entrada",
+        p_description: form.descricao || `Cobrança — ${form.cliente_nome}`,
+        p_amount: Math.abs(form.valor),
+        p_due_date: form.vencimento,
+        p_counterparty_id: form.cliente_id || null,
+        p_notes: JSON.stringify({
           tipo_cobranca: form.tipo,
           juros_dia: form.juros_dia,
           multa_pct: form.multa_pct,
@@ -78,7 +79,12 @@ export default function AREmissaoBoleto() {
           desconto_valor: form.desconto_valor,
           origem: "emissao_boleto",
         }),
-      }).select().single();
+        p_agent_type: "AR",
+        p_action_key: form.tipo === "pix" ? "gerar_pix_qr" : "emitir_boleto",
+        p_action_label: form.tipo === "pix" ? "PIX Cobrança gerado" : "Boleto emitido",
+        p_reason: `Emissão automática para ${form.cliente_nome} — venc. ${form.vencimento}`,
+        p_autonomy_level: "N3_autonomous",
+      });
       if (error) throw error;
 
       // Invocar Agente AR
@@ -86,7 +92,7 @@ export default function AREmissaoBoleto() {
         body: {
           action: form.tipo === "pix" ? "gerar_pix_qr" : "emitir_boleto",
           payload: {
-            transaction_id: tx.id,
+            transaction_id: txId,
             cliente: form.cliente_nome,
             valor: form.valor,
             vencimento: form.vencimento,
@@ -95,23 +101,10 @@ export default function AREmissaoBoleto() {
         },
       });
 
-      // Log do agente AR
-      await supabase.from("agent_action_log").insert({
-        agent_type: "AR",
-        autonomy_level: "N3_autonomous",
-        action_key: form.tipo === "pix" ? "gerar_pix_qr" : "emitir_boleto",
-        action_label: form.tipo === "pix" ? "PIX Cobrança gerado" : "Boleto emitido",
-        entity_type: "transaction",
-        entity_id: tx.id,
-        amount: form.valor,
-        reason: `Emissão automática para ${form.cliente_nome} — venc. ${form.vencimento}`,
-        status: "executed",
-      });
-
       // Simular dados do boleto/PIX gerado
       const pixKey = `00020126${form.valor.toFixed(2).replace('.','').padStart(10,'0')}${Date.now()}`;
       return {
-        transaction_id: tx.id,
+        transaction_id: txId,
         tipo: form.tipo,
         linha_digitavel: form.tipo === "boleto"
           ? `34191.09008 ${Math.random().toString().slice(2,12)} ${Math.random().toString().slice(2,12)} 1 ${Date.now().toString().slice(0,14)}`

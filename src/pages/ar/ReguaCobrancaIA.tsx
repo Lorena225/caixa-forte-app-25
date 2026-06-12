@@ -32,21 +32,23 @@ const NIVEL_STYLE: Record<string, string> = {
 };
 
 export default function ARReguaCobrancaIA() {
-  const { user } = useAuth();
+  const { user, currentCompany } = useAuth();
   const queryClient = useQueryClient();
   const [activeSteps, setActiveSteps] = useState(new Set([0, 1, 2, 3]));
   const [agentRunning, setAgentRunning] = useState(false);
 
   const { data: vencidos = [], isLoading, refetch } = useQuery({
-    queryKey: ["ar-vencidos-regua"],
+    queryKey: ["ar-vencidos-regua", currentCompany?.id],
     queryFn: async () => {
       const hoje = new Date().toISOString().slice(0, 10);
       const { data } = await supabase
         .from("transactions")
         .select("*, counterparty:counterparties(name, email)")
-        .gt("amount", 0)
+        .eq("company_id", currentCompany!.id)
+        .eq("direction", "entrada")
+        .eq("status", "lancado")
+        .gt("balance_amount", 0)
         .lt("due_date", hoje)
-        .not("payment_method", "eq", "received")
         .order("due_date", { ascending: true })
         .limit(30);
       return (data ?? []).map((t: any) => {
@@ -55,26 +57,28 @@ export default function ARReguaCobrancaIA() {
         );
         const proximoPasso = REGUA_STEPS.find(s => s.dias > 0 && diasAtraso <= s.dias)
           ?? REGUA_STEPS[REGUA_STEPS.length - 1];
-        return { ...t, diasAtraso, proximoPasso };
+        const valorAberto = Number(t.balance_amount ?? t.total_amount ?? 0);
+        return { ...t, diasAtraso, proximoPasso, valorAberto };
       });
     },
-    enabled: !!user,
+    enabled: !!user && !!currentCompany?.id,
     refetchInterval: 30000,
   });
 
   const { data: logs = [] } = useQuery({
-    queryKey: ["ar-cobranca-logs"],
+    queryKey: ["ar-cobranca-logs", currentCompany?.id],
     queryFn: async () => {
       const { data } = await supabase
         .from("agent_action_log")
         .select("*")
+        .eq("company_id", currentCompany!.id)
         .eq("agent_type", "AR")
         .eq("action_key", "aplicar_regua_cobranca")
         .order("created_at", { ascending: false })
         .limit(10);
       return data ?? [];
     },
-    enabled: !!user,
+    enabled: !!user && !!currentCompany?.id,
   });
 
   const dispararReguaMutation = useMutation({
@@ -92,24 +96,25 @@ export default function ARReguaCobrancaIA() {
               transaction_id: titulo.id,
               cliente: titulo.counterparty?.name,
               email: titulo.counterparty?.email,
-              valor: titulo.amount,
+              valor: titulo.valorAberto,
               dias_atraso: titulo.diasAtraso,
               passo: titulo.proximoPasso,
             },
           },
         });
 
-        await supabase.from("agent_action_log").insert({
-          agent_type: "AR",
-          autonomy_level: titulo.proximoPasso.nivel === "N3" ? "N3_autonomous"
+        await supabase.rpc("ai_log_action", {
+          p_company_id: currentCompany!.id,
+          p_agent_type: "AR",
+          p_autonomy_level: titulo.proximoPasso.nivel === "N3" ? "N3_autonomous"
             : titulo.proximoPasso.nivel === "N2" ? "N2_notify" : "N1_approval",
-          action_key: "aplicar_regua_cobranca",
-          action_label: `Cobrança ${titulo.proximoPasso.label} — ${titulo.counterparty?.name}`,
-          entity_type: "transaction",
-          entity_id: titulo.id,
-          amount: titulo.amount,
-          reason: `Disparo automático D+${titulo.diasAtraso} via ${titulo.proximoPasso.canal}`,
-          status: "executed",
+          p_action_key: "aplicar_regua_cobranca",
+          p_action_label: `Cobrança ${titulo.proximoPasso.label} — ${titulo.counterparty?.name}`,
+          p_entity_type: "transaction",
+          p_entity_id: titulo.id,
+          p_amount: titulo.valorAberto,
+          p_reason: `Disparo automático D+${titulo.diasAtraso} via ${titulo.proximoPasso.canal}`,
+          p_status: "executed",
         });
       }
 
@@ -133,7 +138,7 @@ export default function ARReguaCobrancaIA() {
     setActiveSteps(s);
   };
 
-  const totalVencido = vencidos.reduce((s, t) => s + (t.amount || 0), 0);
+  const totalVencido = vencidos.reduce((s, t) => s + (t.valorAberto || 0), 0);
   const enviados = logs.length;
 
   return (
@@ -234,7 +239,7 @@ export default function ARReguaCobrancaIA() {
                       </p>
                     </div>
                     <span className="font-bold font-mono text-red-600 flex-shrink-0">
-                      {formatCurrency(t.amount)}
+                      {formatCurrency(t.valorAberto)}
                     </span>
                   </div>
                 ))}

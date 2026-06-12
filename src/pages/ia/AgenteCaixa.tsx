@@ -29,9 +29,10 @@ export default function AgenteCaixa() {
   const [running, setRunning] = useState<string|null>(null);
 
   const { data: logs = [], refetch } = useQuery({
-    queryKey: ["agent-caixa-logs"],
+    queryKey: ["agent-caixa-logs", currentCompany?.id],
     queryFn: async () => {
       const { data } = await supabase.from("agent_action_log").select("*")
+        .eq("company_id", currentCompany!.id)
         .in("action_key", TOOLS.map(t => t.key))
         .order("created_at", { ascending: false }).limit(10);
       return data ?? [];
@@ -41,16 +42,17 @@ export default function AgenteCaixa() {
 
   // Calcular posição simplificada de caixa a partir das transações
   const { data: cashPos } = useQuery({
-    queryKey: ["cash-position-agent"],
+    queryKey: ["cash-position-agent", currentCompany?.id],
     queryFn: async () => {
-      const hoje = new Date().toISOString().slice(0,10);
       const em30 = new Date(Date.now() + 30 * 86400000).toISOString().slice(0,10);
       const { data: pending } = await supabase.from("transactions")
-        .select("amount, due_date, payment_method")
-        .in("payment_method", ["pending","scheduled"])
+        .select("total_amount, balance_amount, direction, due_date")
+        .eq("company_id", currentCompany!.id)
+        .eq("status", "lancado")
         .lte("due_date", em30);
-      const entradas = (pending ?? []).filter(t => t.amount > 0).reduce((s, t) => s + t.amount, 0);
-      const saidas = (pending ?? []).filter(t => t.amount < 0).reduce((s, t) => s + Math.abs(t.amount), 0);
+      const valor = (t: any) => Number(t.balance_amount ?? t.total_amount ?? 0);
+      const entradas = (pending ?? []).filter((t: any) => t.direction === "entrada").reduce((s, t) => s + valor(t), 0);
+      const saidas = (pending ?? []).filter((t: any) => t.direction === "saida").reduce((s, t) => s + valor(t), 0);
       return { entradas, saidas, saldo_projetado: entradas - saidas };
     },
     enabled: !!user && !!currentCompany?.id,
