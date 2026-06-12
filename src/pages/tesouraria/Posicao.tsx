@@ -16,6 +16,15 @@ export default function Posicao() {
           description="Dashboard de liquidez, projeções e simulações financeiras"
         />
 
+        <a href="/ia/agente-caixa" className="flex items-center gap-3 p-3 rounded-xl border border-cyan-200 bg-cyan-50 hover:bg-cyan-100 transition-colors">
+          <div className="h-8 w-8 rounded-full bg-cyan-600 flex items-center justify-center text-white text-sm">🤖</div>
+          <div className="flex-1">
+            <p className="text-sm font-medium text-cyan-900">Agente IA de Fluxo de Caixa</p>
+            <p className="text-xs text-cyan-700">Projeção 30/60/90 dias, alertas de saldo crítico e sugestões de aplicação automáticas</p>
+          </div>
+          <span className="text-xs font-medium text-cyan-700">Abrir agente →</span>
+        </a>
+
         <Tabs defaultValue="liquidez" className="space-y-6">
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="liquidez" className="gap-2">
