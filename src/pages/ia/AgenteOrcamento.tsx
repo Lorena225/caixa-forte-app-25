@@ -28,7 +28,7 @@ const NIVEL_STYLE: Record<string,string> = {
 };
 
 export default function AgenteOrcamento() {
-  const { user } = useAuth();
+  const { user, currentCompany } = useAuth();
   const queryClient = useQueryClient();
   const [running, setRunning] = useState<string|null>(null);
 
@@ -40,7 +40,7 @@ export default function AgenteOrcamento() {
         .order("created_at", { ascending: false }).limit(15);
       return data ?? [];
     },
-    enabled: !!user, refetchInterval: 30000,
+    enabled: !!user && !!currentCompany?.id, refetchInterval: 30000,
   });
 
   // Comparar orçado vs realizado do mês atual
@@ -75,14 +75,14 @@ export default function AgenteOrcamento() {
         hasBudget: !!budget,
       };
     },
-    enabled: !!user,
+    enabled: !!user && !!currentCompany?.id,
   });
 
   const runTool = useMutation({
     mutationFn: async (tool: string) => {
       setRunning(tool);
       const { error } = await supabase.functions.invoke("agent-orchestrator",
-        { body: { action: tool, payload: { company_id: user?.id } } });
+        { body: { action: tool, payload: { company_id: currentCompany?.id } } });
       if (error) throw error;
     },
     onSuccess: (_, tool) => { setRunning(null); queryClient.invalidateQueries({ queryKey: ["agent-orcamento-logs"] }); toast.success(`Agente Orçamento: ${tool}`); refetch(); },
@@ -92,7 +92,7 @@ export default function AgenteOrcamento() {
   const runCycle = useMutation({
     mutationFn: async () => {
       const { error } = await supabase.functions.invoke("agent-orchestrator",
-        { body: { action: "run_budget_cycle", payload: { company_id: user?.id } } });
+        { body: { action: "run_budget_cycle", payload: { company_id: currentCompany?.id } } });
       if (error) throw error;
     },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["agent-orcamento-logs"] }); toast.success("Ciclo do Agente Orçamento concluído!"); refetch(); },
