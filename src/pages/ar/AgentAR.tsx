@@ -32,7 +32,7 @@ const NIVEL_STYLE: Record<string, string> = {
 };
 
 export default function ARAgentAR() {
-  const { user } = useAuth();
+  const { user, currentCompany } = useAuth();
   const queryClient = useQueryClient();
   const [running, setRunning] = useState<string | null>(null);
 
@@ -47,17 +47,18 @@ export default function ARAgentAR() {
         .limit(20);
       return data ?? [];
     },
-    enabled: !!user,
+    enabled: !!user && !!currentCompany?.id,
     refetchInterval: 10000,
   });
 
   const { data: killSwitch } = useQuery({
     queryKey: ["kill-switch-ar"],
     queryFn: async () => {
-      const { data } = await supabase.from("agent_kill_switch").select("*").maybeSingle();
+      const { data } = await supabase.from("agent_kill_switch").select("*")
+        .eq("company_id", currentCompany?.id).maybeSingle();
       return data;
     },
-    enabled: !!user,
+    enabled: !!user && !!currentCompany?.id,
   });
 
   const { data: scoreStats } = useQuery({
@@ -71,7 +72,7 @@ export default function ARAgentAR() {
       const avg = data.reduce((s, d) => s + d.score, 0) / data.length;
       return { total: data.length, avg: Math.round(avg), top: data[0]?.score };
     },
-    enabled: !!user,
+    enabled: !!user && !!currentCompany?.id,
   });
 
   const isKilled = killSwitch?.is_paused;
@@ -83,7 +84,7 @@ export default function ARAgentAR() {
     mutationFn: async (tool: string) => {
       setRunning(tool);
       const { data, error } = await supabase.functions.invoke("agent-orchestrator", {
-        body: { action: tool, payload: { company_id: user?.id } },
+        body: { action: tool, payload: { company_id: currentCompany?.id } },
       });
       if (error) throw error;
       return data;
@@ -103,7 +104,7 @@ export default function ARAgentAR() {
   const runCycleMutation = useMutation({
     mutationFn: async () => {
       const { data, error } = await supabase.functions.invoke("agent-orchestrator", {
-        body: { action: "run_ar_cycle", payload: { company_id: user?.id } },
+        body: { action: "run_ar_cycle", payload: { company_id: currentCompany?.id } },
       });
       if (error) throw error;
       return data;
