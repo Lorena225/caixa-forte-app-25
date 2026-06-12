@@ -84,6 +84,15 @@ export default function ConciliacaoBancaria() {
           description="Concilie automaticamente extratos bancários com lançamentos do sistema"
         />
 
+      <a href="/ia/agente-conciliacao" className="flex items-center gap-3 p-3 rounded-xl border border-teal-200 bg-teal-50 hover:bg-teal-100 transition-colors mb-4">
+        <div className="h-8 w-8 rounded-full bg-teal-600 flex items-center justify-center text-white text-sm">🤖</div>
+        <div className="flex-1">
+          <p className="text-sm font-medium text-teal-900">Agente IA de Conciliação</p>
+          <p className="text-xs text-teal-700">Matching automático extrato × títulos com IA — confiança ≥ 90% concilia sozinho</p>
+        </div>
+        <span className="text-xs font-medium text-teal-700">Abrir agente →</span>
+      </a>
+
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList>
             <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
