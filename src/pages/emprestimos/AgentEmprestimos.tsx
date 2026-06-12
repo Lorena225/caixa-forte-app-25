@@ -28,7 +28,7 @@ const NIVEL_STYLE: Record<string,string> = {
 };
 
 export default function AgentEmprestimos() {
-  const { user } = useAuth();
+  const { user, currentCompany } = useAuth();
   const queryClient = useQueryClient();
   const [running, setRunning] = useState<string|null>(null);
 
@@ -40,7 +40,7 @@ export default function AgentEmprestimos() {
         .order("created_at", { ascending: false }).limit(15);
       return data ?? [];
     },
-    enabled: !!user, refetchInterval: 15000,
+    enabled: !!user && !!currentCompany?.id, refetchInterval: 15000,
   });
 
   const { data: vencimentos = [] } = useQuery({
@@ -55,16 +55,17 @@ export default function AgentEmprestimos() {
         .order("due_date");
       return data ?? [];
     },
-    enabled: !!user,
+    enabled: !!user && !!currentCompany?.id,
   });
 
   const { data: killSwitch } = useQuery({
     queryKey: ["kill-switch-loans"],
     queryFn: async () => {
-      const { data } = await supabase.from("agent_kill_switch").select("*").maybeSingle();
+      const { data } = await supabase.from("agent_kill_switch").select("*")
+        .eq("company_id", currentCompany?.id).maybeSingle();
       return data;
     },
-    enabled: !!user,
+    enabled: !!user && !!currentCompany?.id,
   });
 
   const isKilled = killSwitch?.is_paused;
@@ -75,7 +76,7 @@ export default function AgentEmprestimos() {
     mutationFn: async (tool: string) => {
       setRunning(tool);
       const { error } = await supabase.functions.invoke("agent-orchestrator",
-        { body: { action: tool, payload: { company_id: user?.id } } });
+        { body: { action: tool, payload: { company_id: currentCompany?.id } } });
       if (error) throw error;
     },
     onSuccess: (_, tool) => { setRunning(null); queryClient.invalidateQueries({ queryKey: ["agent-loans-logs"] }); toast.success(`Agente executou: ${tool}`); refetch(); },
@@ -85,7 +86,7 @@ export default function AgentEmprestimos() {
   const runCycle = useMutation({
     mutationFn: async () => {
       const { error } = await supabase.functions.invoke("agent-orchestrator",
-        { body: { action: "run_loans_cycle", payload: { company_id: user?.id } } });
+        { body: { action: "run_loans_cycle", payload: { company_id: currentCompany?.id } } });
       if (error) throw error;
     },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["agent-loans-logs"] }); toast.success("Ciclo do Agente Empréstimos concluído!"); refetch(); },
