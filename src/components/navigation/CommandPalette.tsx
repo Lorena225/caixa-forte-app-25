@@ -43,11 +43,7 @@ const iconMap: Record<string, LucideIcon> = {
 const getIcon = (iconName: string) => iconMap[iconName] || Search;
 
 const staticNavItems = [
-  { key: 'pdv', label: 'PDV', route: '/frente-caixa', icon: 'CreditCard', category: 'Operacional' },
-  { key: 'vendas', label: 'Vendas', route: '/vendas/nova', icon: 'ShoppingCart', category: 'Operacional' },
   { key: 'produtos', label: 'Produtos', route: '/cadastros/produtos', icon: 'Package', category: 'Catálogo' },
-  { key: 'inventario', label: 'Inventário', route: '/estoque/inventario', icon: 'Package', category: 'Estoque' },
-  { key: 'pedidos-compra', label: 'Pedidos de Compra', route: '/compras/pedidos', icon: 'FileBarChart', category: 'Suprimentos' },
   { key: 'posicao-caixa', label: 'Posição de Caixa', route: '/tesouraria/posicao', icon: 'Wallet', category: 'Financeiro' },
   { key: 'contas-receber', label: 'Contas a Receber', route: '/ar', icon: 'TrendingUp', category: 'Financeiro' },
   { key: 'contas-pagar', label: 'Contas a Pagar', route: '/ap', icon: 'ArrowDownToLine', category: 'Financeiro' },
@@ -96,7 +92,6 @@ export function CommandPalette() {
   }, [filteredNavItems]);
 
   const globalActions = useMemo(() => [
-    { key: 'cp.new_sale', label: 'Nova Venda', route: '/vendas/nova', icon: 'ShoppingCart' },
     { key: 'cp.new_goal', label: 'Nova Meta', route: '/metas-financeiras', icon: 'Target' },
     { key: 'cp.cfo_virtual', label: 'CFO Virtual', route: '/ia/cfo-virtual', icon: 'Brain' },
   ].filter(a => a.label.toLowerCase().includes(search.toLowerCase())), [search]);

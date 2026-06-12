@@ -19,7 +19,7 @@ export const CashFlowProjection = React.lazy(() =>
 );
 
 // Pages (route-level code splitting)
-export const Dashboard = React.lazy(() => import('@/pages/Dashboard'));
+export const Dashboard = React.lazy(() => import('@/pages/DashboardModern'));
 export const ContasPagar = React.lazy(() => import('@/pages/ContasPagar'));
 export const ContasReceber = React.lazy(() => import('@/pages/ContasReceber'));
 export const FluxoCaixa = React.lazy(() => import('@/pages/FluxoCaixa'));
@@ -72,7 +72,7 @@ export function preloadCommonRoutes(): void {
   if ('requestIdleCallback' in window) {
     requestIdleCallback(() => {
       // Preload most commonly accessed pages
-      preloadComponent(() => import('@/pages/Dashboard'));
+      preloadComponent(() => import('@/pages/DashboardModern'));
       preloadComponent(() => import('@/pages/ContasPagar'));
       preloadComponent(() => import('@/pages/ContasReceber'));
     });

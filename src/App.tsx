@@ -12,7 +12,6 @@ import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import Documentacao from "./pages/Documentacao";
 import Favoritos from "./pages/Favoritos";
-import FrenteCaixa from "./pages/FrenteCaixa";
 import PlanoContas from "./pages/cadastros/PlanoContas";
 import CentrosCusto from "./pages/cadastros/CentrosCusto";
 import ClientesFornecedores from "./pages/cadastros/ClientesFornecedores";
@@ -49,13 +48,8 @@ import ImportWizard from "./pages/importar-exportar/ImportWizard";
 import ImportHistory from "./pages/importar-exportar/ImportHistory";
 import ExportData from "./pages/importar-exportar/ExportData";
 // Vendas Module
-import VendasIndex from "./pages/vendas/Index";
-import VendasNova from "./pages/vendas/NovaVenda";
-import VendasPedidos from "./pages/vendas/Pedidos";
-import VendasOrcamentos from "./pages/vendas/Orcamentos";
 // Developer Portal & Marketplace
 import DeveloperPortal from "./pages/developers/Index";
-import Marketplace from "./pages/marketplace/Index";
 import APIDocs from "./pages/api/docs";
 import APIKeysPage from "./pages/settings/APIKeys";
 import SettingsGovernancePage from "./pages/configuracoes/SettingsGovernancePage";
@@ -85,25 +79,8 @@ import FiscalApuracaoImpostos from "./pages/fiscal/ApuracaoImpostos";
 import FiscalLivrosFiscais from "./pages/fiscal/LivrosFiscais";
 import FiscalObrigacoesAcessorias from "./pages/fiscal/ObrigacoesAcessorias";
 // Estoque
-import EstoqueIndex from "./pages/estoque/Index";
-import EstoqueMovimentacoes from "./pages/estoque/Movimentacoes";
-import EstoqueInventario from "./pages/estoque/Inventario";
 // Produção / PCP / MRP
-import ProducaoIndex from "./pages/producao/Index";
-import OrdensProducao from "./pages/producao/OrdensProducao";
-import Engenharia from "./pages/producao/Engenharia";
-import MRP from "./pages/producao/MRP";
-import Apontamento from "./pages/producao/Apontamento";
-import CentrosTrabalho from "./pages/producao/CentrosTrabalho";
-import Requisicoes from "./pages/producao/Requisicoes";
-import Custeio from "./pages/producao/Custeio";
-import ChaoFabrica from "./pages/producao/ChaoFabrica";
-import ProducaoKanban from "./pages/producao/Kanban";
 // Compras
-import ComprasIndex from "./pages/compras/Index";
-import ComprasPedidos from "./pages/compras/Pedidos";
-import ComprasCotacoes from "./pages/compras/Cotacoes";
-import ComprasEntradas from "./pages/compras/Entradas";
 // Cobrança
 import CobrancaIndex from "./pages/cobranca/Index";
 import CobrancaBoletos from "./pages/cobranca/Boletos";
@@ -114,7 +91,6 @@ import CobrancaGestaoCredito from "./pages/cobranca/GestaoCredito";
 import TesourariaIndex from "./pages/tesouraria/Index";
 import TesourariaPosicao from "./pages/tesouraria/Posicao";
 import TesourariaConciliacao from "./pages/tesouraria/Conciliacao";
-import TesourariaBordero from "./pages/tesouraria/Bordero";
 import TesourariaCompensacao from "./pages/tesouraria/Compensacao";
 import TesourariaExtratos from "./pages/tesouraria/Extratos";
 import APIndex from "./pages/ap/Index";
@@ -142,7 +118,6 @@ import ARDashboard from "./pages/dashboards/ARDashboard";
 import APDashboard from "./pages/dashboards/APDashboard";
 import BudgetDashboard from "./pages/dashboards/BudgetDashboard";
 import BudgetByAccountDashboard from "./pages/dashboards/BudgetByAccountDashboard";
-import PoloDashboard from "./pages/dashboards/PoloDashboard";
 // Reports
 import ReportsIndex from "./pages/reports/Index";
 import DrilldownPage from "./pages/reports/DrilldownPage";
@@ -161,11 +136,8 @@ import IAAnalystChat from "./pages/ia/AnalystChat";
 import IALogs from "./pages/ia/Logs";
 import CFOVirtual from "./pages/ia/CFOVirtual";
 // Inovação & Open Finance
-import InovacaoIndex from "./pages/inovacao/Index";
 import OpenFinanceConexoes from "./pages/openfinance/Conexoes";
 import OpenFinancePagamentos from "./pages/openfinance/Pagamentos";
-import EmbeddedAntecipacao from "./pages/embedded/Antecipacao";
-import EmbeddedServicos from "./pages/embedded/Servicos";
 import FinanceiroSimulacoes from "./pages/financeiro/Simulacoes";
 import FinanceiroTempoReal from "./pages/financeiro/TempoReal";
 import ComplianceAnomalias from "./pages/compliance/Anomalias";
@@ -190,14 +162,6 @@ import SettingsRoleDetail from "./pages/settings/RoleDetail";
 import SettingsPermissions from "./pages/settings/Permissions";
 import SettingsBackup from "./pages/settings/Backup";
 // CRM
-import CRMIndex from "./pages/crm/Index";
-import CRMPipeline from "./pages/crm/Pipeline";
-import CRMLeads from "./pages/crm/Leads";
-import CRMVendedores from "./pages/crm/Vendedores";
-import CRMComissoes from "./pages/crm/Comissoes";
-import CRMMetas from "./pages/crm/Metas";
-import SellerCockpit from "./pages/crm/SellerCockpit";
-import QuoteBuilder from "./pages/crm/QuoteBuilder";
 // Projetos
 import GestaoProjetosPage from "./pages/projetos/GestaoProjetosPage";
 // Contratos / Recorrência
@@ -237,7 +201,6 @@ import BackupConfiguracoes from "./pages/admin/backup/Configuracoes";
 import TesourariaCNAB from "./pages/tesouraria/CNAB";
 import TesourariaCNABRemessa from "./pages/tesouraria/CNABRemessa";
 import TesourariaCNABRetorno from "./pages/tesouraria/CNABRetorno";
-import TesourariaBoletos from "./pages/tesouraria/Boletos";
 import TesourariaCards from "./pages/tesouraria/CardsManagement";
 import TesourariaContratos from "./pages/tesouraria/Contratos";
 import TesourariaContratoDetalhe from "./pages/tesouraria/ContratoDetalhe";
@@ -254,20 +217,11 @@ import CentrosCustodia from "./pages/operacional/CentrosCustodia";
 import Departamentos from "./pages/operacional/Departamentos";
 import Responsaveis from "./pages/operacional/Responsaveis";
 // Relatórios expandidos
-import BalancoPatrimonial from "./pages/relatorios/BalancoPatrimonial";
-import Balancete from "./pages/relatorios/Balancete";
-import LivroRazao from "./pages/relatorios/LivroRazao";
-import LivroDiario from "./pages/relatorios/LivroDiario";
 import ECF from "./pages/relatorios/ECF";
-import AnaliseVendas from "./pages/relatorios/AnaliseVendas";
-import AnaliseCompras from "./pages/relatorios/AnaliseCompras";
 import CentralRelatorios from "./pages/relatorios/Central";
 import HistoricoRelatorios from "./pages/relatorios/Historico";
 import AgendamentosRelatorios from "./pages/relatorios/Agendamentos";
 // Fiscal expandido
-import NFCe from "./pages/fiscal/NFCe";
-import CupomFiscal from "./pages/fiscal/CupomFiscal";
-import DANFE from "./pages/fiscal/DANFE";
 import AnaliseFiscal from "./pages/fiscal/AnaliseFiscal";
 import EmissorNotas from "./pages/fiscal/EmissorNotas";
 import MotorTributario from "./pages/fiscal/MotorTributario";
@@ -288,10 +242,6 @@ import AutomaticReconciliationPage from "./pages/openbanking/AutomaticReconcilia
 import NFXMLUploadPage from "./pages/openbanking/NFXMLUploadPage";
 import CashComplianceDashboardPage from "./pages/openbanking/CashComplianceDashboardPage";
 // Controladoria AI Pages
-import { ControladoriaLivroDiarioPage } from "./pages/ControladoriaLivroDiarioPage";
-import { ControladoriaDREPage } from "./pages/ControladoriaDREPage";
-import { ControladoriaBalancetePage } from "./pages/ControladoriaBalancetePage";
-import { ControladoriaBalancoPage } from "./pages/ControladoriaBalancoPage";
 // IA Agentes
 import IntelligenceFeed from "./pages/ia/IntelligenceFeed";
 import AISettingsPage from "./pages/ia/AISettingsPage";
@@ -314,10 +264,7 @@ import HCMGestorPonto from "./pages/hcm/GestorPonto";
 import PainelIndividual from "./pages/PainelIndividual";
 import GestaoMetas from "./pages/metas/GestaoMetas";
 import MapaEstrategico from "./pages/metas/MapaEstrategico";
-import InvestigacaoFalhas from "./pages/qualidade/InvestigacaoFalhas";
-import GestaoProcessos from "./pages/processos/GestaoProcessos";
 import IAOperacional from "./pages/ia/IAOperacional";
-import SupplyChainIndex from "./pages/supplychain/Index";
 import GroupDashboard from "./pages/grupo/VisaoGeral";
 import GrupoEmpresas from "./pages/grupo/Empresas";
 import GrupoIntercompany from "./pages/grupo/Intercompany";
@@ -362,7 +309,6 @@ const App = () => (
                 <Route element={<AppLayout><Outlet /></AppLayout>}>
                 <Route path="/" element={<Index />} />
                 <Route path="/favoritos" element={<Favoritos />} />
-                <Route path="/frente-caixa" element={<FrenteCaixa />} />
                 <Route path="/lancamentos" element={<Lancamentos />} />
                 <Route path="/contas-receber" element={<ContasReceber />} />
                 <Route path="/contas-pagar" element={<ContasPagar />} />
@@ -415,9 +361,6 @@ const App = () => (
                 <Route path="/fiscal/apuracao-impostos" element={<FiscalApuracaoImpostos />} />
                 <Route path="/fiscal/livros-fiscais" element={<FiscalLivrosFiscais />} />
                 <Route path="/fiscal/obrigacoes-acessorias" element={<FiscalObrigacoesAcessorias />} />
-                <Route path="/fiscal/nfce" element={<NFCe />} />
-                <Route path="/fiscal/cupom-fiscal" element={<CupomFiscal />} />
-                <Route path="/fiscal/danfe" element={<DANFE />} />
                 <Route path="/fiscal/analise" element={<AnaliseFiscal />} />
                 <Route path="/fiscal/emissor" element={<EmissorNotas />} />
                 <Route path="/fiscal/motor-tributario" element={<MotorTributario />} />
@@ -433,15 +376,8 @@ const App = () => (
                 <Route path="/operacional/responsaveis" element={<Responsaveis />} />
                 
                 {/* ============ ESTOQUE ============ */}
-                <Route path="/estoque" element={<EstoqueIndex />} />
-                <Route path="/estoque/movimentacoes" element={<EstoqueMovimentacoes />} />
-                <Route path="/estoque/inventario" element={<EstoqueInventario />} />
                 
                 {/* ============ COMPRAS ============ */}
-                <Route path="/compras" element={<ComprasIndex />} />
-                <Route path="/compras/pedidos" element={<ComprasPedidos />} />
-                <Route path="/compras/cotacoes" element={<ComprasCotacoes />} />
-                <Route path="/compras/entradas" element={<ComprasEntradas />} />
                 
                 {/* ============ COBRANÇA ============ */}
                 <Route path="/cobranca" element={<CobrancaIndex />} />
@@ -455,13 +391,11 @@ const App = () => (
                 <Route path="/tesouraria" element={<TesourariaIndex />} />
                 <Route path="/tesouraria/posicao" element={<TesourariaPosicao />} />
                 <Route path="/tesouraria/conciliacao" element={<TesourariaConciliacao />} />
-                <Route path="/tesouraria/bordero" element={<TesourariaBordero />} />
                 <Route path="/tesouraria/compensacao" element={<TesourariaCompensacao />} />
                 <Route path="/tesouraria/extratos" element={<TesourariaExtratos />} />
                 <Route path="/tesouraria/cnab" element={<TesourariaCNAB />} />
                 <Route path="/tesouraria/cnab-remessa" element={<TesourariaCNABRemessa />} />
                 <Route path="/tesouraria/cnab-retorno" element={<TesourariaCNABRetorno />} />
-                <Route path="/tesouraria/boletos" element={<TesourariaBoletos />} />
                 <Route path="/tesouraria/cartoes" element={<TesourariaCards />} />
                 <Route path="/tesouraria/transferencias" element={<TesourariaTransferencias />} />
                 <Route path="/tesouraria/cheques" element={<TesourariaCheques />} />
@@ -492,22 +426,8 @@ const App = () => (
                 <Route path="/configuracoes/moedas" element={<Moedas />} />
                 
                 {/* ============ VENDAS ============ */}
-                <Route path="/vendas" element={<VendasIndex />} />
-                <Route path="/vendas/nova" element={<VendasNova />} />
-                <Route path="/vendas/pedidos" element={<VendasPedidos />} />
-                <Route path="/vendas/orcamentos" element={<VendasOrcamentos />} />
                 
                 {/* ============ PRODUÇÃO / PCP / MRP ============ */}
-                <Route path="/producao" element={<ProducaoIndex />} />
-                <Route path="/producao/ordens" element={<OrdensProducao />} />
-                <Route path="/producao/engenharia" element={<Engenharia />} />
-                <Route path="/producao/mrp" element={<MRP />} />
-                <Route path="/producao/apontamento" element={<Apontamento />} />
-                <Route path="/producao/centros-trabalho" element={<CentrosTrabalho />} />
-                <Route path="/producao/requisicoes" element={<Requisicoes />} />
-                <Route path="/producao/custeio" element={<Custeio />} />
-                <Route path="/producao/chao-fabrica" element={<ChaoFabrica />} />
-                <Route path="/producao/kanban" element={<ProducaoKanban />} />
                 
                 {/* AP/AR Index */}
                 <Route path="/ap" element={<APIndex />} />
@@ -521,7 +441,6 @@ const App = () => (
                 <Route path="/paineis/contas-pagar" element={<APDashboard />} />
                 <Route path="/paineis/orcamento" element={<BudgetDashboard />} />
                 <Route path="/paineis/conta-orcamentaria" element={<BudgetByAccountDashboard />} />
-                <Route path="/paineis/polo" element={<PoloDashboard />} />
 
                 {/* ============ INTELIGÊNCIA (IA) ============ */}
                 <Route path="/ia/feed" element={<IntelligenceFeed />} />
@@ -577,11 +496,8 @@ const App = () => (
                 <Route path="/ia/cfo-virtual" element={<CFOVirtual />} />
                 
                 {/* ============ INOVAÇÃO & OPEN FINANCE ============ */}
-                <Route path="/inovacao" element={<InovacaoIndex />} />
                 <Route path="/openfinance/conexoes" element={<OpenFinanceConexoes />} />
                 <Route path="/openfinance/pagamentos" element={<OpenFinancePagamentos />} />
-                <Route path="/embedded/antecipacao" element={<EmbeddedAntecipacao />} />
-                <Route path="/embedded/servicos" element={<EmbeddedServicos />} />
                 <Route path="/financeiro/simulacoes" element={<FinanceiroSimulacoes />} />
                 <Route path="/financeiro/tempo-real" element={<FinanceiroTempoReal />} />
                 <Route path="/compliance/anomalias" element={<ComplianceAnomalias />} />
@@ -597,10 +513,10 @@ const App = () => (
                 <Route path="/dashboard-caixa-compliance" element={<CashComplianceDashboardPage />} />
                 
                 {/* ============ CONTROLADORIA AI ============ */}
-                <Route path="/controladoria-livro-diario" element={<ControladoriaLivroDiarioPage />} />
-                <Route path="/controladoria-dre" element={<ControladoriaDREPage />} />
-                <Route path="/controladoria-balancete" element={<ControladoriaBalancetePage />} />
-                <Route path="/controladoria-balanco" element={<ControladoriaBalancoPage />} />
+                <Route path="/controladoria-livro-diario" element={<ContabilidadeDiario />} />
+                <Route path="/controladoria-dre" element={<ContabilidadeDREContabil />} />
+                <Route path="/controladoria-balancete" element={<ContabilidadeBalancete />} />
+                <Route path="/controladoria-balanco" element={<ContabilidadeBalanco />} />
                 
                 {/* ============ AUTOMAÇÕES ============ */}
                 <Route path="/automacoes" element={<AutomationsIndex />} />
@@ -627,13 +543,7 @@ const App = () => (
                 <Route path="/relatorios/historico" element={<HistoricoRelatorios />} />
                 <Route path="/relatorios/agendamentos" element={<AgendamentosRelatorios />} />
                 <Route path="/relatorios/drilldown" element={<DrilldownPage />} />
-                <Route path="/relatorios/balanco" element={<BalancoPatrimonial />} />
-                <Route path="/relatorios/balancete" element={<Balancete />} />
-                <Route path="/relatorios/livro-razao" element={<LivroRazao />} />
-                <Route path="/relatorios/livro-diario" element={<LivroDiario />} />
                 <Route path="/relatorios/ecf" element={<ECF />} />
-                <Route path="/relatorios/analise-vendas" element={<AnaliseVendas />} />
-                <Route path="/relatorios/analise-compras" element={<AnaliseCompras />} />
                 {/* Redirects reports */}
                 <Route path="/reports" element={<Navigate to="/relatorios" replace />} />
                 <Route path="/reports/drilldown" element={<Navigate to="/relatorios/drilldown" replace />} />
@@ -691,14 +601,6 @@ const App = () => (
                 <Route path="/admin/navigation" element={<Navigate to="/admin/navegacao" replace />} />
                 
                 {/* ============ CRM ============ */}
-                <Route path="/crm" element={<CRMIndex />} />
-                <Route path="/crm/pipeline" element={<CRMPipeline />} />
-                <Route path="/crm/leads" element={<CRMLeads />} />
-                <Route path="/crm/vendedores" element={<CRMVendedores />} />
-                <Route path="/crm/comissoes" element={<CRMComissoes />} />
-                <Route path="/crm/metas" element={<CRMMetas />} />
-                <Route path="/crm/meu-painel" element={<SellerCockpit />} />
-                <Route path="/crm/proposta/:opportunityId" element={<QuoteBuilder />} />
                 
                 {/* ============ CONTRATOS / RECORRÊNCIA ============ */}
                 <Route path="/contratos/recorrencia" element={<RecorrenciaPage />} />
@@ -709,7 +611,6 @@ const App = () => (
                 
                 {/* ============ DEVELOPER PORTAL & MARKETPLACE ============ */}
                 <Route path="/developers" element={<DeveloperPortal />} />
-                <Route path="/marketplace" element={<Marketplace />} />
                 <Route path="/api/docs" element={<APIDocs />} />
                 <Route path="/settings/api-keys" element={<APIKeysPage />} />
                 <Route path="/configuracoes/api-keys" element={<APIKeysPage />} />
@@ -728,14 +629,11 @@ const App = () => (
                 <Route path="/hcm/gestor-ponto" element={<HCMGestorPonto />} />
 
                 {/* ============ SUPPLY CHAIN ============ */}
-                <Route path="/supplychain" element={<SupplyChainIndex />} />
 
                 {/* ============ NOVOS MÓDULOS PRD ============ */}
                 <Route path="/painel" element={<PainelIndividual />} />
                 <Route path="/metas/gestao" element={<GestaoMetas />} />
                 <Route path="/metas/mapa" element={<MapaEstrategico />} />
-                <Route path="/qualidade/falhas" element={<InvestigacaoFalhas />} />
-                <Route path="/processos/gestao" element={<GestaoProcessos />} />
                 <Route path="/ia/operacional" element={<IAOperacional />} />
 
                 {/* ============ AUTOPILOTO (PT-BR) ============ */}
