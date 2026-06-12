@@ -163,6 +163,15 @@ export default function OrcamentoReal() {
           description="Compare valores orçados com realizados, gerencie revisões e cenários"
         />
 
+      <a href="/ia/agente-orcamento" className="flex items-center gap-3 p-3 rounded-xl border border-violet-200 bg-violet-50 hover:bg-violet-100 transition-colors mb-4">
+        <div className="h-8 w-8 rounded-full bg-violet-600 flex items-center justify-center text-white text-sm">🤖</div>
+        <div className="flex-1">
+          <p className="text-sm font-medium text-violet-900">Agente IA de Orçamento</p>
+          <p className="text-xs text-violet-700">Análise de variância automática, forecast rolling 12 meses e alertas de estouro</p>
+        </div>
+        <span className="text-xs font-medium text-violet-700">Abrir agente →</span>
+      </a>
+
         {/* Filters Row */}
         <div className="flex flex-wrap gap-4 items-center justify-between">
           <div className="flex flex-wrap gap-3">
