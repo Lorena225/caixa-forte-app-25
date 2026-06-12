@@ -24,7 +24,7 @@ const NIVEL_STYLE: Record<string,string> = {
 };
 
 export default function AgenteCaixa() {
-  const { user } = useAuth();
+  const { user, currentCompany } = useAuth();
   const queryClient = useQueryClient();
   const [running, setRunning] = useState<string|null>(null);
 
@@ -36,7 +36,7 @@ export default function AgenteCaixa() {
         .order("created_at", { ascending: false }).limit(10);
       return data ?? [];
     },
-    enabled: !!user,
+    enabled: !!user && !!currentCompany?.id,
   });
 
   // Calcular posição simplificada de caixa a partir das transações
@@ -53,14 +53,14 @@ export default function AgenteCaixa() {
       const saidas = (pending ?? []).filter(t => t.amount < 0).reduce((s, t) => s + Math.abs(t.amount), 0);
       return { entradas, saidas, saldo_projetado: entradas - saidas };
     },
-    enabled: !!user,
+    enabled: !!user && !!currentCompany?.id,
   });
 
   const runTool = useMutation({
     mutationFn: async (tool: string) => {
       setRunning(tool);
       const { error } = await supabase.functions.invoke("agent-orchestrator",
-        { body: { action: tool, payload: { company_id: user?.id } } });
+        { body: { action: tool, payload: { company_id: currentCompany?.id } } });
       if (error) throw error;
     },
     onSuccess: (_, tool) => { setRunning(null); queryClient.invalidateQueries({ queryKey: ["agent-caixa-logs"] }); toast.success(`Agente Caixa: ${tool}`); refetch(); },
@@ -70,7 +70,7 @@ export default function AgenteCaixa() {
   const runCycle = useMutation({
     mutationFn: async () => {
       const { error } = await supabase.functions.invoke("agent-orchestrator",
-        { body: { action: "run_cashflow_cycle", payload: { company_id: user?.id } } });
+        { body: { action: "run_cashflow_cycle", payload: { company_id: currentCompany?.id } } });
       if (error) throw error;
     },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["agent-caixa-logs"] }); toast.success("Ciclo do Agente Caixa concluído!"); refetch(); },
