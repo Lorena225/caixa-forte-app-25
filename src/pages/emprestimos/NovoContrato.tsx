@@ -45,7 +45,7 @@ function calcPMT(pv: number, rate: number, n: number): number {
 }
 
 export default function EmprestimosNovoContrato() {
-  const { user } = useAuth();
+  const { user, currentCompany } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [form, setForm] = useState<ContractForm>(EMPTY);
@@ -130,17 +130,18 @@ export default function EmprestimosNovoContrato() {
         });
       }
 
-      // Log agente
-      await supabase.from("agent_action_log").insert({
-        agent_type: "AP",
-        autonomy_level: "N1_approval",
-        action_key: "gerar_cronograma",
-        action_label: `Contrato cadastrado: ${form.description}`,
-        entity_type: "loan_contracts",
-        entity_id: contract.id,
-        amount: form.principal_amount,
-        reason: `Cronograma ${form.amortization_system.toUpperCase()} gerado automaticamente`,
-        status: "executed",
+      // Log agente — via RPC (resolve company_id automaticamente)
+      await supabase.rpc("ai_log_action", {
+        p_company_id: currentCompany?.id,
+        p_agent_type: "loans",
+        p_autonomy_level: "N1_approval",
+        p_action_key: "gerar_cronograma",
+        p_action_label: `Contrato cadastrado: ${form.description}`,
+        p_entity_type: "loan_contracts",
+        p_entity_id: contract.id,
+        p_amount: form.principal_amount,
+        p_reason: `Cronograma ${form.amortization_system.toUpperCase()} gerado automaticamente`,
+        p_status: "executed",
       });
 
       return contract;
