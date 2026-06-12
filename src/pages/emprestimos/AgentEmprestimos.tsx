@@ -46,14 +46,17 @@ export default function AgentEmprestimos() {
   const { data: vencimentos = [] } = useQuery({
     queryKey: ["loans-vencimentos-7d"],
     queryFn: async () => {
-      const hoje = new Date().toISOString().slice(0,10);
       const em7 = new Date(Date.now() + 7 * 86400000).toISOString().slice(0,10);
-      const { data } = await supabase.from("loan_schedule")
+      const { data } = await supabase.from("loan_installments")
         .select("*, contract:loan_contracts(description)")
-        .in("status", ["open","overdue"])
+        .in("status", ["PREVISTA","GERADA"])
         .lte("due_date", em7)
         .order("due_date");
-      return data ?? [];
+      return (data ?? []).map((p: any) => ({
+        ...p,
+        installment_num: p.installment_no,
+        total: p.installment_amount,
+      }));
     },
     enabled: !!user && !!currentCompany?.id,
   });
