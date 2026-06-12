@@ -62,6 +62,7 @@ export default function APAgentAP() {
       const { data } = await supabase
         .from("agent_kill_switch")
         .select("*")
+        .eq("company_id", currentCompany?.id)
         .maybeSingle();
       return data;
     },
