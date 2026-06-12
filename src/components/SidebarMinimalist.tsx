@@ -379,6 +379,7 @@ const menuItems: MenuItem[] = [
         key: 'planejamento',
         label: 'Planejamento',
         items: [
+          { key: 'plan-agente-ia', label: 'Agente Orçamento IA', icon: Bot, route: '/ia/agente-orcamento' },
           { key: 'metas-financeiras',  label: 'Metas Financeiras',  icon: Target,      route: '/metas-financeiras' },
           { key: 'orcamento-real',     label: 'Orçamento vs Real',  icon: BarChart3,   route: '/financeiro/orcamento-real' },
           { key: 'rolling-forecast',   label: 'Rolling Forecast',   icon: TrendingUp,  route: '/financeiro/rolling-forecast' },
