@@ -27,7 +27,7 @@ const NIVEL_STYLE: Record<string,string> = {
 };
 
 export default function AgenteConciliacao() {
-  const { user } = useAuth();
+  const { user, currentCompany } = useAuth();
   const queryClient = useQueryClient();
   const [running, setRunning] = useState<string|null>(null);
 
@@ -38,7 +38,7 @@ export default function AgenteConciliacao() {
         .eq("agent_type", "reconciliation").order("created_at", { ascending: false }).limit(15);
       return data ?? [];
     },
-    enabled: !!user, refetchInterval: 15000,
+    enabled: !!user && !!currentCompany?.id, refetchInterval: 15000,
   });
 
   const executed = logs.filter(l => l.status === "executed").length;
@@ -49,7 +49,7 @@ export default function AgenteConciliacao() {
     mutationFn: async (tool: string) => {
       setRunning(tool);
       const { error } = await supabase.functions.invoke("agent-orchestrator",
-        { body: { action: tool, payload: { company_id: user?.id } } });
+        { body: { action: tool, payload: { company_id: currentCompany?.id } } });
       if (error) throw error;
     },
     onSuccess: (_, tool) => { setRunning(null); queryClient.invalidateQueries({ queryKey: ["agent-conciliacao-logs"] }); toast.success(`Conciliação: ${tool}`); refetch(); },
@@ -59,7 +59,7 @@ export default function AgenteConciliacao() {
   const runCycle = useMutation({
     mutationFn: async () => {
       const { error } = await supabase.functions.invoke("agent-orchestrator",
-        { body: { action: "run_reconciliation_cycle", payload: { company_id: user?.id } } });
+        { body: { action: "run_reconciliation_cycle", payload: { company_id: currentCompany?.id } } });
       if (error) throw error;
     },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["agent-conciliacao-logs"] }); toast.success("Ciclo de conciliação concluído!"); refetch(); },
