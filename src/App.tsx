@@ -131,6 +131,7 @@ import EmprestimosNovo from "./pages/emprestimos/NovoContrato";
 import EmprestimosCronograma from "./pages/emprestimos/Cronograma";
 import AgentEmprestimos from "./pages/emprestimos/AgentEmprestimos";
 import AgenteCaixa from "./pages/ia/AgenteCaixa";
+import AgenteOrcamento from "./pages/ia/AgenteOrcamento";
 import AgenteConciliacao from "./pages/ia/AgenteConciliacao";
 import AgenteAuditor from "./pages/ia/AgenteAuditor";
 // Dashboards
@@ -764,6 +765,7 @@ const App = () => (
                 <Route path="/ar/regua-cobranca" element={<ARReguaCobrancaIA />} />
                 <Route path="/ar/agente" element={<ARAgentAR />} />
                 <Route path="/ia/agente-caixa" element={<AgenteCaixa />} />
+                <Route path="/ia/agente-orcamento" element={<AgenteOrcamento />} />
                 <Route path="/ia/agente-conciliacao" element={<AgenteConciliacao />} />
                 <Route path="/ia/agente-auditor" element={<AgenteAuditor />} />
                 <Route path="/emprestimos" element={<EmprestimosIndex />} />
