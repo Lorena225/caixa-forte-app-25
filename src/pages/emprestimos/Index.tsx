@@ -56,13 +56,19 @@ export default function EmprestimosIndex() {
     queryFn: async () => {
       const in30 = new Date(Date.now() + 30 * 86400000).toISOString().slice(0,10);
       const { data } = await supabase
-        .from("loan_schedule")
+        .from("loan_installments")
         .select("*, contract:loan_contracts(description, counterparty:counterparties(name))")
-        .eq("status", "open")
+        .in("status", ["PREVISTA","GERADA"])
         .lte("due_date", in30)
         .order("due_date", { ascending: true })
         .limit(5);
-      return data ?? [];
+      return (data ?? []).map((p: any) => ({
+        ...p,
+        installment_num: p.installment_no,
+        total: p.installment_amount,
+        principal: p.amortization_amount,
+        interest: p.interest_amount,
+      }));
     },
     enabled: !!user,
   });
