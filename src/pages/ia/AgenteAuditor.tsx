@@ -23,7 +23,7 @@ const NIVEL_STYLE: Record<string,string> = {
 };
 
 export default function AgenteAuditor() {
-  const { user } = useAuth();
+  const { user, currentCompany } = useAuth();
   const queryClient = useQueryClient();
   const [running, setRunning] = useState<string|null>(null);
 
@@ -34,7 +34,7 @@ export default function AgenteAuditor() {
         .eq("agent_type", "auditor").order("created_at", { ascending: false }).limit(15);
       return data ?? [];
     },
-    enabled: !!user, refetchInterval: 30000,
+    enabled: !!user && !!currentCompany?.id, refetchInterval: 30000,
   });
 
   const alertas = logs.filter((l:any) => l.action_key === "gerar_alerta_risco").length;
@@ -44,7 +44,7 @@ export default function AgenteAuditor() {
     mutationFn: async (tool: string) => {
       setRunning(tool);
       const { error } = await supabase.functions.invoke("agent-orchestrator",
-        { body: { action: tool, payload: { company_id: user?.id } } });
+        { body: { action: tool, payload: { company_id: currentCompany?.id } } });
       if (error) throw error;
     },
     onSuccess: (_, tool) => { setRunning(null); queryClient.invalidateQueries({ queryKey: ["agent-auditor-logs"] }); toast.success(`Auditor: ${tool}`); refetch(); },
@@ -54,7 +54,7 @@ export default function AgenteAuditor() {
   const runScan = useMutation({
     mutationFn: async () => {
       const { error } = await supabase.functions.invoke("agent-orchestrator",
-        { body: { action: "run_audit_scan", payload: { company_id: user?.id } } });
+        { body: { action: "run_audit_scan", payload: { company_id: currentCompany?.id } } });
       if (error) throw error;
     },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["agent-auditor-logs"] }); toast.success("Varredura de auditoria concluída!"); refetch(); },
