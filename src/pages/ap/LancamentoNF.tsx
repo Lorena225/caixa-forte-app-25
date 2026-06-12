@@ -41,7 +41,7 @@ const EMPTY_DRAFT: NFDraft = {
 };
 
 export default function APLancamentoNF() {
-  const { user } = useAuth();
+  const { user, currentCompany } = useAuth();
   const queryClient = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
   const [draft, setDraft] = useState<NFDraft>(EMPTY_DRAFT);
@@ -68,7 +68,7 @@ export default function APLancamentoNF() {
       const { data } = await supabase
         .from("counterparties")
         .select("id, name, document_number")
-        .eq("type", "supplier")
+        .in("type", ["fornecedor", "ambos"])
         .order("name");
       return data ?? [];
     },
@@ -116,24 +116,31 @@ export default function APLancamentoNF() {
 
   const saveMutation = useMutation({
     mutationFn: async () => {
+      if (!currentCompany?.id) throw new Error("Empresa não identificada");
       const cp = counterparties.find(c =>
         c.document_number?.replace(/\D/g, "") === draft.cnpj.replace(/\D/g, "")
       );
-      const { error } = await supabase.from("transactions").insert({
-        description: `NF ${draft.numero_nf} — ${draft.fornecedor}`,
-        amount: -Math.abs(draft.valor),
-        transaction_date: draft.data_emissao || new Date().toISOString().slice(0, 10),
-        due_date: draft.data_vencimento || null,
-        category: draft.natureza || "despesa_operacional",
-        counterparty_id: cp?.id ?? null,
-        payment_method: "pending",
-        notes: JSON.stringify({
-          numero_nf: draft.numero_nf,
+      const { error } = await supabase.rpc("ai_create_title", {
+        p_company_id: currentCompany.id,
+        p_direction: "saida",
+        p_description: `NF ${draft.numero_nf} — ${draft.fornecedor}`,
+        p_amount: Math.abs(draft.valor),
+        p_due_date: draft.data_vencimento || new Date().toISOString().slice(0, 10),
+        p_counterparty_id: cp?.id ?? null,
+        p_document_number: draft.numero_nf || null,
+        p_notes: JSON.stringify({
           conta_contabil: draft.conta_contabil,
           centro_custo: draft.centro_custo,
           ai_confidence: draft.ai_confidence,
           origem: "lancamento_nf",
         }),
+        p_agent_type: "classifier",
+        p_action_key: "classificar_despesa",
+        p_action_label: `NF ${draft.numero_nf} lançada — ${draft.fornecedor}`,
+        p_reason: draft.ai_confidence > 0
+          ? `Classificado pela IA com ${Math.round(draft.ai_confidence * 100)}% de confiança`
+          : "Lançamento manual de NF",
+        p_autonomy_level: "N1_approval",
       });
       if (error) throw error;
     },
