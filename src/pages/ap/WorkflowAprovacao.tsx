@@ -3,8 +3,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
-  CheckCircle2, XCircle, Clock, AlertTriangle, Eye,
-  ChevronDown, ChevronUp, Bot, DollarSign, Filter, RefreshCw
+  CheckCircle2, XCircle, Clock, AlertTriangle,
+  ChevronDown, ChevronUp, Bot, RefreshCw
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -22,26 +22,26 @@ const ALCADA = [
 ];
 
 export default function APWorkflowAprovacao() {
-  const { user } = useAuth();
+  const { user, currentCompany } = useAuth();
   const queryClient = useQueryClient();
   const [expanded, setExpanded] = useState<string | null>(null);
   const [obs, setObs] = useState("");
   const [tab, setTab] = useState("pendentes");
 
   const { data: pendentes = [], isLoading, refetch } = useQuery({
-    queryKey: ["ap-aprovacoes", tab],
+    queryKey: ["ap-aprovacoes", tab, currentCompany?.id],
     queryFn: async () => {
       let q = supabase
         .from("transactions")
         .select("*, counterparty:counterparties(name)")
-        .lt("amount", 0)
-        .order("transaction_date", { ascending: false })
+        .eq("direction", "saida")
+        .order("due_date", { ascending: true })
         .limit(30);
 
       if (tab === "pendentes") {
-        q = q.eq("payment_method", "pending");
-      } else if (tab === "aprovados") {
-        q = q.neq("payment_method", "pending").neq("payment_method", "rejected");
+        q = q.in("status", ["lancado", "rascunho"]).gt("balance_amount", 0);
+      } else if (tab === "rejeitados") {
+        q = q.eq("status", "cancelado");
       }
 
       const { data } = await q;
@@ -51,45 +51,56 @@ export default function APWorkflowAprovacao() {
         return { ...t, notes };
       });
     },
-    enabled: !!user,
+    enabled: !!user && !!currentCompany?.id,
   });
 
   const approveMutation = useMutation({
-    mutationFn: async ({ id, approved }: { id: string; approved: boolean }) => {
-      await supabase.from("transactions").update({
-        payment_method: approved ? "scheduled" : "rejected",
-        notes: JSON.stringify({ ...{}, aprovado_por: user?.id, obs, em: new Date().toISOString() }),
-      }).eq("id", id);
+    mutationFn: async ({ id, total, approved }: { id: string; total: number; approved: boolean }) => {
+      if (!currentCompany?.id) throw new Error("Empresa não identificada");
 
-      // Registrar no agent_action_log
-      await supabase.from("agent_action_log").insert({
-        agent_type: "AP",
-        autonomy_level: "N1_approval",
-        action_key: approved ? "approve_ap" : "reject_ap",
-        action_label: approved ? "Título AP aprovado" : "Título AP rejeitado",
-        entity_type: "transaction",
-        entity_id: id,
-        reason: obs || (approved ? "Aprovado pelo gestor" : "Rejeitado pelo gestor"),
-        status: approved ? "approved" : "rejected",
-        approved_by: user?.id,
-      });
+      if (approved) {
+        // Aprovado: registra log — título permanece 'lancado', pronto para o borderô
+        await supabase.rpc("ai_log_action", {
+          p_company_id: currentCompany.id,
+          p_agent_type: "AP",
+          p_autonomy_level: "N1_approval",
+          p_action_key: "approve_ap",
+          p_action_label: "Título AP aprovado",
+          p_entity_type: "transaction",
+          p_entity_id: id,
+          p_amount: total,
+          p_reason: obs || "Aprovado pelo gestor",
+          p_status: "approved",
+        });
+      } else {
+        // Rejeitado: cancela o título via RPC + log
+        await supabase.rpc("ai_update_title_status", {
+          p_transaction_id: id,
+          p_new_status: "cancelado",
+          p_agent_type: "AP",
+          p_action_key: "reject_ap",
+          p_action_label: "Título AP rejeitado",
+          p_reason: obs || "Rejeitado pelo gestor",
+          p_autonomy_level: "N1_approval",
+        });
+      }
     },
     onSuccess: (_, { approved }) => {
       queryClient.invalidateQueries({ queryKey: ["ap-aprovacoes"] });
       toast[approved ? "success" : "warning"](
-        approved ? "Título aprovado e agendado para pagamento!" : "Título rejeitado."
+        approved ? "Título aprovado — disponível no Borderô!" : "Título rejeitado."
       );
       setExpanded(null);
       setObs("");
     },
+    onError: (e: any) => toast.error(e.message || "Erro ao processar aprovação"),
   });
 
   const getAlcada = (valor: number) =>
     ALCADA.find(a => Math.abs(valor) <= a.max) ?? ALCADA[ALCADA.length - 1];
 
-  const pendCount = pendentes.filter(t => t.payment_method === "pending").length;
-  const totalPend = pendentes.filter(t => t.payment_method === "pending")
-    .reduce((s: number, t: any) => s + Math.abs(t.amount || 0), 0);
+  const pendCount = pendentes.length;
+  const totalPend = pendentes.reduce((s: number, t: any) => s + Math.abs(t.total_amount || 0), 0);
 
   return (
     <div className="p-6 space-y-6">
@@ -137,8 +148,7 @@ export default function APWorkflowAprovacao() {
           <TabsTrigger value="pendentes">
             Pendentes {pendCount > 0 && <Badge variant="destructive" className="ml-2 text-xs">{pendCount}</Badge>}
           </TabsTrigger>
-          <TabsTrigger value="aprovados">Aprovados / Rejeitados</TabsTrigger>
-          <TabsTrigger value="todos">Todos</TabsTrigger>
+          <TabsTrigger value="rejeitados">Rejeitados</TabsTrigger>
         </TabsList>
 
         <TabsContent value={tab} className="mt-4 space-y-3">
@@ -149,16 +159,15 @@ export default function APWorkflowAprovacao() {
           ) : pendentes.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground">
               <CheckCircle2 className="h-12 w-12 mx-auto mb-3 opacity-20" />
-              <p>Nenhum título para aprovar.</p>
+              <p>{tab === "pendentes" ? "Nenhum título para aprovar." : "Nenhum título rejeitado."}</p>
             </div>
           ) : (
             pendentes.map((t: any) => {
-              const alcada = getAlcada(t.amount);
+              const alcada = getAlcada(t.total_amount);
               const isExp = expanded === t.id;
               return (
                 <Card key={t.id} className={cn("border-2 transition-all",
-                  t.payment_method === "pending" ? "border-amber-200" :
-                  t.payment_method === "rejected" ? "border-red-200" : "border-green-200")}>
+                  tab === "rejeitados" ? "border-red-200" : "border-amber-200")}>
                   <CardContent className="pt-4 pb-3">
                     <div className="flex items-center gap-4 flex-wrap">
                       <div className="flex-1 min-w-0">
@@ -166,17 +175,16 @@ export default function APWorkflowAprovacao() {
                           {t.counterparty?.name ?? t.description}
                         </p>
                         <p className="text-xs text-muted-foreground">
-                          {t.notes?.numero_nf && `${t.notes.numero_nf} · `}
-                          {t.transaction_date && new Date(t.transaction_date).toLocaleDateString("pt-BR")}
+                          {t.document_number && `${t.document_number} · `}
+                          Venc. {t.due_date && new Date(t.due_date).toLocaleDateString("pt-BR")}
                         </p>
                       </div>
                       <div className="flex items-center gap-3">
                         <Badge variant="outline" className={cn("text-xs", alcada.color)}>
                           {alcada.nivel} · {alcada.label}
                         </Badge>
-                        <p className={cn("text-lg font-bold font-mono",
-                          t.amount < 0 ? "text-red-600" : "text-green-600")}>
-                          {formatCurrency(Math.abs(t.amount))}
+                        <p className="text-lg font-bold font-mono text-red-600">
+                          {formatCurrency(Math.abs(t.total_amount))}
                         </p>
                         <Button variant="ghost" size="icon" className="h-7 w-7"
                           onClick={() => setExpanded(isExp ? null : t.id)}>
@@ -191,7 +199,7 @@ export default function APWorkflowAprovacao() {
                           {[
                             { label: "Conta", value: t.notes?.conta_contabil },
                             { label: "CC", value: t.notes?.centro_custo },
-                            { label: "Natureza", value: t.category },
+                            { label: "Documento", value: t.document_number },
                             { label: "Vencimento", value: t.due_date ? new Date(t.due_date).toLocaleDateString("pt-BR") : "—" },
                             { label: "Confiança IA", value: t.notes?.ai_confidence ? `${Math.round(t.notes.ai_confidence * 100)}%` : "—" },
                           ].map(item => (
@@ -202,7 +210,7 @@ export default function APWorkflowAprovacao() {
                           ))}
                         </div>
 
-                        {t.payment_method === "pending" && (
+                        {tab === "pendentes" && (
                           <>
                             <Textarea
                               placeholder="Observação (opcional)..."
@@ -213,12 +221,12 @@ export default function APWorkflowAprovacao() {
                             <div className="flex gap-2 justify-end">
                               <Button size="sm" variant="outline"
                                 className="gap-2 text-red-600 border-red-300 hover:bg-red-50"
-                                onClick={() => approveMutation.mutate({ id: t.id, approved: false })}
+                                onClick={() => approveMutation.mutate({ id: t.id, total: t.total_amount, approved: false })}
                                 disabled={approveMutation.isPending}>
                                 <XCircle className="h-4 w-4" /> Rejeitar
                               </Button>
                               <Button size="sm" className="gap-2 bg-green-600 hover:bg-green-700"
-                                onClick={() => approveMutation.mutate({ id: t.id, approved: true })}
+                                onClick={() => approveMutation.mutate({ id: t.id, total: t.total_amount, approved: true })}
                                 disabled={approveMutation.isPending}>
                                 <CheckCircle2 className="h-4 w-4" /> Aprovar
                               </Button>
@@ -226,10 +234,8 @@ export default function APWorkflowAprovacao() {
                           </>
                         )}
 
-                        {t.payment_method !== "pending" && (
-                          <Badge variant={t.payment_method === "rejected" ? "destructive" : "default"} className="text-xs">
-                            {t.payment_method === "rejected" ? "Rejeitado" : "Aprovado — aguardando pagamento"}
-                          </Badge>
+                        {tab === "rejeitados" && (
+                          <Badge variant="destructive" className="text-xs">Rejeitado</Badge>
                         )}
                       </div>
                     )}
