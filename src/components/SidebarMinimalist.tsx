@@ -244,6 +244,17 @@ const menuItems: MenuItem[] = [
         label: 'Gestão',
         items: [
           { key: 'projetos-portfolio', label: 'Portfólio de Projetos', icon: FolderKanban, route: '/projetos' },
+          { key: 'projetos-rentab',    label: 'Rentabilidade',         icon: TrendingUp,   route: '/projetos/rentabilidade' },
+        ]
+      },
+      {
+        key: 'projetos-operacao',
+        label: 'Operação',
+        items: [
+          { key: 'projetos-horas',   label: 'Apontamento de Horas', icon: Clock,    route: '/projetos/horas' },
+          { key: 'projetos-aloc',    label: 'Alocação & Custo-hora', icon: Users,   route: '/projetos/alocacao' },
+          { key: 'projetos-desp',    label: 'Despesas',             icon: Receipt,  route: '/projetos/despesas' },
+          { key: 'projetos-fat',     label: 'Faturamento',          icon: FileText, route: '/projetos/faturamento' },
         ]
       },
     ]

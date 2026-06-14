@@ -164,6 +164,11 @@ import SettingsBackup from "./pages/settings/Backup";
 // CRM
 // Projetos
 import GestaoProjetosPage from "./pages/projetos/GestaoProjetosPage";
+import RentabilidadeProjetos from "./pages/projetos/RentabilidadeProjetos";
+import ApontamentoHoras from "./pages/projetos/ApontamentoHoras";
+import AlocacaoProjetos from "./pages/projetos/AlocacaoProjetos";
+import DespesasProjetos from "./pages/projetos/DespesasProjetos";
+import FaturamentoProjetos from "./pages/projetos/FaturamentoProjetos";
 // Contratos / Recorrência
 import RecorrenciaPage from "./pages/contratos/Recorrencia";
 // Admin
@@ -607,6 +612,11 @@ const App = () => (
                 
                 {/* ============ PROJETOS ============ */}
                 <Route path="/projetos" element={<GestaoProjetosPage />} />
+                <Route path="/projetos/rentabilidade" element={<RentabilidadeProjetos />} />
+                <Route path="/projetos/horas" element={<ApontamentoHoras />} />
+                <Route path="/projetos/alocacao" element={<AlocacaoProjetos />} />
+                <Route path="/projetos/despesas" element={<DespesasProjetos />} />
+                <Route path="/projetos/faturamento" element={<FaturamentoProjetos />} />
                 <Route path="/projetos/gestao" element={<GestaoProjetosPage />} />
                 
                 {/* ============ DEVELOPER PORTAL & MARKETPLACE ============ */}
