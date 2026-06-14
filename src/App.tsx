@@ -169,6 +169,8 @@ import ApontamentoHoras from "./pages/projetos/ApontamentoHoras";
 import AlocacaoProjetos from "./pages/projetos/AlocacaoProjetos";
 import DespesasProjetos from "./pages/projetos/DespesasProjetos";
 import FaturamentoProjetos from "./pages/projetos/FaturamentoProjetos";
+import RiscosProjetos from "./pages/projetos/RiscosProjetos";
+import CapacidadeEquipe from "./pages/projetos/CapacidadeEquipe";
 // Contratos / Recorrência
 import RecorrenciaPage from "./pages/contratos/Recorrencia";
 // Admin
@@ -617,6 +619,8 @@ const App = () => (
                 <Route path="/projetos/alocacao" element={<AlocacaoProjetos />} />
                 <Route path="/projetos/despesas" element={<DespesasProjetos />} />
                 <Route path="/projetos/faturamento" element={<FaturamentoProjetos />} />
+                <Route path="/projetos/riscos" element={<RiscosProjetos />} />
+                <Route path="/projetos/capacidade" element={<CapacidadeEquipe />} />
                 <Route path="/projetos/gestao" element={<GestaoProjetosPage />} />
                 
                 {/* ============ DEVELOPER PORTAL & MARKETPLACE ============ */}

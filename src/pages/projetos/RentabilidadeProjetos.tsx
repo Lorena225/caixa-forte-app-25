@@ -6,9 +6,11 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { TrendingUp, TrendingDown, AlertTriangle, DollarSign, Clock, Flame, Loader2, FolderKanban } from 'lucide-react';
-import { usePortfolioEconomics } from '@/hooks/useProjectModule';
+import { usePortfolioEconomics, useProjectSnapshots } from '@/hooks/useProjectModule';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { formatCurrency } from '@/lib/formatters';
 import { cn } from '@/lib/utils';
+import { format } from 'date-fns';
 
 function marginColor(pct: number) {
   if (pct >= 25) return 'text-emerald-600';
@@ -19,6 +21,8 @@ function marginColor(pct: number) {
 export default function RentabilidadeProjetos() {
   const { data: portfolio = [], isLoading } = usePortfolioEconomics();
   const [sortBy] = useState<'margin' | 'wip'>('margin');
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const { data: snapshots = [] } = useProjectSnapshots(expandedId);
 
   const totals = portfolio.reduce(
     (acc: any, p: any) => {
@@ -102,7 +106,8 @@ export default function RentabilidadeProjetos() {
                   const e = p.econ ?? {};
                   const burnOver = (e.burn_pct ?? 0) > (e.progress_pct ?? 0) + 15;
                   return (
-                    <div key={p.id} className="border rounded-lg p-4">
+                    <div key={p.id} className="border rounded-lg p-4 cursor-pointer hover:bg-muted/30 transition-colors"
+                      onClick={() => setExpandedId(expandedId === p.id ? null : p.id)}>
                       <div className="flex items-start justify-between gap-4 flex-wrap">
                         <div className="min-w-0">
                           <p className="font-medium truncate">{p.name}</p>
@@ -141,6 +146,32 @@ export default function RentabilidadeProjetos() {
                         </div>
                         {burnOver && <Badge variant="destructive">Atenção</Badge>}
                       </div>
+                      {expandedId === p.id && (
+                        <div className="mt-4 pt-4 border-t" onClick={(ev) => ev.stopPropagation()}>
+                          {snapshots.length < 2 ? (
+                            <p className="text-xs text-muted-foreground text-center py-6">
+                              Histórico insuficiente. Capture snapshots semanais em Capacidade da Equipe para ver a evolução de margem e burn.
+                            </p>
+                          ) : (
+                            <div className="h-48">
+                              <p className="text-xs font-medium text-muted-foreground mb-2">Evolução de margem realizada (%)</p>
+                              <ResponsiveContainer width="100%" height="100%">
+                                <LineChart data={snapshots.map((s: any) => ({
+                                  date: format(new Date(s.snapshot_date + 'T00:00'), 'dd/MM'),
+                                  margem: Number(s.margin_pct),
+                                  custo: Number(s.cost_actual),
+                                }))}>
+                                  <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                                  <XAxis dataKey="date" tick={{ fontSize: 11 }} />
+                                  <YAxis tick={{ fontSize: 11 }} />
+                                  <Tooltip />
+                                  <Line type="monotone" dataKey="margem" stroke="hsl(var(--primary))" strokeWidth={2} dot={false} />
+                                </LineChart>
+                              </ResponsiveContainer>
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
                   );
                 })}

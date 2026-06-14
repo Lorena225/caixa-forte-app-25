@@ -414,3 +414,62 @@ export function useSaveCostRate() {
     onError: (e: any) => toast.error(e.message ?? 'Erro ao salvar custo-hora'),
   });
 }
+
+// ============ BLOCO 1: Snapshots, Capacidade, Riscos (update) ============
+export function useProjectSnapshots(projectId: string | null) {
+  return useQuery({
+    queryKey: ['project-snapshots', projectId],
+    queryFn: async () => {
+      if (!projectId) return [];
+      const { data } = await supabase.from('project_snapshots')
+        .select('*').eq('project_id', projectId)
+        .order('snapshot_date', { ascending: true }).limit(52);
+      return data ?? [];
+    },
+    enabled: !!projectId,
+  });
+}
+
+export function useCaptureSnapshots() {
+  const { currentCompany } = useAuth();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async () => {
+      const { data, error } = await supabase.rpc('ai_capture_all_snapshots', { p_company_id: currentCompany!.id });
+      if (error) throw error;
+      return data as number;
+    },
+    onSuccess: (n) => {
+      qc.invalidateQueries({ queryKey: ['project-snapshots'] });
+      toast.success(`Snapshot capturado de ${n} projeto(s)`);
+    },
+    onError: (e: any) => toast.error(e.message ?? 'Erro ao capturar snapshot'),
+  });
+}
+
+export function useCapacityMap() {
+  const { currentCompany } = useAuth();
+  return useQuery({
+    queryKey: ['capacity-map', currentCompany?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('project_capacity_map', { p_company_id: currentCompany!.id });
+      if (error) throw error;
+      return (data ?? []) as Array<{ employee_id: string; full_name: string; total_pct: number; project_count: number }>;
+    },
+    enabled: !!currentCompany?.id,
+  });
+}
+
+export function useUpdateRiskStatus() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, status }: { id: string; status: string }) => {
+      const { error } = await supabase.from('project_risks').update({ status }).eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['project-risks'] });
+      toast.success('Status do risco atualizado');
+    },
+  });
+}

@@ -255,6 +255,8 @@ const menuItems: MenuItem[] = [
           { key: 'projetos-aloc',    label: 'Alocação & Custo-hora', icon: Users,   route: '/projetos/alocacao' },
           { key: 'projetos-desp',    label: 'Despesas',             icon: Receipt,  route: '/projetos/despesas' },
           { key: 'projetos-fat',     label: 'Faturamento',          icon: FileText, route: '/projetos/faturamento' },
+          { key: 'projetos-riscos',  label: 'Riscos & Impedimentos', icon: AlertTriangle, route: '/projetos/riscos' },
+          { key: 'projetos-cap',     label: 'Capacidade da Equipe', icon: Users,    route: '/projetos/capacidade' },
         ]
       },
     ]
