@@ -473,3 +473,127 @@ export function useUpdateRiskStatus() {
     },
   });
 }
+
+// ============ BLOCO 2: Cronograma (tasks) + Templates ============
+export function useProjectTasks(projectId: string | null) {
+  const { currentCompany } = useAuth();
+  return useQuery({
+    queryKey: ['project-tasks-gantt', currentCompany?.id, projectId],
+    queryFn: async () => {
+      if (!projectId) return [];
+      const { data } = await supabase.from('project_tasks')
+        .select('*')
+        .eq('project_id', projectId)
+        .order('sort_order', { ascending: true });
+      return data ?? [];
+    },
+    enabled: !!projectId,
+  });
+}
+
+export function useCreateTask() {
+  const { currentCompany } = useAuth();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (t: {
+      project_id: string; title: string; start_date: string; due_date: string;
+      estimated_hours?: number;
+    }) => {
+      const { error } = await supabase.from('project_tasks').insert({
+        company_id: currentCompany!.id, ...t, status: 'todo',
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['project-tasks-gantt'] });
+      toast.success('Tarefa adicionada ao cronograma');
+    },
+    onError: (e: any) => toast.error(e.message ?? 'Erro ao criar tarefa'),
+  });
+}
+
+export function useUpdateTaskStatus() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, status }: { id: string; status: string }) => {
+      const patch: any = { status };
+      if (status === 'done') patch.completed_at = new Date().toISOString();
+      const { error } = await supabase.from('project_tasks').update(patch).eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['project-tasks-gantt'] }),
+  });
+}
+
+export function useTemplates() {
+  const { currentCompany } = useAuth();
+  return useQuery({
+    queryKey: ['project-templates', currentCompany?.id],
+    queryFn: async () => {
+      const { data } = await supabase.from('project_templates')
+        .select('*, items:project_template_items(count)')
+        .eq('company_id', currentCompany!.id).order('created_at', { ascending: false });
+      return data ?? [];
+    },
+    enabled: !!currentCompany?.id,
+  });
+}
+
+export function useTemplateItems(templateId: string | null) {
+  return useQuery({
+    queryKey: ['template-items', templateId],
+    queryFn: async () => {
+      if (!templateId) return [];
+      const { data } = await supabase.from('project_template_items')
+        .select('*').eq('template_id', templateId).order('sort_order');
+      return data ?? [];
+    },
+    enabled: !!templateId,
+  });
+}
+
+export function useCreateTemplate() {
+  const { currentCompany } = useAuth();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (payload: {
+      name: string; description?: string;
+      items: Array<{ item_type: string; title: string; day_offset: number; duration_days: number; estimated_hours: number; is_billable: boolean }>;
+    }) => {
+      const { data: tpl, error } = await supabase.from('project_templates')
+        .insert({ company_id: currentCompany!.id, name: payload.name, description: payload.description })
+        .select().single();
+      if (error) throw error;
+      if (payload.items.length) {
+        const { error: e2 } = await supabase.from('project_template_items').insert(
+          payload.items.map((it, i) => ({ company_id: currentCompany!.id, template_id: tpl.id, ...it, sort_order: i }))
+        );
+        if (e2) throw e2;
+      }
+      return tpl;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['project-templates'] });
+      toast.success('Template criado');
+    },
+    onError: (e: any) => toast.error(e.message ?? 'Erro ao criar template'),
+  });
+}
+
+export function useApplyTemplate() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ projectId, templateId, startDate }: { projectId: string; templateId: string; startDate: string }) => {
+      const { data, error } = await supabase.rpc('ai_apply_project_template', {
+        p_project_id: projectId, p_template_id: templateId, p_start_date: startDate,
+      });
+      if (error) throw error;
+      return data as number;
+    },
+    onSuccess: (n) => {
+      qc.invalidateQueries({ queryKey: ['project-tasks-gantt'] });
+      toast.success(`${n} item(ns) criados no projeto`);
+    },
+    onError: (e: any) => toast.error(e.message ?? 'Erro ao aplicar template'),
+  });
+}

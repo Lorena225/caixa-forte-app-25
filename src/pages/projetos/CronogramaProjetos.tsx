@@ -1,0 +1,186 @@
+import { useState, useMemo } from 'react';
+import { MainLayout } from '@/components/layout/MainLayout';
+import { PageHeader } from '@/components/common/PageHeader';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Plus, GanttChartSquare, Loader2, LayoutTemplate, CalendarRange } from 'lucide-react';
+import { useProjects } from '@/hooks/useProjects';
+import { useProjectTasks, useCreateTask, useUpdateTaskStatus, useTemplates, useApplyTemplate } from '@/hooks/useProjectModule';
+import { differenceInDays, format, addDays, max, min, parseISO } from 'date-fns';
+import { cn } from '@/lib/utils';
+
+const statusColor: Record<string, string> = {
+  todo: 'bg-slate-400', in_progress: 'bg-blue-500', done: 'bg-emerald-500', blocked: 'bg-red-500',
+};
+const statusLabel: Record<string, string> = {
+  todo: 'A fazer', in_progress: 'Em andamento', done: 'Concluída', blocked: 'Bloqueada',
+};
+
+export default function CronogramaProjetos() {
+  const { data: projects = [] } = useProjects({ status: 'todos', search: '' });
+  const [projectId, setProjectId] = useState<string>('');
+  const { data: tasks = [], isLoading } = useProjectTasks(projectId || null);
+  const { data: templates = [] } = useTemplates();
+  const createTask = useCreateTask();
+  const updateStatus = useUpdateTaskStatus();
+  const applyTemplate = useApplyTemplate();
+
+  const [open, setOpen] = useState(false);
+  const [tplOpen, setTplOpen] = useState(false);
+  const [form, setForm] = useState({ title: '', start_date: format(new Date(), 'yyyy-MM-dd'), due_date: format(addDays(new Date(), 5), 'yyyy-MM-dd'), estimated_hours: '' });
+  const [tplForm, setTplForm] = useState({ template_id: '', start_date: format(new Date(), 'yyyy-MM-dd') });
+
+  // janela temporal do gantt
+  const { startWindow, totalDays } = useMemo(() => {
+    const withDates = tasks.filter((t: any) => t.start_date && t.due_date);
+    if (withDates.length === 0) return { startWindow: new Date(), totalDays: 30 };
+    const starts = withDates.map((t: any) => parseISO(t.start_date));
+    const ends = withDates.map((t: any) => parseISO(t.due_date));
+    const sw = min(starts); const ew = max(ends);
+    return { startWindow: sw, totalDays: Math.max(differenceInDays(ew, sw) + 2, 7) };
+  }, [tasks]);
+
+  const submit = () => {
+    if (!projectId || !form.title) return;
+    createTask.mutate({
+      project_id: projectId, title: form.title, start_date: form.start_date,
+      due_date: form.due_date, estimated_hours: Number(form.estimated_hours || 0),
+    }, { onSuccess: () => { setOpen(false); setForm({ ...form, title: '', estimated_hours: '' }); } });
+  };
+
+  const applyTpl = () => {
+    if (!projectId || !tplForm.template_id) return;
+    applyTemplate.mutate({ projectId, templateId: tplForm.template_id, startDate: tplForm.start_date },
+      { onSuccess: () => setTplOpen(false) });
+  };
+
+  return (
+    <MainLayout>
+      <div className="space-y-6">
+        <PageHeader title="Cronograma"
+          description="Linha do tempo de tarefas por projeto, com aplicação de templates de estrutura" />
+
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-end gap-3 flex-wrap">
+              <div className="flex-1 min-w-[240px]">
+                <Label>Projeto</Label>
+                <Select value={projectId} onValueChange={setProjectId}>
+                  <SelectTrigger><SelectValue placeholder="Selecione um projeto" /></SelectTrigger>
+                  <SelectContent>{projects.map((p: any) => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+              {projectId && (
+                <>
+                  <Dialog open={tplOpen} onOpenChange={setTplOpen}>
+                    <DialogTrigger asChild><Button variant="outline"><LayoutTemplate className="h-4 w-4 mr-1" />Aplicar template</Button></DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader><DialogTitle>Aplicar template de projeto</DialogTitle></DialogHeader>
+                      <div className="space-y-3">
+                        <div><Label>Template</Label>
+                          <Select value={tplForm.template_id} onValueChange={(v) => setTplForm({ ...tplForm, template_id: v })}>
+                            <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
+                            <SelectContent>{templates.map((t: any) => <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>)}</SelectContent>
+                          </Select></div>
+                        <div><Label>Data de início</Label>
+                          <Input type="date" value={tplForm.start_date} onChange={(e) => setTplForm({ ...tplForm, start_date: e.target.value })} /></div>
+                        {templates.length === 0 && <p className="text-xs text-muted-foreground">Nenhum template cadastrado. Crie um em Templates de Projeto.</p>}
+                      </div>
+                      <DialogFooter><Button onClick={applyTpl} disabled={applyTemplate.isPending || !tplForm.template_id}>
+                        {applyTemplate.isPending && <Loader2 className="h-4 w-4 mr-1 animate-spin" />}Aplicar</Button></DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                  <Dialog open={open} onOpenChange={setOpen}>
+                    <DialogTrigger asChild><Button><Plus className="h-4 w-4 mr-1" />Tarefa</Button></DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader><DialogTitle>Nova tarefa</DialogTitle></DialogHeader>
+                      <div className="space-y-3">
+                        <div><Label>Título</Label>
+                          <Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} /></div>
+                        <div className="grid grid-cols-2 gap-3">
+                          <div><Label>Início</Label>
+                            <Input type="date" value={form.start_date} onChange={(e) => setForm({ ...form, start_date: e.target.value })} /></div>
+                          <div><Label>Fim</Label>
+                            <Input type="date" value={form.due_date} onChange={(e) => setForm({ ...form, due_date: e.target.value })} /></div>
+                        </div>
+                        <div><Label>Horas estimadas</Label>
+                          <Input type="number" value={form.estimated_hours} onChange={(e) => setForm({ ...form, estimated_hours: e.target.value })} /></div>
+                      </div>
+                      <DialogFooter><Button onClick={submit} disabled={createTask.isPending}>
+                        {createTask.isPending && <Loader2 className="h-4 w-4 mr-1 animate-spin" />}Adicionar</Button></DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                </>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {!projectId ? (
+          <Card><CardContent className="py-16 text-center text-muted-foreground">
+            <CalendarRange className="h-10 w-10 mx-auto mb-3 opacity-40" />
+            <p>Selecione um projeto para ver o cronograma.</p>
+          </CardContent></Card>
+        ) : isLoading ? (
+          <div className="flex justify-center py-12"><Loader2 className="h-5 w-5 animate-spin" /></div>
+        ) : tasks.length === 0 ? (
+          <Card><CardContent className="py-16 text-center text-muted-foreground">
+            <GanttChartSquare className="h-10 w-10 mx-auto mb-3 opacity-40" />
+            <p>Nenhuma tarefa neste projeto.</p>
+            <p className="text-sm">Adicione tarefas ou aplique um template para montar o cronograma.</p>
+          </CardContent></Card>
+        ) : (
+          <Card>
+            <CardHeader><CardTitle className="flex items-center gap-2"><GanttChartSquare className="h-4 w-4" />Linha do tempo</CardTitle></CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                {tasks.map((t: any) => {
+                  const hasDates = t.start_date && t.due_date;
+                  const offset = hasDates ? differenceInDays(parseISO(t.start_date), startWindow) : 0;
+                  const span = hasDates ? Math.max(differenceInDays(parseISO(t.due_date), parseISO(t.start_date)) + 1, 1) : 1;
+                  const leftPct = (offset / totalDays) * 100;
+                  const widthPct = (span / totalDays) * 100;
+                  return (
+                    <div key={t.id} className="grid grid-cols-[200px_1fr] gap-3 items-center">
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium truncate">{t.title}</p>
+                        <button className="text-xs text-muted-foreground hover:underline"
+                          onClick={() => {
+                            const next = t.status === 'todo' ? 'in_progress' : t.status === 'in_progress' ? 'done' : 'todo';
+                            updateStatus.mutate({ id: t.id, status: next });
+                          }}>
+                          {statusLabel[t.status] ?? t.status} ↻
+                        </button>
+                      </div>
+                      <div className="relative h-7 bg-muted/40 rounded">
+                        {hasDates && (
+                          <div className={cn('absolute h-5 top-1 rounded text-[10px] text-white px-1 flex items-center overflow-hidden', statusColor[t.status] ?? 'bg-slate-400')}
+                            style={{ left: `${Math.max(leftPct, 0)}%`, width: `${Math.min(widthPct, 100)}%` }}
+                            title={`${format(parseISO(t.start_date), 'dd/MM')} – ${format(parseISO(t.due_date), 'dd/MM')}`}>
+                            {t.estimated_hours ? `${t.estimated_hours}h` : ''}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="flex gap-3 mt-4 text-xs text-muted-foreground">
+                {Object.entries(statusLabel).map(([k, v]) => (
+                  <span key={k} className="flex items-center gap-1">
+                    <span className={cn('w-3 h-3 rounded', statusColor[k])} />{v}
+                  </span>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+      </div>
+    </MainLayout>
+  );
+}

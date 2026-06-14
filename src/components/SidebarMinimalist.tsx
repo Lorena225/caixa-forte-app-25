@@ -81,6 +81,8 @@ import {
   LayoutGrid,
   Truck,
   type LucideIcon,
+  GanttChartSquare,
+  LayoutTemplate,
 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
@@ -245,6 +247,7 @@ const menuItems: MenuItem[] = [
         items: [
           { key: 'projetos-portfolio', label: 'Portfólio de Projetos', icon: FolderKanban, route: '/projetos' },
           { key: 'projetos-rentab',    label: 'Rentabilidade',         icon: TrendingUp,   route: '/projetos/rentabilidade' },
+          { key: 'projetos-crono',     label: 'Cronograma',            icon: GanttChartSquare, route: '/projetos/cronograma' },
         ]
       },
       {
@@ -257,6 +260,7 @@ const menuItems: MenuItem[] = [
           { key: 'projetos-fat',     label: 'Faturamento',          icon: FileText, route: '/projetos/faturamento' },
           { key: 'projetos-riscos',  label: 'Riscos & Impedimentos', icon: AlertTriangle, route: '/projetos/riscos' },
           { key: 'projetos-cap',     label: 'Capacidade da Equipe', icon: Users,    route: '/projetos/capacidade' },
+          { key: 'projetos-tpl',     label: 'Templates de Projeto', icon: LayoutTemplate, route: '/projetos/templates' },
         ]
       },
     ]
