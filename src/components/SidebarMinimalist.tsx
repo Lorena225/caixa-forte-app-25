@@ -247,6 +247,7 @@ const menuItems: MenuItem[] = [
         items: [
           { key: 'projetos-portfolio', label: 'Portfólio de Projetos', icon: FolderKanban, route: '/projetos' },
           { key: 'projetos-rentab',    label: 'Rentabilidade',         icon: TrendingUp,   route: '/projetos/rentabilidade' },
+          { key: 'projetos-exec',      label: 'Visão Executiva',       icon: Sparkles,     route: '/projetos/executivo' },
           { key: 'projetos-crono',     label: 'Cronograma',            icon: GanttChartSquare, route: '/projetos/cronograma' },
         ]
       },

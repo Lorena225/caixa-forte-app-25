@@ -597,3 +597,61 @@ export function useApplyTemplate() {
     onError: (e: any) => toast.error(e.message ?? 'Erro ao aplicar template'),
   });
 }
+
+// ============ BLOCO 3: KPIs executivos + Agente de Projetos ============
+export function useKpiByClient() {
+  const { currentCompany } = useAuth();
+  return useQuery({
+    queryKey: ['kpi-by-client', currentCompany?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('project_kpi_by_client', { p_company_id: currentCompany!.id });
+      if (error) throw error;
+      return (data ?? []) as Array<{ counterparty_id: string; client_name: string; project_count: number; revenue: number; cost: number; margin_pct: number }>;
+    },
+    enabled: !!currentCompany?.id,
+  });
+}
+
+export function useKpiByPerson() {
+  const { currentCompany } = useAuth();
+  return useQuery({
+    queryKey: ['kpi-by-person', currentCompany?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('project_kpi_by_person', { p_company_id: currentCompany!.id, p_days: 90 });
+      if (error) throw error;
+      return (data ?? []) as Array<{ employee_id: string; full_name: string; total_hours: number; billable_hours: number; utilization_pct: number; revenue_generated: number }>;
+    },
+    enabled: !!currentCompany?.id,
+  });
+}
+
+export function useRunProjectAgent() {
+  const { currentCompany } = useAuth();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async () => {
+      const { data, error } = await supabase.rpc('ai_run_project_agent', { p_company_id: currentCompany!.id });
+      if (error) throw error;
+      return data as number;
+    },
+    onSuccess: (n) => {
+      qc.invalidateQueries({ queryKey: ['project-agent-alerts'] });
+      toast.success(n > 0 ? `Agente gerou ${n} alerta(s)` : 'Agente rodou — nenhum alerta novo');
+    },
+    onError: (e: any) => toast.error(e.message ?? 'Erro ao rodar agente'),
+  });
+}
+
+export function useProjectAgentAlerts() {
+  const { currentCompany } = useAuth();
+  return useQuery({
+    queryKey: ['project-agent-alerts', currentCompany?.id],
+    queryFn: async () => {
+      const { data } = await supabase.from('agent_action_log')
+        .select('*').eq('company_id', currentCompany!.id).eq('agent_type', 'PROJETOS')
+        .order('created_at', { ascending: false }).limit(30);
+      return data ?? [];
+    },
+    enabled: !!currentCompany?.id,
+  });
+}
