@@ -16,6 +16,8 @@ import { ReportExportDialog } from '@/components/dashboard/ReportExportDialog';
 import { CFOVirtualHero } from '@/components/dashboard/CFOVirtualHero';
 import { PulseKPIs } from '@/components/dashboard/PulseKPIs';
 import { DecisionsSummary } from '@/components/dashboard/DecisionsSummary';
+import { OnboardingChecklist } from '@/components/dashboard/OnboardingChecklist';
+import { useOnboardingStatus } from '@/hooks/useFinanceModule';
 import { BentoGrid, BentoCard } from '@/components/dashboard/BentoGrid';
 import { ModernKPICard } from '@/components/dashboard/ModernKPICard';
 import { FloatingQuickActions } from '@/components/dashboard/FloatingQuickActions';
@@ -184,6 +186,11 @@ export default function DashboardModern() {
     data: healthMetrics, 
     isLoading: healthLoading 
   } = useFinancialHealthMetrics();
+
+  const { data: onboarding } = useOnboardingStatus();
+  const onboardingComplete = onboarding
+    ? Object.entries(onboarding).every(([k, v]) => k === 'firstProject' || v === true)
+    : true;
 
   const { 
     data: alerts = [], 
@@ -395,6 +402,13 @@ export default function DashboardModern() {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5 }}
             >
+              {/* Onboarding: trilha de implantação enquanto incompleta */}
+              {onboarding && !onboardingComplete && (
+                <section aria-label="Implantação">
+                  <OnboardingChecklist status={onboarding} />
+                </section>
+              )}
+
               {/* Pulso executivo: 4 KPIs reais + Caixa de Decisões */}
               <section aria-label="Pulso executivo" className="space-y-4">
                 <PulseKPIs />

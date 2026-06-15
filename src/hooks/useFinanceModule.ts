@@ -513,3 +513,20 @@ export function useDashboardPulse() {
     enabled: !!currentCompany?.id,
   });
 }
+
+// ============ Onboarding ============
+export function useOnboardingStatus() {
+  const { currentCompany } = useAuth();
+  return useQuery({
+    queryKey: ['onboarding-status', currentCompany?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('ai_onboarding_status', { p_company_id: currentCompany!.id });
+      if (error) throw error;
+      return data as {
+        company: boolean; chartOfAccounts: boolean; costCenters: boolean;
+        accounts: boolean; partners: boolean; taxParams: boolean; firstProject: boolean;
+      };
+    },
+    enabled: !!currentCompany?.id,
+  });
+}
