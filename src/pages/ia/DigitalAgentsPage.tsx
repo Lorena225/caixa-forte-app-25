@@ -359,7 +359,7 @@ export default function DigitalAgentsPage() {
                               key={i} 
                               className={cn(
                                 "rounded-sm",
-                                Math.random() > 0.5 ? "bg-foreground" : "bg-transparent"
+                                (i * 7 + 3) % 5 < 2 ? "bg-foreground" : "bg-transparent"
                               )}
                             />
                           ))}

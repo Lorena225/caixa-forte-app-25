@@ -130,6 +130,7 @@ import AutomationRules from "./pages/autopilot/AutomationRules";
 import PendingCenter from "./pages/autopilot/PendingCenter";
 import Inbox from "./pages/autopilot/Inbox";
 import Decisoes from "./pages/autopilot/Decisoes";
+import InboxDecisoes from "./pages/ia/InboxDecisoes";
 // IA / ChatGPT Financeiro
 import IAIndex from "./pages/ia/Index";
 // IAConfiguracoes replaced by AISettingsPage
@@ -678,8 +679,8 @@ const App = () => (
                 <Route path="/ia/operacional" element={<IAOperacional />} />
 
                 {/* ============ AUTOPILOTO (PT-BR) ============ */}
-                <Route path="/autopiloto/caixa-entrada" element={<Inbox />} />
-                <Route path="/autopiloto/pendente" element={<PendingCenter />} />
+                <Route path="/autopiloto/caixa-entrada" element={<InboxDecisoes />} />
+                <Route path="/autopiloto/pendente" element={<InboxDecisoes />} />
                 <Route path="/autopiloto/regras" element={<AutomationRules />} />
                 <Route path="/autopiloto/whatsapp" element={<WhatsAppConfig />} />
                 <Route path="/autopiloto/decisoes" element={<Decisoes />} />

@@ -1,0 +1,3 @@
+-- BLOCO 1 IA: governança da Inbox de Decisões
+-- RPCs (aplicadas no prod): ai_approve_action, ai_reject_action, ai_revert_action,
+--   ai_inbox_summary, ai_run_all_agents — operam sobre agent_action_log

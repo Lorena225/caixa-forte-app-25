@@ -25,7 +25,7 @@ export default function ExecutivoProjetos() {
   const { data: alerts = [] } = useProjectAgentAlerts();
   const runAgent = useRunProjectAgent();
 
-  const pendingAlerts = alerts.filter((a: any) => a.status === 'pending');
+  const pendingAlerts = alerts.filter((a: any) => a.status === 'pending_approval');
 
   return (
     <MainLayout>
@@ -62,8 +62,8 @@ export default function ExecutivoProjetos() {
                         {a.created_at ? formatDistanceToNow(new Date(a.created_at), { addSuffix: true, locale: ptBR }) : ''}
                       </p>
                     </div>
-                    <Badge variant={a.status === 'pending' ? 'secondary' : 'outline'}>
-                      {a.status === 'pending' ? 'Pendente' : 'Visto'}</Badge>
+                    <Badge variant={a.status === 'pending_approval' ? 'secondary' : 'outline'}>
+                      {a.status === 'pending_approval' ? 'Pendente' : 'Visto'}</Badge>
                   </div>
                 ))}
               </div>
