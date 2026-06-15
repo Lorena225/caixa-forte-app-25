@@ -259,3 +259,126 @@ export function useAgingReport(direction: 'entrada' | 'saida') {
     enabled: !!currentCompany?.id,
   });
 }
+
+// ============ FASE 2: Inadimplência, Cashflow projetado, Adiantamentos, Contábil ============
+export function useDelinquencyForecast() {
+  const { currentCompany } = useAuth();
+  return useQuery({
+    queryKey: ['delinquency', currentCompany?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('ai_delinquency_forecast', { p_company_id: currentCompany!.id });
+      if (error) throw error;
+      return (data ?? []) as Array<{ counterparty_id: string; client_name: string; open_amount: number;
+        avg_delay_days: number; paid_late_ratio: number; risk_score: number; risk_level: string }>;
+    },
+    enabled: !!currentCompany?.id,
+  });
+}
+
+export function useRunDelinquencyAgent() {
+  const { currentCompany } = useAuth();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async () => {
+      const { data, error } = await supabase.rpc('ai_run_delinquency_agent', { p_company_id: currentCompany!.id });
+      if (error) throw error;
+      return data as number;
+    },
+    onSuccess: (n) => {
+      qc.invalidateQueries({ queryKey: ['delinquency-alerts'] });
+      toast.success(n > 0 ? `${n} alerta(s) de risco gerado(s)` : 'Nenhum cliente de alto risco com saldo em aberto');
+    },
+    onError: (e: any) => toast.error(e.message ?? 'Erro ao rodar agente'),
+  });
+}
+
+export function useCashflowSummary(days = 90) {
+  const { currentCompany } = useAuth();
+  return useQuery({
+    queryKey: ['cashflow-summary', currentCompany?.id, days],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('ai_cashflow_summary', { p_company_id: currentCompany!.id, p_days: days });
+      if (error) throw error;
+      return (data ?? []) as Array<{ ref_date: string; day_inflow: number; day_outflow: number; day_net: number }>;
+    },
+    enabled: !!currentCompany?.id,
+  });
+}
+
+export function useAdvances() {
+  const { currentCompany } = useAuth();
+  return useQuery({
+    queryKey: ['advances', currentCompany?.id],
+    queryFn: async () => {
+      const { data } = await supabase.from('advance_payments')
+        .select('*, counterparty:counterparties(name), employee:employees_profiles(full_name)')
+        .eq('company_id', currentCompany!.id).order('advance_date', { ascending: false });
+      return data ?? [];
+    },
+    enabled: !!currentCompany?.id,
+  });
+}
+
+export function useCreateAdvance() {
+  const { currentCompany } = useAuth();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (a: { kind: string; description: string; amount: number; counterparty_id?: string; employee_id?: string; advance_date: string }) => {
+      const { error } = await supabase.from('advance_payments').insert({
+        company_id: currentCompany!.id, ...a, balance: a.amount, status: 'aberto',
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['advances'] });
+      toast.success('Adiantamento registrado');
+    },
+    onError: (e: any) => toast.error(e.message ?? 'Erro ao registrar adiantamento'),
+  });
+}
+
+export function useCompensateAdvance() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ advanceId, amount }: { advanceId: string; amount: number }) => {
+      const { data, error } = await supabase.rpc('ai_compensate_advance', { p_advance_id: advanceId, p_amount: amount });
+      if (error) throw error;
+      return data as number;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['advances'] });
+      toast.success('Adiantamento compensado');
+    },
+    onError: (e: any) => toast.error(e.message ?? 'Erro ao compensar'),
+  });
+}
+
+export function useDelinquencyAlerts() {
+  const { currentCompany } = useAuth();
+  return useQuery({
+    queryKey: ['delinquency-alerts', currentCompany?.id],
+    queryFn: async () => {
+      const { data } = await supabase.from('agent_action_log')
+        .select('*').eq('company_id', currentCompany!.id).eq('action_key', 'risco_inadimplencia')
+        .order('created_at', { ascending: false }).limit(20);
+      return data ?? [];
+    },
+    enabled: !!currentCompany?.id,
+  });
+}
+
+export function usePostAccountingEntry() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (transactionId: string) => {
+      const { data, error } = await supabase.rpc('ai_post_accounting_entry', { p_transaction_id: transactionId });
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: (id) => {
+      qc.invalidateQueries({ queryKey: ['audit-trail'] });
+      toast.success(id ? 'Lançamento contábil gerado' : 'Sem de-para contábil para a categoria (registrado no log)');
+    },
+    onError: (e: any) => toast.error(e.message ?? 'Erro ao gerar lançamento'),
+  });
+}

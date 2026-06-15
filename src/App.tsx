@@ -179,6 +179,9 @@ import RateiosFinanceiro from "./pages/financeiro/RateiosFinanceiro";
 import FechamentoMensal from "./pages/financeiro/FechamentoMensal";
 import RegrasConciliacao from "./pages/financeiro/RegrasConciliacao";
 import RenegociacaoAging from "./pages/financeiro/RenegociacaoAging";
+import PrevisaoInadimplencia from "./pages/financeiro/PrevisaoInadimplencia";
+import FluxoCaixaProjetado from "./pages/financeiro/FluxoCaixaProjetado";
+import Adiantamentos from "./pages/financeiro/Adiantamentos";
 // Contratos / Recorrência
 import RecorrenciaPage from "./pages/contratos/Recorrencia";
 // Admin
@@ -637,6 +640,9 @@ const App = () => (
                 <Route path="/financeiro/fechamento" element={<FechamentoMensal />} />
                 <Route path="/financeiro/regras-conciliacao" element={<RegrasConciliacao />} />
                 <Route path="/financeiro/renegociacao" element={<RenegociacaoAging />} />
+                <Route path="/financeiro/inadimplencia" element={<PrevisaoInadimplencia />} />
+                <Route path="/financeiro/fluxo-projetado" element={<FluxoCaixaProjetado />} />
+                <Route path="/financeiro/adiantamentos" element={<Adiantamentos />} />
                 <Route path="/projetos/gestao" element={<GestaoProjetosPage />} />
                 
                 {/* ============ DEVELOPER PORTAL & MARKETPLACE ============ */}

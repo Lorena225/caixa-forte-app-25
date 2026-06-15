@@ -88,6 +88,8 @@ import {
   ListChecks,
   SplitSquareHorizontal,
   Lock,
+  ShieldAlert,
+  ArrowDownLeft,
 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
@@ -290,6 +292,7 @@ const menuItems: MenuItem[] = [
           { key: 'ar-regua',   label: 'Cobrança Inteligente', icon: BellRing,   route: '/ar/regua-cobranca' },
           { key: 'cobranca',   label: 'Crédito & Negativação', icon: Shield,    route: '/cobranca' },
           { key: 'renegociacao', label: 'Cobrança & Renegociação', icon: HandCoins, route: '/financeiro/renegociacao' },
+          { key: 'inadimplencia', label: 'Previsão de Inadimplência', icon: ShieldAlert, route: '/financeiro/inadimplencia' },
         ]
       },
       {
@@ -300,6 +303,7 @@ const menuItems: MenuItem[] = [
           { key: 'ap-nf',         label: 'Lançamento de NF', icon: Receipt,       route: '/ap/lancamento-nf' },
           { key: 'ap-aprovacoes', label: 'Aprovações',       icon: FileCheck,     route: '/ap/aprovacoes' },
           { key: 'ap-bordero',    label: 'Borderô & Pagamentos', icon: Send,      route: '/ap/bordero' },
+          { key: 'adiantamentos', label: 'Adiantamentos',    icon: ArrowDownLeft, route: '/financeiro/adiantamentos' },
         ]
       },
       {
@@ -310,6 +314,7 @@ const menuItems: MenuItem[] = [
           { key: 'extratos',       label: 'Extratos',         icon: FileText,       route: '/tesouraria/extratos' },
           { key: 'conciliacao',    label: 'Conciliação',      icon: RefreshCw,      route: '/conciliacao' },
           { key: 'regras-concil',  label: 'Regras de Conciliação', icon: ListChecks, route: '/financeiro/regras-conciliacao' },
+          { key: 'fluxo-projetado', label: 'Fluxo Projetado',  icon: TrendingUp,     route: '/financeiro/fluxo-projetado' },
           { key: 'transferencias', label: 'Transferências',   icon: ArrowRightLeft, route: '/tesouraria/transferencias' },
           { key: 'cnab',           label: 'CNAB',             icon: Send,           route: '/tesouraria/cnab' },
         ]
