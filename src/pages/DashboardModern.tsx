@@ -13,14 +13,16 @@ import { ExpensesByCategoryChart } from '@/components/dashboard/ExpensesByCatego
 import { DateRangeFilter } from '@/components/dashboard/DateRangeFilter';
 import { ReportExportDialog } from '@/components/dashboard/ReportExportDialog';
 import { CFOVirtualHero } from '@/components/dashboard/CFOVirtualHero';
+import { PulseKPIs } from '@/components/dashboard/PulseKPIs';
+import { DecisionsSummary } from '@/components/dashboard/DecisionsSummary';
 import { BentoGrid, BentoCard } from '@/components/dashboard/BentoGrid';
 import { ModernKPICard } from '@/components/dashboard/ModernKPICard';
 import { FloatingQuickActions } from '@/components/dashboard/FloatingQuickActions';
 import { WidgetCustomizationDrawer } from '@/components/dashboard/WidgetCustomizationDrawer';
 import { ViewModeSelector } from '@/components/dashboard/ViewModeSelector';
 import { 
-  WidgetVendas, WidgetFluxo, WidgetPendencias, WidgetIAInsight, WidgetFeedIA,
-  WidgetSimulacao, WidgetEstoqueCritico, WidgetAgingCobranca, WidgetRankingVendas, WidgetComplianceFiscal,
+  WidgetFluxo, WidgetPendencias, WidgetIAInsight, WidgetFeedIA,
+  WidgetSimulacao, WidgetAgingCobranca, WidgetComplianceFiscal,
 } from '@/components/dashboard/widgets';
 import { Card, CardContent, CardDescription, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -392,15 +394,19 @@ export default function DashboardModern() {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5 }}
             >
-              {/* CFO Virtual Hero Card */}
-              <section aria-label="Visão do CFO Virtual">
-                <CFOVirtualHero
-                  healthStatus={healthStatus}
-                  savingsRate={savingsRate}
-                  projectedBalance={projectedBalance}
-                  onViewAnalysis={() => navigate('/controladoria/analise')}
-                  isLoading={healthLoading}
-                />
+              {/* Pulso executivo: 4 KPIs reais + Caixa de Decisões */}
+              <section aria-label="Pulso executivo" className="space-y-4">
+                <PulseKPIs />
+                <div className="grid gap-4 lg:grid-cols-2">
+                  <DecisionsSummary />
+                  <CFOVirtualHero
+                    healthStatus={healthStatus}
+                    savingsRate={savingsRate}
+                    projectedBalance={projectedBalance}
+                    onViewAnalysis={() => navigate('/financeiro/fluxo-projetado')}
+                    isLoading={healthLoading}
+                  />
+                </div>
               </section>
 
               {/* View Mode Selector and Actions */}
@@ -453,11 +459,6 @@ export default function DashboardModern() {
                   className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6"
                 >
                   <AnimatePresence mode="popLayout">
-                    {isWidgetEnabled('vendas') && (
-                      <motion.div key="vendas" layout initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ duration: 0.3 }}>
-                        <WidgetVendas totalVendas={vendasData.totalVendas} ticketMedio={vendasData.ticketMedio} variacaoVendas={vendasData.variacaoVendas} variacaoTicket={vendasData.variacaoTicket} isLoading={widgetLoading.vendas} aiInsight={aiInsights.vendas} />
-                      </motion.div>
-                    )}
                     {isWidgetEnabled('fluxo') && (
                       <motion.div key="fluxo" layout initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ duration: 0.3 }}>
                         <WidgetFluxo data={fluxoData} isLoading={widgetLoading.fluxo} aiInsight={aiInsights.fluxo} />
@@ -483,19 +484,9 @@ export default function DashboardModern() {
                         <WidgetSimulacao saldoAtual={simulacaoData.saldoAtual} receitaMensal={simulacaoData.receitaMensal} isLoading={widgetLoading.simulacao} aiInsight={aiInsights.simulacao} onRefresh={triggerRefresh} onViewDetails={() => navigate('/orcamento/projecoes')} onRemove={isCustomMode ? () => handleRemoveWidget('simulacao') : undefined} />
                       </motion.div>
                     )}
-                    {isWidgetEnabled('estoque-critico') && (
-                      <motion.div key="estoque-critico" layout initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ duration: 0.3 }}>
-                        <WidgetEstoqueCritico produtos={estoqueCritico} isLoading={widgetLoading.estoqueCritico} aiInsight={aiInsights.estoqueCritico} onRefresh={triggerRefresh} onViewDetails={() => navigate('/suprimentos/estoque')} onRemove={isCustomMode ? () => handleRemoveWidget('estoque-critico') : undefined} />
-                      </motion.div>
-                    )}
                     {isWidgetEnabled('aging-cobranca') && (
                       <motion.div key="aging-cobranca" layout initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ duration: 0.3 }}>
                         <WidgetAgingCobranca data={agingCobranca} isLoading={widgetLoading.agingCobranca} aiInsight={aiInsights.agingCobranca} onRefresh={triggerRefresh} onViewDetails={() => navigate('/ar/aging')} onRemove={isCustomMode ? () => handleRemoveWidget('aging-cobranca') : undefined} />
-                      </motion.div>
-                    )}
-                    {isWidgetEnabled('ranking-vendas') && (
-                      <motion.div key="ranking-vendas" layout initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ duration: 0.3 }}>
-                        <WidgetRankingVendas produtos={rankingVendas} isLoading={widgetLoading.rankingVendas} aiInsight={aiInsights.rankingVendas} onRefresh={triggerRefresh} onViewDetails={() => navigate('/vendas')} onRemove={isCustomMode ? () => handleRemoveWidget('ranking-vendas') : undefined} />
                       </motion.div>
                     )}
                     {isWidgetEnabled('compliance-fiscal') && (

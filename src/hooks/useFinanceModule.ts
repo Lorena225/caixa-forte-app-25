@@ -495,3 +495,21 @@ export function useCreateProvision() {
     onError: (e: any) => toast.error(e.message ?? 'Erro ao lançar provisão'),
   });
 }
+
+// ============ Dashboard executivo: Pulso ============
+export function useDashboardPulse() {
+  const { currentCompany } = useAuth();
+  return useQuery({
+    queryKey: ['dashboard-pulse', currentCompany?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('ai_dashboard_pulse', { p_company_id: currentCompany!.id });
+      if (error) throw error;
+      return data as {
+        cash: number; receivable: number; receivable_overdue: number;
+        payable: number; payable_7d: number; revenue_month: number;
+        cost_month: number; margin_pct: number; has_data: boolean;
+      };
+    },
+    enabled: !!currentCompany?.id,
+  });
+}
