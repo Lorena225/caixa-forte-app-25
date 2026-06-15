@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { EmptyState } from '@/components/ui/empty-state';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { PageHeader } from '@/components/common/PageHeader';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -20,6 +22,7 @@ function marginColor(pct: number) {
 
 export default function RentabilidadeProjetos() {
   const { data: portfolio = [], isLoading } = usePortfolioEconomics();
+  const navigate = useNavigate();
   const [sortBy] = useState<'margin' | 'wip'>('margin');
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const { data: snapshots = [] } = useProjectSnapshots(expandedId);
@@ -95,11 +98,12 @@ export default function RentabilidadeProjetos() {
                 <Loader2 className="h-5 w-5 animate-spin mr-2" />Calculando economia dos projetos…
               </div>
             ) : sorted.length === 0 ? (
-              <div className="text-center py-12 text-muted-foreground">
-                <FolderKanban className="h-10 w-10 mx-auto mb-3 opacity-40" />
-                <p>Nenhum projeto ativo ainda.</p>
-                <p className="text-sm">Crie um projeto no Portfólio e defina o orçamento para ver a rentabilidade aqui.</p>
-              </div>
+              <EmptyState
+                icon={FolderKanban}
+                title="Nenhum projeto ativo ainda"
+                description="Crie um projeto no Portfólio e defina o orçamento para ver a rentabilidade — margem prevista vs. realizada, burn rate e WIP — aqui."
+                action={{ label: 'Ir para o Portfólio', onClick: () => navigate('/projetos') }}
+              />
             ) : (
               <div className="space-y-3">
                 {sorted.map((p: any) => {

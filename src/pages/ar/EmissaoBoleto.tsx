@@ -1,3 +1,4 @@
+import { FormBody, FormSection, FormGrid, FormField } from "@/components/ui/form-layout";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -210,68 +211,67 @@ export default function AREmissaoBoleto() {
             </TabsList>
           </Tabs>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Cliente *</Label>
-              <Select value={form.cliente_id}
-                onValueChange={v => {
-                  const c = clientes.find((x: any) => x.id === v);
-                  setForm(p => ({ ...p, cliente_id: v, cliente_nome: c?.name ?? "" }));
-                }}>
-                <SelectTrigger><SelectValue placeholder="Selecionar cliente" /></SelectTrigger>
-                <SelectContent>
-                  {clientes.map((c: any) => (
-                    <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {!form.cliente_id && (
-                <Input placeholder="Ou digite o nome do cliente"
-                  value={form.cliente_nome}
-                  onChange={e => setForm(p => ({ ...p, cliente_nome: e.target.value }))} />
-              )}
-            </div>
-            <div className="space-y-2">
-              <Label>Valor *</Label>
-              <Input type="number" placeholder="0,00" value={form.valor || ""}
-                onChange={e => setForm(p => ({ ...p, valor: parseFloat(e.target.value) || 0 }))} />
-            </div>
-            <div className="space-y-2">
-              <Label>Vencimento *</Label>
-              <Input type="date" value={form.vencimento}
-                onChange={e => setForm(p => ({ ...p, vencimento: e.target.value }))} />
-            </div>
-            <div className="space-y-2">
-              <Label>Descrição</Label>
-              <Input placeholder="Ex: Serviço de consultoria — Março/2026"
-                value={form.descricao}
-                onChange={e => setForm(p => ({ ...p, descricao: e.target.value }))} />
-            </div>
+          <FormBody>
+            <FormSection title="Dados da cobrança" description="Cliente, valor e vencimento do título a receber">
+              <FormGrid cols={2}>
+                <FormField label="Cliente" required fullWidth>
+                  <Select value={form.cliente_id}
+                    onValueChange={v => {
+                      const c = clientes.find((x: any) => x.id === v);
+                      setForm(p => ({ ...p, cliente_id: v, cliente_nome: c?.name ?? "" }));
+                    }}>
+                    <SelectTrigger><SelectValue placeholder="Selecionar cliente" /></SelectTrigger>
+                    <SelectContent>
+                      {clientes.map((c: any) => (
+                        <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {!form.cliente_id && (
+                    <Input className="mt-2" placeholder="Ou digite o nome do cliente"
+                      value={form.cliente_nome}
+                      onChange={e => setForm(p => ({ ...p, cliente_nome: e.target.value }))} />
+                  )}
+                </FormField>
+                <FormField label="Valor" required>
+                  <Input type="number" placeholder="0,00" value={form.valor || ""}
+                    onChange={e => setForm(p => ({ ...p, valor: parseFloat(e.target.value) || 0 }))} />
+                </FormField>
+                <FormField label="Vencimento" required hint="Prazo padrão: 30 dias">
+                  <Input type="date" value={form.vencimento}
+                    onChange={e => setForm(p => ({ ...p, vencimento: e.target.value }))} />
+                </FormField>
+                <FormField label="Descrição" fullWidth>
+                  <Input placeholder="Ex: Serviço de consultoria — Março/2026"
+                    value={form.descricao}
+                    onChange={e => setForm(p => ({ ...p, descricao: e.target.value }))} />
+                </FormField>
+              </FormGrid>
+            </FormSection>
+
             {form.tipo === "boleto" && (
-              <>
-                <div className="space-y-2">
-                  <Label>Juros ao dia (%)</Label>
-                  <Input type="number" step="0.001" value={form.juros_dia}
-                    onChange={e => setForm(p => ({ ...p, juros_dia: parseFloat(e.target.value) || 0 }))} />
-                </div>
-                <div className="space-y-2">
-                  <Label>Multa (%)</Label>
-                  <Input type="number" step="0.1" value={form.multa_pct}
-                    onChange={e => setForm(p => ({ ...p, multa_pct: parseFloat(e.target.value) || 0 }))} />
-                </div>
-                <div className="space-y-2">
-                  <Label>Desconto até (data)</Label>
-                  <Input type="date" value={form.desconto_ate}
-                    onChange={e => setForm(p => ({ ...p, desconto_ate: e.target.value }))} />
-                </div>
-                <div className="space-y-2">
-                  <Label>Valor do desconto (R$)</Label>
-                  <Input type="number" value={form.desconto_valor || ""}
-                    onChange={e => setForm(p => ({ ...p, desconto_valor: parseFloat(e.target.value) || 0 }))} />
-                </div>
-              </>
+              <FormSection title="Juros, multa e desconto" description="Encargos por atraso e desconto por antecipação (opcional)">
+                <FormGrid cols={2}>
+                  <FormField label="Juros ao dia (%)">
+                    <Input type="number" step="0.001" value={form.juros_dia}
+                      onChange={e => setForm(p => ({ ...p, juros_dia: parseFloat(e.target.value) || 0 }))} />
+                  </FormField>
+                  <FormField label="Multa (%)">
+                    <Input type="number" step="0.1" value={form.multa_pct}
+                      onChange={e => setForm(p => ({ ...p, multa_pct: parseFloat(e.target.value) || 0 }))} />
+                  </FormField>
+                  <FormField label="Desconto até">
+                    <Input type="date" value={form.desconto_ate}
+                      onChange={e => setForm(p => ({ ...p, desconto_ate: e.target.value }))} />
+                  </FormField>
+                  <FormField label="Valor do desconto (R$)">
+                    <Input type="number" value={form.desconto_valor || ""}
+                      onChange={e => setForm(p => ({ ...p, desconto_valor: parseFloat(e.target.value) || 0 }))} />
+                  </FormField>
+                </FormGrid>
+              </FormSection>
             )}
-          </div>
+          </FormBody>
 
           <Card className="border-blue-200 bg-blue-50/50">
             <CardContent className="pt-4 pb-4">
