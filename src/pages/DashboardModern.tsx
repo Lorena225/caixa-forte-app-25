@@ -9,6 +9,7 @@ import { AlertsPanel } from '@/components/dashboard/AlertsPanel';
 import { CashFlowProjection } from '@/components/dashboard/CashFlowProjection';
 import { DashboardSkeleton } from '@/components/common/DashboardSkeleton';
 import { RevenueExpensesAreaChart } from '@/components/dashboard/RevenueExpensesAreaChart';
+import { RevenueExpensesPanel } from '@/components/dashboard/RevenueExpensesPanel';
 import { ExpensesByCategoryChart } from '@/components/dashboard/ExpensesByCategoryChart';
 import { DateRangeFilter } from '@/components/dashboard/DateRangeFilter';
 import { ReportExportDialog } from '@/components/dashboard/ReportExportDialog';
@@ -607,42 +608,14 @@ export default function DashboardModern() {
               {/* Bento Grid - Charts & Widgets */}
               <section aria-label="Analytics e Projeções">
                 <BentoGrid>
-                  {/* Revenue vs Expenses Chart */}
+                  {/* Receitas e Despesas — unificado (série + composição) */}
                   <BentoCard size="md" delay={0.4}>
-                    <div className="h-full flex flex-col">
-                      <div className="flex items-center gap-2 mb-4">
-                        <div className="p-2 rounded-lg bg-primary/10">
-                          <TrendingUp className="w-4 h-4 text-primary" />
-                        </div>
-                        <h3 className="font-semibold text-foreground">Receitas vs Despesas</h3>
-                      </div>
-                      <div className="flex-1 min-h-[250px]">
-                        <RevenueExpensesAreaChart
-                          data={revenueExpensesData}
-                          isLoading={revenueExpensesLoading}
-                          className="h-full"
-                        />
-                      </div>
-                    </div>
-                  </BentoCard>
-
-                  {/* Expenses by Category */}
-                  <BentoCard size="md" delay={0.5}>
-                    <div className="h-full flex flex-col">
-                      <div className="flex items-center gap-2 mb-4">
-                        <div className="p-2 rounded-lg bg-purple-500/10">
-                          <PieChart className="w-4 h-4 text-purple-500" />
-                        </div>
-                        <h3 className="font-semibold text-foreground">Despesas por Categoria</h3>
-                      </div>
-                      <div className="flex-1 min-h-[250px]">
-                        <ExpensesByCategoryChart
-                          data={categoryData}
-                          isLoading={categoryLoading}
-                          className="h-full"
-                        />
-                      </div>
-                    </div>
+                    <RevenueExpensesPanel
+                      revenueData={revenueExpensesData}
+                      revenueLoading={revenueExpensesLoading}
+                      categoryData={categoryData}
+                      categoryLoading={categoryLoading}
+                    />
                   </BentoCard>
 
                   {/* Cash Flow Projection */}
