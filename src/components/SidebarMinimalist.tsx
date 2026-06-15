@@ -84,6 +84,10 @@ import {
   GanttChartSquare,
   LayoutTemplate,
   KanbanSquare,
+  HandCoins,
+  ListChecks,
+  SplitSquareHorizontal,
+  Lock,
 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
@@ -285,6 +289,7 @@ const menuItems: MenuItem[] = [
           { key: 'ar-boleto',  label: 'Emitir Boleto / PIX',  icon: FileText,   route: '/ar/emissao-boleto' },
           { key: 'ar-regua',   label: 'Cobrança Inteligente', icon: BellRing,   route: '/ar/regua-cobranca' },
           { key: 'cobranca',   label: 'Crédito & Negativação', icon: Shield,    route: '/cobranca' },
+          { key: 'renegociacao', label: 'Cobrança & Renegociação', icon: HandCoins, route: '/financeiro/renegociacao' },
         ]
       },
       {
@@ -304,6 +309,7 @@ const menuItems: MenuItem[] = [
           { key: 'posicao-caixa',  label: 'Posição de Caixa', icon: Wallet,         route: '/tesouraria/posicao' },
           { key: 'extratos',       label: 'Extratos',         icon: FileText,       route: '/tesouraria/extratos' },
           { key: 'conciliacao',    label: 'Conciliação',      icon: RefreshCw,      route: '/conciliacao' },
+          { key: 'regras-concil',  label: 'Regras de Conciliação', icon: ListChecks, route: '/financeiro/regras-conciliacao' },
           { key: 'transferencias', label: 'Transferências',   icon: ArrowRightLeft, route: '/tesouraria/transferencias' },
           { key: 'cnab',           label: 'CNAB',             icon: Send,           route: '/tesouraria/cnab' },
         ]
@@ -315,6 +321,8 @@ const menuItems: MenuItem[] = [
           { key: 'lancamentos', label: 'Lançamentos',    icon: FileText,   route: '/lancamentos' },
           { key: 'fluxo-caixa', label: 'Fluxo de Caixa', icon: TrendingUp, route: '/fluxo-caixa' },
           { key: 'cartoes',     label: 'Cartões',        icon: CreditCard, route: '/cartoes' },
+          { key: 'rateios',     label: 'Rateios',        icon: SplitSquareHorizontal, route: '/financeiro/rateios' },
+          { key: 'fechamento',  label: 'Fechamento Mensal', icon: Lock,   route: '/financeiro/fechamento' },
         ]
       },
       {

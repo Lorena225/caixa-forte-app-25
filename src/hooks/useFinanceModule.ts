@@ -1,0 +1,261 @@
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
+import { toast } from 'sonner';
+
+// ============ Títulos (para selecionar em rateio/renegociação) ============
+export function useTransactions(direction?: 'entrada' | 'saida', statusFilter?: string) {
+  const { currentCompany } = useAuth();
+  return useQuery({
+    queryKey: ['fin-transactions', currentCompany?.id, direction, statusFilter],
+    queryFn: async () => {
+      let q = supabase.from('transactions')
+        .select('*, counterparty:counterparties(name)')
+        .eq('company_id', currentCompany!.id)
+        .order('due_date', { ascending: false });
+      if (direction) q = q.eq('direction', direction);
+      if (statusFilter && statusFilter !== 'todos') q = q.eq('status', statusFilter);
+      const { data } = await q.limit(200);
+      return data ?? [];
+    },
+    enabled: !!currentCompany?.id,
+  });
+}
+
+// ============ Rateios ============
+export function useTransactionAllocations(transactionId: string | null) {
+  return useQuery({
+    queryKey: ['tx-allocations', transactionId],
+    queryFn: async () => {
+      if (!transactionId) return [];
+      const { data } = await supabase.from('transaction_allocations')
+        .select('*, cost_center:cost_centers(name), project:projects(name)')
+        .eq('transaction_id', transactionId);
+      return data ?? [];
+    },
+    enabled: !!transactionId,
+  });
+}
+
+export function useSetAllocations() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ transactionId, allocations }: {
+      transactionId: string;
+      allocations: Array<{ cost_center_id?: string; project_id?: string; percentage: number }>;
+    }) => {
+      const { data, error } = await supabase.rpc('ai_set_transaction_allocations', {
+        p_transaction_id: transactionId,
+        p_allocations: allocations,
+      });
+      if (error) throw error;
+      return data as number;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['tx-allocations'] });
+      qc.invalidateQueries({ queryKey: ['project-economics'] });
+      qc.invalidateQueries({ queryKey: ['portfolio-economics'] });
+      toast.success('Rateio salvo — custos distribuídos');
+    },
+    onError: (e: any) => toast.error(e.message ?? 'Erro ao salvar rateio'),
+  });
+}
+
+// ============ Trilha de auditoria ============
+export function useAuditTrail(entityType: string, entityId: string | null) {
+  return useQuery({
+    queryKey: ['audit-trail', entityType, entityId],
+    queryFn: async () => {
+      if (!entityId) return [];
+      const { data } = await supabase.from('finance_audit_log')
+        .select('*').eq('entity_type', entityType).eq('entity_id', entityId)
+        .order('created_at', { ascending: false }).limit(50);
+      return data ?? [];
+    },
+    enabled: !!entityId,
+  });
+}
+
+export function useCompanyAuditTrail() {
+  const { currentCompany } = useAuth();
+  return useQuery({
+    queryKey: ['company-audit', currentCompany?.id],
+    queryFn: async () => {
+      const { data } = await supabase.from('finance_audit_log')
+        .select('*').eq('company_id', currentCompany!.id)
+        .order('created_at', { ascending: false }).limit(100);
+      return data ?? [];
+    },
+    enabled: !!currentCompany?.id,
+  });
+}
+
+// ============ Fechamento mensal ============
+export function useFinancialPeriods() {
+  const { currentCompany } = useAuth();
+  return useQuery({
+    queryKey: ['fin-periods', currentCompany?.id],
+    queryFn: async () => {
+      const { data } = await supabase.from('financial_periods')
+        .select('*').eq('company_id', currentCompany!.id)
+        .order('period_month', { ascending: false });
+      return data ?? [];
+    },
+    enabled: !!currentCompany?.id,
+  });
+}
+
+export function useOpenPeriod() {
+  const { currentCompany } = useAuth();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (periodMonth: string) => {
+      const { data, error } = await supabase.rpc('ai_open_financial_period', {
+        p_company_id: currentCompany!.id, p_period_month: periodMonth,
+      });
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['fin-periods'] });
+      qc.invalidateQueries({ queryKey: ['closing-checklist'] });
+      toast.success('Período aberto');
+    },
+    onError: (e: any) => toast.error(e.message ?? 'Erro ao abrir período'),
+  });
+}
+
+export function useClosingChecklist(periodId: string | null) {
+  return useQuery({
+    queryKey: ['closing-checklist', periodId],
+    queryFn: async () => {
+      if (!periodId) return null;
+      const { data, error } = await supabase.rpc('ai_closing_checklist', { p_period_id: periodId });
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!periodId,
+  });
+}
+
+export function useClosePeriod() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (periodId: string) => {
+      const { data, error } = await supabase.rpc('ai_close_financial_period', { p_period_id: periodId });
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['fin-periods'] });
+      qc.invalidateQueries({ queryKey: ['closing-checklist'] });
+      toast.success('Período fechado — competência travada');
+    },
+    onError: (e: any) => toast.error(e.message ?? 'Erro ao fechar período'),
+  });
+}
+
+export function useReopenPeriod() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ periodId, reason }: { periodId: string; reason: string }) => {
+      const { error } = await supabase.rpc('ai_reopen_financial_period', { p_period_id: periodId, p_reason: reason });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['fin-periods'] });
+      toast.success('Período reaberto');
+    },
+    onError: (e: any) => toast.error(e.message ?? 'Erro ao reabrir'),
+  });
+}
+
+// ============ Regras de conciliação ============
+export function useReconciliationRules() {
+  const { currentCompany } = useAuth();
+  return useQuery({
+    queryKey: ['recon-rules', currentCompany?.id],
+    queryFn: async () => {
+      const { data } = await supabase.from('reconciliation_rules')
+        .select('*').eq('company_id', currentCompany!.id)
+        .order('priority', { ascending: true });
+      return data ?? [];
+    },
+    enabled: !!currentCompany?.id,
+  });
+}
+
+export function useCreateReconRule() {
+  const { currentCompany } = useAuth();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (rule: {
+      name: string; description?: string; priority: number;
+      match_criteria: any; action: any;
+    }) => {
+      const { error } = await supabase.from('reconciliation_rules').insert({
+        company_id: currentCompany!.id, ...rule, is_active: true,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['recon-rules'] });
+      toast.success('Regra de conciliação criada');
+    },
+    onError: (e: any) => toast.error(e.message ?? 'Erro ao criar regra'),
+  });
+}
+
+export function useToggleReconRule() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, isActive }: { id: string; isActive: boolean }) => {
+      const { error } = await supabase.from('reconciliation_rules')
+        .update({ is_active: isActive }).eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['recon-rules'] }),
+  });
+}
+
+// ============ Renegociação ============
+export function useRenegotiate() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (payload: {
+      transactionId: string; entryAmount: number; installments: number;
+      firstDueDate: string; interestPct: number;
+    }) => {
+      const { data, error } = await supabase.rpc('ai_renegotiate_title', {
+        p_transaction_id: payload.transactionId,
+        p_entry_amount: payload.entryAmount,
+        p_installments: payload.installments,
+        p_first_due_date: payload.firstDueDate,
+        p_interest_pct: payload.interestPct,
+      });
+      if (error) throw error;
+      return data as number;
+    },
+    onSuccess: (n) => {
+      qc.invalidateQueries({ queryKey: ['fin-transactions'] });
+      toast.success(`Renegociado em ${n} parcela(s)`);
+    },
+    onError: (e: any) => toast.error(e.message ?? 'Erro ao renegociar'),
+  });
+}
+
+// ============ Aging (cobrança/inadimplência) ============
+export function useAgingReport(direction: 'entrada' | 'saida') {
+  const { currentCompany } = useAuth();
+  return useQuery({
+    queryKey: ['aging', currentCompany?.id, direction],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('ai_aging_report', {
+        p_company_id: currentCompany!.id, p_direction: direction,
+      });
+      if (error) throw error;
+      return data as { current: number; d30: number; d60: number; d90: number; d90plus: number };
+    },
+    enabled: !!currentCompany?.id,
+  });
+}

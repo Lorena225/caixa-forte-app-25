@@ -175,6 +175,10 @@ import CronogramaProjetos from "./pages/projetos/CronogramaProjetos";
 import TemplatesProjetos from "./pages/projetos/TemplatesProjetos";
 import ExecutivoProjetos from "./pages/projetos/ExecutivoProjetos";
 import KanbanProjetos from "./pages/projetos/KanbanProjetos";
+import RateiosFinanceiro from "./pages/financeiro/RateiosFinanceiro";
+import FechamentoMensal from "./pages/financeiro/FechamentoMensal";
+import RegrasConciliacao from "./pages/financeiro/RegrasConciliacao";
+import RenegociacaoAging from "./pages/financeiro/RenegociacaoAging";
 // Contratos / Recorrência
 import RecorrenciaPage from "./pages/contratos/Recorrencia";
 // Admin
@@ -629,6 +633,10 @@ const App = () => (
                 <Route path="/projetos/templates" element={<TemplatesProjetos />} />
                 <Route path="/projetos/executivo" element={<ExecutivoProjetos />} />
                 <Route path="/projetos/kanban" element={<KanbanProjetos />} />
+                <Route path="/financeiro/rateios" element={<RateiosFinanceiro />} />
+                <Route path="/financeiro/fechamento" element={<FechamentoMensal />} />
+                <Route path="/financeiro/regras-conciliacao" element={<RegrasConciliacao />} />
+                <Route path="/financeiro/renegociacao" element={<RenegociacaoAging />} />
                 <Route path="/projetos/gestao" element={<GestaoProjetosPage />} />
                 
                 {/* ============ DEVELOPER PORTAL & MARKETPLACE ============ */}
