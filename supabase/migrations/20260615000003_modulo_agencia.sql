@@ -1,0 +1,8 @@
+-- MÓDULO GESTÃO DA AGÊNCIA — fundação completa
+-- 7 tabelas: agency_accounts, agency_onboarding_steps, agency_deliverables,
+-- agency_calendar_posts, agency_approvals, agency_meetings, agency_media_campaigns
+-- (todas com RLS multiempresa)
+-- RPCs: ai_provision_agency_account (automação central: cliente+serviço → conta
+--   completa com onboarding, entregas por template e kickoff),
+--   ai_agency_account_health, ai_agency_overview
+-- Reusa projects/counterparties/contracts — a conta é extensão 1:1 de um project.

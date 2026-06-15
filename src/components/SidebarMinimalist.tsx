@@ -91,6 +91,7 @@ import {
   ShieldAlert,
   ArrowDownLeft,
   PiggyBank,
+  Megaphone,
 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
@@ -271,6 +272,23 @@ const menuItems: MenuItem[] = [
           { key: 'projetos-riscos',  label: 'Riscos & Impedimentos', icon: AlertTriangle, route: '/projetos/riscos' },
           { key: 'projetos-cap',     label: 'Capacidade da Equipe', icon: Users,    route: '/projetos/capacidade' },
           { key: 'projetos-tpl',     label: 'Templates de Projeto', icon: LayoutTemplate, route: '/projetos/templates' },
+        ]
+      },
+    ]
+  },
+
+  // ─── GESTÃO DA AGÊNCIA (operação centralizada de contas) ───────────────
+  {
+    key: 'agencia',
+    label: 'Gestão da Agência',
+    icon: Megaphone,
+    category: 'operacional',
+    subGroups: [
+      {
+        key: 'agencia-operacao',
+        label: 'Operação',
+        items: [
+          { key: 'agencia-contas', label: 'Contas & Visão Geral', icon: Building2, route: '/agencia' },
         ]
       },
     ]

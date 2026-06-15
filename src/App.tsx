@@ -169,6 +169,8 @@ import SettingsBackup from "./pages/settings/Backup";
 // Projetos
 import GestaoProjetosPage from "./pages/projetos/GestaoProjetosPage";
 import RentabilidadeProjetos from "./pages/projetos/RentabilidadeProjetos";
+import GestaoAgencia from "./pages/agencia/GestaoAgencia";
+import OperacaoConta from "./pages/agencia/OperacaoConta";
 import ApontamentoHoras from "./pages/projetos/ApontamentoHoras";
 import AlocacaoProjetos from "./pages/projetos/AlocacaoProjetos";
 import DespesasProjetos from "./pages/projetos/DespesasProjetos";
@@ -632,6 +634,8 @@ const App = () => (
                 {/* ============ PROJETOS ============ */}
                 <Route path="/projetos" element={<GestaoProjetosPage />} />
                 <Route path="/projetos/rentabilidade" element={<RentabilidadeProjetos />} />
+                <Route path="/agencia" element={<GestaoAgencia />} />
+                <Route path="/agencia/conta/:accountId" element={<OperacaoConta />} />
                 <Route path="/projetos/horas" element={<ApontamentoHoras />} />
                 <Route path="/projetos/alocacao" element={<AlocacaoProjetos />} />
                 <Route path="/projetos/despesas" element={<DespesasProjetos />} />
