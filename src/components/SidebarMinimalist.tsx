@@ -90,6 +90,7 @@ import {
   Lock,
   ShieldAlert,
   ArrowDownLeft,
+  PiggyBank,
 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
@@ -385,6 +386,8 @@ const menuItems: MenuItem[] = [
           { key: 'ctb-balanco',   label: 'Balanço Patrimonial', icon: Scale,    route: '/contabilidade/balanco' },
           { key: 'ctb-balancete', label: 'Balancete',           icon: FileText, route: '/contabilidade/balancete' },
           { key: 'ctb-fechamento', label: 'Fechamento',         icon: FileCheck, route: '/contabilidade/fechamento' },
+          { key: 'ctb-concil',     label: 'Conciliação Contábil', icon: Scale,    route: '/contabilidade/conciliacao-contabil' },
+          { key: 'ctb-provisoes',  label: 'Provisões',           icon: PiggyBank, route: '/fiscal/provisoes' },
         ]
       },
       {

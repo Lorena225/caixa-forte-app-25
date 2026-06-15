@@ -382,3 +382,116 @@ export function usePostAccountingEntry() {
     onError: (e: any) => toast.error(e.message ?? 'Erro ao gerar lançamento'),
   });
 }
+
+// ============ FISCAL/CONTÁBIL: apuração, conciliação contábil, provisões ============
+export function useTaxParameters() {
+  const { currentCompany } = useAuth();
+  return useQuery({
+    queryKey: ['tax-params', currentCompany?.id],
+    queryFn: async () => {
+      const { data } = await supabase.from('tax_parameters')
+        .select('*').eq('company_id', currentCompany!.id).order('tax_type');
+      return data ?? [];
+    },
+    enabled: !!currentCompany?.id,
+  });
+}
+
+export function useSeedTaxParameters() {
+  const { currentCompany } = useAuth();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async () => {
+      const { data, error } = await supabase.rpc('ai_seed_tax_parameters', { p_company_id: currentCompany!.id });
+      if (error) throw error;
+      return data as number;
+    },
+    onSuccess: (n) => {
+      qc.invalidateQueries({ queryKey: ['tax-params'] });
+      toast.success(n > 0 ? `${n} parâmetros padrão criados (Lucro Presumido)` : 'Parâmetros já existem');
+    },
+    onError: (e: any) => toast.error(e.message ?? 'Erro ao criar parâmetros'),
+  });
+}
+
+export function useUpdateTaxParameter() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, rate }: { id: string; rate: number }) => {
+      const { error } = await supabase.from('tax_parameters').update({ rate, updated_at: new Date().toISOString() }).eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['tax-params'] }); toast.success('Alíquota atualizada'); },
+  });
+}
+
+export function useAssessment(year: number, month: number) {
+  const { currentCompany } = useAuth();
+  return useQuery({
+    queryKey: ['assessment', currentCompany?.id, year, month],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('ai_get_assessment', { p_company_id: currentCompany!.id, p_year: year, p_month: month });
+      if (error) throw error;
+      return (data ?? []) as Array<{ tipo_imposto: string; debitos: number; saldo_apurado: number; status: string }>;
+    },
+    enabled: !!currentCompany?.id,
+  });
+}
+
+export function useRunAssessment() {
+  const { currentCompany } = useAuth();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ year, month }: { year: number; month: number }) => {
+      const { data, error } = await supabase.rpc('ai_run_tax_assessment', { p_company_id: currentCompany!.id, p_year: year, p_month: month });
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['assessment'] });
+      toast.success('Apuração calculada sobre a receita do período');
+    },
+    onError: (e: any) => toast.error(e.message ?? 'Erro na apuração'),
+  });
+}
+
+export function useAccountingClosingCheck(year: number, month: number) {
+  const { currentCompany } = useAuth();
+  return useQuery({
+    queryKey: ['acct-closing', currentCompany?.id, year, month],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('ai_accounting_closing_check', { p_company_id: currentCompany!.id, p_year: year, p_month: month });
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!currentCompany?.id,
+  });
+}
+
+export function useProvisions() {
+  const { currentCompany } = useAuth();
+  return useQuery({
+    queryKey: ['provisions', currentCompany?.id],
+    queryFn: async () => {
+      const { data } = await supabase.from('accounting_provisions')
+        .select('*').eq('company_id', currentCompany!.id).order('competence', { ascending: false });
+      return data ?? [];
+    },
+    enabled: !!currentCompany?.id,
+  });
+}
+
+export function useCreateProvision() {
+  const { currentCompany } = useAuth();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (p: { kind: string; description: string; amount: number; competence: string }) => {
+      const { error } = await supabase.from('accounting_provisions').insert({
+        company_id: currentCompany!.id, ...p, status: 'provisionado',
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['provisions'] }); toast.success('Provisão lançada'); },
+    onError: (e: any) => toast.error(e.message ?? 'Erro ao lançar provisão'),
+  });
+}

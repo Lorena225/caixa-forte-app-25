@@ -67,6 +67,9 @@ import FiscalDocumentos from "./pages/fiscal/Documentos";
 import FiscalSPED from "./pages/fiscal/SPED";
 import FiscalRetencoes from "./pages/fiscal/Retencoes";
 import FiscalApuracao from "./pages/fiscal/Apuracao";
+import ApuracaoFiscal from "./pages/fiscal/ApuracaoFiscal";
+import ProvisoesContabeis from "./pages/fiscal/ProvisoesContabeis";
+import FechamentoContabil from "./pages/fiscal/FechamentoContabil";
 import FiscalRegras from "./pages/fiscal/Regras";
 import FiscalObrigacoes from "./pages/fiscal/Obrigacoes";
 import FiscalEmpresa from "./pages/fiscal/Empresa";
@@ -370,13 +373,15 @@ const App = () => (
                 <Route path="/fiscal/certificados" element={<FiscalCertificados />} />
                 <Route path="/fiscal/sped" element={<FiscalSPED />} />
                 <Route path="/fiscal/retencoes" element={<FiscalRetencoes />} />
-                <Route path="/fiscal/apuracao" element={<FiscalApuracao />} />
+                <Route path="/fiscal/apuracao" element={<ApuracaoFiscal />} />
                 <Route path="/fiscal/regras" element={<FiscalRegras />} />
                 <Route path="/fiscal/obrigacoes" element={<FiscalObrigacoes />} />
                 <Route path="/fiscal/empresa" element={<FiscalEmpresa />} />
                 <Route path="/fiscal/sped-fiscal" element={<FiscalSpedFiscal />} />
                 <Route path="/fiscal/sped-contabil" element={<FiscalSpedContabil />} />
                 <Route path="/fiscal/apuracao-impostos" element={<FiscalApuracaoImpostos />} />
+                <Route path="/fiscal/provisoes" element={<ProvisoesContabeis />} />
+                <Route path="/contabilidade/conciliacao-contabil" element={<FechamentoContabil />} />
                 <Route path="/fiscal/livros-fiscais" element={<FiscalLivrosFiscais />} />
                 <Route path="/fiscal/obrigacoes-acessorias" element={<FiscalObrigacoesAcessorias />} />
                 <Route path="/fiscal/analise" element={<AnaliseFiscal />} />
