@@ -655,3 +655,50 @@ export function useProjectAgentAlerts() {
     enabled: !!currentCompany?.id,
   });
 }
+
+// ============ Caminho crítico (dependências) + Kanban ============
+export function useTaskDependencies(projectId: string | null) {
+  return useQuery({
+    queryKey: ['task-deps', projectId],
+    queryFn: async () => {
+      if (!projectId) return [];
+      const { data } = await supabase.from('project_task_dependencies')
+        .select('*').eq('project_id', projectId);
+      return data ?? [];
+    },
+    enabled: !!projectId,
+  });
+}
+
+export function useCreateDependency() {
+  const { currentCompany } = useAuth();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (d: { project_id: string; predecessor_id: string; successor_id: string }) => {
+      if (d.predecessor_id === d.successor_id) throw new Error('Tarefa não pode depender de si mesma');
+      const { error } = await supabase.from('project_task_dependencies').insert({
+        company_id: currentCompany!.id, ...d, dep_type: 'finish_start',
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['task-deps'] });
+      toast.success('Dependência criada');
+    },
+    onError: (e: any) => toast.error(e.message ?? 'Erro ao criar dependência'),
+  });
+}
+
+export function useDeleteDependency() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from('project_task_dependencies').delete().eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['task-deps'] });
+      toast.success('Dependência removida');
+    },
+  });
+}

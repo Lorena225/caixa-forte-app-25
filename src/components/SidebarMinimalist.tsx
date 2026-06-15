@@ -83,6 +83,7 @@ import {
   type LucideIcon,
   GanttChartSquare,
   LayoutTemplate,
+  KanbanSquare,
 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
@@ -249,6 +250,7 @@ const menuItems: MenuItem[] = [
           { key: 'projetos-rentab',    label: 'Rentabilidade',         icon: TrendingUp,   route: '/projetos/rentabilidade' },
           { key: 'projetos-exec',      label: 'Visão Executiva',       icon: Sparkles,     route: '/projetos/executivo' },
           { key: 'projetos-crono',     label: 'Cronograma',            icon: GanttChartSquare, route: '/projetos/cronograma' },
+          { key: 'projetos-kanban',    label: 'Kanban de Tarefas',     icon: KanbanSquare, route: '/projetos/kanban' },
         ]
       },
       {
