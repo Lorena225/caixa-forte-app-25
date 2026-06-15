@@ -10,7 +10,6 @@ import { CashFlowProjection } from '@/components/dashboard/CashFlowProjection';
 import { DashboardSkeleton } from '@/components/common/DashboardSkeleton';
 import { RevenueExpensesAreaChart } from '@/components/dashboard/RevenueExpensesAreaChart';
 import { RevenueExpensesPanel } from '@/components/dashboard/RevenueExpensesPanel';
-import { ExpensesByCategoryChart } from '@/components/dashboard/ExpensesByCategoryChart';
 import { DateRangeFilter } from '@/components/dashboard/DateRangeFilter';
 import { ReportExportDialog } from '@/components/dashboard/ReportExportDialog';
 import { CFOVirtualHero } from '@/components/dashboard/CFOVirtualHero';
