@@ -103,7 +103,7 @@ export default function TransferenciasPage() {
 
   return (
     <MainLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 form-surface">
         <PageHeader
           title="Transferências Bancárias"
           description="Gerencie transferências entre contas bancárias"

@@ -157,7 +157,7 @@ export default function OrcamentoReal() {
 
   return (
     <MainLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 form-surface">
         <PageHeader
           title="Orçamento vs Real"
           description="Compare valores orçados com realizados, gerencie revisões e cenários"

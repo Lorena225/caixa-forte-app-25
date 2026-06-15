@@ -218,7 +218,7 @@ export default function LancamentosContabeis() {
 
   return (
     <MainLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 form-surface">
         <PageHeader
           title="Lançamentos Contábeis"
           description="Lançamentos manuais com partidas dobradas"

@@ -157,7 +157,7 @@ export default function Dimensoes() {
 
   return (
     <MainLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 form-surface">
         <PageHeader
           title="Dimensões Gerenciais"
           description="Centro de custo, projeto, unidade, departamento e outras dimensões"

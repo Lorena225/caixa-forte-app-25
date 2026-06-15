@@ -37,7 +37,7 @@ export default function TemplatesProjetos() {
 
   return (
     <MainLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 form-surface">
         <PageHeader title="Templates de Projeto"
           description="Estruturas reutilizáveis de milestones e tarefas para criar projetos em 1 clique">
           <Dialog open={open} onOpenChange={setOpen}>

@@ -51,7 +51,7 @@ export default function KanbanProjetos() {
 
   return (
     <MainLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 form-surface">
         <PageHeader title="Kanban de Tarefas"
           description="Quadro de tarefas por status — arraste os cartões entre as colunas" />
 

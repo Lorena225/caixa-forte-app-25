@@ -85,7 +85,7 @@ export default function LivrosFiscais() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 form-surface">
       <PageHeader
         title="Livros Fiscais"
         description="Geração e transmissão de livros fiscais digitais"

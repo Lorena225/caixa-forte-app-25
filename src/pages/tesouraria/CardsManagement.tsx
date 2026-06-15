@@ -66,7 +66,7 @@ export default function CardsManagementPage() {
 
   return (
     <MainLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 form-surface">
         <PageHeader
           title="Gestão de Cartões"
           description="Credenciadoras, recebíveis e liquidações"

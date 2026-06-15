@@ -101,7 +101,7 @@ export default function ChequesPage() {
 
   return (
     <MainLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 form-surface">
         <PageHeader
           title="Gestão de Cheques"
           description="Controle de cheques emitidos e recebidos"

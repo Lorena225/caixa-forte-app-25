@@ -446,7 +446,7 @@ export default function PlanoContas() {
 
   return (
     <MainLayout>
-      <div className="space-y-6 animate-fade-in">
+      <div className="space-y-6 animate-fade-in form-surface">
         <PageHeader
           title="Plano de Contas"
           description="Gerencie categorias e contas contábeis"

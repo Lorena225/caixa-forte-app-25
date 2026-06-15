@@ -40,7 +40,7 @@ export default function AlocacaoProjetos() {
 
   return (
     <MainLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 form-surface">
         <PageHeader title="Alocação & Custo-hora"
           description="Quem está em qual projeto e o custo-hora carregado de cada colaborador">
           <Dialog open={open} onOpenChange={setOpen}>

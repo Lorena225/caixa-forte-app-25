@@ -177,7 +177,7 @@ export default function Agencias() {
 
   return (
     <MainLayout>
-      <div className="space-y-6 animate-fade-in">
+      <div className="space-y-6 animate-fade-in form-surface">
         <PageHeader
           title="Agências Bancárias"
           description="Cadastre as agências dos bancos utilizados pela empresa"

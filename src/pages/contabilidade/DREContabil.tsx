@@ -91,7 +91,7 @@ export default function DREContabil() {
 
   return (
     <MainLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 form-surface">
         <PageHeader
           title="DRE Contábil"
           description="Demonstração do Resultado do Exercício"

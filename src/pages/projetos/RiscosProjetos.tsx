@@ -47,7 +47,7 @@ export default function RiscosProjetos() {
 
   return (
     <MainLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 form-surface">
         <PageHeader title="Riscos & Impedimentos"
           description="Registro de riscos, impedimentos e dependências por projeto, com severidade e dono">
           <Dialog open={open} onOpenChange={setOpen}>

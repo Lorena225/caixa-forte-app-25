@@ -111,7 +111,7 @@ export default function Balanco() {
 
   return (
     <MainLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 form-surface">
         <PageHeader
           title="Balanço Patrimonial"
           description="Demonstrativo de ativos, passivos e patrimônio líquido"

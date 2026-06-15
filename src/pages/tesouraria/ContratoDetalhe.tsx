@@ -171,7 +171,7 @@ export default function ContratoDetalhePage() {
   if (contractLoading) {
     return (
       <MainLayout>
-        <div className="space-y-6">
+        <div className="space-y-6 form-surface">
           <div className="flex items-center gap-4">
             <Skeleton className="h-10 w-10" />
             <div className="space-y-2">

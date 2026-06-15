@@ -274,7 +274,7 @@ export default function Carteiras() {
 
   return (
     <MainLayout>
-      <div className="space-y-6 animate-fade-in">
+      <div className="space-y-6 animate-fade-in form-surface">
         <PageHeader
           title="Contas e Cartões"
           description="Gerencie suas contas bancárias, caixa e cartões"

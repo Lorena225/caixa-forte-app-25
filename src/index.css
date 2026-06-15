@@ -505,6 +505,39 @@
 }
 
 @layer components {
+  /* ===== FORM SURFACE — padrão visual unificado de formulários/modais =====
+     Aplicável onde os primitivos FormSection/FormGrid/FormField ainda não foram
+     adotados. Padroniza respiro vertical, espaçamento label↔campo e hierarquia,
+     resolvendo o "sem respiro / cara técnica" de forma global. */
+
+  /* container de formulário: respiro consistente entre grupos de campos */
+  .form-surface > .grid,
+  .form-surface > .space-y-4,
+  .form-surface > .space-y-2 {
+    row-gap: 1rem;
+  }
+  /* cada campo (label + controle): espaçamento padrão entre rótulo e input */
+  .form-surface .space-y-2 > label,
+  .form-surface label + .space-y-2 {
+    margin-bottom: 0.375rem;
+  }
+  /* labels de formulário: tipografia consistente, levemente mais suave */
+  .form-surface label {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: hsl(var(--foreground) / 0.9);
+    letter-spacing: -0.005em;
+  }
+  /* grids de formulário: gutter horizontal e vertical uniformes */
+  .form-surface .grid {
+    column-gap: 1rem;
+    row-gap: 1rem;
+  }
+  /* respiro mínimo do corpo do formulário */
+  .form-surface {
+    line-height: 1.5;
+  }
+
   /* ===== SIDEBAR STYLES (Responsive) ===== */
   .sidebar-container {
     background: hsl(var(--sidebar-background));

@@ -50,7 +50,7 @@ export default function FaturamentoProjetos() {
 
   return (
     <MainLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 form-surface">
         <PageHeader title="Faturamento de Projetos"
           description="Eventos de faturamento por milestone, medição ou retainer — aprovar e faturar gera o título no Contas a Receber">
           <Dialog open={open} onOpenChange={setOpen}>

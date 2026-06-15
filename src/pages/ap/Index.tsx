@@ -214,7 +214,7 @@ export default function APIndex() {
 
   return (
     <MainLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 form-surface">
         <PageHeader
           title="Contas a Pagar (AP)"
           description="Gestão completa de documentos e pagamentos a fornecedores"

@@ -42,7 +42,7 @@ export default function Adiantamentos() {
 
   return (
     <MainLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 form-surface">
         <PageHeader title="Adiantamentos"
           description="Adiantamentos a fornecedores e colaboradores, com compensação contra despesas reais">
           <Dialog open={open} onOpenChange={setOpen}>

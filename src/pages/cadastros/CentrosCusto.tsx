@@ -389,7 +389,7 @@ export default function CentrosCusto() {
 
   return (
     <MainLayout>
-      <div className="space-y-6 animate-fade-in">
+      <div className="space-y-6 animate-fade-in form-surface">
         <PageHeader
           title="Centros de Custo"
           description="Hierarquia de centros de custo com até 5 níveis configuráveis"

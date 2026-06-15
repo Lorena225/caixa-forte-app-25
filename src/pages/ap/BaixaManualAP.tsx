@@ -314,7 +314,7 @@ export default function BaixaManualAP() {
   const selectableCount = filteredTitles.filter(canSelectTitle).length;
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-6 animate-fade-in form-surface">
       {/* Success message with links */}
       {lastSettlementId && step === 'filters' && (
         <Alert className="border-green-500 bg-green-50 dark:bg-green-950/30">

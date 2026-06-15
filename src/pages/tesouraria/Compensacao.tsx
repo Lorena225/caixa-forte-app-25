@@ -273,7 +273,7 @@ export default function Compensacao() {
 
   return (
     <MainLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 form-surface">
         <PageHeader
           title="Compensação de Títulos"
           description="Compense créditos a receber com débitos a pagar (sem movimento bancário)"

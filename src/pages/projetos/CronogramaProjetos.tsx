@@ -83,7 +83,7 @@ export default function CronogramaProjetos() {
 
   return (
     <MainLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 form-surface">
         <PageHeader title="Cronograma"
           description="Linha do tempo de tarefas por projeto, com aplicação de templates de estrutura" />
 

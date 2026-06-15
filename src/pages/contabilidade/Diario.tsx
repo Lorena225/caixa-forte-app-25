@@ -58,7 +58,7 @@ export default function Diario() {
 
   return (
     <MainLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 form-surface">
         <PageHeader
           title="Livro Diário"
           description="Todos os lançamentos contábeis em ordem cronológica"

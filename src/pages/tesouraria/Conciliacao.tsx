@@ -124,7 +124,7 @@ export default function Conciliacao() {
 
   return (
     <MainLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 form-surface">
         <PageHeader
           title="Conciliação Bancária"
           description="Importar extratos e conciliar movimentos automaticamente"

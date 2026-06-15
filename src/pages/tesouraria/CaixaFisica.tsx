@@ -88,7 +88,7 @@ export default function CaixaFisicaPage() {
 
   return (
     <MainLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 form-surface">
         <PageHeader
           title="Caixa Física"
           description="Gestão de caixas físicos e movimentações"

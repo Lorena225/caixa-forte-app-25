@@ -235,7 +235,7 @@ export default function BaixaAutomaticaAR() {
   };
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-6 animate-fade-in form-surface">
       {/* Upload Step */}
       {fileStep === 'upload' && (
         <Card>

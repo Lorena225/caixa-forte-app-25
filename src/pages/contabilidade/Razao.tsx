@@ -96,7 +96,7 @@ export default function Razao() {
 
   return (
     <MainLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 form-surface">
         <PageHeader
           title="Livro Razão"
           description="Movimentação detalhada por conta contábil"

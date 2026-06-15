@@ -106,7 +106,7 @@ export default function ObrigacoesAcessorias() {
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 form-surface">
       <PageHeader
         title="Obrigações Acessórias"
         description="Calendário fiscal e transmissão de obrigações"

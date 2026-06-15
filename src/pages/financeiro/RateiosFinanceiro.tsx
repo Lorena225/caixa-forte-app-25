@@ -62,7 +62,7 @@ export default function RateiosFinanceiro() {
 
   return (
     <MainLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 form-surface">
         <PageHeader title="Rateios"
           description="Distribua um título de saída entre centros de custo e projetos — alimenta a margem real por projeto" />
 

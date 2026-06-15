@@ -197,7 +197,7 @@ export default function ContratoNovoPage() {
 
   return (
     <MainLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 form-surface">
         <div className="flex items-center gap-4">
         <Button variant="ghost" size="icon" onClick={() => navigate('/tesouraria/contratos')}>
           <ArrowLeft className="h-5 w-5" />

@@ -230,7 +230,7 @@ export default function ARIndex() {
 
   return (
     <MainLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 form-surface">
         <PageHeader
           title="Contas a Receber (AR)"
           description="Gestão de faturas, recebimentos e baixas de clientes"

@@ -88,7 +88,7 @@ export default function ApuracaoImpostos() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 form-surface">
       <PageHeader
         title="Apuração de Impostos"
         description="Apure e acompanhe os impostos da empresa"

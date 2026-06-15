@@ -118,7 +118,7 @@ export default function ApontamentoHoras() {
 
   return (
     <MainLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 form-surface">
         <PageHeader title="Apontamento de Horas"
           description="Registro semanal de horas por projeto, com aprovação que converte hora em custo realizado">
           {NewEntryDialog}

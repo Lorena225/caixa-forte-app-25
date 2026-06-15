@@ -52,7 +52,7 @@ export default function CNABPage() {
 
   return (
     <MainLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 form-surface">
         <PageHeader
           title="CNAB"
           description="Convênios bancários e remessas CNAB 240/400"

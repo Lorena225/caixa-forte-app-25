@@ -45,7 +45,7 @@ export default function DespesasProjetos() {
 
   return (
     <MainLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 form-surface">
         <PageHeader title="Despesas de Projeto"
           description="Despesas e reembolsos vinculados ao projeto — entram no custo e, se reembolsáveis, no faturamento">
           <Dialog open={open} onOpenChange={setOpen}>

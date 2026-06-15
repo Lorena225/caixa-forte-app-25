@@ -97,7 +97,7 @@ export default function MotorTributario() {
 
   return (
     <MainLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 form-surface">
         <PageHeader
           title="Motor Tributário"
           description="Configure regras fiscais automáticas e naturezas de operação"

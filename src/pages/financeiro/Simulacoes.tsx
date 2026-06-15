@@ -114,7 +114,7 @@ export default function Simulacoes() {
 
   return (
     <MainLayout>
-      <div className="space-y-6 animate-fade-in">
+      <div className="space-y-6 animate-fade-in form-surface">
         <PageHeader
           title="Simulações & Cenários"
           description="Previsão de fluxo de caixa e simulações 'E Se' com IA"

@@ -37,7 +37,7 @@ export default function RegrasConciliacao() {
 
   return (
     <MainLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 form-surface">
         <PageHeader title="Regras de Conciliação"
           description="Regras que classificam linhas de extrato automaticamente antes do match manual — torna a conciliação por IA configurável e auditável">
           <Dialog open={open} onOpenChange={setOpen}>

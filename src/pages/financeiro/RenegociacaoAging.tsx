@@ -42,7 +42,7 @@ export default function RenegociacaoAging() {
 
   return (
     <MainLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 form-surface">
         <PageHeader title="Cobrança & Renegociação"
           description="Aging de recebíveis por faixa de atraso e renegociação de títulos vencidos em novas parcelas" />
 

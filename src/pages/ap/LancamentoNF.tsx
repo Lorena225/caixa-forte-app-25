@@ -185,7 +185,7 @@ export default function APLancamentoNF() {
   const canSave = draft.fornecedor && draft.valor > 0 && draft.data_vencimento;
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 form-surface">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">

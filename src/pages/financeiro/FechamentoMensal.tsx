@@ -27,7 +27,7 @@ export default function FechamentoMensal() {
 
   return (
     <MainLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 form-surface">
         <PageHeader title="Fechamento Mensal"
           description="Trava a competência do mês: nenhum título do período pode ser alterado após o fechamento">
           <Dialog>

@@ -338,7 +338,7 @@ export default function ContasBancarias() {
 
   return (
     <MainLayout>
-      <div className="space-y-6 animate-fade-in">
+      <div className="space-y-6 animate-fade-in form-surface">
         <PageHeader
           title="Contas Bancárias"
           description="Cadastre as contas bancárias da empresa vinculadas aos bancos oficiais"

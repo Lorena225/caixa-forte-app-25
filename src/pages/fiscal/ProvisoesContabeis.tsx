@@ -39,7 +39,7 @@ export default function ProvisoesContabeis() {
 
   return (
     <MainLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 form-surface">
         <PageHeader title="Provisões"
           description="Provisões contábeis de férias, 13º, IRPJ/CSLL e contingências por competência">
           <Dialog open={open} onOpenChange={setOpen}>
