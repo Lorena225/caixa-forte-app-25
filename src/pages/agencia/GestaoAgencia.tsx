@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { FormBody, FormSection, FormGrid, FormField } from '@/components/ui/form-layout';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Building2, Plus, Loader2, AlertTriangle, TrendingUp, Users, Sparkles, ArrowRight } from 'lucide-react';
-import { useAgencyOverview, useAgencyAccounts, useProvisionAccount, serviceLabel } from '@/hooks/useAgencyModule';
+import { useAgencyOverview, useAgencyAccounts, useProvisionAccount, useRunAgencyAgent, serviceLabel } from '@/hooks/useAgencyModule';
 import { useCounterparties } from '@/hooks/useCompanyData';
 import { formatCurrency } from '@/lib/formatters';
 
@@ -30,6 +30,7 @@ export default function GestaoAgencia() {
   const { data: accounts = [], isLoading } = useAgencyAccounts();
   const { data: counterparties = [] } = useCounterparties();
   const provision = useProvisionAccount();
+  const runAgent = useRunAgencyAgent();
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({ counterparty_id: '', account_name: '', service_type: 'full_service', monthly_value: '' });
 
@@ -46,7 +47,12 @@ export default function GestaoAgencia() {
       <div className="space-y-6">
         <PageHeader title="Gestão da Agência"
           description="Operação completa das contas — do onboarding às entregas, aprovações e resultados">
-          <Dialog open={open} onOpenChange={setOpen}>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" onClick={() => runAgent.mutate()} disabled={runAgent.isPending}>
+              {runAgent.isPending ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Sparkles className="h-4 w-4 mr-1" />}
+              Rodar agente
+            </Button>
+            <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild><Button><Plus className="h-4 w-4 mr-1" />Nova conta</Button></DialogTrigger>
             <DialogContent>
               <DialogHeader>
@@ -94,6 +100,7 @@ export default function GestaoAgencia() {
               </DialogFooter>
             </DialogContent>
           </Dialog>
+          </div>
         </PageHeader>
 
         {/* Visão geral */}

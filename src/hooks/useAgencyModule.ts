@@ -173,3 +173,160 @@ export function useUpdateDeliverableStage() {
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['agency-deliverables'] }); toast.success('Etapa atualizada'); },
   });
 }
+
+// ===== Rentabilidade da conta (Etapa 3) =====
+export function useAccountEconomics(accountId: string | undefined) {
+  return useQuery({
+    queryKey: ['agency-economics', accountId],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('ai_agency_account_economics', { p_account_id: accountId! });
+      if (error) throw error;
+      return data as {
+        revenue: number; cost: number; hour_cost: number; media_spend: number;
+        hours: number; margin: number; margin_pct: number; ltv_estimate: number;
+      };
+    },
+    enabled: !!accountId,
+  });
+}
+
+export function useRunAgencyAgent() {
+  const { currentCompany } = useAuth();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async () => {
+      const { data, error } = await supabase.rpc('ai_run_agency_agent', { p_company_id: currentCompany!.id });
+      if (error) throw error;
+      return data as number;
+    },
+    onSuccess: (n) => {
+      qc.invalidateQueries({ queryKey: ['agency-overview'] });
+      toast.success(n > 0 ? `${n} recomendação(ões) gerada(s) na Caixa de Decisões` : 'Agentes executados — nada novo a sinalizar');
+    },
+    onError: (e: any) => toast.error(e.message ?? 'Erro ao rodar agente'),
+  });
+}
+
+// ===== Calendário editorial =====
+export function useCalendarPosts(accountId: string | undefined) {
+  return useQuery({
+    queryKey: ['agency-calendar', accountId],
+    queryFn: async () => {
+      const { data } = await supabase.from('agency_calendar_posts')
+        .select('*').eq('account_id', accountId!).order('scheduled_for', { nullsFirst: false });
+      return data ?? [];
+    },
+    enabled: !!accountId,
+  });
+}
+
+export function useCreateCalendarPost() {
+  const { currentCompany } = useAuth();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (p: { account_id: string; title: string; channel: string; scheduled_for: string }) => {
+      const { error } = await supabase.from('agency_calendar_posts').insert({
+        company_id: currentCompany!.id, ...p, status: 'planejado',
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['agency-calendar'] }); toast.success('Post adicionado ao calendário'); },
+    onError: (e: any) => toast.error(e.message ?? 'Erro ao adicionar post'),
+  });
+}
+
+// ===== Mídia paga =====
+export function useMediaCampaigns(accountId: string | undefined) {
+  return useQuery({
+    queryKey: ['agency-media', accountId],
+    queryFn: async () => {
+      const { data } = await supabase.from('agency_media_campaigns')
+        .select('*').eq('account_id', accountId!).order('created_at', { ascending: false });
+      return data ?? [];
+    },
+    enabled: !!accountId,
+  });
+}
+
+export function useCreateCampaign() {
+  const { currentCompany } = useAuth();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (p: { account_id: string; platform: string; campaign_name: string; budget_month: number; objective?: string }) => {
+      const { error } = await supabase.from('agency_media_campaigns').insert({
+        company_id: currentCompany!.id, ...p, status: 'ativa',
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['agency-media'] }); toast.success('Campanha criada'); },
+    onError: (e: any) => toast.error(e.message ?? 'Erro ao criar campanha'),
+  });
+}
+
+// ===== Aprovações =====
+export function useApprovals(accountId: string | undefined) {
+  return useQuery({
+    queryKey: ['agency-approvals', accountId],
+    queryFn: async () => {
+      const { data } = await supabase.from('agency_approvals')
+        .select('*, deliverable:agency_deliverables(title)')
+        .eq('account_id', accountId!).order('requested_at', { ascending: false });
+      return data ?? [];
+    },
+    enabled: !!accountId,
+  });
+}
+
+export function useRespondApproval() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, status, feedback }: { id: string; status: string; feedback?: string }) => {
+      const { error } = await supabase.from('agency_approvals')
+        .update({ status, feedback: feedback ?? null, responded_at: new Date().toISOString() }).eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['agency-approvals'] }); toast.success('Aprovação atualizada'); },
+    onError: (e: any) => toast.error(e.message ?? 'Erro'),
+  });
+}
+
+// ===== Reuniões =====
+export function useMeetings(accountId: string | undefined) {
+  return useQuery({
+    queryKey: ['agency-meetings', accountId],
+    queryFn: async () => {
+      const { data } = await supabase.from('agency_meetings')
+        .select('*').eq('account_id', accountId!).order('scheduled_for', { nullsFirst: false });
+      return data ?? [];
+    },
+    enabled: !!accountId,
+  });
+}
+
+export function useCreateMeeting() {
+  const { currentCompany } = useAuth();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (p: { account_id: string; kind: string; title: string; scheduled_for?: string }) => {
+      const { error } = await supabase.from('agency_meetings').insert({
+        company_id: currentCompany!.id, ...p, status: 'agendada',
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['agency-meetings'] }); toast.success('Reunião agendada'); },
+    onError: (e: any) => toast.error(e.message ?? 'Erro ao agendar'),
+  });
+}
+
+export function useSaveMeetingMinutes() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, minutes }: { id: string; minutes: string }) => {
+      const { error } = await supabase.from('agency_meetings')
+        .update({ minutes, status: 'realizada' }).eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['agency-meetings'] }); toast.success('Ata salva'); },
+    onError: (e: any) => toast.error(e.message ?? 'Erro ao salvar ata'),
+  });
+}

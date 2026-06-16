@@ -6,8 +6,10 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Progress } from '@/components/ui/progress';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Loader2, ArrowLeft, ClipboardList, Calendar, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import { useAgencyAccount, useAccountHealth, useOnboardingSteps, useToggleOnboardingStep, useDeliverables, useUpdateDeliverableStage, serviceLabel } from '@/hooks/useAgencyModule';
+import { CalendarTab, MediaTab, ApprovalsTab, MeetingsTab, EconomicsTab } from './AccountTabs';
 import { formatCurrency } from '@/lib/formatters';
 import { cn } from '@/lib/utils';
 
@@ -69,82 +71,102 @@ export default function OperacaoConta() {
             <p className="text-2xl font-bold">{health?.meetings_upcoming ?? 0}</p></CardContent></Card>
         </div>
 
-        {/* Onboarding */}
-        {account.status === 'onboarding' && onboarding.length > 0 && (
-          <Card className="border-primary/20">
-            <CardHeader className="pb-3">
-              <CardTitle className="flex items-center justify-between">
-                <span className="flex items-center gap-2 text-base"><ClipboardList className="h-4 w-4 text-primary" />Onboarding</span>
-                <span className="text-sm font-normal text-muted-foreground">{onbDone}/{onboarding.length}</span>
-              </CardTitle>
-              <Progress value={onbPct} className="h-2 mt-2" />
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                {onboarding.map((s: any) => (
-                  <div key={s.id} className="flex items-center gap-3 border rounded-lg p-3">
-                    <Checkbox checked={s.is_done} onCheckedChange={(v) => toggleStep.mutate({ id: s.id, done: !!v })} />
-                    <div className="flex-1 min-w-0">
-                      <p className={cn('text-sm font-medium', s.is_done && 'line-through text-muted-foreground')}>{s.label}</p>
-                      <p className="text-xs text-muted-foreground capitalize">{s.category}</p>
-                    </div>
-                    {s.is_blocking && !s.is_done && <Badge variant="outline" className="text-amber-600 border-amber-300">bloqueia produção</Badge>}
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
+        {/* Abas operacionais */}
+        <Tabs defaultValue="producao">
+          <TabsList className="flex-wrap h-auto">
+            <TabsTrigger value="producao">Produção</TabsTrigger>
+            <TabsTrigger value="calendario">Calendário</TabsTrigger>
+            <TabsTrigger value="midia">Mídia paga</TabsTrigger>
+            <TabsTrigger value="aprovacoes">Aprovações</TabsTrigger>
+            <TabsTrigger value="reunioes">Reuniões</TabsTrigger>
+            <TabsTrigger value="rentabilidade">Rentabilidade</TabsTrigger>
+          </TabsList>
 
-        {/* Kanban de entregas */}
-        <Card>
-          <CardHeader><CardTitle className="flex items-center gap-2"><Calendar className="h-4 w-4" />Produção — entregas</CardTitle></CardHeader>
-          <CardContent>
-            {deliverables.length === 0 ? (
-              <p className="text-center py-8 text-muted-foreground">Nenhuma entrega nesta conta.</p>
-            ) : (
-              <div className="overflow-x-auto">
-                <div className="flex gap-3 min-w-max pb-2">
-                  {STAGES.map((stage) => {
-                    const items = deliverables.filter((d: any) => d.stage === stage.key);
-                    return (
-                      <div key={stage.key} className="w-56 shrink-0">
-                        <div className="flex items-center justify-between mb-2 px-1">
-                          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{stage.label}</span>
-                          <span className="text-xs text-muted-foreground">{items.length}</span>
+          <TabsContent value="producao" className="space-y-4 mt-4">
+            {/* Onboarding */}
+            {account.status === 'onboarding' && onboarding.length > 0 && (
+              <Card className="border-primary/20">
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center justify-between">
+                    <span className="flex items-center gap-2 text-base"><ClipboardList className="h-4 w-4 text-primary" />Onboarding</span>
+                    <span className="text-sm font-normal text-muted-foreground">{onbDone}/{onboarding.length}</span>
+                  </CardTitle>
+                  <Progress value={onbPct} className="h-2 mt-2" />
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    {onboarding.map((s: any) => (
+                      <div key={s.id} className="flex items-center gap-3 border rounded-lg p-3">
+                        <Checkbox checked={s.is_done} onCheckedChange={(v) => toggleStep.mutate({ id: s.id, done: !!v })} />
+                        <div className="flex-1 min-w-0">
+                          <p className={cn('text-sm font-medium', s.is_done && 'line-through text-muted-foreground')}>{s.label}</p>
+                          <p className="text-xs text-muted-foreground capitalize">{s.category}</p>
                         </div>
-                        <div className="space-y-2">
-                          {items.map((d: any) => {
-                            const overdue = d.due_date && new Date(d.due_date) < new Date() && d.stage !== 'concluido';
-                            return (
-                              <div key={d.id} className={cn('rounded-lg border p-2.5 bg-card', d.is_blocked && 'border-l-4 border-l-red-500')}>
-                                <p className="text-sm font-medium leading-snug">{d.title}</p>
-                                <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
-                                  <Badge variant={prioBadge[d.priority]} className="text-[10px] px-1.5 py-0">{d.priority}</Badge>
-                                  <span className="text-[10px] text-muted-foreground capitalize">{d.discipline}</span>
-                                  {overdue && <AlertTriangle className="h-3 w-3 text-red-500" />}
-                                </div>
-                                {stage.key !== 'concluido' && (
-                                  <select
-                                    className="mt-2 w-full text-[11px] rounded border bg-background px-1 py-0.5 text-muted-foreground"
-                                    value={d.stage}
-                                    onChange={(e) => updateStage.mutate({ id: d.id, stage: e.target.value })}>
-                                    {STAGES.map((s) => <option key={s.key} value={s.key}>{s.label}</option>)}
-                                  </select>
-                                )}
-                                {stage.key === 'concluido' && <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 mt-1.5" />}
-                              </div>
-                            );
-                          })}
-                        </div>
+                        {s.is_blocking && !s.is_done && <Badge variant="outline" className="text-amber-600 border-amber-300">bloqueia produção</Badge>}
                       </div>
-                    );
-                  })}
-                </div>
-              </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
             )}
-          </CardContent>
-        </Card>
+
+            {/* Kanban de entregas */}
+            <Card>
+              <CardHeader><CardTitle className="flex items-center gap-2"><Calendar className="h-4 w-4" />Produção — entregas</CardTitle></CardHeader>
+              <CardContent>
+                {deliverables.length === 0 ? (
+                  <p className="text-center py-8 text-muted-foreground">Nenhuma entrega nesta conta.</p>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <div className="flex gap-3 min-w-max pb-2">
+                      {STAGES.map((stage) => {
+                        const items = deliverables.filter((d: any) => d.stage === stage.key);
+                        return (
+                          <div key={stage.key} className="w-56 shrink-0">
+                            <div className="flex items-center justify-between mb-2 px-1">
+                              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{stage.label}</span>
+                              <span className="text-xs text-muted-foreground">{items.length}</span>
+                            </div>
+                            <div className="space-y-2">
+                              {items.map((d: any) => {
+                                const overdue = d.due_date && new Date(d.due_date) < new Date() && d.stage !== 'concluido';
+                                return (
+                                  <div key={d.id} className={cn('rounded-lg border p-2.5 bg-card', d.is_blocked && 'border-l-4 border-l-red-500')}>
+                                    <p className="text-sm font-medium leading-snug">{d.title}</p>
+                                    <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
+                                      <Badge variant={prioBadge[d.priority]} className="text-[10px] px-1.5 py-0">{d.priority}</Badge>
+                                      <span className="text-[10px] text-muted-foreground capitalize">{d.discipline}</span>
+                                      {overdue && <AlertTriangle className="h-3 w-3 text-red-500" />}
+                                    </div>
+                                    {stage.key !== 'concluido' && (
+                                      <select
+                                        className="mt-2 w-full text-[11px] rounded border bg-background px-1 py-0.5 text-muted-foreground"
+                                        value={d.stage}
+                                        onChange={(e) => updateStage.mutate({ id: d.id, stage: e.target.value })}>
+                                        {STAGES.map((s) => <option key={s.key} value={s.key}>{s.label}</option>)}
+                                      </select>
+                                    )}
+                                    {stage.key === 'concluido' && <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 mt-1.5" />}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="calendario" className="mt-4"><CalendarTab accountId={accountId!} /></TabsContent>
+          <TabsContent value="midia" className="mt-4"><MediaTab accountId={accountId!} /></TabsContent>
+          <TabsContent value="aprovacoes" className="mt-4"><ApprovalsTab accountId={accountId!} /></TabsContent>
+          <TabsContent value="reunioes" className="mt-4"><MeetingsTab accountId={accountId!} /></TabsContent>
+          <TabsContent value="rentabilidade" className="mt-4"><EconomicsTab accountId={accountId!} /></TabsContent>
+        </Tabs>
       </div>
     </MainLayout>
   );
