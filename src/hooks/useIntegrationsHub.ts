@@ -75,3 +75,20 @@ export function useConnectedProviders() {
     enabled: !!currentCompany?.id,
   });
 }
+
+export function usePaymentEvents() {
+  const { currentCompany } = useAuth();
+  return useQuery({
+    queryKey: ['payment-events', currentCompany?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('payment_events')
+        .select('id, provider, event_type, amount, processed, created_at, external_charge_id')
+        .eq('company_id', currentCompany!.id)
+        .order('created_at', { ascending: false }).limit(50);
+      if (error) throw error;
+      return data ?? [];
+    },
+    enabled: !!currentCompany?.id,
+  });
+}
