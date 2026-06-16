@@ -18,3 +18,7 @@ DROP TABLE IF EXISTS
   public.production_order_operations, public.production_appointments, public.production_orders,
   public.mrp_requirements, public.industrial_routings, public.industrial_boms, public.bom_components
 CASCADE;
+
+-- Resíduo do cleanup: tabelas-filhas órfãs (RLS sem policy após CASCADE remover as mães)
+DROP TABLE IF EXISTS public.quote_items CASCADE;
+DROP TABLE IF EXISTS public.routing_operations CASCADE;
