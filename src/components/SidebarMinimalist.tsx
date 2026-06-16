@@ -564,6 +564,7 @@ const menuItems: MenuItem[] = [
         items: [
           { key: 'governanca',        label: 'Governança',             icon: Settings, route: '/configuracoes' },
           { key: 'admin',             label: 'Administração',          icon: UserCog,  route: '/admin' },
+          { key: 'hub-conectores',    label: 'Hub de Conectores',      icon: Plug,     route: '/integracoes/hub' },
           { key: 'integracoes',       label: 'Integrações',            icon: Plug,     route: '/integracoes/configurar' },
           { key: 'open-banking',      label: 'Open Finance',           icon: Globe,    route: '/openfinance/conexoes' },
           { key: 'importar-exportar', label: 'Importar/Exportar',      icon: Upload,   route: '/importar-exportar' },
