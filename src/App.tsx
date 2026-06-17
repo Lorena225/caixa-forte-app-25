@@ -30,6 +30,7 @@ import Metas from "./pages/MetasOrcamentarias";
 import MetasFinanceiras from "./pages/MetasFinanceiras";
 import Cartoes from "./pages/Cartoes";
 import Lancamentos from "./pages/Lancamentos";
+import ImplantacaoWizard from "./pages/implantacao/ImplantacaoWizard";
 import IntegracoesIndex from "./pages/integracoes/Index";
 import HubConectores from "./pages/integracoes/HubConectores";
 import GoogleIntegracao from "./pages/integracoes/GoogleIntegracao";
@@ -500,6 +501,7 @@ const App = () => (
                 <Route path="/cadastros/servicos" element={<Servicos />} />
                 
                 {/* ============ INTEGRAÇÕES ============ */}
+                <Route path="/implantacao" element={<ImplantacaoWizard />} />
                 <Route path="/integracoes" element={<IntegracoesIndex />} />
                 <Route path="/integracoes/hub" element={<HubConectores />} />
                 <Route path="/integracoes/importar" element={<IntegracoesImportar />} />

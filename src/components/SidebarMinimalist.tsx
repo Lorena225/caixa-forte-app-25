@@ -562,6 +562,7 @@ const menuItems: MenuItem[] = [
         key: 'config-sistema',
         label: 'Sistema',
         items: [
+          { key: 'implantacao',       label: 'Implantação',            icon: Sparkles, route: '/implantacao' },
           { key: 'governanca',        label: 'Governança',             icon: Settings, route: '/configuracoes' },
           { key: 'admin',             label: 'Administração',          icon: UserCog,  route: '/admin' },
           { key: 'hub-conectores',    label: 'Hub de Conectores',      icon: Plug,     route: '/integracoes/hub' },
