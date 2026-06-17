@@ -92,3 +92,33 @@ export function usePaymentEvents() {
     enabled: !!currentCompany?.id,
   });
 }
+
+export function useSubscriptionsSummary() {
+  const { currentCompany } = useAuth();
+  return useQuery({
+    queryKey: ['subscriptions-summary', currentCompany?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('ai_subscriptions_summary', { p_company_id: currentCompany!.id });
+      if (error) throw error;
+      return data as { active: number; mrr: number; overdue: number; due_7d: number };
+    },
+    enabled: !!currentCompany?.id,
+  });
+}
+
+export function useSubscriptions() {
+  const { currentCompany } = useAuth();
+  return useQuery({
+    queryKey: ['subscriptions', currentCompany?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('subscriptions')
+        .select('id, plan_name, amount, interval, status, next_billing_date, counterparty:counterparties(name)')
+        .eq('company_id', currentCompany!.id)
+        .order('created_at', { ascending: false }).limit(50);
+      if (error) throw error;
+      return data ?? [];
+    },
+    enabled: !!currentCompany?.id,
+  });
+}

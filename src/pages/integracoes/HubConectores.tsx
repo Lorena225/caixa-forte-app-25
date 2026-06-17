@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Loader2, Plug, Webhook, AlertTriangle, Users, CreditCard, CheckCircle2, ArrowRight } from 'lucide-react';
-import { CONNECTOR_CATALOG, useIntegrationsHubOverview, useConnectedProviders, useLeadSources, usePaymentEvents } from '@/hooks/useIntegrationsHub';
+import { CONNECTOR_CATALOG, useIntegrationsHubOverview, useConnectedProviders, useLeadSources, usePaymentEvents, useSubscriptionsSummary } from '@/hooks/useIntegrationsHub';
 
 const categoryColor: Record<string, string> = {
   Comercial: 'bg-blue-500/10 text-blue-600',
@@ -20,6 +20,7 @@ export default function HubConectores() {
   const { data: connected = [], isLoading } = useConnectedProviders();
   const { data: leads = [] } = useLeadSources();
   const { data: payments = [] } = usePaymentEvents();
+  const { data: subs } = useSubscriptionsSummary();
 
   const isConnected = (provider: string) =>
     connected.some((c: any) => c.provider === provider && c.is_active);
@@ -31,10 +32,14 @@ export default function HubConectores() {
           description="Conecte o Vitrio aos sistemas que operam seu negócio — CRM, pagamentos e mídia. O ERP vira o centro da operação." />
 
         {/* Saúde das integrações */}
-        <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 grid-cols-2 lg:grid-cols-5">
           <Card><CardContent className="pt-5">
             <div className="flex items-center justify-between mb-2"><span className="text-sm text-muted-foreground">Conectores ativos</span><Plug className="h-4 w-4 text-muted-foreground" /></div>
             <p className="text-2xl font-bold">{overview?.integrations_active ?? 0}</p>
+          </CardContent></Card>
+          <Card><CardContent className="pt-5">
+            <div className="flex items-center justify-between mb-2"><span className="text-sm text-muted-foreground">Recorrência (MRR)</span><CreditCard className="h-4 w-4 text-muted-foreground" /></div>
+            <p className="text-2xl font-bold">R$ {Number(subs?.mrr ?? 0).toLocaleString('pt-BR', { maximumFractionDigits: 0 })}</p>
           </CardContent></Card>
           <Card><CardContent className="pt-5">
             <div className="flex items-center justify-between mb-2"><span className="text-sm text-muted-foreground">Webhooks (24h)</span><Webhook className="h-4 w-4 text-muted-foreground" /></div>
