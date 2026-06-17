@@ -262,7 +262,6 @@ import TaxMappingPage from "./pages/controladoria/TaxMappingPage";
 import ComplianceAlertsPage from "./pages/controladoria/ComplianceAlertsPage";
 import ComplianceAuditPage from "./pages/controladoria/ComplianceAuditPage";
 import MapeamentoContabil from "./pages/controladoria/MapeamentoContabil";
-import CusteioABC from "./pages/controladoria/CusteioABC";
 import DashboardFiscal from "./pages/controladoria/DashboardFiscal";
 import OpenBankingPage from "./pages/openbanking/OpenBankingPage";
 import AutomaticReconciliationPage from "./pages/openbanking/AutomaticReconciliationPage";
@@ -396,7 +395,6 @@ const App = () => (
                 
                 {/* ============ CONTROLADORIA AVANÇADA ============ */}
                 <Route path="/controladoria/mapeamento-contabil" element={<MapeamentoContabil />} />
-                <Route path="/controladoria/custeio-abc" element={<CusteioABC />} />
                 <Route path="/controladoria/dashboard-fiscal" element={<DashboardFiscal />} />
                 {/* ============ OPERACIONAL ============ */}
                 <Route path="/operacional" element={<OperacionalIndex />} />

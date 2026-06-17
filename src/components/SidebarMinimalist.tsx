@@ -394,7 +394,6 @@ const menuItems: MenuItem[] = [
           { key: 'ctb-razao',       label: 'Livro Razão',           icon: BookOpen, route: '/contabilidade/razao' },
           { key: 'ctb-diario',      label: 'Livro Diário',          icon: BookOpen, route: '/contabilidade/diario' },
           { key: 'ctb-mapeamento',  label: 'Mapeamento De-Para',    icon: Network,  route: '/controladoria/mapeamento-contabil' },
-          { key: 'ctb-custeio-abc', label: 'Custeio ABC',          icon: PieChart, route: '/controladoria/custeio-abc' },
         ]
       },
       {
