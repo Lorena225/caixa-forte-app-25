@@ -70,3 +70,25 @@ Números reais do banco de produção:
 - [x] Documento de auditoria versionado
 - [ ] CHANGELOG por release (pendente)
 - [ ] CI de migrations (pendente — Bloco 4)
+
+## 6. Status final dos 3 itens de plataforma (auditoria 2026-06-16)
+
+Reavaliação honesta após verificação direta no banco:
+
+1. **extension_in_public (pg_net)** — pg_net ESTÁ no schema public, mas a extensão
+   **não suporta `ALTER EXTENSION ... SET SCHEMA`** (limitação da própria pg_net).
+   Mover exigiria DROP + CREATE no schema `extensions`. Verificado: **0 funções
+   usam net.http\*** — o aviso é de baixo risco (extensão sem uso). Decisão: não
+   forçar drop/recreate de extensão de rede em produção sem necessidade, pois
+   introduz mais risco que o próprio aviso. Reavaliar se/quando pg_net for usado.
+
+2. **public_bucket_allows_listing (company-assets)** — bucket é público (serve
+   logos/assets). Tornar privado quebraria a exibição. Requer ajuste de policy de
+   storage no painel, com cuidado para preservar leitura pública dos assets
+   legítimos. Mantido como ação de painel.
+
+3. **auth_leaked_password_protection** — ação exclusiva do painel Supabase
+   (Auth > Settings > habilitar proteção contra senha vazada). Não há SQL.
+
+Os 208 avisos `authenticated_security_definer_function_executable` são esperados
+(é como o app chama as RPCs) e não representam falha.
