@@ -3,6 +3,10 @@ import { MainLayout } from '@/components/layout/MainLayout';
 import { PageHeader } from '@/components/common/PageHeader';
 import { FilterBar, useFilters } from '@/components/dashboard/FilterBar';
 import { KPICard, KPIGrid } from '@/components/dashboard/KPICard';
+import { DashboardInsightsPanel } from '@/components/dashboard/DashboardInsightsPanel';
+import { DashboardEmptyGuide } from '@/components/dashboard/DashboardEmptyGuide';
+import { useOnboardingStatus } from '@/hooks/useFinanceModule';
+import { LayoutDashboard } from 'lucide-react';
 import { AgingChart } from '@/components/dashboard/AgingChart';
 import { CashFlowChart } from '@/components/dashboard/CashFlowChart';
 import { DashboardSkeleton } from '@/components/common/DashboardSkeleton';
@@ -41,6 +45,10 @@ export default function ExecutiveDashboard() {
   const { data: cashflowMonthly = [] } = useCashflowMonthly(currentYear);
   const { data: projection = [] } = useCashFlowProjection();
   const { data: budgetData = [] } = useBudgetVsActual(currentYear);
+  const { data: onboarding } = useOnboardingStatus();
+
+  // sistema sem base mínima: dashboard vira guia, não tela vazia
+  const hasNoBase = onboarding && !onboarding.accounts && !onboarding.partners;
 
   const handleDrilldown = (source: string, params?: Record<string, string>) => {
     const searchParams = new URLSearchParams(params);
@@ -75,6 +83,21 @@ export default function ExecutiveDashboard() {
         </PageHeader>
 
         <FilterBar filters={filters} onFiltersChange={setFilters} />
+
+        {hasNoBase ? (
+          <DashboardEmptyGuide
+            icon={LayoutDashboard}
+            title="Seu painel executivo está pronto para ganhar vida"
+            subtitle="Assim que você cadastrar a base mínima, os KPIs, gráficos e a análise de IA em tempo real aparecem aqui automaticamente."
+            steps={[
+              { label: 'Cadastrar conta bancária', description: 'Para o sistema acompanhar seu caixa', route: '/implantacao', done: !!onboarding?.accounts },
+              { label: 'Cadastrar clientes e fornecedores', description: 'As contrapartes dos seus títulos', route: '/implantacao', done: !!onboarding?.partners },
+              { label: 'Lançar o primeiro título', description: 'Uma conta a receber ou a pagar', route: '/ar', done: false },
+            ]}
+          />
+        ) : (
+          <>
+        <DashboardInsightsPanel scope="executive" />
 
         {isInitialLoading ? (
           <DashboardSkeleton kpiCount={9} showCharts showTable={false} />
@@ -221,6 +244,8 @@ export default function ExecutiveDashboard() {
             </div>
           </CardContent>
         </Card>
+        </>
+        )}
         </>
         )}
       </div>

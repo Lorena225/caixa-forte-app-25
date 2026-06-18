@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { PageHeader } from '@/components/common/PageHeader';
+import { DashboardInsightsPanel } from '@/components/dashboard/DashboardInsightsPanel';
 import { FilterBar, useFilters } from '@/components/dashboard/FilterBar';
 import { KPICard, KPIGrid } from '@/components/dashboard/KPICard';
 import { CashFlowChart } from '@/components/dashboard/CashFlowChart';
@@ -49,6 +50,8 @@ export default function CashFlowDashboard() {
             Exportar
           </Button>
         </PageHeader>
+
+        <DashboardInsightsPanel scope="cashflow" />
 
         <FilterBar filters={filters} onFiltersChange={setFilters} />
 
