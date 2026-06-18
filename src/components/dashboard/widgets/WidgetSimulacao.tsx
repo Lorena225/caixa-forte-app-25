@@ -22,10 +22,10 @@ interface WidgetSimulacaoProps {
 }
 
 export const WidgetSimulacao = memo(function WidgetSimulacao({
-  saldoAtual = 125000,
-  receitaMensal = 85000,
+  saldoAtual = 0,
+  receitaMensal = 0,
   isLoading = false,
-  aiInsight = 'Uma queda de 20% nas vendas reduziria seu fluxo de caixa em R$ 17.000/mês.',
+  aiInsight = '',
   onRefresh,
   onViewDetails,
   onRemove,

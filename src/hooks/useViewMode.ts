@@ -21,11 +21,15 @@ const CONTROLLERSHIP_WIDGETS = [
 // CFO Virtual messages for each mode
 export const VIEW_MODE_MESSAGES: Record<ViewMode, (userName: string, data?: any) => string> = {
   executive: (userName) => 
-    `${userName}, sua visão executiva está pronta. O fluxo de caixa projeta folga de R$ 25.000 para os próximos 15 dias.`,
+    `${userName}, sua visão executiva está pronta. Cadastre contas e lançamentos para acompanhar o fluxo de caixa em tempo real.`,
   operational: (userName, data) => 
-    `${userName}, temos ${data?.produtosCriticos || 3} produtos abaixo do estoque mínimo. Deseja ver a cotação com fornecedores?`,
+    data?.produtosCriticos
+      ? `${userName}, temos ${data.produtosCriticos} itens que pedem atenção. Deseja revisar?`
+      : `${userName}, sua visão operacional está pronta.`,
   controllership: (userName, data) => 
-    `${userName}, há ${data?.obrigacoesPendentes || 2} obrigações fiscais pendentes este mês. A GFIP precisa de atenção imediata.`,
+    data?.obrigacoesPendentes
+      ? `${userName}, há ${data.obrigacoesPendentes} obrigações fiscais pendentes este mês.`
+      : `${userName}, sua visão de controladoria está pronta.`,
   custom: (userName) => 
     `${userName}, seu dashboard personalizado está configurado. Arraste os widgets para reorganizar conforme sua preferência.`,
 };
