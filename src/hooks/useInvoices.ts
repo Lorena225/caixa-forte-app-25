@@ -105,7 +105,7 @@ export function useCreateInvoiceFromOrder() {
         .eq('company_id', currentCompany!.id)
         .order('created_at', { ascending: false })
         .limit(1)
-        .single();
+        .maybeSingle();
 
       let nextNumber = 1;
       if (lastInvoice?.invoice_number) {

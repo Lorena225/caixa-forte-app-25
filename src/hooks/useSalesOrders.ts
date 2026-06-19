@@ -125,7 +125,7 @@ export function useCreateSalesOrder() {
         .eq('company_id', currentCompany!.id)
         .order('created_at', { ascending: false })
         .limit(1)
-        .single();
+        .maybeSingle();
 
       let nextNumber = 1;
       if (lastOrder?.order_number) {

@@ -56,7 +56,7 @@ export function useCreateVenda() {
         .eq("tipo", input.tipo)
         .order("numero", { ascending: false })
         .limit(1)
-        .single();
+        .maybeSingle();
 
       const proximoNumero = ultimaVenda 
         ? String(Number(ultimaVenda.numero) + 1).padStart(6, '0')

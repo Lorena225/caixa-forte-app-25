@@ -113,7 +113,7 @@ export function useCreateReturn() {
         .eq('company_id', currentCompany!.id)
         .order('created_at', { ascending: false })
         .limit(1)
-        .single();
+        .maybeSingle();
 
       let nextNumber = 1;
       if (lastReturn?.return_number) {
