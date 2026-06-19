@@ -39,49 +39,15 @@ import {
 
 // Mock real-time data
 const generateRealtimeData = () => {
-  const data = [];
-  let balance = 150000;
-  for (let i = 0; i <= 30; i++) {
-    const inflow = Math.random() * 20000 + 10000;
-    const outflow = Math.random() * 18000 + 8000;
-    balance += inflow - outflow;
-    data.push({
-      day: i,
-      date: format(addDays(new Date(), i), "dd/MM"),
-      saldo: Math.round(balance),
-      entradas: Math.round(inflow),
-      saidas: Math.round(outflow),
-    });
-  }
-  return data;
+  // Sem dados fabricados: a projeção só é desenhada quando houver transações reais.
+  // Retorna série vazia até a fonte real (transactions/projeção) estar conectada.
+  return [] as { day: number; date: string; saldo: number; entradas: number; saidas: number }[];
 };
 
-const MOCK_BANK_POSITIONS = [
-  { bank: "Itaú", account: "****1234", balance: 85000, lastUpdate: new Date() },
-  { bank: "Bradesco", account: "****5678", balance: 42000, lastUpdate: new Date(Date.now() - 600000) },
-  { bank: "Santander", account: "****9012", balance: 23000, lastUpdate: new Date(Date.now() - 1800000) },
-];
+const MOCK_BANK_POSITIONS: { bank: string; account: string; balance: number; lastUpdate: Date }[] = [];
 
-const MOCK_ALERTS = [
-  {
-    id: "1",
-    alert_type: "low_balance",
-    severity: "warning",
-    alert_date: addDays(new Date(), 12).toISOString(),
-    projected_balance: 15000,
-    days_until_negative: null,
-    ai_summary: "Saldo projetado cairá para R$ 15.000 em 12 dias, abaixo da reserva mínima de R$ 50.000.",
-  },
-  {
-    id: "2",
-    alert_type: "payment_risk",
-    severity: "critical",
-    alert_date: addDays(new Date(), 5).toISOString(),
-    projected_balance: null,
-    days_until_negative: null,
-    ai_summary: "Há R$ 120.000 em vencimentos AP e apenas R$ 85.000 em saldo disponível no dia 25/01.",
-  },
-];
+const MOCK_ALERTS: any[] = [];
+
 
 const ALERT_CONFIG = {
   negative_balance: { icon: XCircle, color: "text-destructive", label: "Saldo Negativo" },
@@ -103,7 +69,7 @@ export default function FinanceiroTempoReal() {
   const bankPositions = MOCK_BANK_POSITIONS;
 
   const totalBalance = bankPositions.reduce((s, b) => s + b.balance, 0);
-  const minProjectedBalance = Math.min(...projectionData.map((d) => d.saldo));
+  const minProjectedBalance = projectionData.length > 0 ? Math.min(...projectionData.map((d) => d.saldo)) : 0;
   const daysUntilCritical = projectionData.findIndex((d) => d.saldo < 50000);
 
   const handleRefresh = async () => {
@@ -224,6 +190,13 @@ export default function FinanceiroTempoReal() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
+              {bankPositions.length === 0 && (
+                <div className="text-center py-8 text-muted-foreground">
+                  <Landmark className="h-8 w-8 mx-auto mb-2 opacity-40" />
+                  <p className="text-sm">Nenhuma conta conectada ainda.</p>
+                  <p className="text-xs mt-1">A posição em tempo real aparece aqui após conectar suas contas via Open Banking ou cadastrá-las.</p>
+                </div>
+              )}
               {bankPositions.map((bank, idx) => (
                 <div key={idx} className="flex items-center justify-between p-4 rounded-lg border">
                   <div className="flex items-center gap-4">
@@ -259,6 +232,13 @@ export default function FinanceiroTempoReal() {
           </CardHeader>
           <CardContent>
             <div className="h-[350px]">
+              {projectionData.length === 0 ? (
+                <div className="h-full flex flex-col items-center justify-center text-muted-foreground">
+                  <Activity className="h-8 w-8 mb-2 opacity-40" />
+                  <p className="text-sm">Sem dados para projetar ainda.</p>
+                  <p className="text-xs mt-1">A projeção de saldo aparece quando houver lançamentos e vencimentos cadastrados.</p>
+                </div>
+              ) : (
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={projectionData}>
                   <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
@@ -277,6 +257,7 @@ export default function FinanceiroTempoReal() {
                   />
                 </AreaChart>
               </ResponsiveContainer>
+              )}
             </div>
           </CardContent>
         </Card>
